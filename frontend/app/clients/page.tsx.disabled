@@ -1,0 +1,62 @@
+import { getClients } from '@/lib/api/clients';
+import ClientCard from '@/components/ClientCard';
+import type { Client } from '@/types/client';
+
+export const metadata = {
+  title: 'Our Clients | Abby Lighting',
+  description: 'Trusted by leading businesses worldwide',
+};
+
+export default async function ClientsPage() {
+  let clients: Client[] = [];
+  let error: string | null = null;
+
+  try {
+    const response = await getClients();
+    if (response.success) {
+      clients = response.data;
+    }
+  } catch (err) {
+    error = err instanceof Error ? err.message : 'Failed to load clients';
+    console.error('Error loading clients:', err);
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <div className="bg-white py-12 shadow-sm">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl font-bold text-gray-900">Our Clients</h1>
+          <p className="mt-4 text-lg text-gray-600">
+            Trusted by leading businesses and organizations worldwide
+          </p>
+        </div>
+      </div>
+
+      {/* Clients Grid */}
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        {error ? (
+          <div className="rounded-lg bg-red-50 p-4 text-red-800">
+            <p className="font-semibold">Error loading clients</p>
+            <p className="text-sm">{error}</p>
+          </div>
+        ) : clients.length === 0 ? (
+          <div className="rounded-lg bg-yellow-50 p-8 text-center">
+            <p className="text-lg text-gray-600">No clients found</p>
+          </div>
+        ) : (
+          <>
+            <div className="mb-6 text-sm text-gray-600">
+              Showing {clients.length} {clients.length === 1 ? 'client' : 'clients'}
+            </div>
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              {clients.map((client) => (
+                <ClientCard key={client.id} client={client} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

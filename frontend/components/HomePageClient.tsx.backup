@@ -1,0 +1,706 @@
+"use client";
+
+import { useEffect, useRef, useState, useMemo } from "react";
+import type { Client } from "@/types/client";
+import type { Slider } from "@/types/slider";
+import type { Project } from "@/types/project";
+import type { NewsItem } from "@/types/news-item";
+import type { ManufacturingSection } from "@/types/manufacturing-section";
+import type { NewArrivalCategory, NewArrivalProduct } from "@/types/new-arrival";
+import type { LightWorld } from "@/types/light-world";
+
+interface HomePageClientProps {
+  sliders: Slider[];
+  projects: Project[];
+  clients: Client[];
+  newsItems: NewsItem[];
+  manufacturingSection: ManufacturingSection | null;
+  newArrivalCategories: NewArrivalCategory[];
+  lightWorlds: LightWorld[];
+}
+
+export default function HomePageClient({
+  sliders,
+  projects,
+  clients,
+  newsItems,
+  manufacturingSection,
+  newArrivalCategories,
+  lightWorlds
+}: HomePageClientProps) {
+  const heroRef = useRef<HTMLElement>(null);
+  const newsCarouselRef = useRef<HTMLDivElement>(null);
+  const worldsCarouselRef = useRef<HTMLDivElement>(null);
+  const [activeNewArrivalTab, setActiveNewArrivalTab] = useState<string>("Architectural");
+
+  // Derive products for the selected category tab dynamically
+  const filteredNewArrivalProducts = useMemo(() => {
+    const category = newArrivalCategories.find(
+      cat => cat.name.toLowerCase() === activeNewArrivalTab.toLowerCase()
+    );
+    return category ? category.products : [];
+  }, [newArrivalCategories, activeNewArrivalTab]);
+
+  // Handle tab change for new arrivals
+  const handleNewArrivalTabChange = (categoryName: string) => {
+    setActiveNewArrivalTab(categoryName);
+  };
+
+  // Spotlight cursor effect
+  useEffect(() => {
+    const spotlight = document.getElementById('spotlight');
+    if (!spotlight) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      spotlight.style.left = e.clientX + 'px';
+      spotlight.style.top = e.clientY + 'px';
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  // Hero carousel logic
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero || sliders.length === 0) return;
+    
+    const track = hero.querySelector(".hero-track") as HTMLElement;
+    const slides = Array.from(hero.querySelectorAll("[data-hero-slide]"));
+    const dots = Array.from(hero.querySelectorAll(".dots button"));
+    const previous = hero.querySelector('[aria-label="Previous hero banner"]');
+    const next = hero.querySelector('[aria-label="Next hero banner"]');
+    
+    if (!track || slides.length === 0 || dots.length !== slides.length || !previous || !next) return;
+
+    let currentIndex = 0;
+    let autoplayTimer: number = 0;
+    let activationFrame = 0;
+    let touchStartX: number | null = null;
+    let touchStartY: number | null = null;
+
+    const render = (nextIndex: number, restartAutoplay = true, immediate = false) => {
+      currentIndex = (nextIndex + slides.length) % slides.length;
+      if (activationFrame) window.cancelAnimationFrame(activationFrame);
+      slides.forEach(slide => slide.classList.remove("is-active"));
+      track.style.transform = "translate3d(" + (-currentIndex * 100) + "%, 0, 0)";
+      slides.forEach((slide, index) => slide.setAttribute("aria-hidden", String(index !== currentIndex)));
+      dots.forEach((dot, index) => {
+        const isActive = index === currentIndex;
+        dot.classList.toggle("active", isActive);
+        if (isActive) dot.setAttribute("aria-current", "true");
+        else dot.removeAttribute("aria-current");
+      });
+      const activatedIndex = currentIndex;
+      if (immediate) {
+        slides[activatedIndex].classList.add("is-active");
+      } else {
+        activationFrame = window.requestAnimationFrame(() => {
+          activationFrame = window.requestAnimationFrame(() => {
+            if (activatedIndex === currentIndex) slides[activatedIndex].classList.add("is-active");
+          });
+        });
+      }
+      if (restartAutoplay) startAutoplay();
+    };
+
+    const stopAutoplay = () => {
+      if (autoplayTimer) window.clearInterval(autoplayTimer);
+      autoplayTimer = 0;
+    };
+
+    const startAutoplay = () => {
+      stopAutoplay();
+      if (document.hidden || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      autoplayTimer = window.setInterval(() => render(currentIndex + 1, false), 6000);
+    };
+
+    previous.addEventListener("click", () => render(currentIndex - 1));
+    next.addEventListener("click", () => render(currentIndex + 1));
+    dots.forEach((dot, index) => dot.addEventListener("click", () => render(index)));
+
+    hero.addEventListener("mouseenter", stopAutoplay);
+    hero.addEventListener("mouseleave", startAutoplay);
+    hero.addEventListener("focusin", stopAutoplay);
+    hero.addEventListener("focusout", (event: any) => {
+      if (!hero.contains(event.relatedTarget)) startAutoplay();
+    });
+
+    hero.addEventListener("touchstart", (event: any) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      stopAutoplay();
+    }, { passive: true });
+
+    hero.addEventListener("touchend", (event: any) => {
+      const touch = event.changedTouches[0];
+      if (!touch || touchStartX === null || touchStartY === null) {
+        startAutoplay();
+        return;
+      }
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+      touchStartX = null;
+      touchStartY = null;
+      if (Math.abs(deltaX) >= 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        render(currentIndex + (deltaX < 0 ? 1 : -1));
+      } else {
+        startAutoplay();
+      }
+    }, { passive: true });
+
+    hero.addEventListener("touchcancel", () => {
+      touchStartX = null;
+      touchStartY = null;
+      startAutoplay();
+    }, { passive: true });
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) stopAutoplay();
+      else startAutoplay();
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Intersection Observer for .reveal elements
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.15
+    });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    render(0, false, true);
+    startAutoplay();
+
+    return () => {
+      stopAutoplay();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      revealObserver.disconnect();
+    };
+  }, [sliders]);
+
+  // News carousel logic
+  useEffect(() => {
+    const carousel = newsCarouselRef.current;
+    if (!carousel || newsItems.length === 0) return;
+
+    const track = carousel.querySelector('.news') as HTMLElement;
+    const prevBtn = carousel.querySelector('.news-prev') as HTMLButtonElement;
+    const nextBtn = carousel.querySelector('.news-next') as HTMLButtonElement;
+    
+    if (!track || !prevBtn || !nextBtn) return;
+
+    let currentScroll = 0;
+    const scrollAmount = 400; // pixels to scroll per click
+
+    const updateButtons = () => {
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      prevBtn.disabled = currentScroll <= 0;
+      nextBtn.disabled = currentScroll >= maxScroll;
+      prevBtn.style.opacity = currentScroll <= 0 ? '0.3' : '1';
+      nextBtn.style.opacity = currentScroll >= maxScroll ? '0.3' : '1';
+    };
+
+    const scrollPrev = () => {
+      currentScroll = Math.max(0, currentScroll - scrollAmount);
+      track.style.transform = `translateX(-${currentScroll}px)`;
+      updateButtons();
+    };
+
+    const scrollNext = () => {
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      currentScroll = Math.min(maxScroll, currentScroll + scrollAmount);
+      track.style.transform = `translateX(-${currentScroll}px)`;
+      updateButtons();
+    };
+
+    prevBtn.addEventListener('click', scrollPrev);
+    nextBtn.addEventListener('click', scrollNext);
+
+    // Initial button state
+    updateButtons();
+
+    // Handle window resize
+    const handleResize = () => {
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      currentScroll = Math.min(currentScroll, maxScroll);
+      track.style.transform = `translateX(-${currentScroll}px)`;
+      updateButtons();
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      prevBtn.removeEventListener('click', scrollPrev);
+      nextBtn.removeEventListener('click', scrollNext);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [newsItems]);
+
+  // Worlds carousel logic
+  useEffect(() => {
+    const carousel = worldsCarouselRef.current;
+    if (!carousel || lightWorlds.length <= 4) return; // Only enable carousel if more than 4 items
+
+    const track = carousel.querySelector('.world-grid') as HTMLElement;
+    const prevBtn = carousel.querySelector('.worlds-prev') as HTMLButtonElement;
+    const nextBtn = carousel.querySelector('.worlds-next') as HTMLButtonElement;
+    
+    if (!track || !prevBtn || !nextBtn) return;
+
+    let currentScroll = 0;
+    const scrollAmount = 400; // pixels to scroll per click
+
+    const updateButtons = () => {
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      prevBtn.disabled = currentScroll <= 0;
+      nextBtn.disabled = currentScroll >= maxScroll;
+      prevBtn.style.opacity = currentScroll <= 0 ? '0.3' : '1';
+      nextBtn.style.opacity = currentScroll >= maxScroll ? '0.3' : '1';
+    };
+
+    const scrollPrev = () => {
+      currentScroll = Math.max(0, currentScroll - scrollAmount);
+      track.style.transform = `translateX(-${currentScroll}px)`;
+      updateButtons();
+    };
+
+    const scrollNext = () => {
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      currentScroll = Math.min(maxScroll, currentScroll + scrollAmount);
+      track.style.transform = `translateX(-${currentScroll}px)`;
+      updateButtons();
+    };
+
+    prevBtn.addEventListener('click', scrollPrev);
+    nextBtn.addEventListener('click', scrollNext);
+
+    // Initial button state
+    updateButtons();
+
+    // Handle window resize
+    const handleResize = () => {
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      currentScroll = Math.min(currentScroll, maxScroll);
+      track.style.transform = `translateX(-${currentScroll}px)`;
+      updateButtons();
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      prevBtn.removeEventListener('click', scrollPrev);
+      nextBtn.removeEventListener('click', scrollNext);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [lightWorlds]);
+
+  return (
+    <>
+      <div id="spotlight" aria-hidden="true"></div>
+      
+      <section className="hero" data-hero-carousel="true" ref={heroRef}>
+        <div className="hero-track">
+          {sliders.length > 0 ? (
+            sliders.map((slider, index) => (
+              <div key={slider.id} className={`hero-slide ${slider.image_url ? 'has-media' : ''}`} data-hero-slide="true" aria-hidden={index !== 0 ? "true" : "false"}>
+                {slider.image_url && (
+                  <>
+                    <div className="hero-media-fallback" aria-hidden="true"></div>
+                    <picture className="hero-media">
+                      <img src={slider.image_url} alt="" loading={index === 0 ? "eager" : "lazy"} />
+                    </picture>
+                    <div className="hero-media-scrim" aria-hidden="true"></div>
+                  </>
+                )}
+                <div className="hero-copy">
+                  {slider.heading && <h1 className="display" dangerouslySetInnerHTML={{ __html: slider.heading }}></h1>}
+                  {slider.description && <p>{slider.description}</p>}
+                  {slider.button_text && slider.button_link && (
+                    <a className="btn" href={slider.button_link}>
+                      <span className="cta-d">{slider.button_text}</span>
+                      <span className="cta-m">{slider.button_text}</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <>
+              {/* Fallback slides - only shown if server fetch fails */}
+              <div className="hero-slide decorative " data-hero-slide="true" aria-hidden="false">
+                <div className="hero-copy">
+                  <h1 className="display">Designed for <em>beautiful spaces</em></h1>
+                  <p>Decorative lighting that brings every interior to life.</p>
+                  <a className="btn" href="/#arrivals">
+                    <span className="cta-d">Explore Decorative</span>
+                    <span className="cta-m">Enter Decoratives</span>
+                  </a>
+                </div>
+              </div>
+              <div className="hero-slide architectural has-media" data-hero-slide="true" aria-hidden="true">
+                <div className="hero-media-fallback architectural" aria-hidden="true"></div>
+                <picture className="hero-media">
+                  <source media="(max-width: 600px)" srcSet="/images/figma-update/hero-architecture-mobile-frame138.png" />
+                  <img src="/images/figma-update/hero-architecture-desktop.png" alt="" loading="eager" />
+                </picture>
+                <div className="hero-media-scrim" aria-hidden="true"></div>
+                <div className="hero-copy">
+                  <h1 className="display">Shaping the <em>art of light</em></h1>
+                  <p>Precision architectural lighting for beautifully designed spaces.</p>
+                  <a className="btn" href="/#worlds">
+                    <span className="cta-d">Explore Architecture</span>
+                    <span className="cta-m">Explore Architecture</span>
+                  </a>
+                </div>
+              </div>
+              <div className="hero-slide sigma has-media" data-hero-slide="true" aria-hidden="true">
+                <div className="hero-media-fallback sigma" aria-hidden="true"></div>
+                <picture className="hero-media">
+                  <source media="(max-width: 600px)" srcSet="/images/figma-update/hero-sigma-mobile-frame145.png" />
+                  <img src="/images/figma-update/hero-sigma-desktop.png" alt="" loading="eager" />
+                </picture>
+                <div className="hero-media-scrim" aria-hidden="true"></div>
+                <div className="hero-copy">
+                  <h1 className="display">Meet the <em>Sigma range</em></h1>
+                  <p>A modular lighting system with precision optics and a unified ceiling aesthetic.</p>
+                  <a className="btn" href="/#arrivals">
+                    <span className="cta-d">Learn More</span>
+                    <span className="cta-m">Learn More</span>
+                  </a>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        <button className="hero-arrow hero-arrow-previous" type="button" aria-label="Previous hero banner">‹</button>
+        <button className="hero-arrow hero-arrow-next" type="button" aria-label="Next hero banner">›</button>
+        <div className="dots">
+          {sliders.length > 0 ? (
+            sliders.map((slider, index) => (
+              <button key={slider.id} className={index === 0 ? "active" : ""} aria-current={index === 0 ? "true" : undefined} aria-label={`Show slide ${index + 1}`}></button>
+            ))
+          ) : (
+            <>
+              <button className="active" aria-current="true" aria-label="Show decorative banner"></button>
+              <button className="" aria-label="Show architectural banner"></button>
+              <button className="" aria-label="Show sigma banner"></button>
+            </>
+          )}
+        </div>
+      </section>
+
+      <section className="section" id="worlds">
+        <div className="shell">
+          <div className="section-head reveal">
+            <h2>Four worlds of light</h2>
+          </div>
+          <div className="worlds-carousel" ref={worldsCarouselRef}>
+            {lightWorlds.length > 4 && (
+              <>
+                <button className="worlds-arrow worlds-prev" aria-label="Previous light worlds">‹</button>
+                <button className="worlds-arrow worlds-next" aria-label="Next light worlds">›</button>
+              </>
+            )}
+            <div className="world-grid">
+              {lightWorlds.map((world, index) => (
+                <a
+                  key={world.id}
+                  className="world reveal"
+                  style={{"--i": index} as any}
+                  href={world.link || '/#arrivals'}
+                >
+                  <div className="photo">
+                    {world.light_of_image_url && (
+                      <img
+                        className="world-light world-light-off"
+                        src={world.light_of_image_url}
+                        alt={`${world.name} switched off`}
+                      />
+                    )}
+                    {world.light_on_image_url && (
+                      <img
+                        className="world-light world-light-on"
+                        src={world.light_on_image_url}
+                        alt={`${world.name} switched on`}
+                      />
+                    )}
+                  </div>
+                  <h3>{world.name}</h3>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="manufacturing">
+        <img 
+          className="manufacturing-media section-parallax-media" 
+          src={manufacturingSection?.background_image_url || "/images/figma-update/manufacturing.png"} 
+          alt="" 
+        />
+        <div className="copy reveal">
+          <h2>
+            {manufacturingSection?.title ? (
+              <>
+                {manufacturingSection.title.replace(manufacturingSection.title_highlight || '', '').trim()}{' '}
+                {manufacturingSection.title_highlight && <em>{manufacturingSection.title_highlight}</em>}
+              </>
+            ) : (
+              <>Built on <em>Manufacturing Excellence</em></>
+            )}
+          </h2>
+          <p>
+            {manufacturingSection?.description || 
+              "Every Abby luminaire begins long before it reaches a project. Designed, engineered, manufactured and tested entirely in-house, our vertically integrated facility brings every stage of production under one roof."}
+          </p>
+          <a 
+            className="btn" 
+            href={manufacturingSection?.button_link || "/#manufacturing"}
+          >
+            {manufacturingSection?.button_text || "See How It's Made"}
+          </a>
+        </div>
+      </section>
+
+      <section className="section" id="arrivals">
+        <div className="shell">
+          <div className="section-head reveal">
+            <h2>New Arrivals</h2>
+          </div>
+          <div className="product-toolbar">
+            <div className="filter-chips" role="tablist" aria-label="New arrival categories">
+              {["Architectural", "Decorative", "Outdoor"].map((tabName) => (
+                <button 
+                  key={tabName}
+                  type="button" 
+                  role="tab" 
+                  aria-selected={activeNewArrivalTab === tabName}
+                  className={activeNewArrivalTab === tabName ? 'active' : ''}
+                  onClick={() => handleNewArrivalTabChange(tabName)}
+                >
+                  {tabName}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="products">
+            {filteredNewArrivalProducts.length > 0 ? (
+              filteredNewArrivalProducts.slice(0, 4).map((product: NewArrivalProduct, index: number) => (
+                <a 
+                  key={product.id}
+                  className="product reveal is-visible" 
+                  style={{"--i": index} as any} 
+                  href="/#contact"
+                >
+                  <div className="photo">
+                    {product.image_url ? (
+                      <img src={product.image_url} alt={product.name} />
+                    ) : (
+                      <div style={{width: '100%', height: '300px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                        <span>No image</span>
+                      </div>
+                    )}
+                  </div>
+                  <h3>{product.name}</h3>
+                  <p>{product.parent_category} · {product.category}</p>
+                </a>
+              ))
+            ) : (
+              <div className="products-empty-state">
+                <p>No products available in this category</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="section projects" id="projects">
+        <div className="shell">
+          <div className="section-head reveal">
+            <h2>Latest projects</h2>
+            <a className="project-all-link" href="https://abbylighting.com/projects">
+              <span>View all projects</span>
+              <span className="project-all-arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+          <div className="project-grid">
+            {projects.map((project, index) => (
+              <a 
+                key={project.id} 
+                href={`/projects/${project.slug}`} 
+                className="project" 
+                style={{"--i": index} as any}
+              >
+                {project.image_url ? (
+                  <img src={project.image_url} alt={project.name} />
+                ) : (
+                  <div className="project-placeholder" aria-hidden="true"><span>Project image</span></div>
+                )}
+                <figcaption>
+                  <strong>{project.name}</strong>
+                  <span>{project.type}{project.location && ` | ${project.location}`}</span>
+                </figcaption>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="clients">
+        <div className="shell">
+          <div className="section-head reveal">
+            <h2>Our Clients</h2>
+          </div>
+        </div>
+        <div className="marquee reveal">
+          <div className="mtrack">
+            {clients.length > 0 ? (
+              <>
+                {clients.map((client, index) => (
+                  <div key={`client-${client.id}`} className="client-logo" aria-hidden="false">
+                    <img src={client.image_url || ''} alt={`Abby Lighting client ${index + 1}`} />
+                  </div>
+                ))}
+                
+                {clients.map((client) => (
+                  <div key={`client-dup-${client.id}`} className="client-logo" aria-hidden="true">
+                    <img src={client.image_url || ''} alt="" />
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                {/* Fallback client logos - only shown if server fetch fails */}
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466660_Abby%20Logo-01.png" alt="Abby Lighting client 1" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466674_Abby%20Logo-02.png" alt="Abby Lighting client 2" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466684_Abby%20Logo-03.png" alt="Abby Lighting client 3" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466692_Abby%20Logo-04.png" alt="Abby Lighting client 4" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466712_Abby%20Logo-05.png" alt="Abby Lighting client 5" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466720_Abby%20Logo-06.png" alt="Abby Lighting client 6" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466732_Abby%20Logo-07.png" alt="Abby Lighting client 7" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466742_Abby%20Logo-08.png" alt="Abby Lighting client 8" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466773_Abby%20Logo-09.png" alt="Abby Lighting client 9" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466785_Abby%20Logo-10.png" alt="Abby Lighting client 10" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466806_Abby%20Logo-11.png" alt="Abby Lighting client 11" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466816_Abby%20Logo-12.png" alt="Abby Lighting client 12" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466825_Abby%20Logo-13.png" alt="Abby Lighting client 13" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466833_Abby%20Logo-14.png" alt="Abby Lighting client 14" /></div>
+                <div className="client-logo" aria-hidden="false"><img src="https://abbylighting.com/storage/uploads/clients/1719466842_Abby%20Logo-15.png" alt="Abby Lighting client 15" /></div>
+                
+                {/* Duplicates for marquee effect */}
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466660_Abby%20Logo-01.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466674_Abby%20Logo-02.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466684_Abby%20Logo-03.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466692_Abby%20Logo-04.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466712_Abby%20Logo-05.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466720_Abby%20Logo-06.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466732_Abby%20Logo-07.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466742_Abby%20Logo-08.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466773_Abby%20Logo-09.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466785_Abby%20Logo-10.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466806_Abby%20Logo-11.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466816_Abby%20Logo-12.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466825_Abby%20Logo-13.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466833_Abby%20Logo-14.png" alt="" /></div>
+                <div className="client-logo" aria-hidden="true"><img src="https://abbylighting.com/storage/uploads/clients/1719466842_Abby%20Logo-15.png" alt="" /></div>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="image-cta">
+        <img className="catalogue-media section-parallax-media" src="/images/figma-update/catalogue.png" alt="" />
+        <div className="copy reveal">
+          <h2>Find the right <em>catalogue.</em></h2>
+          <p>Explore our complete collection of architectural, decorative and outdoor lighting, with detailed specifications for every luminaire.</p>
+          <a className="btn" href="/#contact">View Catalogues</a>
+        </div>
+      </section>
+
+      <section className="section" id="news">
+        <div className="shell">
+          <div className="section-head reveal">
+            <h2>In the news</h2>
+          </div>
+          <div className="news-carousel" ref={newsCarouselRef}>
+            <button className="news-arrow news-prev" aria-label="Previous news stories">‹</button>
+            <div className="news">
+              {newsItems.length > 0 ? (
+                newsItems.map((item, index) => (
+                  <a 
+                    key={item.id}
+                    href={item.link || '#'}
+                    target={item.link ? '_blank' : '_self'}
+                    rel={item.link ? 'noopener noreferrer' : undefined}
+                    className={`story ${index >= 3 ? 'mobile-story' : ''} reveal`}
+                    style={{"--i": index} as any}
+                  >
+                    <div className="photo">
+                      {item.image ? (
+                        <img src={item.image} alt={item.title} />
+                      ) : (
+                        <div style={{width: '100%', height: '270px', background: '#e0e0e0'}}></div>
+                      )}
+                    </div>
+                    <p>{item.subtitle || 'NEWS'}</p>
+                    <h3>{item.title}</h3>
+                  </a>
+                ))
+              ) : (
+                <>
+                  {/* Fallback static content */}
+                  <article className="story reveal" style={{"--i": 0} as any}>
+                    <div className="photo">
+                      <img src="/images/reference/news-architectural.png" alt="Abby Lighting unveils its first decorative range" />
+                    </div>
+                    <p>ARCHITECTURAL DIGEST</p>
+                    <h3>Abby Lighting unveils its first decorative range</h3>
+                  </article>
+                  <article className="story reveal" style={{"--i": 1} as any}>
+                    <div className="photo">
+                      <img src="/images/reference/news-elle.png" alt="Made in India, designed for the world" />
+                    </div>
+                    <p>ELLE DECOR INDIA</p>
+                    <h3>Made in India, designed for the world</h3>
+                  </article>
+                  <article className="story reveal" style={{"--i": 2} as any}>
+                    <div className="photo">
+                      <img src="/images/reference/news-business.png" alt="Lighting the country's most iconic workspaces" />
+                    </div>
+                    <p>BUSINESS OF HOME</p>
+                    <h3>Lighting the country's most iconic workspaces</h3>
+                  </article>
+                  <article className="story mobile-story reveal">
+                    <div className="photo">
+                      <img src="/images/reference/news-punekar.png" alt="Rachna Bajaj Joshi" />
+                    </div>
+                    <p>PUNEKAR NEWS</p>
+                    <h3>Abby Lighting Opens New Experience Centre in Pune</h3>
+                  </article>
+                </>
+              )}
+            </div>
+            <button className="news-arrow news-next" aria-label="Next news stories">›</button>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

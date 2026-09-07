@@ -1,0 +1,29 @@
+/* Fix for double scrollbars in admin panel */
+/* Keep sidebar scroll, remove main body scroll, make main-panel scrollable */
+
+/* Hide the main body/html scrollbar */
+html, body {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+/* Keep sidebar scrollable */
+.app-sidebar {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: 100vh !important;
+}
+
+/* Make the main content panel scrollable (instead of body) */
+.main-panel {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: 100vh !important;
+}
+
+/* Ensure content wrapper doesn't add extra scrollbar */
+.main-content,
+.content-wrapper {
+    overflow: visible !important;
+    height: auto !important;
+}

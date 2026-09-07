@@ -1,0 +1,73 @@
+@use 'sass:math';
+
+
+@function toRem($value) {
+    $remValue: math.div($value, 16) + rem;
+    @return $remValue;
+}
+
+.project-page {
+    .project-subtitle {
+        color: #726F6E;
+        font-size: toRem(17.6);
+        letter-spacing: toRem(1.6);
+    }
+
+    .project-title {
+        color: #726F6E;
+        font-size: toRem(22.4);
+        letter-spacing: toRem(0.9);
+        padding-bottom: 0.5rem;
+    }
+
+    .section-link {
+        border-bottom: 2px solid #e5ded6;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    #project_description {
+        font-size: 1.4rem;
+        letter-spacing: .05625rem;
+    }
+}
+
+li {
+    list-style: none;
+
+    >img {
+        cursor: zoom-in;
+    }
+}
+
+.viewer-backdrop {
+    background-color: #292929 !important;
+}
+
+.project-product-links {
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-left: 2rem;
+    color: white;
+    font-weight: normal !important;
+    &:hover {
+        color: #66635E;
+    }
+
+    &.mobile-link-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+
+
+@media (max-width: 992px) {
+    .project-page-header-title {
+        margin-top: 2rem;
+    }
+}

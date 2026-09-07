@@ -1,0 +1,68 @@
+.cursor-pointer {
+    cursor: pointer
+}
+
+.top-download-bar {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 12px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1050;
+    box-shadow: 0 2px 5px #0000004d;
+    display: none;
+}
+
+.top-download-bar a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase
+}
+
+.top-download-bar a:hover {
+    text-decoration: underline
+}
+
+body.home-page {
+    padding-top: 50px
+}
+
+.hover-img {
+    overflow: hidden;
+    position: static !important
+}
+
+.img-hover-img .main-img {
+    display: block
+}
+
+.img-hover-img .second-img {
+    display: none;
+    transition: all 1.2s ease-in-out
+}
+
+.img-hover-img:hover .main-img {
+    transition: all 1.2s ease-in-out
+}
+
+.img-hover-img:hover .main-img-hover-present {
+    display: none
+}
+
+.img-hover-img:hover .second-img {
+    display: block
+}
+
+.transform-scale,
+.img-hover-img .second-img:hover {
+    transform: scale(1.1)
+}
+
+.transform-normal-scale {
+    transition: all 1.2s ease-in-out;
+    transform: scale(1)
+}

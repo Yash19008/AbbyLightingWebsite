@@ -1,0 +1,82 @@
+// @media only screen and (max-width: 641px) {
+//     #search-form-mobile {
+//         display: none !important;
+//     }
+// }
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.top-download-bar {
+    background-color: #000; // black background
+    color: #fff; // white text
+    text-align: center;
+    padding: 12px 20px;
+    position: fixed; // always visible
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1050; // above all other elements
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    display: none;
+
+    a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        text-transform: uppercase;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+// Prevent content hiding under fixed bar
+body.home-page {
+    padding-top: 50px; // same as bar height
+}
+
+.hover-img {
+    overflow: hidden;
+    position: static !important;
+}
+
+.img-hover-img {
+    .main-img {
+        display: block;
+    }
+
+    .second-img {
+        display: none;
+        transition: all 1.2s ease-in-out;
+
+        &:hover {
+            @extend .transform-scale;
+        }
+    }
+
+    &:hover {
+        .main-img {
+            transition: all 1.2s ease-in-out;
+        }
+
+        .main-img-hover-present {
+            display: none;
+        }
+
+        .second-img {
+            display: block;
+        }
+    }
+}
+
+.transform-scale {
+    transform: scale(1.1, 1.1);
+}
+
+.transform-normal-scale {
+    transition: all 1.2s ease-in-out;
+    transform: scale(1, 1);
+}

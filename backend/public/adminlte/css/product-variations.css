@@ -1,0 +1,332 @@
+/* product-variations.css */
+
+:root {
+    --premium-bg: #ffffff;
+    --premium-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --premium-border: #e2e8f0;
+    --premium-radius: 12px;
+    --variation-bg: #f8fafc;
+    --variation-border: #cbd5e1;
+    --accent-color: #3b82f6;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+}
+
+/* Premium Main Cards */
+.premium-card {
+    background: var(--premium-bg);
+    border-radius: var(--premium-radius);
+    box-shadow: var(--premium-shadow);
+    border: 1px solid var(--premium-border);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.premium-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.premium-card-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--premium-border);
+    background: #fdfdfd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.premium-card-header h5 {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 1.1rem;
+}
+
+.premium-card-body {
+    padding: 1.5rem;
+}
+
+/* Variation Block Styling */
+.variation-block {
+    background: var(--variation-bg);
+    border-radius: 8px;
+    border: 1px solid var(--variation-border);
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+    padding: 1rem;
+}
+
+.variation-block:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.variation-block strong {
+    font-size: 1rem;
+    color: var(--accent-color);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* File Upload Customization */
+.custom-file-upload {
+    position: relative;
+    border: 1px dashed var(--variation-border);
+    border-radius: 6px;
+    padding: 0.5rem;
+    background: #fff;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.custom-file-upload:hover {
+    border-color: var(--accent-color);
+    background: #eff6ff;
+}
+
+.custom-file-upload input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.img-preview-box {
+    border: 1px solid var(--premium-border);
+    border-radius: 4px;
+    padding: 4px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: inline-block;
+    max-height: 150px;
+}
+
+.img-preview-box img {
+    max-height: 140px;
+    border-radius: 2px;
+}
+
+/* Select2 Enhancements */
+.select2-container--default .select2-selection--multiple,
+.select2-container--default .select2-selection--single {
+    border: 1px solid var(--premium-border) !important;
+    border-radius: 6px !important;
+    min-height: 40px !important;
+    padding: 4px 8px !important;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--accent-color) !important;
+    border: none !important;
+    color: #fff !important;
+    border-radius: 4px !important;
+    padding: 2px 8px !important;
+    font-size: 0.85rem;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: rgba(255, 255, 255, 0.8) !important;
+    margin-right: 5px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    color: #fff !important;
+    background: transparent !important;
+}
+
+/* Specification Sections inside Variations */
+.var-spec-section {
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.var-spec-section label {
+    font-weight: 500;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.spec-table {
+    width: 100%;
+    margin-top: 0.5rem;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--premium-border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.spec-table th {
+    background: #f1f5f9;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--premium-border);
+}
+
+.spec-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--premium-border);
+    background: #fff;
+}
+
+.spec-table tr:last-child td {
+    border-bottom: none;
+}
+
+.spec-table input.form-control-sm {
+    border: 1px solid transparent;
+    background: #f8fafc;
+    transition: all 0.2s;
+}
+
+.spec-table input.form-control-sm:focus {
+    background: #fff;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.25);
+}
+
+/* Attributes Block */
+.prod-attr-block {
+    background: #fff;
+    border: 1px solid var(--premium-border);
+    border-left: 4px solid var(--accent-color);
+    border-radius: 6px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    margin-bottom: 1rem;
+    transition: transform 0.2s;
+}
+
+.prod-attr-block:hover {
+    transform: translateX(4px);
+}
+
+/* Generic Form Control Enhancements */
+.form-control {
+    border-radius: 6px;
+    border: 1px solid var(--premium-border);
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+/* Labels */
+label {
+    font-weight: 500;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+.form-check-label {
+    font-weight: normal;
+    color: var(--text-muted);
+}
+
+/* Image Preview Delete Overlay */
+.gallery-delete-overlay {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #dc3545;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.gallery-delete-overlay:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.gallery-delete-overlay span.delete-icon {
+    color: #dc3545;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1;
+    transition: color 0.2s ease;
+    user-select: none;
+}
+
+.gallery-delete-overlay:hover span.delete-icon {
+    color: white;
+}
+
+.gallery-delete-overlay input[type="checkbox"] {
+    display: none;
+}
+
+/* When the hidden checkbox inside the overlay is checked, change icon to undo arrow or leave as is */
+.gallery-delete-overlay input[type="checkbox"]:checked~span.delete-icon {
+    content: "↺";
+}
+
+.gallery-delete-overlay input[type="checkbox"]:checked {
+    /* We can style the parent or adjacent image using :has if supported, but a simpler way is just to leave it checked. Let's make the background red permanently when checked */
+}
+
+/* Has selector to fade out the image if checkbox is checked */
+.img-preview-box:has(.gallery-delete-overlay input[type="checkbox"]:checked) img {
+    opacity: 0.4;
+    filter: grayscale(100%);
+}
+
+.img-preview-box:has(.gallery-delete-overlay input[type="checkbox"]:checked) .gallery-delete-overlay {
+    background-color: #dc3545;
+}
+
+.img-preview-box:has(.gallery-delete-overlay input[type="checkbox"]:checked) .gallery-delete-overlay span.delete-icon {
+    color: white;
+}

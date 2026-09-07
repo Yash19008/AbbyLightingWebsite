@@ -1,0 +1,104 @@
+@use 'sass:math';
+// @import 'node_modules/bootstrap/scss/mixins';
+
+@function toRem($value) {
+    $remValue: math.div($value, 16) + rem;
+    @return $remValue;
+}
+
+.supertext {
+
+    font-size: toRem(35);
+    letter-spacing: toRem(2.5);
+    font-weight: 500;
+    line-height: toRem(40);
+
+    a {
+        color: #333;
+        text-decoration: none;
+        display: block;
+        border-bottom: 3px solid #FACC17;
+
+        // &:last-child {
+        //     border-bottom: none;
+        // }
+    }
+
+    @media (min-width: 1200px) {
+        font-size: toRem(60);
+        letter-spacing: toRem(3.5);
+        line-height: toRem(66);
+
+        a {
+            border-bottom: 5px solid #FACC17;
+        }
+    }
+
+    @media (min-width: 1400px) {
+        font-size: toRem(80);
+        letter-spacing: toRem(5.84);
+        line-height: toRem(88);
+
+        a {
+            border-bottom: 7px solid #FACC17;
+        }
+    }
+}
+
+
+
+
+.header {
+    color: #333;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: toRem(28);
+    border-bottom: 3px solid #FACC17;
+
+    @media (min-width: 1200px) {
+        border-bottom: 5px solid #FACC17;
+    }
+
+    @media (min-width: 1400px) {
+        font-size: toRem(42);
+        line-height: toRem(80);
+        letter-spacing: toRem(6.3);
+        border-bottom: 7px solid #FACC17;
+    }
+}
+
+.text-content {
+    color: #726F6E;
+    font-size: toRem(20);
+    letter-spacing: toRem(1.2);
+    line-height: toRem(41);
+    @media (max-width: 641px) {
+        line-height: toRem(34);
+    }
+}
+
+.custom-description-color {
+    color: #726F6E;
+}
+.custom-title-color {
+    color: #66635E;
+}
+.custom-underline {
+    display: inline-block;
+}
+.custom-underline::after {
+    content: "";
+    display: block;
+    width: 70%;
+    height: 6px;
+    background-color: #ffc86b;
+    margin-top: -10px;
+    @media (min-width: 768px) {
+        height: 8px;
+        margin-top: -15px;
+    }
+    @media (min-width: 1400px) {
+        height: 10px;
+        margin-top: -22px;
+    }
+}

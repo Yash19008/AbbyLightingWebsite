@@ -1,0 +1,114 @@
+.symphony-page {
+  padding-top: 0;
+}
+
+.s-hero {
+  height: 589px;
+}
+
+.s-hero-copy {
+  padding-top: 140px;
+}
+
+.s-crumb {
+  display: block;
+  position: relative;
+  z-index: 6;
+  color: #fff;
+}
+
+.s-hero-copy {
+  z-index: 3;
+}
+
+.s-inspire,
+.s-inspire .s-carousel,
+.s-inspire .s-scroll,
+.s-places .s-carousel,
+.s-places .s-scroll {
+  min-height: 429px;
+}
+
+/* Restore right padding removed by symphonycollection.css for the old edge-bleed scroll.
+   The new flexbox slider handles its own layout — section needs its normal padding. */
+.s-inspire,
+.s-places {
+  padding-right: 6.45vw;
+}
+
+
+.symphony-motion-enabled .s-inspire .s-look {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+}
+
+.s-parameter-arrow {
+  display: none;
+}
+
+.s-tone-grid article {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  min-height: 250px;
+}
+
+.s-tone-grid article > img {
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  .symphony-page {
+    padding-top: 0;
+  }
+
+  .s-hero {
+    height: 458px;
+  }
+
+  .s-hero-copy {
+    padding-top: 112px;
+  }
+
+  .s-parameter-grid article {
+    position: relative;
+  }
+
+  .s-parameter-arrow {
+    display: block;
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    width: 22px;
+    height: 22px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.32);
+  }
+
+  .s-parameter-arrow::after {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 6px;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(45deg);
+  }
+
+  .s-parameter-grid article.is-active .s-parameter-arrow::after {
+    transform: rotate(225deg);
+    top: 9px;
+  }
+
+  .s-inspire,
+  .s-inspire .s-carousel,
+  .s-inspire .s-scroll {
+    min-height: 219px;
+  }
+
+  .s-tone-grid article {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    min-height: 178px;
+  }
+}

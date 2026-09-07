@@ -1,0 +1,14 @@
+@use 'sass:math';
+
+$font-family-sans-serif: 'Poppins';
+$enable-negative-margins: true;
+$custom-dark-gray: #808080;
+
+@function toRem($value) {
+    $remValue: math.div($value, 16) + rem; 
+    @return $remValue;
+}
+
+@import "~bootstrap/scss/bootstrap";
+@import "./custom";
+@import "./4k";

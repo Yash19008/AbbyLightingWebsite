@@ -1,0 +1,21 @@
+.contact-section-title {
+    font-size: 4rem;
+    line-height: 44px;
+    letter-spacing: 3px;
+    font-family: Poppins;
+    color: #66635e;
+    font-weight: 400;
+    text-align: left;
+}
+.contact-section-text {
+    font-size: 18px;
+    font-family: Poppins;
+    color: #808080;
+    line-height: 22px;
+    letter-spacing: 1.56px;
+    font-weight: 300;
+    padding-top: 2%;
+}
+.contact {
+    padding-top: 5%;
+}

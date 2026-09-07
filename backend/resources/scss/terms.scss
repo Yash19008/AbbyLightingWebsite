@@ -1,0 +1,48 @@
+@use 'sass:math';
+
+@function toRem($value) {
+    $remValue: math.div($value, 16) + rem;
+    @return $remValue;
+}
+
+.header {
+    color: #1A1A1A;
+    font-weight: 500;
+    font-size: toRem(60);
+    line-height: toRem(70);
+    letter-spacing: toRem(1.8);
+
+    @media (min-width: 1400px) {
+        font-size: toRem(42);
+    }
+}
+
+.sub-header {
+    color: #726F6E;
+    font-size: toRem(30);
+    line-height: toRem(43);
+    letter-spacing: toRem(0.9);
+
+    &.bold {
+        font-weight: 700;
+    }
+}
+
+.text-content {
+    color: #726F6E;
+    font-size: 0.8rem;
+    letter-spacing: toRem(1.2);
+    line-height: 1rem;
+    margin-top: 1.5rem !important;
+}
+
+.container {
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 5rem !important;
+
+    @media only screen and (max-width: 600px) {
+        padding: 2rem !important;
+    }
+}

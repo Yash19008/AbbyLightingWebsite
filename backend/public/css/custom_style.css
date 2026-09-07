@@ -1,0 +1,775 @@
+
+  @font-face {
+    font-family: "Muli bold";
+    src: local("Muli bold"), url(../fonts/Muli-Bold.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli black";
+    src: local("Muli black"),
+      url(../fonts/Muli-Black.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli black italic";
+    src: local("Muli black italic"),
+      url(../fonts/Muli-BlackItalic.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli bold italic";
+    src: local("Muli bold italic"),
+      url(../fonts/Muli-BoldItalic.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli black italic";
+    src: local("Muli black italic"),
+      url(../fonts/Muli-BlackItalic.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli extrabold";
+    src: local("Muli extrabold"),
+      url(../fonts/Muli-ExtraBold.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli extrabold italic";
+    src: local("Muli extrabold italic"),
+      url(../fonts/Muli-ExtraBoldItalic.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli etxralight";
+    src: local("Muli extralight"),
+      url(../fonts/Muli-ExtraLight.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli";
+    src: local("Muli extralight italic"),
+      url(../fonts/Muli-ExtraLightItalic.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli italic";
+    src: local("Muli italic"),
+      url(../fonts/Muli-Italic.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli light";
+    src: local("Muli light"),
+      url(../fonts/Muli-light.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli light italic";
+    src: local("Muli light italic"),
+      url(../fonts/Muli-LightItalic.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli regular";
+    src: local("Muli regular"),
+      url(../fonts/Muli-Regular.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli semibold";
+    src: local("Muli semibold"),
+      url(../fonts/Muli-SemiBold.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "Muli semibolditalic";
+    src: local("Muli semibolditalic"),
+      url(../fonts/Muli-SemiBoldItalic.ttf) format("truetype");
+  }
+  @font-face {
+    font-family: "ottawa bold";
+    src: local("ottawa bold"),
+      url(../fonts/911Fonts.com_OttawaBold__-_911fonts.com_fonts_j9Je.ttf)
+        format("truetype");
+  }
+  ::placeholder {
+    color: #a3a7ae;
+    font-weight: 600;
+  }
+  .w-55{
+    width: 58% !important;
+  }
+/*HOME PAGE CSS STARTS*/
+.banner-image {
+    width: 100%;
+    height: 90vh;
+  }
+  .home-container {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .color-div {
+    background-color: navy;
+    position: absolute;
+    height: 90%;
+    width: auto;
+    /* width: 100%; */
+    opacity: 25%;
+  }
+  .inner-div {
+    position: absolute;
+    top: 40%;
+    left: 4%;
+  }
+  .hrline {
+    color: white;
+    width: 90px;
+    border: 1px solid white;
+  }
+  
+  .banner-title {
+    font-size: 3rem;
+    color: white;
+    font-family: 'ottawa bold';
+    line-height: 60px;
+    padding-top: 3%;
+    letter-spacing: 2px;
+    max-width: 800px;
+  }
+  .banner-button {
+    background-color: midnightblue;
+    border: none;
+    padding: 10px 32px 10px 32px;
+    color: beige;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 16px;
+    letter-spacing: 2px;
+    font-weight: 500;
+  }
+  /* assets-css */
+  .assets-div {
+    padding-top: 4%;
+    padding-left: 4%;
+    padding-right: 4%;
+    padding-bottom: 4%;
+  }
+  .assets-title {
+    font-size: 14px;
+    padding-top: 5%;
+    color: midnightblue;
+    font-family: 'Muli semibold';
+  }
+  /* courses css */
+  .assets-para {
+    color: black;
+    font-size: 14px;
+    line-height: 30px;
+    font-family: 'Muli regular';
+    /* width: 300px; */
+  }
+  .courses-container {
+    padding-left: 4%;
+    padding-right: 4%;
+    padding-top: 4%;
+    padding-bottom: 4%;
+    background-color: #e5e4e2;
+  }
+  .courses-images {
+    border-radius: 20px;
+    padding: 3%;
+    height: 100%;
+    width: 100%;
+    margin-bottom: 5%;
+  }
+  .courses-text {
+    font-size: 42px;
+    font-family: 'ottawa bold';
+    color: navy;
+    padding-bottom: 2%;
+  }
+  .coursedetail-title {
+    font-size: 18px;
+    color: navy;
+    font-family: 'ottawa bold';
+    line-height: 22px;
+    max-width: 290px;
+    letter-spacing: 2px;
+  }
+  .coursedetail-detail {
+    font-size: 15px;
+    font-family: 'Muli regular';
+  }
+  .coursedetail-button {
+    background-color: transparent;
+    border: 1px solid navy;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    border-radius: 10px;
+    color: navy;
+  }
+  /* category css */
+  .category-main {
+    /* padding-left: 4%; */
+    padding-right: 4%;
+    padding-top: 4%;
+    padding-bottom: 4%;
+  }
+  .category-content {
+    text-align: center;
+  }
+  .category-number {
+    font-size: 38px;
+    color: navy;
+    font-weight: bolder;
+    font-family: 'ottawa bold';
+  }
+  .category-title {
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: grey;
+    font-family: 'Muli regular';
+  }
+  /* slider css */
+  .slider-main {
+    background-color: lightblue;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-top: 4%;
+    padding-bottom: 4%;
+  }
+  .slider-text {
+    text-align: center;
+    font-size: 42px;
+    font-family: 'ottawa bold';
+    color: navy;
+    font-weight: bold;
+  }
+  .slider-para1 {
+    text-align: center;
+    max-width: 650px;
+    font-size: 14px;
+    line-height: 27px;
+    margin: auto;
+    font-family: 'Muli regular';
+  }
+  .slider-para2 {
+    text-align: center;
+    max-width: 670px;
+    font-size: 14px;
+    line-height: 27px;
+    margin: auto;
+    padding-top: 3%;
+    font-family: 'Muli regular';
+  }
+  @media (max-width: 1241px) {
+    .banner-title {
+      font-size: 2rem;
+      color: white;
+      font-family: 'ottawa bold';
+      line-height: 40px;
+      padding-top: 3%;
+      letter-spacing: 2px;
+      max-width: 700px;
+    }
+    .inner-div {
+      top: 40%;
+    }
+  }
+  @media (max-width: 992px) {
+    .banner-title {
+      text-align: center;
+    }
+    .button-div {
+      text-align: center;
+      margin: auto;
+    }
+    .banner-image {
+      height: 50vh;
+      width: 100%;
+    }
+    .color-div {
+      height: 50%;
+      width: 100%;
+    }
+    .inner-div {
+      top: 25%;
+      left: 8%;
+    }
+    .coursedetail-button-div {
+      padding-bottom: 5%;
+    }
+  }
+  @media (max-width: 767px) {
+    .banner-image {
+      height: 50vh;
+      width: 100%;
+    }
+    .color-div {
+      height: 50%;
+      width: 100%;
+    }
+    .inner-div {
+      left: 0% !important;
+    }
+    .coursedetail-button-div {
+      padding-bottom: 3%;
+    }
+  }
+  @media (max-width: 576px) {
+    .banner-title {
+      font-size: 24px;
+      line-height: 32px;
+    }
+    .banner-button {
+      font-size: 12px;
+    }
+    .inner-div {
+      top: 28%;
+    }
+    .asset-img-div {
+      text-align: center;
+      margin: auto;
+    }
+    .assets-title {
+      text-align: center;
+    }
+    .assets-para {
+      text-align: center;
+    }
+    .courses-text {
+      font-size: 24px;
+      text-align: center;
+    }
+    .coursedetail-title {
+      text-align: center;
+      margin: auto;
+    }
+    .coursedetail-detail {
+      text-align: center;
+      margin: auto;
+    }
+    .coursedetail-button-div {
+      text-align: center;
+      margin: auto;
+    }
+    .courses-col {
+      padding-top: 2% !important;
+    }
+    .category-number {
+      font-size: 27px;
+    }
+    .category-title {
+      font-size: 18px;
+    }
+    .slider-text {
+      font-size: 24px;
+    }
+  }
+  @media (max-width: 420px) {
+    .banner-title {
+      line-height: 25px;
+      font-size: 22px;
+    }
+    .banner-button {
+      padding: 5px 22px 5px 22px;
+    }
+    .inner-div {
+      top: 26%;
+    }
+    .banner-image {
+      height: 50vh;
+      width: 100%;
+    }
+    .color-div {
+      height: 50%;
+      width: 100%;
+    }
+    .slider-text {
+      font-size: 22px;
+    }
+    .offcanvas {
+      position: fixed;
+      bottom: 0;
+      z-index: var(--bs-offcanvas-zindex);
+      display: flex;
+      flex-direction: column;
+      max-width: 72% !important;
+      color: var(--bs-offcanvas-color);
+      visibility: hidden;
+      background-color: var(--bs-offcanvas-bg);
+      background-clip: padding-box;
+      outline: 0;
+      transition: transform 0.3s ease-in-out;
+    }
+    .hrline[_ngcontent-glq-c113] {
+      left: 9%;
+    }
+    .coursedetail-button-div {
+      padding-top: 3% !important;
+    }
+    .category-number {
+      font-size: 24px;
+    }
+    .category-title {
+      font-size: 18px;
+    }
+  }
+  
+/*HOME PAGE CSS ENDS*/
+/*HEADER STARTS*/
+.search-header .form-control {
+  width: 149px;
+}
+.logo {
+  height: 92px;
+  width: 290px;
+}
+.nav-link {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: grey;
+  font-weight: 400;
+  letter-spacing: 2px;
+  font-family: 'Muli bold';
+}
+.navbar {
+  padding-left: 3%;
+  padding-right: 3%;
+}
+.title {
+  position: absolute;
+  left: 89%;
+  color: midnightblue;
+  top: 19%;
+  font-size: 13px;
+  font-family: 'Muli bold';
+  text-decoration: none !important;
+}
+.title a {
+  text-decoration: none;
+  letter-spacing: 2px;
+  text-transform: capitalize;
+  color: midnightblue;
+  font-family: 'Muli semibold' !important;
+  font-weight: bold;
+}
+.login-text {
+  border-bottom: 1px solid midnightblue;
+  padding-bottom: 1%;
+}
+.signup-text {
+  border-bottom: 1px solid midnightblue;
+  padding-bottom: 1%;
+}
+.nav-link-item {
+  display: none;
+}
+.mobile-menu {
+  display: none;
+}
+@media (max-width: 992px) {
+  .title {
+    display: none !important;
+  }
+  .nav-link-item {
+    display: flex;
+    color: midnightblue;
+    text-decoration: underline;
+    font-size: 13px;
+  }
+  .desktop-menu {
+    display: none !important;
+  }
+  .mobile-menu {
+    display: block;
+  }
+  .nav-link {
+    text-align: center;
+  }
+  .btn-search {
+    border: none;
+    background-color: transparent;
+  }
+}
+@media (max-width: 1199px) {
+  .form-control {
+    width: 90px !important;
+  }
+  .title {
+    position: absolute;
+    left: 86.5%;
+    color: midnightblue;
+    text-decoration: underline;
+    top: 19%;
+    font-size: 13px;
+  }
+}
+@media (max-width: 420px) {
+  .logo {
+    height: 60px !important;
+    width: 132px !important;
+  }
+  .mobile-toggle {
+    margin-top: 3% !important;
+  }
+  .search-div {
+    margin-top: 3% !important;
+  }
+}
+@media (max-width: 576px) {
+  .mobile-toggle {
+    margin-top: 5% !important;
+  }
+  .search-div {
+    margin-top: 6% !important;
+  }
+}
+@media (max-width: 767px) {
+  .logo {
+    width: 198px;
+    height: 78px;
+  }
+  .toggle-button {
+    font-size: 24px !important;
+  }
+  .search-button {
+    font-size: 24px !important;
+  }
+  .btn-search {
+    margin-top: 3%;
+    border: none;
+    background-color: transparent;
+  }
+}
+/*HEADER ENDS*/
+/*FOOTER STARTS*/
+.footer-image {
+  height: 75vh;
+  width: 100%;
+}
+.footer-container {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+.inner-class {
+  position: absolute;
+  padding-left: 4%;
+  padding-right: 4%;
+  padding-top: 3%;
+  height: 76%;
+  width: 100%;
+}
+.footer-col {
+  margin-top: 2%;
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+.category-col {
+  text-align: center;
+}
+.contact-col {
+  padding-left: 10%;
+}
+.about-para {
+  width: 285px;
+  color: gray;
+  font-size: 12px;
+  line-height: 23px;
+}
+.company-title {
+  color: midnightblue;
+  margin-bottom: 0px;
+}
+.about-title {
+  color: midnightblue;
+  margin-bottom: 0px;
+}
+.category-title {
+  color: midnightblue;
+  margin-bottom: 0px;
+}
+.contact-title {
+  color: midnightblue;
+  margin-bottom: 0px;
+}
+.nav-link {
+  color: gray;
+  font-size: 12px;
+}
+.contact-detail {
+  color: gray;
+  font-size: 12px;
+}
+.contact-detail-para {
+  color: gray;
+  font-size: 12px;
+}
+.copywright {
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: gray;
+}
+.footer-container2 {
+  display: none;
+}
+@media (max-width: 992px) {
+  .footer-image {
+    height: 110vh;
+    width: 100%;
+  }
+  .inner-class {
+    height: 110%;
+  }
+  .about-para {
+    text-align: left;
+    width: 100%;
+  }
+  .copywright-class {
+    margin-top: 0% !important;
+  }
+}
+@media (max-width: 576px) {
+  .footer-image {
+    height: 172vh;
+  }
+  .inner-class {
+    height: 172%;
+  }
+  .contact-col {
+    padding-left: 2%;
+  }
+  .image-div {
+    margin-top: 2% !important;
+  }
+  .about-title {
+    text-align: center;
+  }
+  .about-para {
+    text-align: center;
+  }
+  .company-title {
+    text-align: center;
+  }
+  .nav-link {
+    text-align: center;
+  }
+  .category-title {
+    text-align: center;
+  }
+  .contact-title {
+    text-align: center;
+  }
+  .contact-detail {
+    text-align: center;
+  }
+  .contact-detail-para {
+    text-align: center;
+  }
+  .image-div {
+    text-align: center;
+  }
+  .footer-image {
+    text-align: center;
+    margin: auto;
+  }
+  .footer-container2 {
+    display: block;
+    background-color: lightgrey;
+  }
+  .footer-container {
+    display: none;
+  }
+  .footer-col {
+    margin-top: 0% !important;
+  }
+  .copywright {
+    font-size: 11px;
+    text-align: center;
+  }
+  .footer-image-div {
+    text-align: center;
+  }
+}
+@media (max-width: 767px) {
+  .contact-col {
+    padding-left: 0% !important;
+  }
+}
+
+/*FOOTER ENDS*/
+.nav-link{
+  cursor: pointer;
+}
+/*ABOUT US PAGE STARTS*/
+
+/*ABOUT US PAGE ENDS*/
+.notice-div a:hover{
+  color: midnightblue; 
+}
+.coursedetail-button-div a:hover{
+  color: midnightblue; 
+}
+.coursedetail-button-div a{
+  color: midnightblue;
+  text-decoration: none; 
+}
+.title-logout{
+  right:5%;position: absolute;color: midnightblue;top: 19%;font-size: 13px;font-family: 'Muli bold';text-decoration: none !important;
+}
+.title-logout a{
+  text-decoration: none;
+  letter-spacing: 2px;
+  text-transform: capitalize;
+  color: midnightblue;
+  font-family: 'Muli semibold' !important;
+  font-weight: bold;
+}
+.help-block{
+  color: #a94442;
+}
+.has-error .checkbox, .has-error .checkbox-inline, .has-error .control-label, .has-error .help-block, .has-error .radio, .has-error .radio-inline, .has-error.checkbox label, .has-error.checkbox-inline label, .has-error.radio label, .has-error.radio-inline label {
+  color: #a94442;
+}
+.has-error .form-control {
+  /* border-color: red; */
+  -webkit-box-shadow: inset 0 0px 1px 1px #a94442;
+          box-shadow: inset 0 0px 1px 1px #a94442;
+}
+.forgot{
+  text-decoration: none;
+  color: white;
+}
+.forgot:hover{
+  color: white;
+}
+.reset-pass{
+  margin-bottom: 10px;
+}
+.profile-input{
+  margin-bottom: 7px;
+  border:none;
+}
+.profile-textarea{
+  height: 55px;
+}
+.remove-button{
+  margin-left: 128px;
+  width: 71px;
+  height: 34px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.qualification-div{
+  padding-top:0px !important;
+}
+.add-more{
+  padding-bottom: 0px !important;
+}
+.profile-input:focus-visible{
+  outline: none;
+}
+textarea {
+  resize: none;
+}
+.profile-container .help-block{
+  display: flex;
+}
+.add-more{
+  background: midnightblue;
+  width: 87px;
+  height: 34px;
+  font-size: 13px;
+  font-weight: 600;
+}

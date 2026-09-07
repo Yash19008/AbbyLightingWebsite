@@ -1,0 +1,78 @@
+/*!
+ * Bootstrap 8k v1.0 
+ * based on Bootstrap v4.1.1 (https://getbootstrap.com/)
+ * 
+ * Copyright 2011-2018 Mike van  der Velde
+ * Licensed under MIT ()
+ */
+ :root {
+	--breakpoint-2k: 2000px;
+	--breakpoint-3k: 2560px;
+	--breakpoint-4k: 3800px;
+	--breakpoint-6k: 5700px;
+	--breakpoint-8k: 7600px;
+}
+
+
+@media (min-width: 2000px) {
+	.container {
+		max-width: 1860px;
+	}
+    
+    .fs-1 {
+        font-size: 4.5rem !important;
+    }
+    .fs-2 {
+        font-size: 4rem !important;
+    }
+    .fs-3 {
+        font-size: 3.75rem !important;
+    }
+    .fs-4 {
+        font-size: 3rem !important;
+    }
+    .fs-5 {
+        font-size: 2.5rem !important;
+    }
+    .fs-6 {
+        font-size: 2.1rem !important;
+    }
+}
+
+@media (min-width: 2560px) {
+	.container {
+		max-width: 2450px;
+	}
+    
+    .fs-1 {
+        font-size: 4rem !important;
+    }
+    .fs-2 {
+        font-size: 3.5rem !important;
+    }
+    .fs-3 {
+        font-size: 3rem !important;
+    }
+    .fs-4 {
+        font-size: 2.25rem !important;
+    }
+}/* 
+
+@media (min-width: 3800px) {
+	.container {
+		max-width: 3720px;
+	}
+}
+
+@media (min-width: 5700px) {
+	.container {
+		max-width: 5580px;
+	}
+}
+
+@media (min-width: 7600px) {
+	.container {
+		max-width: 7440px;
+	}
+}
+ */

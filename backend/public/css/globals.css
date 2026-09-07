@@ -1,0 +1,302 @@
+@import "../public/assets/index-D0G9YV1Z.css";
+@import "../public/assets/page-DNa-mY-1.css";
+@import "../public/assets/index-COqEchED.css";
+@import "../public/assets/page-LgHN1MLe.css";
+@import "../public/assets/page-Lbzks1ED.css";
+@import "../public/assets/final-home-shell-CKTHUjwZ.css";
+
+/* Fix for mega dropdown with dynamic categories */
+@media (width>=901px) {
+  /* Ensure mega-grid has correct height */
+  .sitehead .mega-grid {
+    display: grid !important;
+    grid-template-columns: 192px 1px 9px 370px 1px 34px 144px !important;
+    align-items: start !important;
+    width: 888px !important;
+    height: auto !important;
+    min-height: 227px !important;
+    position: relative !important;
+  }
+
+  /* Position mgroups with grid */
+  .sitehead .mgroup:nth-child(1) {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+  }
+
+  .sitehead .mega-grid > .msep:nth-child(2) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: stretch !important;
+    width: 1px !important;
+    height: auto !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+  }
+
+  .sitehead .mgroup:nth-child(3) {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+  }
+
+  .sitehead .mega-grid > .msep:nth-child(4) {
+    grid-column: 5 !important;
+    grid-row: 1 !important;
+    align-self: stretch !important;
+    width: 1px !important;
+    height: auto !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+  }
+
+  .sitehead .mgroup:nth-child(5) {
+    grid-column: 7 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+    width: 144px !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+  }
+
+  /* Ensure all mgroups have correct styling */
+  .sitehead .mgroup {
+    border-radius: 1px !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 10px 14px !important;
+    box-sizing: border-box !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .sitehead .mgroup:before {
+    content: "" !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(156deg, #ac8b5c4f 11%, #4226004f 92%) !important;
+    border: 1px solid #ffffff4f !important;
+    border-radius: 1px !important;
+    position: absolute !important;
+    inset: 0 !important;
+    opacity: 0 !important;
+  }
+
+  .sitehead .mgroup:hover:before,
+  .sitehead .mgroup:focus-within:before {
+    opacity: 1 !important;
+  }
+  
+  /* Make heading text golden on hover */
+  .sitehead .mgroup:hover > .mhead,
+  .sitehead .mgroup:focus-within > .mhead {
+    color: #f6c177 !important;
+  }
+
+  /* Style mega separators */
+  .sitehead .mega-grid > .msep {
+    background: #ffffff38 !important;
+  }
+
+  .sitehead .mcols .msep.sm {
+    align-self: stretch !important;
+    height: auto !important;
+  }
+}
+
+/* Fix for project grid - remove empty columns and rows completely */
+.project-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+}
+
+.project-grid .project {
+  flex: 1 1 calc(50% - 10px);
+  min-width: 280px;
+  max-width: calc(50% - 10px);
+  min-height: 300px;
+  height: auto;
+}
+
+/* Make first project span wider on larger screens when there are 3+ projects */
+@media (min-width: 768px) {
+  .project-grid .project {
+    flex: 1 1 calc(25% - 10px);
+    max-width: calc(25% - 10px);
+  }
+  
+  .project-grid:has(.project:nth-child(3)) .project:first-child {
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+  }
+  
+  .project-grid:has(.project:nth-child(6)) .project:nth-child(5) {
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+  }
+}
+
+@media (max-width: 767px) {
+  .project-grid .project {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+
+
+/* Spotlight cursor effect - Pure Golden color */
+#spotlight {
+  position: fixed;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(246, 193, 119, 0.5) 70%,
+    rgba(246, 193, 119, 0.3) 20%,
+    rgba(246, 193, 119, 0.15) 40%,
+    rgba(246, 193, 119, 0.05) 60%,
+    transparent 50%
+  );
+  z-index: 9999;
+  opacity: 1;
+  transition: left 0.1s ease, top 0.1s ease;
+  filter: blur(40px);
+}
+
+/* Hide spotlight on touch devices */
+@media (hover: none) {
+  #spotlight {
+    display: none;
+  }
+}
+
+/* Footer accordion dropdown functionality */
+.footer-accordion-panel {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.footer-accordion.is-open .footer-accordion-panel {
+  max-height: 500px;
+  opacity: 1;
+}
+
+.footer-accordion.is-open .footer-accordion-icon {
+  transform: rotate(180deg);
+}
+
+/* News carousel navigation arrows - matching hero slider style */
+.news-carousel {
+  position: relative;
+  padding: 0 60px;
+  overflow: hidden;
+}
+
+.news {
+  display: flex;
+  gap: 16px;
+  transition: transform 0.5s ease;
+  will-change: transform;
+}
+
+.news-arrow {
+  z-index: 14;
+  color: #fff;
+  cursor: pointer;
+  background: rgba(26, 28, 29, 0.46);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 2px;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  font: 300 27px/1 Inter, sans-serif;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  display: grid;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.news-arrow:hover:not(:disabled) {
+  background: #f6c177;
+  border-color: #f6c177;
+  color: #fff;
+}
+
+.news-arrow:disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+.news-prev {
+  left: 10px;
+}
+
+.news-next {
+  right: 10px;
+}
+
+.story {
+  flex: 0 0 360px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.story:hover {
+  transform: translateY(-8px);
+}
+
+.story .photo {
+  height: 270px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #f0f0f0;
+}
+
+.story .photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.story:hover .photo img {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .news-carousel {
+    padding: 0 40px;
+  }
+  
+  .story {
+    flex: 0 0 280px;
+  }
+  
+  .news-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 27px;
+  }
+}
+
+.footer-accordion-icon {
+  transition: transform 0.3s ease;
+}

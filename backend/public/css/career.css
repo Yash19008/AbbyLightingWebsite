@@ -1,0 +1,121 @@
+.main-body {
+    background-color: #e6e6e6;
+}
+.career-section-title {
+    text-align: left;
+    letter-spacing: 3px;
+    padding-left: 0px;
+    font-weight: 400px;
+    font-family: Poppins;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 24px;
+    color: rgb(102, 99, 94);
+}
+.section-career-text {
+    font-size: 1.1rem;
+    text-align: left;
+    letter-spacing: 0.88px;
+    color: #808080 !important;
+    font-family: Poppins;
+    font-weight: 300;
+    line-height: 22px;
+    color: rgb(128, 128, 128);
+    margin: 30px 0px 0px 0px;
+}
+.career-section-2 {
+    padding-left: 3rem;
+    padding-top: 115px;
+    background-color: #e6e6e6;
+}
+.career-job-title {
+    font-size: 28px;
+    text-align: left;
+    line-height: 40px;
+    font-weight: 400;
+    letter-spacing: 6.8px;
+    color: #808080;
+    opacity: 1;
+    font-family: Poppins;
+    letter-spacing: 3px;
+}
+.career-head-title {
+    padding-top: 47.7px;
+
+    text-align: left;
+    letter-spacing: 2.1px;
+    color: #66635e;
+    opacity: 1;
+    font-weight: 400;
+    font-family: Poppins;
+    font-size: 28px;
+    line-height: 40px;
+}
+.career-head-location {
+    font-size: 18px;
+    text-align: left;
+    letter-spacing: 0.88px;
+    color: #808080;
+    opacity: 1;
+    font-weight: 300;
+    line-height: 22px;
+    padding-top: 25px;
+}
+.section-detail-text {
+    font-size: 22px;
+    text-align: left;
+    letter-spacing: 4.4px;
+    color: #5b5b5b;
+    opacity: 1;
+    text-transform: uppercase;
+    border-bottom: 2px solid grey;
+    text-decoration: none;
+    font-weight: 400;
+    line-height: 26.4px;
+}
+.section-detail-text:hover {
+    color: black;
+}
+.career-email {
+    text-align: left;
+    line-height: 22px;
+    color: #66635e;
+    font-weight: 400;
+    font-size: 18;
+}
+.job-detail-para {
+    text-align: left;
+    letter-spacing: 1.32px;
+    color: #a3a3a3;
+    opacity: 1;
+    list-style-type: disc;
+    padding-top: 2rem;
+}
+.job-detail-para1 {
+    text-align: left;
+    letter-spacing: 1.32px;
+    color: #a3a3a3;
+    opacity: 1;
+    list-style-type: disc;
+}
+.job-description {
+    padding-bottom: 90px;
+}
+
+@media (max-width: 767px) {
+    .career-section-2 {
+        padding-left: 0rem;
+        padding-top: 4rem;
+    }
+}
+@media (max-width: 420px) {
+    .career-job-title {
+        font-size: 24px;
+    }
+    .career-head-title {
+        font-size: 27px;
+    }
+    .section-detail-text {
+        font-size: 16px;
+    }
+}

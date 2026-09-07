@@ -1,0 +1,1 @@
+$("#sub-tag-tiles").viewer({title:!1});$(document).ready(function(){$(".project-product-links").on("click",function(i){var e=document.getElementById("projects_used_title"),t=200,o=e.getBoundingClientRect().top,n=o+window.pageYOffset-t;window.scrollTo({top:n,behavior:"smooth"})})});

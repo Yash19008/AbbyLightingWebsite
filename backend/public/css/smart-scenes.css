@@ -1,0 +1,148 @@
+.switch-buttons {
+    position: absolute;
+    right: 10px;
+    margin-top: -15%;
+}
+
+.switch-buttons img {
+    max-height: 230px;
+    max-width: 225px;
+
+}
+
+.button-overlay-group {
+    position: absolute;
+    height: 210px;
+    width: 210px;
+}
+
+.button-off.on {
+    color: #fff !important;
+}
+
+.button-off {
+    height: 55px;
+    width: 180px;
+    background-color: #413f3e;
+    color: #32ce2c;
+    border: 1px solid #39290f;
+    right: 0;
+    position: absolute;
+    margin-top: -40%;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.button-off span {
+    font-weight: 400;
+    font-size: 30px;
+    /* font-family: auto; */
+}
+
+.button-overlay-group .button-overlay-1 {
+    height: 70px;
+    width: 85px;
+    margin: 0 13px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.button-overlay-group .button-overlay-2 {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 70px;
+    width: 85px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.button-overlay-group .button-overlay-3 {
+    position: absolute;
+    bottom: 0;
+    height: 70px;
+    width: 85px;
+    margin: 0 13px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.button-overlay-group .button-overlay-4 {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 70px;
+    width: 85px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.overlay-effect {
+    background-color: #31a6dbb8;
+    border: 3px solid #6ea9bd;
+}
+
+.cursor {
+    cursor: pointer !important;
+}
+
+.screen-text {
+    color: #808080;
+    font-size: 18px;
+    font-weight: 400;
+    margin-top: 18px;
+    min-height: 55px;
+    max-width: 85%;
+}
+
+.screen-text strong {
+    font-weight: 700;
+}
+
+.cursor-start {
+    width: 50px;
+    height: 40px;
+    position: absolute;
+    display: none;
+    background-image: url('https://pnghq.com/wp-content/uploads/pnghq.com-mouse-pointer-cursor-free-2.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: left 2s, top 2s, transform 0.2s;
+    z-index: 9;
+    margin-top: -80px;
+    margin-left: -80px;
+}
+
+/* .switch-buttons button {
+    padding: 12px 24px;
+    font-size: 18px;
+    border: 2px solid #007bff;
+    background-color: #007bff;
+    color: white;
+    cursor: default;
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.switch-buttons button:active {
+    transform: scale(0.95);
+} */
+
+@media (max-width: 576px) {
+    .switch-buttons {
+        scale: 0.3;
+        margin-top: -32%;
+        right: -20%;
+    }
+
+    .screen-text {
+        position: absolute;
+        font-size: 14px;
+        margin-top: 28px;
+    }
+
+    .text-spacing {
+        margin-top: 140px;
+    }
+}
