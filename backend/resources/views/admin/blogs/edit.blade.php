@@ -24,10 +24,6 @@
         padding-bottom: 12px;
         margin-bottom: 20px;
     }
-    .note-editable img {
-        max-width: 100% !important;
-        height: auto !important;
-    }
 </style>
 @stop
 
@@ -226,108 +222,69 @@
 @stop
 
 @section('extra_js')
-<!-- Summernote Prebuilt WYSIWYG Editor -->
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-<style>
-    /* Fix Summernote modal z-index & backdrop overlay conflict */
-    .note-modal {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        z-index: 10550 !important;
-    }
-    .note-modal-backdrop {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        z-index: 10540 !important;
-        background-color: rgba(0, 0, 0, 0.5) !important;
-    }
-    .note-modal .modal-dialog {
-        position: relative !important;
-        z-index: 10560 !important;
-        margin: 80px auto !important;
-        max-width: 600px !important;
-    }
-    .note-modal .modal-content {
-        background: #fff !important;
-        border-radius: 8px !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
-        border: none !important;
-        overflow: hidden !important;
-    }
-    .note-modal .modal-header {
-        border-bottom: 1px solid #edf2f7 !important;
-        padding: 16px 20px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-    }
-    .note-modal .modal-title {
-        font-size: 18px !important;
-        font-weight: 600 !important;
-        color: #1a202c !important;
-    }
-    .note-modal .modal-body {
-        padding: 20px !important;
-    }
-    .note-modal .modal-footer {
-        border-top: 1px solid #edf2f7 !important;
-        padding: 14px 20px !important;
-    }
-</style>
+<!-- TinyMCE Advanced WYSIWYG Editor -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#content').summernote({
-            height: 450,
-            dialogsInBody: true,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
-                ['fontname', ['fontname']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph', 'height']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture', 'video', 'hr']],
-                ['view', ['undo', 'redo', 'fullscreen', 'codeview', 'help']]
-            ],
-            callbacks: {
-                onImageUpload: function(files) {
-                    for (var i = 0; i < files.length; i++) {
-                        var formData = new FormData();
-                        formData.append('upload', files[i]);
-                        formData.append('_token', '{{ csrf_token() }}');
+        tinymce.init({
+            selector: '#content',
+            height: 500,
+            convert_urls: false,
+            relative_urls: false,
+            remove_script_host: false,
+            plugins: 'advlist autolink lists link image charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking table emoticons template help',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print | insertfile image media template link anchor codesample | ltr rtl',
+            menubar: 'file edit view insert format tools table help',
+            image_title: true,
+            automatic_uploads: true,
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px } img { max-width: 100%; height: auto; }',
+            images_upload_handler: function (blobInfo, progress) {
+                return new Promise(function(resolve, reject) {
+                    var xhr, formData;
+                    xhr = new XMLHttpRequest();
+                    xhr.withCredentials = false;
+                    xhr.open('POST', "{{ route('admin.blogs.upload_image') }}");
+                    
+                    xhr.upload.onprogress = function (e) {
+                        progress(e.loaded / e.total * 100);
+                    };
 
-                        $.ajax({
-                            url: "{{ route('admin.blogs.upload_image') }}",
-                            method: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {
-                                if (response.url) {
-                                    var imgNode = $('<img>').attr('src', response.url).css({
-                                        'max-width': '100%',
-                                        'height': 'auto'
-                                    }).addClass('img-fluid');
-                                    $('#content').summernote('insertNode', imgNode[0]);
-                                } else if (response.location) {
-                                    var imgNode = $('<img>').attr('src', response.location).css({
-                                        'max-width': '100%',
-                                        'height': 'auto'
-                                    }).addClass('img-fluid');
-                                    $('#content').summernote('insertNode', imgNode[0]);
-                                }
-                            }
-                        });
-                    }
-                }
+                    xhr.onload = function() {
+                        var json;
+                        if (xhr.status === 403) {
+                            reject('HTTP Error: ' + xhr.status, { remove: true });
+                            return;
+                        }
+                        if (xhr.status < 200 || xhr.status >= 300) {
+                            reject('HTTP Error: ' + xhr.status);
+                            return;
+                        }
+
+                        json = JSON.parse(xhr.responseText);
+
+                        if (!json || (typeof json.url !== 'string' && typeof json.location !== 'string')) {
+                            reject('Invalid JSON: ' + xhr.responseText);
+                            return;
+                        }
+
+                        resolve(json.url || json.location);
+                    };
+
+                    xhr.onerror = function () {
+                        reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+                    };
+
+                    formData = new FormData();
+                    formData.append('upload', blobInfo.blob(), blobInfo.filename());
+                    formData.append('_token', '{{ csrf_token() }}');
+
+                    xhr.send(formData);
+                });
+            },
+            setup: function (editor) {
+                editor.on('change', function () {
+                    tinymce.triggerSave();
+                });
             }
         });
 

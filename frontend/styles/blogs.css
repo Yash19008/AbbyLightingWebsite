@@ -2,6 +2,11 @@
    Blogs Page Styles
    ========================================================================== */
 
+/* Make sure the header bg is pure black only on Blog Details Page */
+body:has(.blog-page) .sitehead {
+  background-color: #000 !important;
+}
+
 .blog-page {
   --ink: #060606;
   --charcoal: #232536;
@@ -207,9 +212,9 @@
 }
 
 .blog-page .caption {
-  max-width: 500px;
+  /* max-width: 500px; */
   margin: 12px auto 40px;
-  color: rgba(0,0,0,0.54);
+  color: rgba(0, 0, 0, 0.54);
   font-weight: 300;
   font-size: 14px;
   line-height: 1.45;
@@ -245,6 +250,7 @@
   margin: 24px 0;
   overflow-wrap: break-word;
   word-break: break-word;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .blog-page .article-rich-body img,
@@ -323,8 +329,8 @@
 
 .blog-page .article-rich-body blockquote {
   margin: 28px 0;
-  padding: 8px 0 8px 20px;
-  border-left: 3px solid var(--amber);
+  padding: 0;
+  border-left: none;
   font-style: italic;
   color: #1a1a1a;
 }
@@ -375,7 +381,7 @@
 .blog-page .share-box button,
 .blog-page .share-box a {
   color: #fff;
-  border: 1px solid rgba(255,255,255,0.4);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   background: transparent;
   width: 30px;
   height: 30px;
@@ -429,7 +435,7 @@
 
 .blog-page .related-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
 .blog-page .related-card figure {
@@ -487,7 +493,7 @@
   border-radius: 4px;
   font-size: 14px;
   z-index: 9999;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   animation: blogToastSlide 0.3s ease;
 }
 
@@ -496,6 +502,7 @@
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -510,23 +517,32 @@
 }
 
 @media (max-width: 767px) {
-  .blog-page .article-head,
+
+  .blog-page .article-head {
+    padding: 30px 20px 0;
+  }
+
   .blog-page .feature {
     padding: 0 20px;
   }
-  
+
   .blog-page .article h1 {
+    color: #000;
     font-size: 28px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
     line-height: 1.25;
-    letter-spacing: -0.8px;
   }
-  
+
   .blog-page .dek {
+    color: #4a4a4a;
     font-size: 15px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 400;
     line-height: 1.5;
     margin: 12px 0 20px;
   }
-  
+
   .blog-page .meta-bar {
     height: auto;
     padding: 16px 0;
@@ -535,7 +551,7 @@
     justify-content: space-between;
     gap: 8px;
   }
-  
+
   .blog-page .meta {
     display: flex;
     align-items: center;
@@ -566,45 +582,54 @@
     width: 28px;
     height: 28px;
   }
-  
+
   .blog-page .toc-band {
     margin-top: 30px;
     padding: 20px 16px;
   }
-  
+
   .blog-page .toc {
     padding: 16px;
+    border-radius: 8px;
   }
-  
+
   .blog-page .toc h2 {
     font-size: 18px;
+    font-weight: 600;
+    color: #232536;
   }
-  
+
   .blog-page .toc a {
     font-size: 13px;
+    font-weight: 500;
+    color: #232536;
   }
-  
+
+  .blog-page .toc a::before {
+    background: #d9d9d9;
+  }
+
   .blog-page .article-image,
   .blog-page .second-image {
     height: 220px;
   }
-  
+
   .blog-page .copy {
     font-size: 15px;
     line-height: 1.6;
   }
-  
+
   .blog-page .copy h2 {
     font-size: 20px;
     margin: 36px 0 16px;
   }
-  
+
   .blog-page .quote {
     font-size: 17px;
     margin: 24px 0 30px;
     padding-left: 16px;
   }
-  
+
   .blog-page .share-box {
     flex-direction: column;
     align-items: flex-start;
@@ -621,22 +646,22 @@
     justify-content: flex-start;
     align-self: flex-start;
   }
-  
+
   .blog-page .related {
     margin-top: 40px;
     padding: 40px 16px 60px;
   }
-  
+
   .blog-page .related h2 {
     font-size: 24px;
     margin-bottom: 24px;
   }
-  
+
   .blog-page .related-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .blog-page .related-card figure {
     height: 220px;
   }
@@ -646,17 +671,21 @@
   .blog-page .meta span {
     font-size: 12px;
   }
+
   .blog-page .meta .meta-author {
     padding-right: 8px;
     font-size: 12px;
   }
+
   .blog-page .meta .meta-date {
     padding-left: 8px;
     font-size: 12px;
   }
+
   .blog-page .share-icons {
     gap: 6px;
   }
+
   .blog-page .share-icons button,
   .blog-page .share-icons a {
     width: 24px;

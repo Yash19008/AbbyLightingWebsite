@@ -84,12 +84,34 @@ export default function BlogArticleContent({
         </>
       )}
 
-      {content && (
-        <div
-          className="article-rich-body"
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-      )}
+      {content && (() => {
+        // Rewrite any /uploads/... relative paths AND any old absolute backend URLs
+        // stored in the content HTML so they always resolve correctly.
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
+        const rewriteContentUrls = (html: string): string => {
+          // Replace relative /uploads/ paths with the full backend URL
+          let rewritten = html.replace(
+            /(['"\s])(\/uploads\/)/g,
+            `$1${API_URL}/uploads/`
+          );
+          // Also replace any stale absolute URLs that point to a different host
+          // (e.g. http://localhost/uploads/ or http://127.0.0.1/uploads/) with the
+          // current API_URL so old content saved with the wrong host still works.
+          rewritten = rewritten.replace(
+            /https?:\/\/[^"'\s]+\/uploads\//g,
+            `${API_URL}/uploads/`
+          );
+          return rewritten;
+        };
+
+        return (
+          <div
+            className="article-rich-body"
+            dangerouslySetInnerHTML={{ __html: rewriteContentUrls(content) }}
+          />
+        );
+      })()}
 
       {pullQuote && (
         <blockquote className="quote">

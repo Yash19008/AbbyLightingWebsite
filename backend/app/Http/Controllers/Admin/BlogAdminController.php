@@ -224,18 +224,21 @@ class BlogAdminController extends Controller
 
             $file->move($uploadDir, $fileName);
 
-            $url = asset('uploads/blogs/content/' . $fileName);
+            // Use a relative path so the URL isn't tied to any specific APP_URL / host.
+            // The frontend will prepend its own API base URL when rendering the HTML content.
+            $relativePath = '/uploads/blogs/content/' . $fileName;
 
             if ($request->filled('CKEditorFuncNum')) {
+                $absoluteUrl = asset('uploads/blogs/content/' . $fileName);
                 $CKEditorFuncNum = $request->input('CKEditorFuncNum');
-                $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', 'Image uploaded successfully');</script>";
+                $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$absoluteUrl', 'Image uploaded successfully');</script>";
                 return response($response)->header('Content-Type', 'text/html; charset=utf-8');
             }
 
             return response()->json([
                 'uploaded' => 1,
-                'location' => $url,
-                'url' => $url,
+                'location' => $relativePath,
+                'url' => $relativePath,
                 'fileName' => $fileName,
             ]);
         }
