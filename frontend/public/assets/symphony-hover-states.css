@@ -36,18 +36,18 @@
   transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
 }
 
-.s-look > div {
+.s-look>div {
   display: block;
 }
 
-.s-look > div p {
+.s-look>div p {
   margin: 0 0 8px;
   opacity: 1;
   transform: translateY(21px);
   transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
 }
 
-.s-look > div span {
+.s-look>div span {
   display: block;
   opacity: 0;
   transform: translateY(6px);
@@ -69,11 +69,11 @@
     transform: translateY(-58px);
   }
 
-  .s-look:hover > div p {
+  .s-look:hover>div p {
     transform: translateY(0);
   }
 
-  .s-look:hover > div span {
+  .s-look:hover>div span {
     opacity: 1;
     transform: translateY(0);
   }
@@ -100,13 +100,13 @@
   transform: translateY(-58px);
 }
 
-.s-look:focus-visible > div p,
-.s-look.is-active > div p {
+.s-look:focus-visible>div p,
+.s-look.is-active>div p {
   transform: translateY(0);
 }
 
-.s-look:focus-visible > div span,
-.s-look.is-active > div span {
+.s-look:focus-visible>div span,
+.s-look.is-active>div span {
   opacity: 1;
   transform: translateY(0);
 }
@@ -122,9 +122,9 @@
     font-size: 9px;
   }
 
-  .s-look > div p {
+  .s-look>div p {
     margin-bottom: 3px;
-    font-size: 9px;
+    font-size: 10px !important;
     transform: translateY(12px);
   }
 
@@ -135,6 +135,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .s-parameter-grid article p,
   .s-place-copy p {
     transform: none;
@@ -142,7 +143,7 @@
   }
 
 
-  .s-look > div p {
+  .s-look>div p {
     transform: none;
     transition: opacity var(--dur-hover) var(--ease-out);
   }

@@ -61,7 +61,7 @@ img {
 
 .section h2 {
     margin: 0;
-    font: 500 clamp(30px, 3vw, 42px)/1.15 Poppins, sans-serif
+    font: 500 clamp(30px, 3vw, 39px)/1.15 Poppins, sans-serif;
 }
 
 .eyebrow {
@@ -271,7 +271,7 @@ header {
 .world h3,
 .product h3 {
     margin: 18px 0 0;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600
 }
 
@@ -300,22 +300,23 @@ header {
 .manufacturing h2,
 .image-cta h2 {
     margin: 0 0 18px;
-    font: 400 clamp(35px, 4vw, 54px)/1.25 Poppins
+    font: 400 clamp(35px, 4vw, 36.76px)/1.25 Poppins
 }
 
 .manufacturing h2 em,
 .image-cta h2 em {
     color: var(--amber);
     font-family: Libre Baskerville;
-    font-size: 1.08em;
+    font-size: 45.25px;
     display: block
 }
 
 .manufacturing p,
 .image-cta p {
     margin: 0 0 26px;
-    font-size: 16px;
-    line-height: 1.7
+    font-size: 18px;
+    line-height: 1.7;
+    font-weight: 300;
 }
 
 .products {
@@ -342,7 +343,8 @@ header {
 .product p {
     color: #888;
     margin: 8px 0;
-    font-size: 14px
+    font-size: 18px;
+    font-weight: 300;
 }
 
 .projects {
@@ -1727,7 +1729,7 @@ body.spot-on #spotlight {
 
 .projects .section-head h2 {
     letter-spacing: -.02em;
-    font-size: 40px;
+    font-size: 39px;
     font-weight: 500
 }
 
@@ -1803,7 +1805,7 @@ body.spot-on #spotlight {
 }
 
 .project strong {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     line-height: 1.15
 }
@@ -1813,7 +1815,9 @@ body.spot-on #spotlight {
     margin-top: 8px;
     font-size: 18px;
     line-height: 1.25;
-    display: block
+    display: block;
+    font-weight: 300;
+
 }
 
 .project:nth-child(2) img {
@@ -1843,7 +1847,7 @@ body.spot-on #spotlight {
 
 .image-cta h2 {
     margin-bottom: 24px;
-    font-size: clamp(38px, 3.8vw, 55px);
+    font-size: clamp(36.76px, 3.8vw, 36.76px);
     line-height: 1.2
 }
 
@@ -2146,7 +2150,7 @@ body.spot-on #spotlight {
 }
 
 .hero-slide .display {
-    font-size: clamp(38px, 4.3vw, 65px)
+    font-size: clamp(38px, 4.3vw, 47.85px)
 }
 
 .hero-slide .display em {
@@ -3844,7 +3848,8 @@ a {
     }
 
     .section h2 {
-        font-size: 26px
+        font-size: 19px;
+        font-weight: 600;
     }
 
     body {}
@@ -3887,7 +3892,7 @@ a {
         z-index: 3;
         color: #fff;
         margin: 0;
-        font-size: 15px;
+        font-size: 12px !important;
         position: absolute;
         bottom: 12px;
         left: 12px
@@ -5461,7 +5466,7 @@ footer#contact {
     min-height: 39px;
     margin: 0 0 -1px;
     padding: 0 11px 15px;
-    font: 400 15px/23px Inter, sans-serif
+    font: 500 13px/23px Inter, sans-serif
 }
 
 .filter-chips button.active {

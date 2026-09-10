@@ -44,7 +44,7 @@ body:has(.blog-page) .sitehead {
 .blog-page .dek {
   margin: 16px 0 31px;
   font-size: 18px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.45;
   color: #4a4a4a;
 }
@@ -67,7 +67,7 @@ body:has(.blog-page) .sitehead {
 }
 
 .blog-page .meta span {
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.4;
   white-space: nowrap;
 }
@@ -77,14 +77,14 @@ body:has(.blog-page) .sitehead {
   min-width: auto;
   padding-right: 20px;
   border-right: 1px solid #eaeaea;
-  font-weight: 600;
-  color: var(--charcoal);
+  font-weight: 400;
+  color: black;
 }
 
 .blog-page .meta .meta-date,
 .blog-page .meta span:last-child {
   padding-left: 20px;
-  color: var(--muted);
+  color: black;
 }
 
 .blog-page .share-row {
@@ -147,7 +147,7 @@ body:has(.blog-page) .sitehead {
   margin: 0 0 17px;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  font-size: 22px;
+  font-size: 24px;
   line-height: 1.35;
   color: var(--charcoal);
 }
@@ -159,7 +159,7 @@ body:has(.blog-page) .sitehead {
   text-decoration: none;
   border-bottom: 1px solid #d6d6d6;
   padding: 11px 0 11px 18px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 1.4;
   transition: color 0.15s ease, padding-left 0.15s ease;
@@ -173,7 +173,7 @@ body:has(.blog-page) .sitehead {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #111;
+  background: #D9D9D9;
 }
 
 .blog-page .toc a:last-child {
@@ -359,7 +359,7 @@ body:has(.blog-page) .sitehead {
 
 .blog-page .share-box {
   min-height: 70px;
-  border-radius: 2px;
+  border-radius: 5px;
   background: #050505;
   color: #fff;
   display: flex;
@@ -467,8 +467,8 @@ body:has(.blog-page) .sitehead {
 .blog-page .related-copy small {
   display: block;
   text-transform: uppercase;
-  font-weight: 400;
-  font-size: 13px;
+  font-weight: 300;
+  font-size: 15px;
   color: var(--muted);
   letter-spacing: 0.04em;
 }
@@ -477,7 +477,7 @@ body:has(.blog-page) .sitehead {
   margin: 10px 0 0;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
-  font-size: 21px;
+  font-size: 22px;
   line-height: 1.3;
   color: var(--ink);
 }
@@ -583,6 +583,13 @@ body:has(.blog-page) .sitehead {
     height: 28px;
   }
 
+  .blog-page .meta .meta-author,
+  .blog-page .meta span:first-child {
+
+    font-weight: 600;
+
+  }
+
   .blog-page .toc-band {
     margin-top: 30px;
     padding: 20px 16px;
@@ -614,6 +621,13 @@ body:has(.blog-page) .sitehead {
     height: 220px;
   }
 
+  .blog-page .related-copy small {
+
+    font-weight: 400;
+    font-size: 10px;
+
+  }
+
   .blog-page .copy {
     font-size: 15px;
     line-height: 1.6;
@@ -640,6 +654,7 @@ body:has(.blog-page) .sitehead {
 
   .blog-page .share-box strong {
     text-align: left;
+    font-size: 14px;
   }
 
   .blog-page .share-box .share-icons {
@@ -655,6 +670,7 @@ body:has(.blog-page) .sitehead {
   .blog-page .related h2 {
     font-size: 24px;
     margin-bottom: 24px;
+    font-weight: 600;
   }
 
   .blog-page .related-grid {
@@ -664,6 +680,10 @@ body:has(.blog-page) .sitehead {
 
   .blog-page .related-card figure {
     height: 220px;
+  }
+
+  .blog-page .related-copy h3 {
+    font-size: 16px;
   }
 }
 

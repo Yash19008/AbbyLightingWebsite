@@ -652,8 +652,8 @@ a {
 }
 
 .manufacturing h2 em {
-  font-size: 45.249px;
-  line-height: 56.561px
+  font-size: 45.25px;
+  line-height: 56.56px
 }
 
 .product-toolbar {
@@ -1059,7 +1059,7 @@ a {
     z-index: 3;
     color: #fff;
     margin: 0;
-    font-size: 15px;
+    font-size: 12px !important;
     position: absolute;
     bottom: 12px;
     left: 12px
@@ -2703,7 +2703,7 @@ footer#contact {
   min-height: 39px;
   margin: 0 0 -1px;
   padding: 0 11px 15px;
-  font: 400 15px/23px Inter, sans-serif
+  font: 500 13px/23px Inter, sans-serif
 }
 
 .filter-chips button.active {

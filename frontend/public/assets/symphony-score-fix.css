@@ -1,2 +1,315 @@
-.s-score-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}.score-group{display:block!important;border:0!important;padding:0!important}.score-intro{display:block!important;min-height:99px;border-bottom:1px solid #aaa}.score-intro h3{margin:0 0 8px;font:600 19px/1.2 Inter,sans-serif}.score-intro p{margin:0;font:400 12px/1.25 Inter,sans-serif}.score-items{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important}.score-item{display:block!important;min-width:0;min-height:236px;padding:56px 22px 0 0;position:relative}.score-item+.score-item{border-left:1px solid #dedede;padding-left:26px}.score-item h4{text-transform:uppercase;margin:40px 0 7px;font:600 12px/1 Inter,sans-serif}.score-item p{text-transform:none;margin:0;font:400 12px/1.25 Inter,sans-serif}.spread-pattern,.drop-pattern{display:block!important;width:95px;height:65px;position:relative}.spread-pattern i{background:#a84628;border-radius:50%;width:16px;height:16px;position:absolute}.spread-linear{display:flex!important;align-items:center;gap:6px;padding-top:18px}.spread-linear i{position:static}.spread-triangular i:first-child{top:0;left:40px}.spread-triangular i:nth-child(2){top:28px;left:18px}.spread-triangular i:nth-child(3){top:28px;left:62px}.spread-circular i:first-child{top:0;left:40px}.spread-circular i:nth-child(2){top:10px;left:20px}.spread-circular i:nth-child(3){top:10px;left:60px}.spread-circular i:nth-child(4){top:31px;left:20px}.spread-circular i:nth-child(5){top:31px;left:60px}.spread-circular i:nth-child(6){top:42px;left:40px}.drop-pattern:before{content:"";background:#303331;width:78px;height:1px;position:absolute;top:4px;left:7px}.drop-pattern i{background:#596250;border-radius:1px;width:12px;height:12px;position:absolute;top:36px}.drop-pattern i:before{content:"";background:#303331;width:1px;height:31px;position:absolute;bottom:100%;left:50%}.drop-pattern i:first-child{left:18px}.drop-pattern i:nth-child(2){left:41px}.drop-pattern i:nth-child(3){left:64px}.drop-stepped i:first-child{top:25px}.drop-stepped i:nth-child(2){top:36px}.drop-stepped i:nth-child(3){top:47px}.drop-cascading i:first-child{top:36px}.drop-cascading i:nth-child(2){top:20px}.drop-cascading i:nth-child(3){top:42px}
-@media(max-width:700px){.s-score-grid{grid-template-columns:1fr;gap:67px}.score-intro{min-height:90px}.score-intro h3{font-size:18px}.score-intro p{font-size:11px}.score-item{min-height:218px;padding:36px 10px 0 0}.score-item+.score-item{padding-left:18px}.score-item h4{margin-top:30px;font-size:10px}.score-item p{font-size:9px;line-height:1.25}.spread-pattern,.drop-pattern{width:74px;height:55px}.spread-pattern i{width:12px;height:12px}.spread-linear{gap:5px;padding-top:17px}.spread-triangular i:first-child{left:31px}.spread-triangular i:nth-child(2){top:23px;left:13px}.spread-triangular i:nth-child(3){top:23px;left:49px}.spread-circular i:first-child{left:31px}.spread-circular i:nth-child(2){top:8px;left:14px}.spread-circular i:nth-child(3){top:8px;left:48px}.spread-circular i:nth-child(4){top:26px;left:14px}.spread-circular i:nth-child(5){top:26px;left:48px}.spread-circular i:nth-child(6){top:35px;left:31px}.drop-pattern:before{width:65px;left:4px}.drop-pattern i{width:10px;height:10px}.drop-pattern i:first-child{left:13px}.drop-pattern i:nth-child(2){left:32px}.drop-pattern i:nth-child(3){left:51px}}
+.s-score-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px
+}
+
+.score-group {
+    display: block !important;
+    border: 0 !important;
+    padding: 0 !important
+}
+
+.score-intro {
+    display: block !important;
+    min-height: 99px;
+    border-bottom: 1px solid #aaa
+}
+
+.score-intro h3 {
+    margin: 0 0 8px;
+    font: 600 22px/1.2 Inter, sans-serif
+}
+
+.score-intro p {
+    margin: 0;
+    font: 300 14px/1.25 Inter, sans-serif
+}
+
+.score-items {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0 !important
+}
+
+.score-item {
+    display: block !important;
+    min-width: 0;
+    min-height: 236px;
+    padding: 56px 22px 0 0;
+    position: relative
+}
+
+.score-item+.score-item {
+    border-left: 1px solid #dedede;
+    padding-left: 26px
+}
+
+.score-item h4 {
+    text-transform: uppercase;
+    margin: 40px 0 7px;
+    font: 600 14px/1 Inter, sans-serif
+}
+
+.score-item p {
+    text-transform: none;
+    margin: 0;
+    font: 400 12px/1.25 Inter, sans-serif
+}
+
+.spread-pattern,
+.drop-pattern {
+    display: block !important;
+    width: 95px;
+    height: 65px;
+    position: relative
+}
+
+.spread-pattern i {
+    background: #a84628;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    position: absolute
+}
+
+.spread-linear {
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+    padding-top: 18px
+}
+
+.spread-linear i {
+    position: static
+}
+
+.spread-triangular i:first-child {
+    top: 0;
+    left: 40px
+}
+
+.spread-triangular i:nth-child(2) {
+    top: 28px;
+    left: 18px
+}
+
+.spread-triangular i:nth-child(3) {
+    top: 28px;
+    left: 62px
+}
+
+.spread-circular i:first-child {
+    top: 0;
+    left: 40px
+}
+
+.spread-circular i:nth-child(2) {
+    top: 10px;
+    left: 20px
+}
+
+.spread-circular i:nth-child(3) {
+    top: 10px;
+    left: 60px
+}
+
+.spread-circular i:nth-child(4) {
+    top: 31px;
+    left: 20px
+}
+
+.spread-circular i:nth-child(5) {
+    top: 31px;
+    left: 60px
+}
+
+.spread-circular i:nth-child(6) {
+    top: 42px;
+    left: 40px
+}
+
+.drop-pattern:before {
+    content: "";
+    background: #303331;
+    width: 78px;
+    height: 1px;
+    position: absolute;
+    top: 4px;
+    left: 7px
+}
+
+.drop-pattern i {
+    background: #596250;
+    border-radius: 1px;
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 36px
+}
+
+.drop-pattern i:before {
+    content: "";
+    background: #303331;
+    width: 1px;
+    height: 31px;
+    position: absolute;
+    bottom: 100%;
+    left: 50%
+}
+
+.drop-pattern i:first-child {
+    left: 18px
+}
+
+.drop-pattern i:nth-child(2) {
+    left: 41px
+}
+
+.drop-pattern i:nth-child(3) {
+    left: 64px
+}
+
+.drop-stepped i:first-child {
+    top: 25px
+}
+
+.drop-stepped i:nth-child(2) {
+    top: 36px
+}
+
+.drop-stepped i:nth-child(3) {
+    top: 47px
+}
+
+.drop-cascading i:first-child {
+    top: 36px
+}
+
+.drop-cascading i:nth-child(2) {
+    top: 20px
+}
+
+.drop-cascading i:nth-child(3) {
+    top: 42px
+}
+
+@media(max-width:700px) {
+    .s-score-grid {
+        grid-template-columns: 1fr;
+        gap: 67px
+    }
+
+    .score-intro {
+        min-height: 90px
+    }
+
+    .score-intro h3 {
+        font-size: 14px
+    }
+
+    .score-intro p {
+        font-size: 10px
+    }
+
+    .score-item {
+        min-height: 218px;
+        padding: 36px 10px 0 0
+    }
+
+    .score-item+.score-item {
+        padding-left: 18px
+    }
+
+    .score-item h4 {
+        margin-top: 30px;
+        font-size: 9px
+    }
+
+    .score-item p {
+        font-size: 8px;
+        line-height: 1.25;
+        font-weight: 300;
+    }
+
+    .spread-pattern,
+    .drop-pattern {
+        width: 74px;
+        height: 55px
+    }
+
+    .spread-pattern i {
+        width: 12px;
+        height: 12px
+    }
+
+    .spread-linear {
+        gap: 5px;
+        padding-top: 17px
+    }
+
+    .spread-triangular i:first-child {
+        left: 31px
+    }
+
+    .spread-triangular i:nth-child(2) {
+        top: 23px;
+        left: 13px
+    }
+
+    .spread-triangular i:nth-child(3) {
+        top: 23px;
+        left: 49px
+    }
+
+    .spread-circular i:first-child {
+        left: 31px
+    }
+
+    .spread-circular i:nth-child(2) {
+        top: 8px;
+        left: 14px
+    }
+
+    .spread-circular i:nth-child(3) {
+        top: 8px;
+        left: 48px
+    }
+
+    .spread-circular i:nth-child(4) {
+        top: 26px;
+        left: 14px
+    }
+
+    .spread-circular i:nth-child(5) {
+        top: 26px;
+        left: 48px
+    }
+
+    .spread-circular i:nth-child(6) {
+        top: 35px;
+        left: 31px
+    }
+
+    .drop-pattern:before {
+        width: 65px;
+        left: 4px
+    }
+
+    .drop-pattern i {
+        width: 10px;
+        height: 10px
+    }
+
+    .drop-pattern i:first-child {
+        left: 13px
+    }
+
+    .drop-pattern i:nth-child(2) {
+        left: 32px
+    }
+
+    .drop-pattern i:nth-child(3) {
+        left: 51px
+    }
+}

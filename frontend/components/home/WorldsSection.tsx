@@ -216,7 +216,7 @@ export default function WorldsSection({ lightWorlds }: WorldsSectionProps) {
                       margin: isMobile ? '0' : '14px 0 0',
                       color: isMobile ? '#ffffff' : '#111111',
                       fontFamily: 'Inter, sans-serif',
-                      fontSize: isMobile ? 15 : 17,
+                      fontSize: isMobile ? 15 : 22,
                       fontWeight: 600,
                       lineHeight: 1.3,
                       display: 'inline-flex',

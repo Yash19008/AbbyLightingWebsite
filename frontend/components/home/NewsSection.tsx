@@ -247,8 +247,8 @@ export default function NewsSection({ newsItems }: NewsSectionProps) {
                         margin: "0 0 8px 0",
                         color: "#777777",
                         fontFamily: "Inter, sans-serif",
-                        fontSize: isMobile ? "11px" : "12px",
-                        fontWeight: 500,
+                        fontSize: isMobile ? "11px" : "15px",
+                        fontWeight: 300,
                         letterSpacing: "0.06em",
                         textTransform: "uppercase",
                       }}
@@ -260,7 +260,7 @@ export default function NewsSection({ newsItems }: NewsSectionProps) {
                         margin: 0,
                         color: "#111111",
                         fontFamily: "Inter, sans-serif",
-                        fontSize: isMobile ? "16px" : "19px",
+                        fontSize: isMobile ? "16px" : "22px",
                         fontWeight: 600,
                         lineHeight: 1.35,
                       }}

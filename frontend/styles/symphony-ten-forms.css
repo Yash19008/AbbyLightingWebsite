@@ -37,12 +37,12 @@
 
 .s-products .decorative-card-copy h3 {
   margin: 0;
-  font: 600 15px/1.1 Inter, sans-serif;
+  font: 600 16.29px/1.1 Inter, sans-serif;
 }
 
 .s-products .decorative-card-copy p {
   margin: 2px 0 0;
-  font: 300 12px/1.25 Inter, sans-serif;
+  font: 300 13.46px/1.25 Inter, sans-serif;
 }
 
 .s-products .decorative-collection {
@@ -83,11 +83,13 @@
   }
 
   .s-products .decorative-card-copy h3 {
-    font-size: 12px;
+    font-size: 12.51px;
+    font-weight: 600;
   }
 
   .s-products .decorative-card-copy p {
-    font-size: 11px;
+    font-size: 10.33px;
+    font-weight: 300;
   }
 
   .s-products .decorative-card-image {

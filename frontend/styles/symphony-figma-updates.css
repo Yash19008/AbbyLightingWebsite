@@ -51,7 +51,7 @@
   min-height: 250px;
 }
 
-.s-tone-grid article > img {
+.s-tone-grid article>img {
   min-width: 0;
 }
 
@@ -77,8 +77,8 @@
     position: absolute;
     right: 14px;
     top: 14px;
-    width: 22px;
-    height: 22px;
+    width: 15px;
+    height: 15px;
     border: 0;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.32);
@@ -87,10 +87,11 @@
   .s-parameter-arrow::after {
     content: "";
     position: absolute;
-    left: 7px;
-    top: 6px;
-    width: 7px;
-    height: 7px;
+    left: 4px;
+    top: 3px;
+    width: 5px;
+    height: 5px;
+
     border-right: 2px solid #fff;
     border-bottom: 2px solid #fff;
     transform: rotate(45deg);
