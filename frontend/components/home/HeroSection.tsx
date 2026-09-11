@@ -14,13 +14,13 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
   useEffect(() => {
     const hero = heroRef.current;
     if (!hero || sliders.length === 0) return;
-    
+
     const track = hero.querySelector(".hero-track") as HTMLElement;
     const slides = Array.from(hero.querySelectorAll("[data-hero-slide]"));
     const dots = Array.from(hero.querySelectorAll(".dots button"));
     const previous = hero.querySelector('[aria-label="Previous hero banner"]');
     const next = hero.querySelector('[aria-label="Next hero banner"]');
-    
+
     if (!track || slides.length === 0 || dots.length !== slides.length || !previous || !next) return;
 
     let currentIndex = 0;
@@ -216,12 +216,12 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
         )}
       </div>
       <button className="hero-arrow hero-arrow-previous" type="button" aria-label="Previous hero banner">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M15 18l-6-6 6-6"></path>
         </svg>
       </button>
       <button className="hero-arrow hero-arrow-next" type="button" aria-label="Next hero banner">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M9 18l6-6-6-6"></path>
         </svg>
       </button>

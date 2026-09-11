@@ -243,7 +243,7 @@ export default function WorldsSection({ lightWorlds }: WorldsSectionProps) {
                           transition: 'transform 0.2s ease',
                         }}
                       >
-                        <line x1="4" y1="12" x2="20" y2="12" />
+                        <line x1="-2" y1="12" x2="20" y2="12" />
                         <polyline points="14 6 20 12 14 18" />
                       </svg>
                     )}

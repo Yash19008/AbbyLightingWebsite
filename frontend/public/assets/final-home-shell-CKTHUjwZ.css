@@ -123,8 +123,8 @@ a {
   border: 1px solid #ffffff6b;
   border-radius: 2px;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 27px;
+  height: 27px;
   padding: 0;
   font: 300 27px/1 Inter, sans-serif;
   transition: background .2s, border-color .2s, color .2s;
@@ -467,11 +467,11 @@ a {
 }
 
 .hero-arrow-previous {
-  left: 30px
+  left: 55px
 }
 
 .hero-arrow-next {
-  right: 30px
+  right: 55px
 }
 
 .footer-accordion {
@@ -988,8 +988,8 @@ a {
 
   .hero-arrow {
     border-color: #ffffff40;
-    width: 30px;
-    height: 30px;
+    width: 27px;
+    height: 27px;
     font-size: 24px;
     top: 48%
   }
@@ -1018,7 +1018,7 @@ a {
   }
 
   .section h2 {
-    font-size: 26px
+    font-size: 19px
   }
 
   .world-grid {
@@ -1095,25 +1095,25 @@ a {
   }
 
   .manufacturing h2 {
-    font-size: 25px;
+    font-size: 20.88px;
     line-height: 1.15
   }
 
   .manufacturing h2 em {
-    font-size: 1.08em;
+    font-size: 24.25px;
     line-height: 1.15
   }
 
   .manufacturing p {
     max-width: 330px;
     margin-bottom: 14px;
-    font-size: 11px;
+    font-size: 10px !important;
     line-height: 1.5
   }
 
   .manufacturing .btn {
     min-height: 34px;
-    font-size: 9px
+    font-size: 9px !important;
   }
 
   .product-toolbar {
@@ -1244,8 +1244,8 @@ a {
   }
 
   .project figcaption span {
-    font-size: 11.5px;
-    font-weight: 400;
+    font-size: 10px;
+    font-weight: 300;
     color: #ffffffd1;
     line-height: 1.3;
     white-space: nowrap;
@@ -1267,12 +1267,12 @@ a {
   }
 
   .image-cta h2 {
-    font-size: 28px
+    font-size: 20.88px;
   }
 
   .image-cta p {
     max-width: 310px;
-    font-size: 12px;
+    font-size: 10px;
     line-height: 1.5
   }
 
@@ -1312,7 +1312,9 @@ a {
   }
 
   .story p {
-    margin: 22px 20px 8px
+    margin: 22px 20px 8px;
+    font-size: 10px !important;
+    font-weight: 400 !important;
   }
 
   .story h3 {
@@ -1658,7 +1660,7 @@ a {
 
   .projects .section-head .project-all-link {
     gap: 8px;
-    font-size: 11px
+    font-size: 10.44px !important;
   }
 
   .project-all-arrow {
@@ -2726,7 +2728,7 @@ footer#contact {
     white-space: nowrap;
     min-height: 33px;
     padding: 0 8px 10px;
-    font-size: 12px;
+    font-size: 9.05px;
     line-height: 20px
   }
 }

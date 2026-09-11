@@ -192,7 +192,8 @@ header {
 
 .hero-copy p {
     margin: 0 0 28px;
-    font-size: 17px
+    font-size: 18.41px;
+    font-weight: 400;
 }
 
 .dots {
@@ -294,7 +295,7 @@ header {
     position: absolute;
     top: 50%;
     right: 9vw;
-    transform: translateY(-50%)
+    transform: translateY(-15%)
 }
 
 .manufacturing h2,
@@ -329,6 +330,7 @@ header {
     background: #eee;
     border-radius: 0 42px 0 0;
     height: 360px;
+    width: 302px;
     overflow: hidden
 }
 
@@ -426,7 +428,7 @@ header {
 .image-cta {
     color: #fff;
     background: #38322c url(https://www.figma.com/api/mcp/asset/906203ad-3e78-47f0-ac06-26ae4466e974) 50%/cover no-repeat;
-    height: 625px;
+    height: 624.38px !important;
     position: relative
 }
 
@@ -639,11 +641,11 @@ footer {
     }
 
     .product h3 {
-        font-size: 16px
+        font-size: 11.05px;
     }
 
     .product p {
-        font-size: 11px
+        font-size: 10px
     }
 
     .project-grid {
@@ -658,6 +660,14 @@ footer {
 
     .clients {
         grid-template-columns: repeat(2, 1fr)
+    }
+
+    .manufacturing h2 em,
+    .image-cta h2 em {
+        color: var(--amber);
+        font-family: Libre Baskerville;
+        font-size: 24.25px;
+        display: block
     }
 
     .image-cta {
@@ -1758,7 +1768,7 @@ body.spot-on #spotlight {
 }
 
 .project-grid {
-    grid-template-rows: clamp(300px, 26vw, 408px) clamp(300px, 26vw, 408px);
+    grid-template-rows: 363px 363px;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 10px;
     display: grid
@@ -1831,7 +1841,7 @@ body.spot-on #spotlight {
 
 .image-cta {
     background-position: 50%;
-    height: 625px
+    height: 624.38px;
 }
 
 .image-cta:after {
@@ -1842,7 +1852,7 @@ body.spot-on #spotlight {
     width: min(700px, 52vw);
     max-width: none;
     inset: 50% auto auto max(32px, 7vw);
-    transform: translateY(-50%)
+    transform: translateY(-15%)
 }
 
 .image-cta h2 {
@@ -1939,7 +1949,8 @@ body.spot-on #spotlight {
     }
 
     .projects .section-head h2 {
-        font-size: 30px
+        font-size: 19px;
+        font-weight: 600;
     }
 
     .projects .section-head .muted:before {
@@ -1971,6 +1982,15 @@ body.spot-on #spotlight {
         left: 18px
     }
 
+    .image-cta h2 em {
+        font-size: 24.25px !important;
+    }
+
+    .manufacturing h2 em,
+    .image-cta h2 em {
+        font-size: 24.25px !important;
+    }
+
     .project strong {
         font-size: 19px
     }
@@ -1991,7 +2011,7 @@ body.spot-on #spotlight {
     }
 
     .image-cta h2 {
-        font-size: 36px
+        font-size: 20.88px;
     }
 }
 
@@ -2650,7 +2670,8 @@ body .image-cta .btn:focus-visible {
         min-height: 38px;
         padding-left: 16px;
         padding-right: 16px;
-        font-size: 13px
+        font-size: 9px;
+        width: 158px;
     }
 }
 
@@ -2695,8 +2716,8 @@ header.sitehead {
     flex: none;
     justify-content: center;
     align-items: center;
-    width: 150px;
-    height: 80px;
+    width: 97px;
+    height: 54px;
     transition: opacity .25s, filter .25s, transform .25s;
     display: flex
 }
@@ -2961,8 +2982,8 @@ a {
     border: 1px solid #ffffff6b;
     border-radius: 2px;
     place-items: center;
-    width: 34px;
-    height: 34px;
+    width: 27px;
+    height: 27px;
     padding: 0;
     font: 300 27px/1 Inter, sans-serif;
     transition: background .2s, border-color .2s, color .2s;
@@ -3305,11 +3326,11 @@ a {
 }
 
 .hero-arrow-previous {
-    left: 30px
+    left: 55px
 }
 
 .hero-arrow-next {
-    right: 30px
+    right: 55px
 }
 
 .footer-accordion {
@@ -3821,8 +3842,8 @@ a {
 
     .hero-arrow {
         border-color: #ffffff40;
-        width: 30px;
-        height: 30px;
+        width: 27px;
+        height: 27px;
         font-size: 24px;
         top: 48%
     }
@@ -3926,25 +3947,25 @@ a {
     }
 
     .manufacturing h2 {
-        font-size: 25px;
+        font-size: 20.88px;
         line-height: 1.15
     }
 
     .manufacturing h2 em {
-        font-size: 1.08em;
+        font-size: 24.25px;
         line-height: 1.15
     }
 
     .manufacturing p {
         max-width: 330px;
         margin-bottom: 14px;
-        font-size: 11px;
+        font-size: 10px !important;
         line-height: 1.5
     }
 
     .manufacturing .btn {
         min-height: 34px;
-        font-size: 9px
+        font-size: 9px !important;
     }
 
     .product-toolbar {
@@ -3990,13 +4011,13 @@ a {
     }
 
     .project {
-        min-height: 205px
+        height: 363px
     }
 
     .project:first-child {
         order: 5;
         grid-column: auto;
-        min-height: 205px
+        height: 363px
     }
 
     .project:nth-child(2) {
@@ -4034,12 +4055,12 @@ a {
     }
 
     .image-cta h2 {
-        font-size: 28px
+        font-size: 20.88px;
     }
 
     .image-cta p {
         max-width: 310px;
-        font-size: 12px;
+        font-size: 10px;
         line-height: 1.5
     }
 
@@ -4079,7 +4100,9 @@ a {
     }
 
     .story p {
-        margin: 22px 20px 8px
+        margin: 22px 20px 8px;
+        font-size: 10px !important;
+        font-weight: 400 !important;
     }
 
     .story h3 {
@@ -5489,7 +5512,7 @@ footer#contact {
         white-space: nowrap;
         min-height: 33px;
         padding: 0 8px 10px;
-        font-size: 12px;
+        font-size: 9.05px;
         line-height: 20px
     }
 }
