@@ -13,7 +13,7 @@ export default function HeroSection({ heroSection, collectionName }: HeroSection
   return (
     <section className="s-hero">
       {/* Background Image */}
-      {heroSection.background_image && (
+      {heroSection?.background_image && (
         <Image
           src={heroSection.background_image}
           alt={`${collectionName} Hero`}
@@ -27,27 +27,27 @@ export default function HeroSection({ heroSection, collectionName }: HeroSection
       {/* Shade overlay */}
       <div className="s-hero-shade" />
 
+      {/* Breadcrumb */}
+      <nav className="site-breadcrumb site-breadcrumb--on-dark s-crumb" aria-label="Breadcrumb">
+        <Link href="/">Home</Link>
+        &nbsp;&nbsp;/&nbsp;&nbsp;
+        <Link href={heroSection?.breadcrumb_parent_link || '/decorative-products'}>
+          {heroSection?.breadcrumb_parent_text || 'Decorative'}
+        </Link>
+        &nbsp;&nbsp;/&nbsp;&nbsp;
+        <span>{collectionName}</span>
+      </nav>
+
       {/* Content */}
       <div className="s-hero-copy">
-        {/* Breadcrumb */}
-        {heroSection.breadcrumb_parent_text && (
-          <nav className="s-crumb" aria-label="Breadcrumb">
-            <Link href="/">Home</Link>
-            &nbsp;&nbsp;/&nbsp;&nbsp;
-            <Link href={heroSection.breadcrumb_parent_link || '/decorative'}>
-              {heroSection.breadcrumb_parent_text}
-            </Link>
-          </nav>
-        )}
-
         {/* Title */}
         <h1>
-          {heroSection.title_prefix && <span>{heroSection.title_prefix}</span>}
-          {heroSection.title_highlight && <em>{heroSection.title_highlight}</em>}
+          {heroSection?.title_prefix && <span>{heroSection.title_prefix}</span>}
+          {heroSection?.title_highlight && <em>{heroSection.title_highlight}</em>}
         </h1>
 
         {/* Description */}
-        {heroSection.description && (
+        {heroSection?.description && (
           <p>{heroSection.description}</p>
         )}
       </div>

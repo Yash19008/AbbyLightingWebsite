@@ -67,7 +67,15 @@
                         <div class="form-group row">
                             <label for="inputName" class="col-sm-3 control-label">Heading</label>
                             <div class="col-sm-6">
-                                <input type="text" id="heading" name="heading" class="form-control" placeholder="Enter slide heading" value="{{@$slider->heading}}">
+                                <input type="text" id="heading" name="heading" class="form-control" placeholder="Enter slide heading (e.g., Shaping the)" value="{{@$slider->heading}}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="heading_highlight" class="col-sm-3 control-label">Heading Highlight <span class="badge badge-warning" style="background-color:#f6c177;color:#111;">Yellow Italic Text</span></label>
+                            <div class="col-sm-6">
+                                <input type="text" id="heading_highlight" name="heading_highlight" class="form-control" placeholder="e.g., art of light, beautiful spaces" value="{{@$slider->heading_highlight}}">
+                                <small class="form-text text-muted">This text will be styled with the elegant golden/yellow serif italic font (e.g. <em>art of light</em>).</small>
                             </div>
                         </div>
                         

@@ -76,4 +76,13 @@ Route::get('/blogs/{slug}', [\App\Http\Controllers\Api\BlogApiController::class,
 // Watch & Shop (Reels / Videos) API
 Route::get('/watch-and-shops', [\App\Http\Controllers\Api\WatchAndShopApiController::class, 'index']);
 
+// Catalogues API
+Route::get('/catalogue-categories', [\App\Http\Controllers\Api\CatalogueApiController::class, 'categories']);
+Route::get('/catalogues', [\App\Http\Controllers\Api\CatalogueApiController::class, 'index']);
+Route::get('/catalogues/{slug}', [\App\Http\Controllers\Api\CatalogueApiController::class, 'show']);
+Route::get('/catalogues/{id}/download-pdf', [\App\Http\Controllers\Api\CatalogueApiController::class, 'downloadPdf']);
+Route::post('/catalog-downloads', [\App\Http\Controllers\Api\CatalogueApiController::class, 'storeDownloadLead']);
+
+
+
 

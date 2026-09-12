@@ -6,6 +6,7 @@ export interface Slider {
   sort_order: number;
   url: string | null;
   heading: string | null;
+  heading_highlight: string | null;
   description: string | null;
   button_text: string | null;
   button_link: string | null;

@@ -32,6 +32,30 @@
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0));
 }
 
+.inspiration-page .insp-hero-breadcrumb {
+  position: absolute;
+  top: 118px;
+  left: 6.45vw;
+  z-index: 3;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.inspiration-page .insp-hero-breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.inspiration-page .insp-hero-breadcrumb a:hover,
+.inspiration-page .insp-hero-breadcrumb a:focus-visible {
+  color: #f6c177;
+}
+
 .inspiration-page .insp-hero-copy {
   position: absolute;
   z-index: 2;
@@ -40,10 +64,7 @@
 }
 
 .inspiration-page .insp-hero-copy .breadcrumb {
-  font-size: 12px;
-  margin: 0 0 16px 0;
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0.02em;
+  display: none;
 }
 
 .inspiration-page .insp-hero h1 {
@@ -965,6 +986,10 @@
     left: 4vw;
   }
 
+  .inspiration-page .insp-hero-breadcrumb {
+    left: 4vw;
+  }
+
   .inspiration-page .looks-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -995,6 +1020,12 @@
     height: 441px;
     background-size: cover;
     background-position: center;
+  }
+
+  .inspiration-page .insp-hero-breadcrumb {
+    top: 96px;
+    left: 20px;
+    font-size: 10.5px;
   }
 
   .inspiration-page .insp-hero-copy {
@@ -1048,7 +1079,7 @@
   }
 
   .inspiration-page .look-card {
-    height: 220px;
+    height: 217px;
   }
 
   .inspiration-page .look-copy strong {

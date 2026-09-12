@@ -11,7 +11,8 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
         <div className="section-head reveal">
           <h2>Latest projects</h2>
           <a className="project-all-link" href="https://abbylighting.com/projects">
-            <span>View all projects</span>
+            <span className="lbl-d">View all projects</span>
+            <span className="lbl-m">View All</span>
             <svg 
               className="project-all-arrow" 
               width="24" 

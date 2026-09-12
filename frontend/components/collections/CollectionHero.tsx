@@ -13,12 +13,14 @@ export default function CollectionHero() {
         style={{ objectFit: 'cover' }}
       />
       <div className="s-hero-shade" />
+      <nav className="site-breadcrumb site-breadcrumb--on-dark s-crumb" aria-label="Breadcrumb">
+        <Link href="/">Home</Link>
+        &nbsp;&nbsp;/&nbsp;&nbsp;
+        <Link href="/decorative-products">Decorative</Link>
+        &nbsp;&nbsp;/&nbsp;&nbsp;
+        <span>Symphony Collection</span>
+      </nav>
       <div className="s-hero-copy">
-        <nav className="s-crumb" aria-label="Breadcrumb">
-          <Link href="/">Home</Link>
-          &nbsp;&nbsp;/&nbsp;&nbsp;
-          <Link href="/decorative">Decorative</Link>
-        </nav>
         <h1>
           <span>The</span>
           <em>Symphony Collection</em>

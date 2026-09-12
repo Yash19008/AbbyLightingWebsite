@@ -1,10 +1,10 @@
 export default function CatalogueSection() {
   return (
     <section className="image-cta">
-      <img 
-        className="catalogue-media section-parallax-media" 
-        src="/images/figma-update/catalogue.png" 
-        alt="" 
+      <img
+        className="catalogue-media section-parallax-media"
+        src="/images/figma-update/catalogue.png"
+        alt=""
       />
       <div className="copy reveal">
         <h2>
@@ -13,8 +13,8 @@ export default function CatalogueSection() {
         <p>
           Explore our complete collection of architectural, decorative and outdoor lighting, with detailed specifications for every luminaire.
         </p>
-        <a className="btn" href="/#contact">
-          View Catalogues
+        <a className="btn copy-btn" href="/#contact">
+          Browse the Library
         </a>
       </div>
     </section>

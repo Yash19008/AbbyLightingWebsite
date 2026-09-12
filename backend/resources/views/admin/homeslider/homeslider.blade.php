@@ -71,8 +71,11 @@
                                             </div>
                                         </td>
                                         <td class="text-left">
-                                            @if(!empty($row->heading))
-                                                <strong>{{ \Illuminate\Support\Str::limit($row->heading, 40) }}</strong>
+                                            @if(!empty($row->heading) || !empty($row->heading_highlight))
+                                                <strong>{{ $row->heading }}</strong>
+                                                @if(!empty($row->heading_highlight))
+                                                    <em style="color:#b8860b;font-family:serif;">{{ $row->heading_highlight }}</em>
+                                                @endif
                                             @else
                                                 <span class="text-muted">-</span>
                                             @endif

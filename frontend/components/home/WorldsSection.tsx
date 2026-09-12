@@ -267,6 +267,37 @@ export default function WorldsSection({ lightWorlds }: WorldsSectionProps) {
             </button>
           )}
 
+          {/* Mobile Floating Circular Previous Arrow Button */}
+          {isMobile && canScrollLeft && (
+            <button
+              onClick={() => scroll(-1)}
+              aria-label="Previous"
+              style={{
+                position: 'absolute',
+                left: '-12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 10,
+                width: 32,
+                height: 32,
+                borderRadius: '50%',
+                background: 'rgba(30, 30, 30, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                color: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                padding: 0,
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+          )}
+
           {/* Mobile Floating Circular Next Arrow Button */}
           {isMobile && canScrollRight && (
             <button

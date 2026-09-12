@@ -43,8 +43,8 @@
     stroke: currentColor;
     stroke-width: 1.5px;
     stroke-linecap: round;
-    width: 19px;
-    height: 19px;
+    width: 26px;
+    height: 26px;
     display: block
 }
 
@@ -168,8 +168,8 @@
 @media (width<=900px) {
     .abby-search {
         flex-basis: 32px;
-        width: 32px;
-        height: 38px
+        width: 35px;
+        height: 32px
     }
 
     .abby-search-toggle {

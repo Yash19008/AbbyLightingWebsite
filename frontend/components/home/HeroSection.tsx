@@ -7,13 +7,43 @@ interface HeroSectionProps {
   sliders: Slider[];
 }
 
+function formatHeadingHtml(heading?: string | null, highlight?: string | null): string {
+  if (!heading && !highlight) return "";
+  const h = (heading || "").trim();
+  const hl = (highlight || "").trim();
+
+  if (!hl) {
+    return h;
+  }
+
+  if (!h) {
+    return `<em>${hl}</em>`;
+  }
+
+  if (h.includes("<em>")) {
+    return h;
+  }
+
+  const lowerH = h.toLowerCase();
+  const lowerHl = hl.toLowerCase();
+  const idx = lowerH.indexOf(lowerHl);
+  if (idx !== -1) {
+    const before = h.slice(0, idx);
+    const matched = h.slice(idx, idx + hl.length);
+    const after = h.slice(idx + hl.length);
+    return `${before}<em>${matched}</em>${after}`.trim();
+  }
+
+  return `${h} <em>${hl}</em>`.trim();
+}
+
 export default function HeroSection({ sliders }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
 
   // Hero carousel logic
   useEffect(() => {
     const hero = heroRef.current;
-    if (!hero || sliders.length === 0) return;
+    if (!hero) return;
 
     const track = hero.querySelector(".hero-track") as HTMLElement;
     const slides = Array.from(hero.querySelectorAll("[data-hero-slide]"));
@@ -156,7 +186,14 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
                 </>
               )}
               <div className="hero-copy">
-                {slider.heading && <h1 className="display" dangerouslySetInnerHTML={{ __html: slider.heading }}></h1>}
+                {(slider.heading || slider.heading_highlight) && (
+                  <h1
+                    className="display"
+                    dangerouslySetInnerHTML={{
+                      __html: formatHeadingHtml(slider.heading, slider.heading_highlight),
+                    }}
+                  />
+                )}
                 {slider.description && <p>{slider.description}</p>}
                 {slider.button_text && slider.button_link && (
                   <a className="btn" href={slider.button_link}>
@@ -215,16 +252,8 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
           </>
         )}
       </div>
-      <button className="hero-arrow hero-arrow-previous" type="button" aria-label="Previous hero banner">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M15 18l-6-6 6-6"></path>
-        </svg>
-      </button>
-      <button className="hero-arrow hero-arrow-next" type="button" aria-label="Next hero banner">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M9 18l6-6-6-6"></path>
-        </svg>
-      </button>
+      <button className="hero-arrow hero-arrow-previous" type="button" aria-label="Previous hero banner">‹</button>
+      <button className="hero-arrow hero-arrow-next" type="button" aria-label="Next hero banner">›</button>
       <div className="dots">
         {sliders.length > 0 ? (
           sliders.map((slider, index) => (

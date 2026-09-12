@@ -200,7 +200,9 @@ Route::group(['prefix' => 'admin'], function () {
         /********************CATALOG DOWNLOADS********************/
         Route::get('/catalog', [CatalogDownloadAdminController::class, 'index'])->name('catalog_admin');
         Route::get('/catalog/list', [CatalogDownloadAdminController::class, 'list'])->name('catalog_admin.list');
+        Route::delete('/catalog/delete/{id}', [CatalogDownloadAdminController::class, 'destroy'])->name('catalog_admin.destroy');
         Route::post('/upload-catalog', [CatalogDownloadAdminController::class, 'uploadCatalog'])->name('catalog_admin.upload');
+
         /********************PROJECT********************/
         Route::get('/project', [ProjectAdminController::class, 'index'])->name('project_admin');
         Route::get('/project/list', [ProjectAdminController::class, 'list'])->name('project_admin.list');
@@ -342,6 +344,22 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/watch-and-shops/edit/{id}', [App\Http\Controllers\Admin\WatchAndShopController::class, 'edit'])->name('admin.watch_and_shops.edit');
         Route::put('/watch-and-shops/update/{id}', [App\Http\Controllers\Admin\WatchAndShopController::class, 'update'])->name('admin.watch_and_shops.update');
         Route::delete('/watch-and-shops/delete/{id}', [App\Http\Controllers\Admin\WatchAndShopController::class, 'delete'])->name('admin.watch_and_shops.delete');
+
+        /********************CATALOGUE CATEGORIES********************/
+        Route::get('/catalogue-categories', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'index'])->name('admin.catalogue-categories.index');
+        Route::get('/catalogue-categories/add', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'add'])->name('admin.catalogue-categories.add');
+        Route::post('/catalogue-categories/store', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'store'])->name('admin.catalogue-categories.store');
+        Route::get('/catalogue-categories/edit/{id}', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'edit'])->name('admin.catalogue-categories.edit');
+        Route::put('/catalogue-categories/update/{id}', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'update'])->name('admin.catalogue-categories.update');
+        Route::delete('/catalogue-categories/delete/{id}', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'destroy'])->name('admin.catalogue-categories.destroy');
+
+        /********************CATALOGUES********************/
+        Route::get('/catalogues', [App\Http\Controllers\Admin\CatalogueController::class, 'index'])->name('admin.catalogues.index');
+        Route::get('/catalogues/add', [App\Http\Controllers\Admin\CatalogueController::class, 'add'])->name('admin.catalogues.add');
+        Route::post('/catalogues/store', [App\Http\Controllers\Admin\CatalogueController::class, 'store'])->name('admin.catalogues.store');
+        Route::get('/catalogues/edit/{id}', [App\Http\Controllers\Admin\CatalogueController::class, 'edit'])->name('admin.catalogues.edit');
+        Route::put('/catalogues/update/{id}', [App\Http\Controllers\Admin\CatalogueController::class, 'update'])->name('admin.catalogues.update');
+        Route::delete('/catalogues/delete/{id}', [App\Http\Controllers\Admin\CatalogueController::class, 'destroy'])->name('admin.catalogues.destroy');
 
         /********************DECORATIVE CATEGORIES********************/
         Route::get('/decorative-categories', [App\Http\Controllers\Admin\DecorativeCategoryController::class, 'index'])->name('decorative_category_admin');

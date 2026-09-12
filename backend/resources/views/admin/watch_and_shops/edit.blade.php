@@ -62,7 +62,6 @@
                             <select class="form-control" id="video_type" name="video_type" required onchange="toggleVideoTypeInputs()">
                                 <option value="upload" {{ old('video_type', $item->video_type ?? 'upload') === 'upload' ? 'selected' : '' }}>Direct Video File Upload (MP4 / WebM)</option>
                                 <option value="url" {{ old('video_type', $item->video_type) === 'url' ? 'selected' : '' }}>External Video URL (Direct MP4 link)</option>
-                                <option value="instagram" {{ old('video_type', $item->video_type) === 'instagram' ? 'selected' : '' }}>Instagram Reel URL</option>
                                 <option value="youtube" {{ old('video_type', $item->video_type) === 'youtube' ? 'selected' : '' }}>YouTube Shorts / Video URL</option>
                             </select>
                         </div>
@@ -80,11 +79,11 @@
                         </div>
 
                         <div class="form-group" id="video_url_group" style="display: none;">
-                            <label for="video_url"><strong>Video / Reel Link URL</strong> <span class="text-danger">*</span></label>
+                            <label for="video_url"><strong>Video Link URL</strong> <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="video_url" name="video_url"
                                 value="{{ old('video_url', $item->video_url) }}"
-                                placeholder="https://www.instagram.com/reel/... or https://youtube.com/shorts/...">
-                            <small class="form-text text-muted">Paste the direct video link, Instagram reel link, or YouTube embed link.</small>
+                                placeholder="https://youtube.com/shorts/... or https://example.com/video.mp4">
+                            <small class="form-text text-muted">Paste the direct video link or YouTube embed/shorts link.</small>
                         </div>
 
                         <div class="row">

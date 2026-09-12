@@ -104,7 +104,7 @@
                     {{-- ══════════════════════════════════════
                          SECTION: ARCHITECTURAL PRODUCTS
                          ══════════════════════════════════════ --}}
-                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['Product', 'Category', 'Tags', 'Sub Tags', 'Attributes', 'Icons', 'Collections'])) ? 'open' : '' }}">
+                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['Product', 'Category', 'Tags', 'Sub Tags', 'Attributes', 'Icons'])) ? 'open' : '' }}">
                         <a href="#"><i class="ft-zap"></i><span class="menu-title">Architectural</span></a>
                         <ul class="menu-content">
                             <li class="{{ (@$main_module == 'Product') ? 'active' : '' }}">
@@ -124,9 +124,6 @@
                             </li>
                             <li class="{{ (@$main_module == 'Icons') ? 'active' : '' }}">
                                 <a class="menu-item" href="{{ route('icon_admin') }}"><i class="ft-star" style="font-size:11px;margin-right:4px;"></i> Icons</a>
-                            </li>
-                            <li class="{{ (@$main_module == 'Collections') ? 'active' : '' }}">
-                                <a class="menu-item" href="{{ route('admin.collections.index') }}"><i class="ft-layers" style="font-size:11px;margin-right:4px;"></i> Collections</a>
                             </li>
                         </ul>
                     </li>
@@ -150,6 +147,21 @@
                     </li>
 
                     {{-- ══════════════════════════════════════
+                         SECTION: COLLECTIONS
+                         ══════════════════════════════════════ --}}
+                    <li class="nav-item has-sub {{ (@$main_module == 'Collections' || str_starts_with(Route::currentRouteName() ?? '', 'admin.collections')) ? 'open' : '' }}">
+                        <a href="#"><i class="ft-layers"></i><span class="menu-title">Collections</span></a>
+                        <ul class="menu-content">
+                            <li class="{{ (Route::currentRouteName() == 'admin.collections.index' || (@$main_module == 'Collections' && !in_array(Route::currentRouteName(), ['admin.collections.create']))) ? 'active' : '' }}">
+                                <a class="menu-item" href="{{ route('admin.collections.index') }}"><i class="ft-layers" style="font-size:11px;margin-right:4px;"></i> All Collections</a>
+                            </li>
+                            <li class="{{ (Route::currentRouteName() == 'admin.collections.create') ? 'active' : '' }}">
+                                <a class="menu-item" href="{{ route('admin.collections.create') }}"><i class="ft-plus-circle" style="font-size:11px;margin-right:4px;"></i> Add Collection</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    {{-- ══════════════════════════════════════
                          SECTION: BLOGS & ARTICLES
                          ══════════════════════════════════════ --}}
                     <li class="nav-item has-sub {{ (in_array(@$main_module, ['Blogs', 'Blog Categories']) || str_starts_with(Route::currentRouteName() ?? '', 'admin.blog')) ? 'open' : '' }}">
@@ -163,6 +175,24 @@
                             </li>
                             <li class="{{ (@$main_module == 'Blog Categories' || str_starts_with(Route::currentRouteName() ?? '', 'admin.blog-categories')) ? 'active' : '' }}">
                                 <a class="menu-item" href="{{ route('admin.blog-categories.index') }}"><i class="ft-folder" style="font-size:11px;margin-right:4px;"></i> Categories</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    {{-- ══════════════════════════════════════
+                         SECTION: CATALOGUES
+                         ══════════════════════════════════════ --}}
+                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['Catalogues', 'Catalogue Categories']) || str_starts_with(Route::currentRouteName() ?? '', 'admin.catalogue')) ? 'open' : '' }}">
+                        <a href="#"><i class="ft-book"></i><span class="menu-title">Catalogues</span></a>
+                        <ul class="menu-content">
+                            <li class="{{ (Route::currentRouteName() == 'admin.catalogues.index' || (@$main_module == 'Catalogues' && !in_array(Route::currentRouteName(), ['admin.catalogues.add', 'admin.catalogue-categories.index', 'admin.catalogue-categories.add']))) ? 'active' : '' }}">
+                                <a class="menu-item" href="{{ route('admin.catalogues.index') }}"><i class="ft-book-open" style="font-size:11px;margin-right:4px;"></i> All Catalogues</a>
+                            </li>
+                            <li class="{{ (Route::currentRouteName() == 'admin.catalogues.add') ? 'active' : '' }}">
+                                <a class="menu-item" href="{{ route('admin.catalogues.add') }}"><i class="ft-plus-circle" style="font-size:11px;margin-right:4px;"></i> Add Catalogue</a>
+                            </li>
+                            <li class="{{ (@$main_module == 'Catalogue Categories' || str_starts_with(Route::currentRouteName() ?? '', 'admin.catalogue-categories')) ? 'active' : '' }}">
+                                <a class="menu-item" href="{{ route('admin.catalogue-categories.index') }}"><i class="ft-grid" style="font-size:11px;margin-right:4px;"></i> Categories</a>
                             </li>
                         </ul>
                     </li>

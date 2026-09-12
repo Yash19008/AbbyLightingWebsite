@@ -106,44 +106,221 @@ export default function HeaderClient() {
     };
   }, [isSearchOpen]);
 
-  const [activeTab, setActiveTab] = React.useState<"home" | "products" | "work" | "inspiration" | "more">("home");
+  type TabId = "home" | "products" | "work" | "inspiration" | "more";
+
+  interface TabItem {
+    id: TabId;
+    label: string;
+    activeIcon: React.ReactNode;
+    idleIcon: React.ReactNode;
+    isProduct?: boolean;
+  }
+
+  const TABS: TabItem[] = [
+    {
+      id: "home",
+      label: "Home",
+      activeIcon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 11.5L12 4l9 7.5v7a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5v-7z" />
+        </svg>
+      ),
+      idleIcon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 11.5L12 4l9 7.5v7a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5v-7z" />
+        </svg>
+      ),
+    },
+    {
+      id: "products",
+      label: "Products",
+      isProduct: true,
+      activeIcon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="3" x2="12" y2="8" />
+          <path d="M5 15a7 7 0 0 1 14 0H5z" />
+          <path d="M10 15a2 2 0 0 0 4 0" />
+        </svg>
+      ),
+      idleIcon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="3" x2="12" y2="8" />
+          <path d="M5 15a7 7 0 0 1 14 0H5z" />
+          <path d="M10 15a2 2 0 0 0 4 0" />
+        </svg>
+      ),
+    },
+    {
+      id: "work",
+      label: "Our works",
+      activeIcon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 6h4.5l2 2h8a1 1 0 0 1 1 1v1.5H3.5V7a1 1 0 0 1 1-1z" />
+          <path d="M2.5 10.5h18a1 1 0 0 1 1 1.2l-1.3 6.8a1 1 0 0 1-1 .8H4.2a1 1 0 0 1-1-.8L1.8 11.7a1 1 0 0 1 .7-1.2z" />
+        </svg>
+      ),
+      idleIcon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 6h4.5l2 2h8a1 1 0 0 1 1 1v1.5H3.5V7a1 1 0 0 1 1-1z" />
+          <path d="M2.5 10.5h18a1 1 0 0 1 1 1.2l-1.3 6.8a1 1 0 0 1-1 .8H4.2a1 1 0 0 1-1-.8L1.8 11.7a1 1 0 0 1 .7-1.2z" />
+        </svg>
+      ),
+    },
+    {
+      id: "inspiration",
+      label: "Our inspiration",
+      activeIcon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 2.2-1.2 3.8-2.2 5.1-.5.7-.8 1.4-.8 2.4H9.5c0-1-.3-1.7-.8-2.4-1-1.3-2.2-2.9-2.2-5.1z" />
+          <line x1="9" y1="20" x2="15" y2="20" />
+        </svg>
+      ),
+      idleIcon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 2.2-1.2 3.8-2.2 5.1-.5.7-.8 1.4-.8 2.4H9.5c0-1-.3-1.7-.8-2.4-1-1.3-2.2-2.9-2.2-5.1z" />
+          <line x1="9" y1="20" x2="15" y2="20" />
+        </svg>
+      ),
+    },
+    {
+      id: "more",
+      label: "More",
+      activeIcon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="5" y1="8" x2="19" y2="8" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <line x1="5" y1="16" x2="19" y2="16" />
+        </svg>
+      ),
+      idleIcon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="5" y1="8" x2="19" y2="8" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <line x1="5" y1="16" x2="19" y2="16" />
+        </svg>
+      ),
+    },
+  ];
+
+  const [activeTab, setActiveTab] = React.useState<TabId | null>(null);
   const [activeSheet, setActiveSheet] = React.useState<"products" | "work" | "more" | null>(null);
-  const [productAccordion, setProductAccordion] = React.useState<"arch" | "dec" | null>("dec");
+  const [productAccordion, setProductAccordion] = React.useState<"arch" | "dec" | null>(null);
+
+  // Show dock on scroll, hide when scroll stops
+  const [isDockVisible, setIsDockVisible] = React.useState(false);
+  const scrollTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // Hover preview & Drag & Slide gesture support
+  const [hoveredTab, setHoveredTab] = React.useState<TabId | null>(null);
+  const dockBarRef = React.useRef<HTMLDivElement>(null);
+  const isDraggingRef = React.useRef(false);
+  const [isDraggingState, setIsDraggingState] = React.useState(false);
+
+  const currentVisibleTab = hoveredTab ?? activeTab;
+
+  const activeIndex = React.useMemo(() => {
+    if (!currentVisibleTab) return -1;
+    const idx = TABS.findIndex((tab) => tab.id === currentVisibleTab);
+    return idx >= 0 ? idx : -1;
+  }, [currentVisibleTab]);
+
+  const activeTabItem = activeIndex >= 0 ? TABS[activeIndex] : null;
+
+  const getTabIndexFromClientX = (clientX: number): number => {
+    if (!dockBarRef.current) return Math.max(0, activeIndex);
+    const rect = dockBarRef.current.getBoundingClientRect();
+    const relX = clientX - rect.left;
+    const fraction = relX / rect.width;
+    return Math.max(0, Math.min(4, Math.floor(fraction * 5)));
+  };
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    isDraggingRef.current = true;
+    setIsDraggingState(true);
+    handleDockPointerEnter();
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch { }
+
+    const targetIdx = getTabIndexFromClientX(e.clientX);
+    const targetTab = TABS[targetIdx].id;
+    if (targetTab !== activeTab) {
+      setActiveTab(targetTab);
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
+    const targetIdx = getTabIndexFromClientX(e.clientX);
+    const targetTab = TABS[targetIdx].id;
+    if (targetTab !== activeTab) {
+      setActiveTab(targetTab);
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    setIsDraggingState(false);
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch { }
+
+    const targetIdx = getTabIndexFromClientX(e.clientX);
+    const targetTab = TABS[targetIdx].id;
+    handleTabClick(targetTab);
+  };
 
   React.useEffect(() => {
+    const handleScrollVisibility = () => {
+      setIsDockVisible(true);
+
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsDockVisible(false);
+      }, 1500);
+    };
+
+    window.addEventListener("scroll", handleScrollVisibility, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScrollVisibility);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleDockPointerEnter = () => {
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    setIsDockVisible(true);
+  };
+
+  const handleDockPointerLeave = () => {
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsDockVisible(false);
+    }, 1500);
+  };
+
+  React.useEffect(() => {
+    // Optionally track route if on dedicated subpages
     if (typeof window !== "undefined") {
       const path = window.location.pathname;
       if (path.startsWith("/inspiration") || path.startsWith("/blogs")) {
         setActiveTab("inspiration");
       } else if (path.startsWith("/projects") || path.startsWith("/clients")) {
         setActiveTab("work");
-      } else if (path.startsWith("/decorative") || path.startsWith("/product") || path.startsWith("/collections")) {
-        setActiveTab("products");
       }
     }
   }, []);
-
-  React.useEffect(() => {
-    const handleScrollTab = () => {
-      if (activeSheet || window.location.pathname !== "/") return;
-      const scrollY = window.scrollY;
-      const newsEl = document.getElementById("news");
-      const projectsEl = document.getElementById("projects");
-      const worldsEl = document.getElementById("worlds");
-
-      if (newsEl && scrollY >= newsEl.offsetTop - 350) {
-        setActiveTab("inspiration");
-      } else if (projectsEl && scrollY >= projectsEl.offsetTop - 350) {
-        setActiveTab("work");
-      } else if (worldsEl && scrollY >= worldsEl.offsetTop - 350) {
-        setActiveTab("products");
-      } else {
-        setActiveTab("home");
-      }
-    };
-    window.addEventListener("scroll", handleScrollTab, { passive: true });
-    return () => window.removeEventListener("scroll", handleScrollTab);
-  }, [activeSheet]);
 
   React.useEffect(() => {
     if (activeSheet) {
@@ -253,9 +430,9 @@ export default function HeaderClient() {
                               )}
                             </ul>
                           </div>
-                          
+
                           <div className="msep sm"></div>
-                          
+
                           {/* Right Column - Browse by Collection */}
                           <div>
                             <div className="msub">Browse by collection</div>
@@ -278,16 +455,16 @@ export default function HeaderClient() {
                         </div>
                       </div>
 
-                       <div className="msep lg"></div>
-                        <div className="m-worlds">
-                          <a className="mgroup m-out" href="/#worlds"
-                            ><span className="mhead">Outdoor</span></a
-                          >
-                          <div className="msep hz"></div>
-                          <a className="mgroup m-smart" href="/#worlds"
-                            ><span className="mhead">Smart Lighting</span></a
-                          >
-                        </div>
+                      <div className="msep lg"></div>
+                      <div className="m-worlds">
+                        <a className="mgroup m-out" href="/#worlds"
+                        ><span className="mhead">Outdoor</span></a
+                        >
+                        <div className="msep hz"></div>
+                        <a className="mgroup m-smart" href="/#worlds"
+                        ><span className="mhead">Smart Lighting</span></a
+                        >
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -326,28 +503,28 @@ export default function HeaderClient() {
                     <path d="m16 16 4.5 4.5"></path>
                   </svg>
                 </span>
-                <input 
+                <input
                   ref={searchInputRef}
-                  type="search" 
-                  placeholder="Search for products, collections and more" 
-                  aria-label="Search Abby Lighting" 
-                  autoComplete="off" 
-                  defaultValue="" 
+                  type="search"
+                  placeholder="Search for products, collections and more"
+                  aria-label="Search Abby Lighting"
+                  autoComplete="off"
+                  defaultValue=""
                 />
                 <button className="abby-search-go" type="submit" aria-label="Submit search" disabled>
                   →
                 </button>
               </form>
-              <button 
-                type="button" 
-                className="abby-search-toggle" 
+              <button
+                type="button"
+                className="abby-search-toggle"
                 aria-label={isSearchOpen ? "Close search" : "Open search"}
                 aria-expanded={isSearchOpen}
                 onClick={handleSearchToggle}
               >
                 {isSearchOpen ? (
                   <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 ) : (
                   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -365,155 +542,77 @@ export default function HeaderClient() {
         </div>
       </header>
 
-      {/* Floating Bottom Dock (Mobile Only) */}
-      <nav className="custom-mobile-dock" aria-label="Mobile bottom navigation">
-        <div className="custom-dock-bar">
-          {/* 1. Home */}
-          <button
-            type="button"
-            className={`custom-dock-tab ${activeTab === 'home' ? 'is-active' : ''}`}
-            onClick={() => handleTabClick('home')}
-            aria-label="Home"
-          >
-            {activeTab === 'home' ? (
-              <>
-                <div className="custom-dock-notch" aria-hidden="true" />
-                <div className="custom-dock-active-box">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 11.5L12 4l9 7.5v7a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5v-7z" />
-                  </svg>
-                </div>
-                <span className="custom-dock-label">Home</span>
-              </>
-            ) : (
-              <div className="custom-dock-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 11.5L12 4l9 7.5v7a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5v-7z" />
-                </svg>
-              </div>
+      {/* Floating Bottom Dock (Mobile Only - Slides up on scroll, hides on idle) */}
+      <nav
+        className={`custom-mobile-dock ${isDockVisible || activeSheet !== null ? 'is-visible' : 'is-hidden'}`}
+        aria-label="Mobile bottom navigation"
+        onPointerEnter={handleDockPointerEnter}
+        onPointerLeave={handleDockPointerLeave}
+        onTouchStart={handleDockPointerEnter}
+      >
+        <div
+          ref={dockBarRef}
+          className={`custom-dock-bar ${isDraggingState ? "is-dragging" : ""}`}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          onPointerLeave={() => {
+            handleDockPointerLeave();
+            if (!isDraggingRef.current) {
+              setHoveredTab(null);
+            }
+          }}
+          style={{ "--dock-index": Math.max(0, activeIndex) } as React.CSSProperties}
+        >
+          {/* Fluid Moving Active Indicator (Notch + Amber Box + Label) */}
+          <div className={`custom-dock-slider ${isDraggingState ? "is-dragging" : ""} ${activeIndex >= 0 ? "is-active" : "is-blank"}`}>
+            <div className="custom-dock-notch" aria-hidden="true" />
+            <div className="custom-dock-active-box" key={currentVisibleTab || "none"}>
+              {activeTabItem?.activeIcon}
+            </div>
+            {activeTabItem && (
+              <span className="custom-dock-label" key={`lbl-${currentVisibleTab}`}>
+                {activeTabItem.label}
+              </span>
             )}
-          </button>
+          </div>
 
-          {/* 2. Products */}
-          <button
-            type="button"
-            className={`custom-dock-tab ${activeTab === 'products' ? 'is-active' : ''}`}
-            onClick={() => handleTabClick('products')}
-            aria-label="Products"
-          >
-            {activeTab === 'products' ? (
-              <>
-                <div className="custom-dock-notch" aria-hidden="true" />
-                <div className="custom-dock-active-box">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="12" y1="3" x2="12" y2="8" />
-                    <path d="M5 15a7 7 0 0 1 14 0H5z" />
-                    <path d="M10 15a2 2 0 0 0 4 0" />
-                  </svg>
-                </div>
-                <span className="custom-dock-label">Products</span>
-              </>
-            ) : (
-              <div className="custom-dock-icon custom-dock-icon-product">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="3" x2="12" y2="8" />
-                  <path d="M5 15a7 7 0 0 1 14 0H5z" />
-                  <path d="M10 15a2 2 0 0 0 4 0" />
-                </svg>
-              </div>
-            )}
-          </button>
-
-          {/* 3. Our works */}
-          <button
-            type="button"
-            className={`custom-dock-tab ${activeTab === 'work' ? 'is-active' : ''}`}
-            onClick={() => handleTabClick('work')}
-            aria-label="Our works"
-          >
-            {activeTab === 'work' ? (
-              <>
-                <div className="custom-dock-notch" aria-hidden="true" />
-                <div className="custom-dock-active-box">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 6h4.5l2 2h8a1 1 0 0 1 1 1v1.5H3.5V7a1 1 0 0 1 1-1z" />
-                    <path d="M2.5 10.5h18a1 1 0 0 1 1 1.2l-1.3 6.8a1 1 0 0 1-1 .8H4.2a1 1 0 0 1-1-.8L1.8 11.7a1 1 0 0 1 .7-1.2z" />
-                  </svg>
-                </div>
-                <span className="custom-dock-label">Our works</span>
-              </>
-            ) : (
-              <div className="custom-dock-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 6h4.5l2 2h8a1 1 0 0 1 1 1v1.5H3.5V7a1 1 0 0 1 1-1z" />
-                  <path d="M2.5 10.5h18a1 1 0 0 1 1 1.2l-1.3 6.8a1 1 0 0 1-1 .8H4.2a1 1 0 0 1-1-.8L1.8 11.7a1 1 0 0 1 .7-1.2z" />
-                </svg>
-              </div>
-            )}
-          </button>
-
-          {/* 4. Our inspiration */}
-          <button
-            type="button"
-            className={`custom-dock-tab ${activeTab === 'inspiration' ? 'is-active' : ''}`}
-            onClick={() => handleTabClick('inspiration')}
-            aria-label="Our inspiration"
-          >
-            {activeTab === 'inspiration' ? (
-              <>
-                <div className="custom-dock-notch" aria-hidden="true" />
-                <div className="custom-dock-active-box">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 2.2-1.2 3.8-2.2 5.1-.5.7-.8 1.4-.8 2.4H9.5c0-1-.3-1.7-.8-2.4-1-1.3-2.2-2.9-2.2-5.1z" />
-                    <line x1="9" y1="20" x2="15" y2="20" />
-                  </svg>
-                </div>
-                <span className="custom-dock-label">Our inspiration</span>
-              </>
-            ) : (
-              <div className="custom-dock-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 2.2-1.2 3.8-2.2 5.1-.5.7-.8 1.4-.8 2.4H9.5c0-1-.3-1.7-.8-2.4-1-1.3-2.2-2.9-2.2-5.1z" />
-                  <line x1="9" y1="20" x2="15" y2="20" />
-                </svg>
-              </div>
-            )}
-          </button>
-
-          {/* 5. More */}
-          <button
-            type="button"
-            className={`custom-dock-tab ${activeTab === 'more' ? 'is-active' : ''}`}
-            onClick={() => handleTabClick('more')}
-            aria-label="More"
-          >
-            {activeTab === 'more' ? (
-              <>
-                <div className="custom-dock-notch" aria-hidden="true" />
-                <div className="custom-dock-active-box">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="8" x2="19" y2="8" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <line x1="5" y1="16" x2="19" y2="16" />
-                  </svg>
-                </div>
-                <span className="custom-dock-label">More</span>
-              </>
-            ) : (
-              <div className="custom-dock-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="8" x2="19" y2="8" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <line x1="5" y1="16" x2="19" y2="16" />
-                </svg>
-              </div>
-            )}
-          </button>
+          {/* 5 Grid Tabs */}
+          {TABS.map((tab) => {
+            const isActive = currentVisibleTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                className={`custom-dock-tab ${isActive ? "is-active" : ""}`}
+                onClick={() => {
+                  setHoveredTab(null);
+                  handleTabClick(tab.id);
+                }}
+                onPointerEnter={() => {
+                  handleDockPointerEnter();
+                  if (!isDraggingRef.current) {
+                    setHoveredTab(tab.id);
+                  }
+                }}
+                aria-label={tab.label}
+              >
+                {!isActive ? (
+                  <div className={`custom-dock-icon ${tab.isProduct ? "custom-dock-icon-product" : ""}`}>
+                    {tab.idleIcon}
+                  </div>
+                ) : (
+                  <div className="custom-dock-tab-placeholder" aria-hidden="true" />
+                )}
+              </button>
+            );
+          })}
         </div>
       </nav>
 
       {/* Backdrop for Mobile Sheets */}
-      <div 
+      <div
         className={`custom-sheet-backdrop ${activeSheet ? 'is-open' : ''}`}
         onClick={closeSheet}
         aria-hidden="true"
@@ -528,9 +627,9 @@ export default function HeaderClient() {
               <img src="/images/abby-logo.png" alt="Abby Lighting" />
             </a>
             <div className="pdrop-actions">
-              <button 
-                type="button" 
-                className="pdrop-search-btn" 
+              <button
+                type="button"
+                className="pdrop-search-btn"
                 onClick={() => { closeSheet(); handleSearchToggle(); }}
                 aria-label="Search"
               >
@@ -551,9 +650,9 @@ export default function HeaderClient() {
               {/* Title row with (X) close */}
               <div className="pdrop-title-row">
                 <h2 className="pdrop-title">PRODUCTS</h2>
-                <button 
-                  type="button" 
-                  className="pdrop-circle-close" 
+                <button
+                  type="button"
+                  className="pdrop-circle-close"
                   onClick={closeSheet}
                   aria-label="Close menu"
                 >
@@ -573,11 +672,11 @@ export default function HeaderClient() {
                   <span className={productAccordion === 'arch' ? 'pdrop-amber-text' : ''}>Architectural</span>
                   <span className="pdrop-caret">
                     {productAccordion === 'arch' ? (
-                      <svg width="11" height="7" viewBox="0 0 11 7" fill="currentColor">
+                      <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
                         <polygon points="0,7 11,7 5.5,0" />
                       </svg>
                     ) : (
-                      <svg width="11" height="7" viewBox="0 0 11 7" fill="currentColor">
+                      <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
                         <polygon points="0,0 11,0 5.5,7" />
                       </svg>
                     )}
@@ -590,7 +689,7 @@ export default function HeaderClient() {
                       {architecturalCategories.length > 0 ? (
                         architecturalCategories.map(cat => (
                           <li key={cat.id}>
-                            <a 
+                            <a
                               href={cat.uri || `/products?category=${cat.slug || ''}`}
                               onClick={closeSheet}
                             >
@@ -619,16 +718,16 @@ export default function HeaderClient() {
                   className="pdrop-acc-toggle"
                   onClick={() => setProductAccordion(prev => prev === 'dec' ? null : 'dec')}
                 >
-                  <span className="pdrop-amber-text">
+                  <span className={productAccordion === 'dec' ? 'pdrop-amber-text' : ''} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                     Decorative <span className="pdrop-badge-new">NEW</span>
                   </span>
                   <span className="pdrop-caret">
                     {productAccordion === 'dec' ? (
-                      <svg width="11" height="7" viewBox="0 0 11 7" fill="currentColor">
+                      <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
                         <polygon points="0,7 11,7 5.5,0" />
                       </svg>
                     ) : (
-                      <svg width="11" height="7" viewBox="0 0 11 7" fill="currentColor">
+                      <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
                         <polygon points="0,0 11,0 5.5,7" />
                       </svg>
                     )}
@@ -641,7 +740,7 @@ export default function HeaderClient() {
                       {decorativeCategories.length > 0 ? (
                         decorativeCategories.map(cat => (
                           <li key={cat.id}>
-                            <a 
+                            <a
                               href={`/decorative/${cat.slug}`}
                               onClick={closeSheet}
                             >
@@ -665,7 +764,7 @@ export default function HeaderClient() {
                       {collections.length > 0 ? (
                         collections.map(col => (
                           <li key={col.id}>
-                            <a 
+                            <a
                               href={`/collections/${col.slug}`}
                               onClick={closeSheet}
                             >
@@ -706,9 +805,9 @@ export default function HeaderClient() {
             <div className="pdrop-body">
               <div className="pdrop-title-row">
                 <h2 className="pdrop-title">OUR WORKS</h2>
-                <button 
-                  type="button" 
-                  className="pdrop-circle-close" 
+                <button
+                  type="button"
+                  className="pdrop-circle-close"
                   onClick={closeSheet}
                   aria-label="Close menu"
                 >
@@ -743,9 +842,9 @@ export default function HeaderClient() {
             <div className="pdrop-body">
               <div className="pdrop-title-row">
                 <h2 className="pdrop-title">MORE</h2>
-                <button 
-                  type="button" 
-                  className="pdrop-circle-close" 
+                <button
+                  type="button"
+                  className="pdrop-circle-close"
                   onClick={closeSheet}
                   aria-label="Close menu"
                 >

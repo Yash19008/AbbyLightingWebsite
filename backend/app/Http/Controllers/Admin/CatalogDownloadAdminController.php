@@ -40,20 +40,66 @@ class CatalogDownloadAdminController extends Controller
                 ->setRowClass(function ($row) {
                     return 'data';
                 })
+                ->addColumn('catalogue_name', function ($row) {
+                    $catName = $row->catalogue_name ?: 'General Catalog';
+                    return '<span class="font-weight-bold text-dark">' . e($catName) . '</span>';
+                })
                 ->addColumn('name', function ($row) {
-                    return $row->name;
+                    return '<span class="text-dark">' . e($row->name) . '</span>';
                 })
                 ->addColumn('email', function ($row) {
-                    return $row->email;
+                    return '<a href="mailto:' . e($row->email) . '" style="color:#0284c7; text-decoration:none; font-weight:500;">' . e($row->email) . '</a>';
                 })
                 ->addColumn('mobile', function ($row) {
-                    return $row->mobile;
+                    return e($row->mobile ?? '-');
                 })
                 ->addColumn('created_at', function ($row) {
-                    return $row->created_at;
+                    return $row->created_at ? $row->created_at->format('M d, Y h:i A') : '-';
                 })
-                ->rawColumns(['name','email','created_at','action'])
+                ->addColumn('action', function ($row) {
+                    $jsonPayload = htmlspecialchars(json_encode([
+                        'id' => $row->id,
+                        'catalogue_name' => $row->catalogue_name ?: 'General Catalog',
+                        'name' => $row->name,
+                        'email' => $row->email,
+                        'mobile' => $row->mobile ?: 'N/A',
+                        'city' => $row->city ?: 'N/A',
+                        'company' => $row->company ?: 'N/A',
+                        'role' => $row->role ?: 'N/A',
+                        'message' => $row->message ?: 'No message provided.',
+                        'created_at' => $row->created_at ? $row->created_at->format('F d, Y - h:i A') : 'N/A',
+                    ]), ENT_QUOTES, 'UTF-8');
+
+                    return '
+                        <div class="d-flex align-items-center justify-content-center" style="gap:6px;">
+                            <button type="button" class="btn btn-sm btn-info view-lead-btn" data-lead="' . $jsonPayload . '" title="View Full Details" style="padding:4px 10px; font-size:12px; font-weight:600; border-radius:5px;">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger delete-lead-btn" data-id="' . $row->id . '" title="Delete" style="padding:4px 9px; font-size:12px; border-radius:5px;">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    ';
+                })
+                ->rawColumns(['catalogue_name', 'name', 'email', 'action'])
                 ->make(true);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $item = CatalogDownload::findOrFail($id);
+            $item->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Download lead deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete record: ' . $e->getMessage()
+            ], 500);
         }
     }
 

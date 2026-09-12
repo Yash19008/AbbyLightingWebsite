@@ -41,14 +41,12 @@ const defaultNews: NewsItem[] = [
 export default function NewsSection({ newsItems }: NewsSectionProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [activeSlide, setActiveSlide] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
   const GAP = isMobile ? 12 : 18;
 
   const items = newsItems && newsItems.length > 0 ? newsItems : defaultNews;
-  const [totalDots, setTotalDots] = useState(items.length);
 
   const getCardWidth = useCallback(() => {
     const el = trackRef.current;
@@ -64,26 +62,10 @@ export default function NewsSection({ newsItems }: NewsSectionProps) {
 
     const scrollLeft = el.scrollLeft;
     const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
-    const cardWidth = getCardWidth();
-    const itemWidth = cardWidth + GAP;
 
     setCanScrollLeft(scrollLeft > 10);
     setCanScrollRight(scrollLeft < maxScroll - 10);
-
-    const numDots = isMobile
-      ? items.length
-      : Math.max(1, Math.round(maxScroll / itemWidth) + 1);
-    setTotalDots(numDots);
-
-    if (maxScroll <= 5) {
-      setActiveSlide(0);
-    } else if (scrollLeft >= maxScroll - 15) {
-      setActiveSlide(numDots - 1);
-    } else {
-      const idx = Math.round((scrollLeft / maxScroll) * (numDots - 1));
-      setActiveSlide(Math.min(Math.max(0, idx), numDots - 1));
-    }
-  }, [items.length, isMobile, GAP, getCardWidth]);
+  }, [items.length]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -287,6 +269,37 @@ export default function NewsSection({ newsItems }: NewsSectionProps) {
             </button>
           )}
 
+          {/* Mobile Floating Circular Previous Arrow Button */}
+          {isMobile && canScrollLeft && (
+            <button
+              onClick={() => scroll(-1)}
+              aria-label="Previous news stories"
+              style={{
+                position: "absolute",
+                left: "-12px",
+                top: "40%",
+                transform: "translateY(-50%)",
+                zIndex: 10,
+                width: 32,
+                height: 32,
+                borderRadius: "50%",
+                background: "rgba(30, 30, 30, 0.4)",
+                border: "1px solid rgba(255, 255, 255, 0.25)",
+                color: "#ffffff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                padding: 0,
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4)",
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+          )}
+
           {/* Mobile Floating Circular Next Arrow Button */}
           {isMobile && canScrollRight && (
             <button
@@ -318,44 +331,6 @@ export default function NewsSection({ newsItems }: NewsSectionProps) {
             </button>
           )}
         </div>
-
-        {/* Dots Navigation (Desktop only) */}
-        {!isMobile && showNav && totalDots > 1 && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: 6,
-              padding: "24px 0 0",
-            }}
-          >
-            {Array.from({ length: totalDots }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => {
-                  const el = trackRef.current;
-                  if (!el) return;
-                  const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
-                  const cardWidth = getCardWidth();
-                  const itemWidth = cardWidth + GAP;
-                  const targetScroll = i === totalDots - 1 ? maxScroll : Math.min(i * itemWidth, maxScroll);
-                  el.scrollTo({ left: targetScroll, behavior: "smooth" });
-                }}
-                aria-label={`Go to slide ${i + 1}`}
-                style={{
-                  width: activeSlide === i ? 30 : 6,
-                  height: 6,
-                  borderRadius: 3,
-                  backgroundColor: activeSlide === i ? "#f6c177" : "#ead8bd",
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
-                  transition: "all 0.3s cubic-bezier(0.25, 1, 0.5, 1)",
-                }}
-              />
-            ))}
-          </div>
-        )}
       </div>
     </section>
   );

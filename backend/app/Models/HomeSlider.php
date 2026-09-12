@@ -16,6 +16,7 @@ class HomeSlider extends Model
         'sort_order', 
         'url',
         'heading',
+        'heading_highlight',
         'description',
         'button_text',
         'button_link'

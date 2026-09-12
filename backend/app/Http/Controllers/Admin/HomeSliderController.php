@@ -55,6 +55,7 @@ class HomeSliderController extends Controller
             'for_mobile'=>'required|boolean',
             'sort_order'=>'required|numeric',
             'heading'=>'nullable|string|max:255',
+            'heading_highlight'=>'nullable|string|max:255',
             'description'=>'nullable|string',
             'button_text'=>'nullable|string|max:100',
             'button_link'=>'nullable|string|max:255'
@@ -69,6 +70,7 @@ class HomeSliderController extends Controller
             'url' => $request->url ? $request->url : NULL,
             'sort_order' => $request->sort_order,
             'heading' => $request->heading,
+            'heading_highlight' => $request->heading_highlight,
             'description' => $request->description,
             'button_text' => $request->button_text,
             'button_link' => $request->button_link,
@@ -96,6 +98,7 @@ class HomeSliderController extends Controller
             'url' => $request->url ? $request->url : NULL,
             'sort_order' => $request->sort_order,
             'heading' => $request->heading,
+            'heading_highlight' => $request->heading_highlight,
             'description' => $request->description,
             'button_text' => $request->button_text,
             'button_link' => $request->button_link,
