@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import ReelModal from "./ReelModal";
 import { getWatchAndShops } from "@/lib/api/watch-and-shop";
 import type { WatchAndShopItem } from "@/types/watch-and-shop";
 
@@ -88,12 +87,34 @@ const FALLBACK_REELS: WatchAndShopItem[] = [
   },
 ];
 
+function getEmbedUrl(reel: WatchAndShopItem, autoplay: boolean = true): string | null {
+  if (!reel || !reel.video_url) return null;
+
+  if (reel.video_type === "youtube") {
+    const match = reel.video_url.match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|embed\/|watch\?v=))([\w-]{11})/);
+    if (match && match[1]) {
+      return `https://www.youtube.com/embed/${match[1]}?${autoplay ? "autoplay=1&" : ""}rel=0&modestbranding=1&playsinline=1`;
+    }
+    return reel.video_url;
+  }
+
+  if (reel.video_type === "instagram") {
+    const match = reel.video_url.match(/instagram\.com\/(?:reel|p)\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      return `https://www.instagram.com/reel/${match[1]}/embed`;
+    }
+    return reel.video_url;
+  }
+
+  return null;
+}
+
 export default function WatchAndShopSection() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [reels, setReels] = useState<WatchAndShopItem[]>(FALLBACK_REELS);
-  const [selectedReel, setSelectedReel] = useState<WatchAndShopItem | null>(null);
+  const [playingReelId, setPlayingReelId] = useState<number | string | null>(null);
 
   useEffect(() => {
     async function loadReels() {
@@ -173,23 +194,83 @@ export default function WatchAndShopSection() {
           )}
 
           <div className="reel-track" ref={trackRef}>
-            {reels.map((reel, idx) => (
-              <button
-                key={reel.id || idx}
-                type="button"
-                className="reel"
-                onClick={() => setSelectedReel(reel)}
-              >
-                <img
-                  src={reel.thumbnail}
-                  alt={reel.title || `Abby Lighting reel ${idx + 1}`}
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
+            {reels.map((reel, idx) => {
+              const reelKey = reel.id || idx;
+              const isPlaying = playingReelId === reelKey;
+              const hasThumbnail = Boolean(reel.thumbnail && reel.thumbnail.trim());
+              const embed = getEmbedUrl(reel, isPlaying);
+              const isDirectVideo =
+                reel.video_type === "upload" ||
+                reel.video_type === "url" ||
+                (!embed && Boolean(reel.video_url));
+
+              return (
+                <div
+                  key={reelKey}
+                  className={`reel ${isPlaying ? "is-playing" : ""}`}
+                  onClick={() => {
+                    if (!isPlaying) {
+                      setPlayingReelId(reelKey);
+                    }
                   }}
-                />
-                <span className="play">▶</span>
-              </button>
-            ))}
+                  role={isPlaying ? undefined : "button"}
+                  tabIndex={isPlaying ? undefined : 0}
+                  onKeyDown={(e) => {
+                    if (!isPlaying && (e.key === "Enter" || e.key === " ")) {
+                      e.preventDefault();
+                      setPlayingReelId(reelKey);
+                    }
+                  }}
+                >
+                  {hasThumbnail && !isPlaying ? (
+                    <>
+                      <img
+                        src={reel.thumbnail}
+                        alt={reel.title || `Abby Lighting reel ${idx + 1}`}
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
+                        }}
+                      />
+                      <span className="play">▶</span>
+                    </>
+                  ) : isDirectVideo ? (
+                    <>
+                      <video
+                        src={reel.video_url}
+                        poster={hasThumbnail ? reel.thumbnail : undefined}
+                        controls={isPlaying}
+                        autoPlay={isPlaying}
+                        playsInline
+                        loop
+                        preload="metadata"
+                        className="reel-inline-video"
+                      />
+                      {!isPlaying && <span className="play">▶</span>}
+                    </>
+                  ) : embed ? (
+                    <iframe
+                      src={embed}
+                      title={reel.title || "Watch & Shop Reel"}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="reel-inline-iframe"
+                    />
+                  ) : hasThumbnail ? (
+                    <>
+                      <img
+                        src={reel.thumbnail}
+                        alt={reel.title || `Abby Lighting reel ${idx + 1}`}
+                      />
+                      <span className="play">▶</span>
+                    </>
+                  ) : (
+                    <div className="reel-placeholder">
+                      <span className="play">▶</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Desktop Right Arrow */}
@@ -218,12 +299,7 @@ export default function WatchAndShopSection() {
           )}
         </div>
       </div>
-
-      <ReelModal
-        isOpen={Boolean(selectedReel)}
-        reel={selectedReel}
-        onClose={() => setSelectedReel(null)}
-      />
     </section>
   );
 }
+

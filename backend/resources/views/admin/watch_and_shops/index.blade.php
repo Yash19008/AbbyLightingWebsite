@@ -66,12 +66,18 @@
                                 <tr>
                                     <td style="text-align: center; font-weight: 600; color: #777;">{{ $loop->iteration }}</td>
                                     <td style="text-align: center;">
-                                        @php
-                                            $thumbUrl = (str_starts_with($item->thumbnail, 'http') || str_starts_with($item->thumbnail, '/images') || str_starts_with($item->thumbnail, 'images/'))
-                                                ? $item->thumbnail
-                                                : asset('storage/' . $item->thumbnail);
-                                        @endphp
-                                        <img src="{{ $thumbUrl }}" alt="{{ $item->title }}" style="width: 44px; height: 58px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; display: inline-block; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                        @if($item->thumbnail)
+                                            @php
+                                                $thumbUrl = (str_starts_with($item->thumbnail, 'http') || str_starts_with($item->thumbnail, '/images') || str_starts_with($item->thumbnail, 'images/'))
+                                                    ? $item->thumbnail
+                                                    : asset('storage/' . $item->thumbnail);
+                                            @endphp
+                                            <img src="{{ $thumbUrl }}" alt="{{ $item->title }}" style="width: 44px; height: 58px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; display: inline-block; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                        @else
+                                            <div style="width: 44px; height: 58px; background: #2c3e50; color: #fff; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; border: 1px solid #ddd;" title="Direct Video (No thumbnail)">
+                                                <i class="ft-video"></i>
+                                            </div>
+                                        @endif
                                     </td>
                                     <td>
                                         <strong class="text-dark d-block">{{ $item->title ?: 'Untitled Reel' }}</strong>

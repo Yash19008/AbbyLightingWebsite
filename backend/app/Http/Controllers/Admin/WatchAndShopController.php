@@ -52,7 +52,7 @@ class WatchAndShopController extends Controller
     {
         $request->validate([
             'title' => 'nullable|string|max:255',
-            'thumbnail' => 'required|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'video_type' => 'required|in:upload,url,instagram,youtube',
             'video_file' => 'nullable|file|mimes:mp4,webm,mov,ogg,mkv|max:102400',
             'video_url' => 'nullable|string|max:1000',
@@ -71,7 +71,7 @@ class WatchAndShopController extends Controller
             return back()->withInput()->with('error', 'Please provide a Video / Reel URL.');
         }
 
-        $thumbnailPath = '';
+        $thumbnailPath = null;
         if ($request->hasFile('thumbnail')) {
             $thumbnailPath = $request->file('thumbnail')->store('uploads/watch_and_shop/thumbnails', 'public');
         }
@@ -135,7 +135,12 @@ class WatchAndShopController extends Controller
         }
 
         $thumbnailPath = $item->thumbnail;
-        if ($request->hasFile('thumbnail')) {
+        if ($request->input('remove_thumbnail') === '1') {
+            if ($item->thumbnail && Storage::disk('public')->exists($item->thumbnail)) {
+                Storage::disk('public')->delete($item->thumbnail);
+            }
+            $thumbnailPath = null;
+        } elseif ($request->hasFile('thumbnail')) {
             if ($item->thumbnail && Storage::disk('public')->exists($item->thumbnail)) {
                 Storage::disk('public')->delete($item->thumbnail);
             }

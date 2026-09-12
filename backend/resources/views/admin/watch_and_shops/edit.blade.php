@@ -40,21 +40,51 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="thumbnail"><strong>Cover / Thumbnail Image</strong> <span class="text-danger">*</span></label>
+                            <label for="thumbnail"><strong>Cover / Thumbnail Image</strong> <small class="text-muted">(Optional)</small></label>
+                            
+                            <input type="hidden" id="remove_thumbnail" name="remove_thumbnail" value="0">
+
                             @if($item->thumbnail)
                                 @php
                                     $thumbUrl = (str_starts_with($item->thumbnail, 'http') || str_starts_with($item->thumbnail, '/images') || str_starts_with($item->thumbnail, 'images/'))
                                         ? $item->thumbnail
                                         : asset('storage/' . $item->thumbnail);
                                 @endphp
-                                <div class="mb-2">
-                                    <img src="{{ $thumbUrl }}" alt="Current Thumbnail"
-                                        style="width: 120px; height: 180px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;">
-                                    <p class="text-muted mt-1"><small>Current cover poster. Upload a new image to replace it.</small></p>
+                                <div id="existing_thumbnail_box" class="mb-2">
+                                    <div style="position: relative; display: inline-block;">
+                                        <img src="{{ $thumbUrl }}" alt="Current Thumbnail"
+                                            style="width: 120px; height: 180px; object-fit: cover; border: 1px solid #ddd; border-radius: 6px; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            onclick="removeExistingThumbnail()"
+                                            title="Remove this image"
+                                            style="position: absolute; top: -10px; right: -10px; width: 28px; height: 28px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); z-index: 5; cursor: pointer;">
+                                            &times;
+                                        </button>
+                                    </div>
+                                    <p class="text-muted mt-1 mb-1"><small>Current cover poster. Click the &times; button to remove it or choose a new file below to replace it.</small></p>
+                                </div>
+                                <div id="thumbnail_removed_alert" class="alert alert-warning py-1 px-2 mb-2" style="display: none; max-width: 320px; font-size: 13px;">
+                                    <i class="ft-info mr-1"></i> Cover image marked for removal.
+                                    <button type="button" class="btn btn-link btn-sm p-0 text-primary font-weight-bold ml-2" onclick="undoRemoveExistingThumbnail()">Undo</button>
                                 </div>
                             @endif
-                            <input type="file" class="form-control" id="thumbnail" name="thumbnail" accept="image/*" {{ $method === 'Add' ? 'required' : '' }}>
-                            <small class="form-text text-info"><i class="ft-info mr-1"></i><strong>Recommended Size:</strong> 9:16 vertical ratio (e.g., 600 × 1067 px or 1080 × 1920 px). Max 10MB.</small>
+
+                            <div id="new_thumbnail_preview_wrap" class="mb-2" style="display: none;">
+                                <div style="position: relative; display: inline-block;">
+                                    <img id="new_thumbnail_preview" src="#" alt="New Preview"
+                                        style="width: 120px; height: 180px; object-fit: cover; border: 2px solid #28d094; border-radius: 6px; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        onclick="clearNewThumbnail()"
+                                        title="Remove selected image"
+                                        style="position: absolute; top: -10px; right: -10px; width: 28px; height: 28px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); z-index: 5; cursor: pointer;">
+                                        &times;
+                                    </button>
+                                </div>
+                                <p class="text-success mt-1 mb-1"><small><i class="ft-check mr-1"></i>New image selected. Click &times; to cancel selection.</small></p>
+                            </div>
+
+                            <input type="file" class="form-control" id="thumbnail" name="thumbnail" accept="image/*" onchange="previewNewThumbnail(this)">
+                            <small class="form-text text-info"><i class="ft-info mr-1"></i><strong>Recommended Size:</strong> 9:16 vertical ratio (e.g., 600 × 1067 px or 1080 × 1920 px). Max 10MB. If no image is uploaded, the paused video player will be shown.</small>
                         </div>
 
                         <div class="form-group">
@@ -134,6 +164,46 @@
             fileGroup.style.display = 'none';
             urlGroup.style.display = 'block';
         }
+    }
+
+    function removeExistingThumbnail() {
+        document.getElementById('remove_thumbnail').value = '1';
+        const existingBox = document.getElementById('existing_thumbnail_box');
+        if (existingBox) existingBox.style.display = 'none';
+        const removedAlert = document.getElementById('thumbnail_removed_alert');
+        if (removedAlert) removedAlert.style.display = 'block';
+    }
+
+    function undoRemoveExistingThumbnail() {
+        document.getElementById('remove_thumbnail').value = '0';
+        const existingBox = document.getElementById('existing_thumbnail_box');
+        if (existingBox) existingBox.style.display = 'block';
+        const removedAlert = document.getElementById('thumbnail_removed_alert');
+        if (removedAlert) removedAlert.style.display = 'none';
+    }
+
+    function previewNewThumbnail(input) {
+        const wrap = document.getElementById('new_thumbnail_preview_wrap');
+        const preview = document.getElementById('new_thumbnail_preview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                wrap.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            wrap.style.display = 'none';
+        }
+    }
+
+    function clearNewThumbnail() {
+        const input = document.getElementById('thumbnail');
+        if (input) input.value = '';
+        const wrap = document.getElementById('new_thumbnail_preview_wrap');
+        if (wrap) wrap.style.display = 'none';
+        const preview = document.getElementById('new_thumbnail_preview');
+        if (preview) preview.src = '#';
     }
 
     document.addEventListener('DOMContentLoaded', function() {

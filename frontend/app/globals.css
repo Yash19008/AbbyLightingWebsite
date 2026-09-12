@@ -1231,10 +1231,10 @@ body {
 
   .pdrop-section-label {
     font-family: 'Poppins', 'Inter', sans-serif;
-    font-size: 9.5px;
-    font-weight: 500;
+    font-size: 8.5px;
+    font-weight: 300;
     letter-spacing: 0.1em;
-    color: #777777;
+    color: white;
     text-transform: uppercase;
     margin: 8px 0 12px 0;
   }
@@ -1249,9 +1249,9 @@ body {
   }
 
   .pdrop-list li a {
-    color: #d1d1d1;
+    color: white;
     font-family: 'Inter', sans-serif;
-    font-size: 13.5px;
+    font-size: 11px;
     font-weight: 400;
     text-decoration: none;
     transition: color 0.2s;
@@ -1299,8 +1299,8 @@ body {
     padding: 16px 0;
     color: #ffffff;
     font-family: 'Poppins', 'Inter', sans-serif;
-    font-size: 14.5px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
     text-decoration: none;
     transition: color 0.2s;
   }
@@ -1320,6 +1320,7 @@ body {
     align-items: center;
     justify-content: flex-end;
     transition: transform 0.2s, stroke 0.2s;
+    margin-right: 3px;
   }
 
   .pdrop-arrow-row a:hover .pdrop-arrow {
@@ -1643,4 +1644,75 @@ body {
   .hero-arrow {
     display: none !important;
   }
-}
+}
+
+/* ==========================================================================
+   Footer Social Icons (Desktop vs Mobile)
+   ========================================================================== */
+.footer-icon-mobile {
+  display: none !important;
+}
+
+.footer-icon-desktop {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .footer-icon-desktop {
+    display: none !important;
+  }
+
+  .footer-icon-mobile {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    color: #c4c4c4 !important;
+    transition: color 0.2s ease;
+  }
+
+  .footer-social {
+    display: flex !important;
+    align-items: center !important;
+    gap: 24px !important;
+  }
+
+  .footer-social a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    height: auto !important;
+    text-decoration: none !important;
+  }
+
+  .footer-social a:hover .footer-icon-mobile {
+    color: #ffffff !important;
+  }
+
+  .footer-social-icon.footer-icon-mobile {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .footer-social-icon.footer-icon-mobile svg {
+    width: 22px !important;
+    height: 22px !important;
+    fill: currentColor !important;
+  }
+
+  .footer-social a:last-child,
+  .footer-social a:last-child .footer-social-icon {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .footer-social a:last-child svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
