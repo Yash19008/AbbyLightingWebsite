@@ -13,6 +13,26 @@ class Project extends Model
     protected $guarded = [
         'id'
     ];
+    protected $casts = [
+        'is_featured' => 'boolean',
+        'sequence' => 'integer',
+    ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', 'yes');
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', 1);
+    }
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sequence', 'ASC')->orderBy('id', 'DESC');
+    }
+
     public function projectImages()
     {
         return $this->hasMany('App\Models\ProjectImage');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BlogApiController extends Controller
 {
@@ -39,8 +40,26 @@ class BlogApiController extends Controller
                 $query->orderBy('views_count', 'desc')->orderBy('sort_order', 'asc');
             }
 
+            if ($request->filled('page') || $request->filled('per_page')) {
+                // limit() is intentionally NOT applied in the paginated path
+                $perPage = min((int) $request->get('per_page', 6), 50);
+                $paginated = $query->paginate($perPage);
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $paginated->items(),
+                    'pagination' => [
+                        'current_page' => $paginated->currentPage(),
+                        'last_page' => $paginated->lastPage(),
+                        'per_page' => $paginated->perPage(),
+                        'total' => $paginated->total(),
+                        'has_more' => $paginated->hasMorePages(),
+                    ],
+                ]);
+            }
+
             if ($request->filled('limit')) {
-                $query->take((int)$request->limit);
+                $query->take((int) $request->limit);
             }
 
             $blogs = $query->get();
@@ -48,11 +67,19 @@ class BlogApiController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $blogs,
+                'pagination' => [
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'per_page' => $blogs->count(),
+                    'total' => $blogs->count(),
+                    'has_more' => false,
+                ],
             ]);
         } catch (\Exception $e) {
+            Log::error('BlogApiController::index — ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Failed to fetch blogs',
             ], 500);
         }
     }

@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import HeaderClient from "../components/HeaderClient";
 import Footer from "../components/Footer";
+import SpotlightEffect from "../components/home/SpotlightEffect";
 
 export const metadata: Metadata = {
   title: "Abby Lighting | Architectural & Decorative Lighting",
@@ -24,6 +25,7 @@ export default async function RootLayout({
       </head>
       <body>
         <main>
+          <SpotlightEffect />
           <HeaderClient />
           {children}
           <Footer />

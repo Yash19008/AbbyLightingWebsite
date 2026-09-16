@@ -63,7 +63,7 @@
                                 <select id="sub_tag_id" name="sub_tag_id[]" multiple class="form-control select2"
                                     placeholder="Products" data-maximum-selection-length="10">
                                     @foreach($subtags as $subtag)
-                                    <option value="{{ $subtag->id }}" {{(in_array($subtag->id, @$arr)) ? 'selected' :
+                                    <option value="{{ $subtag->id }}" {{(in_array($subtag->id, @$arr ?? [])) ? 'selected' :
                                         ''}}> {{ $subtag->display_name }} </option>
                                     @endforeach
                                 </select>
@@ -111,6 +111,16 @@
                         </div>
                     </div>
 
+                    <div class="form-group row">
+                        <label for="is_featured" class="col-sm-3 control-label">Featured on Homepage</label>
+                        <div class="col-sm-6 d-flex align-items-center">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="is_featured" name="is_featured" value="1" {{ old('is_featured', @$project->is_featured) ? 'checked' : '' }}>
+                                <label class="custom-control-label" for="is_featured">Show in Featured / Latest Projects on Homepage</label>
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- <div class="form-group row">
                         <label for="inputName" class="col-sm-3 control-label">Gallary</label>
                         <div class="col-sm-5 ">
@@ -153,7 +163,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if ($projectImages != null && count($projectImages) > 0)
+                                    @if (!empty($projectImages) && count($projectImages) > 0)
                                     @foreach($projectImages as $key => $projectImage)
                                     <tr id="projectImage-table-{{$key}}">
                                         <td>{{$projectImage->image}}</td>
@@ -205,7 +215,7 @@
         `
     });
 
-    let noOfProductImages = {{count($projectImages)}};
+    let noOfProductImages = {{ !empty($projectImages) ? count($projectImages) : 0 }};
     $(document).ready(function() {
         $('body').on("change", '.businessEvent', function(event) {
             uploadFile(event.target.files, 'uploads/projects').subscribe({

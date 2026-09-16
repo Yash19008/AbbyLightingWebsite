@@ -26,7 +26,6 @@ return [
         'http://127.0.0.1:8000',
         'https://abby.bandmusic.in',
         'http://abby.bandmusic.in',
-        '*', // Allows public Next.js frontend calls to Laravel API
     ],
 
     'allowed_origins_patterns' => [],

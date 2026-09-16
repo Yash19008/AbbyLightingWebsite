@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\LightWorldApiController;
 use App\Http\Controllers\Api\CollectionApiController;
 use App\Http\Controllers\Api\ColorMasterApiController;
 use App\Http\Controllers\Api\CategoryApiController;
+use App\Http\Controllers\Api\HomeCatalogueSectionApiController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -37,6 +38,7 @@ Route::get('/events/{id}', [EventApiController::class, 'show']);
 
 
 Route::get('/manufacturing-section', [ManufacturingSectionApiController::class, 'index']);
+Route::get('/home-catalogue-section', [HomeCatalogueSectionApiController::class, 'index']);
 
 Route::get('/news-items', [NewsItemApiController::class, 'index']);
 
@@ -50,8 +52,8 @@ Route::get('/collections/{slug}', [CollectionApiController::class, 'show']);
 
 // Color Masters — for tones section
 Route::get('/color-masters', [ColorMasterApiController::class, 'index']);
-Route::get('/collections', [CollectionApiController::class, 'index']);
-Route::get('/collections/{slug}', [CollectionApiController::class, 'show']);
+
+
 
 // Color Masters — used for displaying colors across the application
 Route::get('/colors', [ColorMasterApiController::class, 'index']);

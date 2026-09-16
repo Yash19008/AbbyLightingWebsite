@@ -5,12 +5,11 @@ import ProductCard from './ProductCard';
 import { Product } from '@/types/collection';
 
 interface ProductsSectionProps {
-  products: Product[];
+  products?: Product[];
   collectionName: string;
 }
 
-
-export default function ProductsSection({ products, collectionName }: ProductsSectionProps) {
+export default function ProductsSection({ products = [], collectionName }: ProductsSectionProps) {
   const [expanded, setExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -24,6 +23,7 @@ export default function ProductsSection({ products, collectionName }: ProductsSe
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // If no dynamic products exist for this collection, hide the section
   if (!products || products.length === 0) {
     return null;
   }

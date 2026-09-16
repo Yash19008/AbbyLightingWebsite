@@ -35,8 +35,7 @@ class ClientApiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch clients',
-                'error' => $e->getMessage(),
-            ], 500);
+                            ], 500);
         }
     }
 
@@ -62,8 +61,7 @@ class ClientApiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Client not found',
-                'error' => $e->getMessage(),
-            ], 404);
+                            ], 404);
         }
     }
 }

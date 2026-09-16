@@ -8,14 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
+use App\Helpers\Common_function;
+
 class NewsItemController extends Controller
 {
     public function index()
     {
-        $newsItems = NewsItem::orderBy('created_at', 'desc')->get();
+        $newsItems = NewsItem::orderBy('sort_order', 'asc')->orderBy('created_at', 'desc')->get();
         $main_module = 'News';
+        $title = 'News Items';
+        $tbl = Common_function::encrypt('news_section');
         
-        return view('admin.news-items.index', compact('newsItems', 'main_module'));
+        return view('admin.news-items.index', compact('newsItems', 'main_module', 'title', 'tbl'));
     }
 
     public function add()
@@ -30,6 +34,7 @@ class NewsItemController extends Controller
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'link' => 'nullable|string|max:500',
+            'sort_order' => 'nullable|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
@@ -37,6 +42,7 @@ class NewsItemController extends Controller
         $newsItem->title = $validated['title'];
         $newsItem->subtitle = $validated['subtitle'] ?? null;
         $newsItem->link = $validated['link'] ?? null;
+        $newsItem->sort_order = (int) $request->input('sort_order', 0);
         $newsItem->is_active = $request->has('is_active');
         $newsItem->created_by = Auth::id();
 
@@ -66,12 +72,14 @@ class NewsItemController extends Controller
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'link' => 'nullable|string|max:500',
+            'sort_order' => 'nullable|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
         $newsItem->title = $validated['title'];
         $newsItem->subtitle = $validated['subtitle'] ?? null;
         $newsItem->link = $validated['link'] ?? null;
+        $newsItem->sort_order = (int) $request->input('sort_order', 0);
         $newsItem->is_active = $request->has('is_active');
         $newsItem->updated_by = Auth::id();
 

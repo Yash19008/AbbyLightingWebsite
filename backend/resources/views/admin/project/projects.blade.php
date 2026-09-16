@@ -41,6 +41,7 @@
                                     <th>Project Type</th>
                                     <th>Slug</th>
                                     <th>Sequence</th>
+                                    <th>Featured</th>
                                     <th>Status</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -53,6 +54,7 @@
                                     <th>Project Type</th>
                                     <th>Slug</th>
                                     <th>Sequence</th>
+                                    <th>Featured</th>
                                     <th>Status</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -125,6 +127,13 @@
             searchable: false,
         },
         {
+            data: 'is_featured',
+            name: 'is_featured',
+            class: 'text-center align-middle',
+            orderable: false,
+            searchable: false,
+        },
+        {
             data: 'status',
             name: 'status',
             class: 'text-center align-middle',
@@ -171,6 +180,41 @@
                     });
             } );
 
+        });
+
+        $(document).on('change', '.switch-featured', function() {
+            var id = $(this).data('id');
+            var isChecked = $(this).is(':checked') ? 1 : 0;
+            var that = $(this);
+            $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
+            $.ajax({
+                url: "{{ route('project_admin.toggle_featured') }}",
+                type: "POST",
+                data: { id: id, is_featured: isChecked },
+                dataType: "json",
+                success: function(res) {
+                    if (res.code == 1 || res.status) {
+                        if (typeof toastr !== 'undefined') {
+                            toastr.success(res.message || 'Featured status updated');
+                        }
+                    } else {
+                        that.prop('checked', !isChecked);
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error(res.message || 'Failed to update featured status');
+                        } else {
+                            alert(res.message || 'Failed to update featured status');
+                        }
+                    }
+                },
+                error: function() {
+                    that.prop('checked', !isChecked);
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error('Something went wrong!');
+                    } else {
+                        alert('Something went wrong!');
+                    }
+                }
+            });
         });
     })
    

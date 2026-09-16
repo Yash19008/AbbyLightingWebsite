@@ -5,56 +5,60 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\HomeSlider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class HomeSliderApiController extends Controller
 {
     /**
-     * Get all home sliders
+     * Get all active home sliders
      */
     public function index()
     {
         try {
-            $sliders = HomeSlider::orderBy('sort_order', 'ASC')->get();
-            
+            $sliders = HomeSlider::where('is_active', 1)
+                ->orderBy('sort_order', 'ASC')
+                ->get();
+
             // Add full image URLs
             $sliders = $sliders->map(function ($slider) {
                 return [
-                    'id' => $slider->id,
-                    'path' => $slider->path,
-                    'image_url' => $slider->path ? asset('storage/' . $slider->path) : null,
-                    'for_mobile' => $slider->for_mobile,
-                    'sort_order' => $slider->sort_order,
-                    'url' => $slider->url,
-                    'heading' => $slider->heading,
+                    'id'                => $slider->id,
+                    'path'              => $slider->path,
+                    'image_url'         => $slider->path ? asset('storage/' . $slider->path) : null,
+                    'for_mobile'        => $slider->for_mobile,
+                    'sort_order'        => $slider->sort_order,
+                    'url'               => $slider->url,
+                    'heading'           => $slider->heading,
                     'heading_highlight' => $slider->heading_highlight,
-                    'description' => $slider->description,
-                    'button_text' => $slider->button_text,
-                    'button_link' => $slider->button_link,
-                    'created_at' => $slider->created_at,
-                    'updated_at' => $slider->updated_at,
+                    'description'       => $slider->description,
+                    'button_text'       => $slider->button_text,
+                    'button_link'       => $slider->button_link,
+                    'created_at'        => $slider->created_at,
+                    'updated_at'        => $slider->updated_at,
                 ];
             });
 
             // Separate desktop and mobile sliders
-            $webSliders = $sliders->where('for_mobile', 0)->values();
+            $webSliders    = $sliders->where('for_mobile', 0)->values();
             $mobileSliders = $sliders->where('for_mobile', 1)->values();
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'web' => $webSliders,
+                'data'    => [
+                    'web'    => $webSliders,
                     'mobile' => $mobileSliders,
-                    'all' => $sliders
+                    'all'    => $sliders,
                 ],
             ], 200);
         } catch (\Exception $e) {
+            Log::error('HomeSliderApiController::index — ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch sliders',
-                'error' => $e->getMessage(),
             ], 500);
         }
     }
+
 
     /**
      * Get single slider
@@ -83,10 +87,10 @@ class HomeSliderApiController extends Controller
                 ],
             ], 200);
         } catch (\Exception $e) {
+            Log::error('HomeSliderApiController::show — ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Slider not found',
-                'error' => $e->getMessage(),
             ], 404);
         }
     }

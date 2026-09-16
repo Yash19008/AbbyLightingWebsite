@@ -54,6 +54,7 @@ class HomeSliderController extends Controller
             'path'=>'required|image',
             'for_mobile'=>'required|boolean',
             'sort_order'=>'required|numeric',
+            'is_active'=>'nullable|boolean',
             'heading'=>'nullable|string|max:255',
             'heading_highlight'=>'nullable|string|max:255',
             'description'=>'nullable|string',
@@ -67,6 +68,7 @@ class HomeSliderController extends Controller
         $data = [
             'path' => $request->path->store('/uploads/homeslider','public'),
             'for_mobile' => $request->for_mobile,
+            'is_active' => $request->input('is_active', 1) ? 1 : 0,
             'url' => $request->url ? $request->url : NULL,
             'sort_order' => $request->sort_order,
             'heading' => $request->heading,
@@ -95,6 +97,7 @@ class HomeSliderController extends Controller
     {
         $update_array = array(
             'for_mobile' => $request->for_mobile,
+            'is_active' => $request->input('is_active', 0) ? 1 : 0,
             'url' => $request->url ? $request->url : NULL,
             'sort_order' => $request->sort_order,
             'heading' => $request->heading,

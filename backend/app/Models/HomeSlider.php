@@ -14,11 +14,17 @@ class HomeSlider extends Model
         'path', 
         'for_mobile', 
         'sort_order', 
+        'is_active',
         'url',
         'heading',
         'heading_highlight',
         'description',
         'button_text',
         'button_link'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'for_mobile' => 'boolean',
     ];
 }

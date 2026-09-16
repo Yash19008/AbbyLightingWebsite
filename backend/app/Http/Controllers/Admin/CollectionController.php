@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
+use App\Helpers\Common_function;
+
 class CollectionController extends Controller
 {
     /**
@@ -21,7 +23,10 @@ class CollectionController extends Controller
     public function index()
     {
         $collections = Collection::with('heroSection', 'parametersSection', 'compositionsSection')->ordered()->get();
-        return view('admin.collections.index', compact('collections'));
+        $title = 'Collections';
+        $main_module = 'Collections';
+        $tbl = Common_function::encrypt('collections');
+        return view('admin.collections.index', compact('collections', 'title', 'main_module', 'tbl'));
     }
 
     /**

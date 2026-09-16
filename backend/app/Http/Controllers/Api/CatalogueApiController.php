@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Catalogue;
 use App\Models\CatalogueCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CatalogueApiController extends Controller
 {
@@ -38,9 +39,10 @@ class CatalogueApiController extends Controller
                 'data' => $categories,
             ]);
         } catch (\Exception $e) {
+            Log::error('CatalogueApiController::categories — ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Failed to fetch catalogue categories',
             ], 500);
         }
     }
@@ -76,8 +78,60 @@ class CatalogueApiController extends Controller
                 });
             }
 
-            // Order by sort_order asc, then id desc
-            $catalogues = $query->orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
+            // Order by sort parameter
+            $sort = $request->get('sort', 'popular');
+            if ($sort === 'az') {
+                $query->orderBy('title', 'asc');
+            } elseif ($sort === 'za') {
+                $query->orderBy('title', 'desc');
+            } elseif ($sort === 'new') {
+                $query->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+            } else {
+                $query->orderBy('is_featured', 'desc')->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
+            }
+
+            if ($request->filled('page') || $request->filled('per_page')) {
+                $perPage = min((int) $request->get('per_page', 6), 50);
+                $paginated = $query->paginate($perPage);
+                $catalogues = collect($paginated->items());
+
+                $formatted = $catalogues->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'title' => $item->title,
+                        'slug' => $item->slug,
+                        'description' => $item->description,
+                        'category_id' => $item->catalogue_category_id,
+                        'category' => $item->category ? [
+                            'id' => $item->category->id,
+                            'name' => $item->category->name,
+                            'slug' => $item->category->slug,
+                        ] : null,
+                        'cover_image' => $item->cover_image ? asset('uploads/catalogues/images/' . $item->cover_image) : null,
+                        'pdf_url' => $item->pdf_file ? asset('uploads/catalogues/pdfs/' . $item->pdf_file) : asset('1product-catalog.pdf'),
+                        'download_url' => url('/api/catalogues/' . $item->id . '/download-pdf'),
+                        'pdf_file_name' => $item->pdf_file ?: '1product-catalog.pdf',
+                        'file_size' => $item->file_size ?? 'PDF',
+                        'is_featured' => (bool)$item->is_featured,
+                        'sort_order' => $item->sort_order,
+                        'created_at' => $item->created_at ? $item->created_at->toISOString() : null,
+                    ];
+                });
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $formatted,
+                    'pagination' => [
+                        'current_page' => $paginated->currentPage(),
+                        'last_page' => $paginated->lastPage(),
+                        'per_page' => $paginated->perPage(),
+                        'total' => $paginated->total(),
+                        'has_more' => $paginated->hasMorePages(),
+                    ],
+                ]);
+            }
+
+            $catalogues = $query->get();
 
             $formatted = $catalogues->map(function ($item) {
                 return [
@@ -105,11 +159,19 @@ class CatalogueApiController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $formatted,
+                'pagination' => [
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'per_page' => $catalogues->count(),
+                    'total' => $catalogues->count(),
+                    'has_more' => false,
+                ],
             ]);
         } catch (\Exception $e) {
+            Log::error('CatalogueApiController::index — ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Failed to fetch catalogues',
             ], 500);
         }
     }
@@ -195,9 +257,10 @@ class CatalogueApiController extends Controller
                 'data' => $lead,
             ], 201);
         } catch (\Exception $e) {
+            Log::error('CatalogueApiController::storeDownloadLead — ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to save download record: ' . $e->getMessage(),
+                'message' => 'Failed to save download record.',
             ], 500);
         }
     }

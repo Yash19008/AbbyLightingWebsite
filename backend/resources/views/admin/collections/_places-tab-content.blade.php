@@ -74,54 +74,68 @@
         </div>
         <div class="card-body">
             @if($collection->placesSection && $collection->placesSection->items->count() > 0)
-                <table class="table table-bordered table-hover">
+                <table class="table data-table table-bordered" data-order='[[ 0, "asc" ]]' id="places-tab-table" style="width:100%">
                     <thead>
                         <tr>
-                            <th style="width: 80px;">Image</th>
-                            <th style="width: 50px;">Order</th>
-                            <th>Place Name</th>
-                            <th>Description</th>
-                            <th style="width: 200px;">Products</th>
-                            <th style="width: 100px;">Status</th>
-                            <th style="width: 150px;">Actions</th>
+                            <th style="width: 70px;" class="text-center">ORDER</th>
+                            <th style="width: 90px;" class="text-center">IMAGE</th>
+                            <th>PLACE NAME</th>
+                            <th>DESCRIPTION</th>
+                            <th style="width: 100px;" class="text-center">STATUS</th>
+                            <th style="width: 110px; min-width: 110px;" class="text-center">ACTION</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($collection->placesSection->items->sortBy('order') as $item)
                             <tr>
-                                <td>
-                                    <img src="{{ $item->image_url }}" alt="{{ $item->place_name }}" 
-                                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
-                                </td>
-                                <td>{{ $item->order }}</td>
-                                <td><strong>{{ $item->place_name }}</strong></td>
-                                <td>{{ Str::limit($item->description, 60) }}</td>
-                                <td>{{ $item->products }}</td>
-                                <td>
-                                    @if($item->is_active)
-                                        <span class="badge badge-success">Active</span>
+                                <td class="text-center align-middle font-weight-bold">{{ $item->order ?? 0 }}</td>
+                                <td class="img-td text-center align-middle">
+                                    @if($item->image_url)
+                                        <img src="{{ $item->image_url }}" alt="{{ $item->place_name }}" 
+                                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #eee;">
                                     @else
-                                        <span class="badge badge-secondary">Inactive</span>
+                                        <div style="width:50px;height:50px;display:flex;align-items:center;justify-content:center;background:#f8f9fa;border:1px solid #eee;border-radius:4px;margin:0 auto;color:#aaa;font-size:10px;">
+                                            No Img
+                                        </div>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="align-middle font-weight-bold text-dark">{{ $item->place_name }}</td>
+                                <td class="align-middle text-muted">{{ Str::limit($item->description, 60) }}</td>
+                                <td class="text-center align-middle">
+                                    @if($item->is_active)
+                                        <span class="badge badge-success" style="font-size: 11px;">Active</span>
+                                    @else
+                                        <span class="badge badge-secondary" style="font-size: 11px;">Inactive</span>
+                                    @endif
+                                </td>
+                                <td class="text-center align-middle list-action actBtn-td" style="white-space: nowrap;">
                                     <a href="{{ route('admin.collections.place-items.edit', [$collection->slug, $item->id]) }}" 
-                                       class="btn btn-sm btn-info" title="Edit">
-                                        <i class="fas fa-edit"></i>
+                                       class="mx-1 text-primary" data-toggle="tooltip" title="Edit">
+                                        <i class="ft-edit-2 font-medium-3"></i>
                                     </a>
                                     <form action="{{ route('admin.collections.place-items.delete', [$collection->slug, $item->id]) }}" 
-                                          method="POST" style="display: inline;" 
+                                          method="POST" style="display: inline-block;" 
                                           onsubmit="return confirm('Delete this place item?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">
-                                            <i class="fas fa-trash"></i>
+                                        <button type="submit" class="btn btn-link p-0 mx-1 text-danger" data-toggle="tooltip" title="Delete" style="border:none;background:none;">
+                                            <i class="icon ft-trash-2 font-medium-3"></i>
                                         </button>
                                     </form>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="text-center">Order</th>
+                            <th class="text-center">Image</th>
+                            <th>Place Name</th>
+                            <th>Description</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </tfoot>
                 </table>
             @else
                 <div class="text-center py-5">

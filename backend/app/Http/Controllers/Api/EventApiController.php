@@ -62,8 +62,7 @@ class EventApiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch events',
-                'error' => $e->getMessage(),
-            ], 500);
+                            ], 500);
         }
     }
 
@@ -113,8 +112,7 @@ class EventApiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Event not found',
-                'error' => $e->getMessage(),
-            ], 404);
+                            ], 404);
         }
     }
 }

@@ -57,6 +57,20 @@
             .custom-switch {
                 padding-left: 3rem;
             }
+            .actBtn-td, .list-action {
+                white-space: nowrap !important;
+                min-width: 110px;
+            }
+            .actBtn-td a, .list-action a {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 4px;
+                text-decoration: none;
+            }
+            .actBtn-td i, .list-action i {
+                margin-right: 0 !important;
+            }
         </style>
         
         @yield('extra_css')

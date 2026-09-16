@@ -48,6 +48,12 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="sort_order">Sequence / Sort Order</label>
+                            <input type="number" class="form-control" id="sort_order" name="sort_order" value="{{ old('sort_order', 0) }}" style="max-width: 150px;">
+                            <small class="form-text text-muted">Lower numbers appear first on the homepage news section.</small>
+                        </div>
+
+                        <div class="form-group">
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" {{ old('is_active', true) ? 'checked' : '' }}>
                                 <label class="custom-control-label" for="is_active">Active</label>

@@ -16,8 +16,6 @@ interface CatalogueItem {
   isFeatured?: boolean;
 }
 
-
-
 const DEFAULT_CATEGORIES = [
   { id: 0, name: "All", slug: "all" },
 ];
@@ -35,12 +33,14 @@ export default function DownloadsPageContent() {
   const [categories, setCategories] = useState<{ id: number; name: string; slug: string }[]>(DEFAULT_CATEGORIES);
   const [catalogues, setCatalogues] = useState<CatalogueItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const [sortMode, setSortMode] = useState<SortMode>("popular");
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [visibleLimit, setVisibleLimit] = useState<number>(6);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
   // Modal State
@@ -82,21 +82,51 @@ export default function DownloadsPageContent() {
   const sortRef = useRef<HTMLDivElement>(null);
   const mobileFilterRef = useRef<HTMLDivElement>(null);
 
-  // Fetch dynamic categories and catalogues from API
+  // Fetch categories on mount
   useEffect(() => {
     let isMounted = true;
-    async function loadData() {
+    async function loadCategories() {
+      try {
+        const catRes = await getCatalogueCategories();
+        if (isMounted && catRes.success && catRes.data && catRes.data.length > 0) {
+          const activeCats = catRes.data.filter((c) => (c.catalogues_count ?? 0) > 0);
+          setCategories([
+            { id: 0, name: "All", slug: "all" },
+            ...(activeCats.length > 0 ? activeCats : catRes.data).map((c) => ({
+              id: c.id,
+              name: c.name,
+              slug: c.slug,
+            })),
+          ]);
+        }
+      } catch (e) {
+        console.error("Error loading catalogue categories:", e);
+      }
+    }
+    loadCategories();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Fetch dynamic catalogues from API with server-side pagination & filter & sort
+  useEffect(() => {
+    let isMounted = true;
+    async function loadCatalogues() {
       try {
         setLoading(true);
-        const [catRes, itemsRes] = await Promise.all([
-          getCatalogueCategories(),
-          getCatalogues(),
-        ]);
+        setPage(1);
+        const itemsRes = await getCatalogues({
+          category: activeFilter,
+          sort: sortMode,
+          page: 1,
+          per_page: 6,
+        });
 
         if (isMounted) {
-          let loadedCatalogues: CatalogueItem[] = [];
+
           if (itemsRes.success && itemsRes.data && itemsRes.data.length > 0) {
-            loadedCatalogues = itemsRes.data.map((item) => ({
+            const mapped = itemsRes.data.map((item) => ({
               id: item.id,
               title: item.title,
               category: item.category?.name || "Uncategorized",
@@ -107,24 +137,11 @@ export default function DownloadsPageContent() {
               fileSize: item.file_size,
               isFeatured: item.is_featured,
             }));
-            setCatalogues(loadedCatalogues);
-          }
-
-          if (catRes.success && catRes.data && catRes.data.length > 0) {
-            // Only keep categories that have at least 1 mapped catalogue
-            const activeCats = catRes.data.filter(
-              (c) =>
-                (c.catalogues_count !== undefined && c.catalogues_count > 0) ||
-                loadedCatalogues.some(
-                  (item) =>
-                    item.categorySlug.toLowerCase() === c.slug.toLowerCase() ||
-                    item.category.toLowerCase() === c.name.toLowerCase()
-                )
-            );
-            setCategories([
-              { id: 0, name: "All", slug: "all" },
-              ...activeCats.map((c) => ({ id: c.id, name: c.name, slug: c.slug })),
-            ]);
+            setCatalogues(mapped);
+            setHasMore(itemsRes.pagination?.has_more ?? false);
+          } else {
+            setCatalogues([]);
+            setHasMore(false);
           }
         }
       } catch (err) {
@@ -134,11 +151,59 @@ export default function DownloadsPageContent() {
       }
     }
 
-    loadData();
+    loadCatalogues();
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [activeFilter, sortMode]);
+
+  // Server-side Load More handler
+  const handleLoadMore = async () => {
+    if (loadingMore || !hasMore) return;
+    try {
+      setLoadingMore(true);
+      const nextPage = page + 1;
+      const itemsRes = await getCatalogues({
+        category: activeFilter,
+        sort: sortMode,
+        page: nextPage,
+        per_page: 6,
+      });
+
+      if (itemsRes.success && itemsRes.data && itemsRes.data.length > 0) {
+        const mapped = itemsRes.data.map((item) => ({
+          id: item.id,
+          title: item.title,
+          category: item.category?.name || "Uncategorized",
+          categorySlug: item.category?.slug || "all",
+          image: item.cover_image || "/images/figma-update/catalogue.png",
+          pdfUrl: item.pdf_url,
+          downloadUrl: item.download_url || (item.id ? `http://localhost:8000/api/catalogues/${item.id}/download-pdf` : null),
+          fileSize: item.file_size,
+          isFeatured: item.is_featured,
+        }));
+        setCatalogues((prev) => [...prev, ...mapped]);
+        setPage(nextPage);
+        setHasMore(itemsRes.pagination?.has_more ?? false);
+      } else {
+        setHasMore(false);
+      }
+    } catch (err) {
+      console.error("Error loading more catalogues:", err);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  const handleFilterSelect = (categoryName: string) => {
+    setActiveFilter(categoryName);
+    setMobileFilterOpen(false);
+  };
+
+  const handleSortSelect = (mode: SortMode) => {
+    setSortMode(mode);
+    setSortMenuOpen(false);
+  };
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -185,47 +250,6 @@ export default function DownloadsPageContent() {
     };
   }, [modalOpen]);
 
-  const filteredAndSortedCatalogues = useMemo(() => {
-    let list = [...catalogues];
-
-    if (activeFilter !== "All" && activeFilter !== "all") {
-      list = list.filter(
-        (item) =>
-          item.category.toLowerCase() === activeFilter.toLowerCase() ||
-          item.categorySlug.toLowerCase() === activeFilter.toLowerCase()
-      );
-    }
-
-    if (sortMode === "az") {
-      list.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortMode === "za") {
-      list.sort((a, b) => b.title.localeCompare(a.title));
-    } else if (sortMode === "new") {
-      list.sort((a, b) => b.id - a.id);
-    } else {
-      list.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0) || a.id - b.id);
-    }
-
-    return list;
-  }, [catalogues, activeFilter, sortMode]);
-
-  const displayedCatalogues = useMemo(() => {
-    return filteredAndSortedCatalogues.slice(0, visibleLimit);
-  }, [filteredAndSortedCatalogues, visibleLimit]);
-
-  const hasMore = filteredAndSortedCatalogues.length > visibleLimit;
-
-  const handleFilterSelect = (categoryName: string) => {
-    setActiveFilter(categoryName);
-    setVisibleLimit(6);
-    setMobileFilterOpen(false);
-  };
-
-  const handleSortSelect = (mode: SortMode) => {
-    setSortMode(mode);
-    setSortMenuOpen(false);
-  };
-
   const openDownloadModal = (item: CatalogueItem, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     setSelectedCatalogue(item);
@@ -244,6 +268,7 @@ export default function DownloadsPageContent() {
     });
     setModalOpen(true);
   };
+
 
   const closeModal = () => {
     setModalOpen(false);
@@ -333,11 +358,13 @@ export default function DownloadsPageContent() {
           selectedCatalogue?.downloadUrl ||
           (selectedCatalogue?.id
             ? `http://localhost:8000/api/catalogues/${selectedCatalogue.id}/download-pdf`
-            : "http://localhost:8000/api/catalogues/1/download-pdf");
-        const cleanName = (selectedCatalogue?.title || "catalogue")
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-");
-        triggerFileDownload(downloadUrl, `${cleanName}-catalogue.pdf`);
+            : null);
+        if (downloadUrl) {
+          const cleanName = (selectedCatalogue?.title || "catalogue")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-");
+          triggerFileDownload(downloadUrl, `${cleanName}-catalogue.pdf`);
+        }
       } else {
         setSubmitError(result.message || "Failed to submit. Please check your information and try again.");
       }
@@ -466,68 +493,104 @@ export default function DownloadsPageContent() {
         )}
 
         {/* Cards Grid */}
-        <div className="catalogue-grid">
-          {displayedCatalogues.map((item) => {
-            const isSelected = selectedCardId === item.id;
-            return (
-              <article
-                key={item.id}
-                className={`catalogue-card ${isSelected ? "selected" : ""}`}
-                data-category={item.category}
-                data-title={item.title}
-                tabIndex={0}
-                aria-label={`Select ${item.title} catalogue`}
-                onClick={() => setSelectedCardId((prev) => (prev === item.id ? null : item.id))}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setSelectedCardId((prev) => (prev === item.id ? null : item.id));
-                  }
-                }}
-              >
-                <div className="catalogue-cover">
-                  <img src={item.image} alt={`${item.title} catalogue cover`} />
-                  <div className="catalogue-selected">
-                    <button
-                      type="button"
-                      aria-label={`Download ${item.title} catalogue`}
-                      onClick={(e) => openDownloadModal(item, e)}
-                    >
-                      <svg
-                        className="catalogue-download-svg"
-                        width="32"
-                        height="32"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#ffffff"
-                        strokeWidth="1"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
+        {loading ? (
+          <div className="catalogue-grid catalogue-grid-skeleton" aria-busy="true" aria-label="Loading catalogues">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="catalogue-card catalogue-card-skel" style={{ pointerEvents: "none" }}>
+                <div
+                  className="catalogue-cover"
+                  style={{
+                    position: "relative",
+                    overflow: "hidden",
+                    aspectRatio: "359 / 427",
+                    background: "linear-gradient(90deg, #ececec 0%, #f5f5f5 40%, #ffffff 50%, #f5f5f5 60%, #ececec 100%)",
+                    backgroundSize: "1200px 100%",
+                    animation: "cat-shimmer 1.6s ease-in-out infinite",
+                  }}
+                />
+                <div
+                  style={{
+                    height: 22,
+                    width: "65%",
+                    marginTop: 13,
+                    borderRadius: 4,
+                    background: "linear-gradient(90deg, #e4e4e4 0%, #efefef 40%, #f8f8f8 50%, #efefef 60%, #e4e4e4 100%)",
+                    backgroundSize: "1200px 100%",
+                    animation: "cat-shimmer 1.6s ease-in-out infinite",
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        ) : catalogues.length > 0 ? (
+          <div className="catalogue-grid">
+            {catalogues.map((item) => {
+              const isSelected = selectedCardId === item.id;
+              return (
+                <article
+                  key={item.id}
+                  className={`catalogue-card ${isSelected ? "selected" : ""}`}
+                  data-category={item.category}
+                  data-title={item.title}
+                  tabIndex={0}
+                  aria-label={`Select ${item.title} catalogue`}
+                  onClick={() => setSelectedCardId((prev) => (prev === item.id ? null : item.id))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedCardId((prev) => (prev === item.id ? null : item.id));
+                    }
+                  }}
+                >
+                  <div className="catalogue-cover">
+                    <img src={item.image} alt={`${item.title} catalogue cover`} />
+                    <div className="catalogue-selected">
+                      <button
+                        type="button"
+                        aria-label={`Download ${item.title} catalogue`}
+                        onClick={(e) => openDownloadModal(item, e)}
                       >
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="7 10 12 15 17 10" />
-                        <line x1="12" y1="15" x2="12" y2="-4" />
-                      </svg>
-                      <strong>Download PDF</strong>
-                    </button>
-                    <small>{item.title}</small>
+                        <svg
+                          className="catalogue-download-svg"
+                          width="32"
+                          height="32"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#ffffff"
+                          strokeWidth="1"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="-4" />
+                        </svg>
+                        <strong>Download PDF</strong>
+                      </button>
+                      <small>{item.title}</small>
+                    </div>
                   </div>
-                </div>
-                <h2>{item.title}</h2>
-              </article>
-            );
-          })}
-        </div>
+                  <h2>{item.title}</h2>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="catalogue-empty" style={{ textAlign: "center", padding: "60px 20px", color: "rgba(255,255,255,0.6)" }}>
+            <p>No catalogues available at this time.</p>
+          </div>
+        )}
 
         {/* View More Button */}
         {hasMore && (
           <button
             className="catalogue-more"
             type="button"
-            onClick={() => setVisibleLimit((prev) => prev + 6)}
+            disabled={loadingMore}
+            onClick={handleLoadMore}
           >
-            View More
+            {loadingMore ? "Loading..." : "View More"}
           </button>
         )}
       </section>

@@ -36,9 +36,18 @@ export interface CatalogueCategoriesResponse {
   data: CatalogueCategoryDto[];
 }
 
+export interface PaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+  has_more: boolean;
+}
+
 export interface CataloguesResponse {
   success: boolean;
   data: CatalogueDto[];
+  pagination?: PaginationMeta;
 }
 
 /**
@@ -62,9 +71,16 @@ export async function getCatalogueCategories(): Promise<CatalogueCategoriesRespo
 }
 
 /**
- * Fetch catalogues with optional filter
+ * Fetch catalogues with optional filter and server-side pagination
  */
-export async function getCatalogues(params?: { category?: string; featured?: boolean; search?: string }): Promise<CataloguesResponse> {
+export async function getCatalogues(params?: {
+  category?: string;
+  featured?: boolean;
+  search?: string;
+  sort?: string;
+  page?: number;
+  per_page?: number;
+}): Promise<CataloguesResponse> {
   try {
     const url = new URL(`${API_BASE_URL}/api/catalogues`);
     if (params?.category && params.category !== 'all' && params.category !== 'All') {
@@ -75,6 +91,15 @@ export async function getCatalogues(params?: { category?: string; featured?: boo
     }
     if (params?.search) {
       url.searchParams.set('search', params.search);
+    }
+    if (params?.sort) {
+      url.searchParams.set('sort', params.sort);
+    }
+    if (params?.page) {
+      url.searchParams.set('page', String(params.page));
+    }
+    if (params?.per_page) {
+      url.searchParams.set('per_page', String(params.per_page));
     }
 
     const response = await fetch(url.toString(), {

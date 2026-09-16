@@ -359,50 +359,60 @@
                                     </div>
                                     <div class="card-body">
                                         @if($collection->parametersSection && $collection->parametersSection->items->count() > 0)
-                                            <div class="table-responsive"><table class="table table-sm mb-0">
-                                                <thead class="thead-light">
+                                            <table class="table data-table table-bordered w-100" data-order='[[ 0, "asc" ]]' id="parameters-table" style="width:100% !important;">
+                                                <thead>
                                                     <tr>
-                                                        <th style="width: 80px;" class="text-center">Order</th>
-                                                        <th style="width: 150px;">Small Text</th>
-                                                        <th>Title</th>
-                                                        <th>Description</th>
-                                                        <th style="width: 90px;" class="text-center">Status</th>
-                                                        <th style="width: 100px;" class="text-center">Actions</th>
+                                                        <th style="width: 70px; min-width: 60px;" class="text-center">ORDER</th>
+                                                        <th style="width: 18%; min-width: 120px;">SMALL TEXT</th>
+                                                        <th style="width: 22%; min-width: 140px;">TITLE</th>
+                                                        <th style="width: 35%; min-width: 200px;">DESCRIPTION</th>
+                                                        <th style="width: 90px; min-width: 80px;" class="text-center">STATUS</th>
+                                                        <th style="width: 110px; min-width: 100px;" class="text-center">ACTION</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach($collection->parametersSection->items->sortBy('order') as $item)
                                                         <tr>
-                                                            <td class="text-center"><span class="badge badge-light border">{{ $item->order }}</span></td>
-                                                            <td>{{ $item->small_text ?? '-' }}</td>
-                                                            <td><strong>{{ $item->title }}</strong></td>
-                                                            <td class="text-muted">{{ Str::limit($item->description, 80) }}</td>
-                                                            <td class="text-center">
-                                                                <span class="badge {{ $item->is_active ? 'badge-success' : 'badge-secondary' }}">
-                                                                    {{ $item->is_active ? 'Active' : 'Inactive' }}
-                                                                </span>
+                                                            <td class="text-center align-middle font-weight-bold">{{ $item->order ?? 0 }}</td>
+                                                            <td class="align-middle text-muted">{{ $item->small_text ?? '-' }}</td>
+                                                            <td class="align-middle font-weight-bold text-dark">{{ $item->title }}</td>
+                                                            <td class="align-middle text-muted">{{ Str::limit($item->description, 80) }}</td>
+                                                            <td class="text-center align-middle">
+                                                                @if($item->is_active)
+                                                                    <span class="badge badge-success" style="font-size: 11px;">Active</span>
+                                                                @else
+                                                                    <span class="badge badge-secondary" style="font-size: 11px;">Inactive</span>
+                                                                @endif
                                                             </td>
-                                                            <td class="text-center">
-                                                                <div class="d-flex justify-content-center" style="gap: 4px;">
-                                                                    <a href="{{ route('admin.collections.parameter-items.edit', [$collection->slug, $item->id]) }}" 
-                                                                       class="btn btn-info btn-xs d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" title="Edit">
-                                                                        <i class="fas fa-edit"></i>
-                                                                    </a>
-                                                                    <form action="{{ route('admin.collections.parameter-items.delete', [$collection->slug, $item->id]) }}" 
-                                                                          method="POST" class="m-0" 
-                                                                          onsubmit="return confirm('Are you sure you want to delete this card?');">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn btn-danger btn-xs d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" title="Delete">
-                                                                            <i class="fas fa-trash"></i>
-                                                                        </button>
-                                                                    </form>
-                                                                </div>
+                                                            <td class="text-center align-middle list-action actBtn-td" style="white-space: nowrap;">
+                                                                <a href="{{ route('admin.collections.parameter-items.edit', [$collection->slug, $item->id]) }}" 
+                                                                   class="mx-1 text-primary" data-toggle="tooltip" title="Edit">
+                                                                    <i class="ft-edit-2 font-medium-3"></i>
+                                                                </a>
+                                                                <form action="{{ route('admin.collections.parameter-items.delete', [$collection->slug, $item->id]) }}" 
+                                                                      method="POST" style="display: inline-block;" 
+                                                                      onsubmit="return confirm('Are you sure you want to delete this card?');">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-link p-0 mx-1 text-danger" data-toggle="tooltip" title="Delete" style="border:none;background:none;">
+                                                                        <i class="icon ft-trash-2 font-medium-3"></i>
+                                                                    </button>
+                                                                </form>
                                                             </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
-                                            </table></div>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th class="text-center">Order</th>
+                                                        <th>Small Text</th>
+                                                        <th>Title</th>
+                                                        <th>Description</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
                                         @else
                                             <div class="text-center py-4">
                                                 <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
@@ -426,10 +436,10 @@
                                 <form action="{{ route('admin.collections.store-compositions', $collection->slug) }}" method="POST" class="mb-4">
                                     @csrf
                                     
-                                    <div class="card">
+                                    <div class="card inner-section-card compositions shadow-sm">
                                         <div class="card-header">
                                             <h5 class="card-title mb-0">
-                                                <i class="fas fa-images"></i> Section Settings
+                                                <i class="fas fa-cubes mr-1 text-info"></i> Compositions Section Configuration
                                             </h5>
                                         </div>
                                         <div class="card-body">
@@ -438,44 +448,141 @@
                                                     <div class="form-group">
                                                         <label for="comp_title">Section Title <span class="text-danger">*</span></label>
                                                         <input type="text" class="form-control" id="comp_title" name="title" 
-                                                               value="{{ old('title', $collection->compositionsSection->title ?? 'Compositions to inspire') }}" 
-                                                               required>
+                                                               value="{{ old('title', $collection->compositionsSection->title ?? 'Symphony Compositions') }}" 
+                                                               placeholder="Symphony Compositions" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label>&nbsp;</label>
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" class="custom-control-input" id="comp_is_active" 
-                                                                   name="is_active" value="1" 
-                                                                   {{ old('is_active', $collection->compositionsSection->is_active ?? false) ? 'checked' : '' }}>
-                                                            <label class="custom-control-label" for="comp_is_active">Display on Frontend</label>
-                                                        </div>
+                                                    <label>&nbsp;</label>
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input" id="comp_is_active" 
+                                                               name="is_active" value="1" 
+                                                               {{ old('is_active', $collection->compositionsSection->is_active ?? false) ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="comp_is_active">Display on Frontend</label>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="comp_subtitle">Section Description</label>
-                                                <textarea class="form-control" id="comp_subtitle" name="subtitle" rows="2">{{ old('subtitle', $collection->compositionsSection->subtitle ?? 'Each look explores a relationship between form, colour and arrangement — examples of what Symphony can be, not definitions of what it should be.') }}</textarea>
-                                            </div>
+                                                <textarea class="form-control" id="comp_subtitle" name="subtitle" rows="2">{{ old('subtitle', $collection->compositionsSection->subtitle ?? 'Scale, rhythm and volume — architectural lighting tailored to the exact demands of your space.') }}</textarea>
+                                            @if(isset($allCompositions))
                                             <div class="form-group">
                                                 <label for="composition_ids">Select Compositions</label>
                                                 <select class="form-control select2" id="composition_ids" name="composition_ids[]" multiple="multiple" style="width: 100%;">
                                                     @foreach($allCompositions as $composition)
                                                         <option value="{{ $composition->id }}" 
-                                                            {{ $collection->compositions->contains($composition->id) ? 'selected' : '' }}>
+                                                            {{ isset($collection->compositions) && $collection->compositions->contains($composition->id) ? 'selected' : '' }}>
                                                             {{ $composition->title }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                                 <small class="text-muted">Select the master compositions to display in this collection.</small>
                                             </div>
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> Save Section Settings
+                                            @endif
+                                            <button type="submit" class="btn btn-info">
+                                                <i class="fas fa-save mr-1"></i> Save Section Settings
                                             </button>
                                         </div>
                                     </div>
                                 </form>
+
+                                <!-- Composition Cards Table -->
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-list"></i> Composition Cards
+                                        </h5>
+                                        <div class="card-tools">
+                                            @if($collection->compositionsSection)
+                                                <a href="{{ route('admin.collections.composition-items.add', $collection->slug) }}" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-plus"></i> Add New Card
+                                                </a>
+                                            @else
+                                                <span class="text-muted">Please save section settings first</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        @if($collection->compositionsSection && $collection->compositionsSection->items->count() > 0)
+                                            <table class="table data-table table-bordered w-100" data-order='[[ 0, "asc" ]]' id="compositions-table" style="width:100% !important;">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 70px; min-width: 60px;" class="text-center">ORDER</th>
+                                                        <th style="width: 90px; min-width: 80px;" class="text-center">IMAGE</th>
+                                                        <th style="width: 45%; min-width: 200px;">DESCRIPTION</th>
+                                                        <th style="width: 25%; min-width: 140px;">PRODUCTS</th>
+                                                        <th style="width: 90px; min-width: 80px;" class="text-center">STATUS</th>
+                                                        <th style="width: 110px; min-width: 100px;" class="text-center">ACTION</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($collection->compositionsSection->items->sortBy('order') as $item)
+                                                        <tr>
+                                                            <td class="text-center align-middle font-weight-bold">{{ $item->order ?? 0 }}</td>
+                                                            <td class="img-td text-center align-middle">
+                                                                @if($item->image)
+                                                                    <img src="{{ $item->image_url }}" alt="Composition" 
+                                                                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #eee;">
+                                                                @else
+                                                                    <div style="width:50px;height:50px;display:flex;align-items:center;justify-content:center;background:#f8f9fa;border:1px solid #eee;border-radius:4px;margin:0 auto;color:#aaa;font-size:10px;">
+                                                                        No Img
+                                                                    </div>
+                                                                @endif
+                                                            </td>
+                                                            <td class="align-middle text-muted">{{ Str::limit($item->description, 60) }}</td>
+                                                            <td class="align-middle"><code class="font-weight-bold">{{ $item->products }}</code></td>
+                                                            <td class="text-center align-middle">
+                                                                @if($item->is_active)
+                                                                    <span class="badge badge-success" style="font-size: 11px;">Active</span>
+                                                                @else
+                                                                    <span class="badge badge-secondary" style="font-size: 11px;">Inactive</span>
+                                                                @endif
+                                                            </td>
+                                                            <td class="text-center align-middle list-action actBtn-td" style="white-space: nowrap;">
+                                                                <a href="{{ route('admin.collections.composition-items.edit', [$collection->slug, $item->id]) }}" 
+                                                                   class="mx-1 text-primary" data-toggle="tooltip" title="Edit">
+                                                                    <i class="ft-edit-2 font-medium-3"></i>
+                                                                </a>
+                                                                <form action="{{ route('admin.collections.composition-items.delete', [$collection->slug, $item->id]) }}" 
+                                                                      method="POST" style="display: inline-block;" 
+                                                                      onsubmit="return confirm('Are you sure you want to delete this card?');">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-link p-0 mx-1 text-danger" data-toggle="tooltip" title="Delete" style="border:none;background:none;">
+                                                                        <i class="icon ft-trash-2 font-medium-3"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th class="text-center">Order</th>
+                                                        <th class="text-center">Image</th>
+                                                        <th>Description</th>
+                                                        <th>Products</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        @else
+                                            <div class="text-center py-4">
+                                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                                <p class="text-muted">No composition cards yet.</p>
+                                                @if($collection->compositionsSection)
+                                                    <a href="{{ route('admin.collections.composition-items.add', $collection->slug) }}" class="btn btn-primary">
+                                                        <i class="fas fa-plus"></i> Add Your First Card
+                                                    </a>
+                                                @else
+                                                    <p class="text-muted"><small>Save section settings above to start adding cards.</small></p>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+>>>>>>> 8c15f62 (feat(admin): standardize admin data tables, live status switches, and optimize responsive layout)
                             </div>
 
 
@@ -486,10 +593,10 @@
                                 <form action="{{ route('admin.collections.store-tones', $collection->slug) }}" method="POST" class="mb-4">
                                     @csrf
                                     
-                                    <div class="card">
+                                    <div class="card inner-section-card tones shadow-sm">
                                         <div class="card-header">
                                             <h5 class="card-title mb-0">
-                                                <i class="fas fa-palette"></i> Section Settings
+                                                <i class="fas fa-palette mr-1 text-purple"></i> Tones Section Configuration
                                             </h5>
                                         </div>
                                         <div class="card-body">
@@ -498,28 +605,26 @@
                                                     <div class="form-group">
                                                         <label for="tones_title">Section Title <span class="text-danger">*</span></label>
                                                         <input type="text" class="form-control" id="tones_title" name="title" 
-                                                               value="{{ old('title', $collection->tonesSection->title ?? 'The colour families') }}" 
-                                                               required>
+                                                               value="{{ old('title', $collection->tonesSection->title ?? 'Symphony Tones') }}" 
+                                                               placeholder="Symphony Tones" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label>&nbsp;</label>
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" class="custom-control-input" id="tones_is_active" 
-                                                                   name="is_active" value="1" 
-                                                                   {{ old('is_active', $collection->tonesSection->is_active ?? false) ? 'checked' : '' }}>
-                                                            <label class="custom-control-label" for="tones_is_active">Display on Frontend</label>
-                                                        </div>
+                                                    <label>&nbsp;</label>
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" class="custom-control-input" id="tones_is_active" 
+                                                               name="is_active" value="1" 
+                                                               {{ old('is_active', $collection->tonesSection->is_active ?? false) ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="tones_is_active">Display on Frontend</label>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="tones_subtitle">Section Description</label>
-                                                <textarea class="form-control" id="tones_subtitle" name="subtitle" rows="2">{{ old('subtitle', $collection->tonesSection->subtitle ?? 'A curated palette organised into families for effortless colour coordination.') }}</textarea>
+                                                <textarea class="form-control" id="tones_subtitle" name="subtitle" rows="2">{{ old('subtitle', $collection->tonesSection->subtitle ?? '24 shades across 4 families: Classic, Earth, Radiant, and Architectural') }}</textarea>
                                             </div>
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> Save Section Settings
+                                            <button type="submit" class="btn btn-purple">
+                                                <i class="fas fa-save mr-1"></i> Save Section Settings
                                             </button>
                                         </div>
                                     </div>
@@ -543,70 +648,79 @@
                                     </div>
                                     <div class="card-body">
                                         @if($collection->tonesSection && $collection->tonesSection->families->count() > 0)
-                                            <div class="table-responsive"><table class="table table-sm mb-0">
-                                                <thead class="thead-light">
+                                            <table class="table data-table table-bordered w-100" data-order='[[ 0, "asc" ]]' id="tone-families-table" style="width:100% !important;">
+                                                <thead>
                                                     <tr>
-                                                        <th style="width: 80px;" class="text-center">Order</th>
-                                                        <th style="width: 100px;" class="text-center">Image</th>
-                                                        <th>Family Name</th>
-                                                        <th>Colors</th>
-                                                        <th style="width: 90px;" class="text-center">Status</th>
-                                                        <th style="width: 100px;" class="text-center">Actions</th>
+                                                        <th style="width: 70px; min-width: 60px;" class="text-center">ORDER</th>
+                                                        <th style="width: 90px; min-width: 80px;" class="text-center">IMAGE</th>
+                                                        <th style="width: 25%; min-width: 140px;">FAMILY NAME</th>
+                                                        <th style="width: 35%; min-width: 180px;">COLORS</th>
+                                                        <th style="width: 90px; min-width: 80px;" class="text-center">STATUS</th>
+                                                        <th style="width: 110px; min-width: 100px;" class="text-center">ACTION</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach($collection->tonesSection->families->sortBy('order') as $family)
                                                         <tr>
-                                                            <td class="text-center"><span class="badge badge-light border">{{ $family->order }}</span></td>
-                                                            <td class="text-center">
+                                                            <td class="text-center align-middle font-weight-bold">{{ $family->order ?? 0 }}</td>
+                                                            <td class="img-td text-center align-middle">
                                                                 @if($family->image)
                                                                     <img src="{{ $family->image_url }}" 
                                                                          alt="{{ $family->title }}" 
-                                                                         style="width: 48px; height: 32px; object-fit: cover; border-radius: 4px;">
+                                                                         style="width: 50px; height: 38px; object-fit: cover; border-radius: 4px; border: 1px solid #eee;">
                                                                 @else
-                                                                    <div class="bg-light d-inline-flex align-items-center justify-content-center" 
-                                                                         style="width: 48px; height: 32px; border-radius: 4px;">
-                                                                        <i class="fas fa-image text-muted small"></i>
+                                                                    <div style="width:50px;height:38px;display:flex;align-items:center;justify-content:center;background:#f8f9fa;border:1px solid #eee;border-radius:4px;margin:0 auto;color:#aaa;font-size:10px;">
+                                                                        No Img
                                                                     </div>
                                                                 @endif
                                                             </td>
-                                                            <td><strong>{{ $family->title }}</strong></td>
-                                                            <td>
+                                                            <td class="align-middle font-weight-bold text-dark">{{ $family->title }}</td>
+                                                            <td class="align-middle">
                                                                 <div class="d-flex flex-wrap align-items-center" style="gap: 4px;">
                                                                     @foreach($family->colors->take(6) as $color)
-                                                                        <div style="width: 18px; height: 18px; background: {{ $color->css_value }}; border: 1px solid #ccc; border-radius: 3px;" title="{{ $color->name }}"></div>
+                                                                        <div style="width: 20px; height: 20px; background: {{ $color->css_value }}; border: 1px solid #ced4da; border-radius: 3px; box-shadow: 0 1px 2px rgba(0,0,0,0.08);" title="{{ $color->name }}"></div>
                                                                     @endforeach
                                                                     @if($family->colors->count() > 6)
-                                                                        <small class="text-muted">+{{ $family->colors->count() - 6 }}</small>
+                                                                        <small class="text-muted font-weight-bold">+{{ $family->colors->count() - 6 }}</small>
                                                                     @endif
                                                                 </div>
                                                             </td>
-                                                            <td class="text-center">
-                                                                <span class="badge {{ $family->is_active ? 'badge-success' : 'badge-secondary' }}">
-                                                                    {{ $family->is_active ? 'Active' : 'Inactive' }}
-                                                                </span>
+                                                            <td class="text-center align-middle">
+                                                                @if($family->is_active)
+                                                                    <span class="badge badge-success" style="font-size: 11px;">Active</span>
+                                                                @else
+                                                                    <span class="badge badge-secondary" style="font-size: 11px;">Inactive</span>
+                                                                @endif
                                                             </td>
-                                                            <td class="text-center">
-                                                                <div class="d-flex justify-content-center" style="gap: 4px;">
-                                                                    <a href="{{ route('admin.collections.tone-families.edit', [$collection->slug, $family->id]) }}" 
-                                                                       class="btn btn-info btn-xs d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" title="Edit">
-                                                                        <i class="fas fa-edit"></i>
-                                                                    </a>
-                                                                    <form action="{{ route('admin.collections.tone-families.delete', [$collection->slug, $family->id]) }}" 
-                                                                          method="POST" class="m-0" 
-                                                                          onsubmit="return confirm('Are you sure you want to delete this tone family?');">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn btn-danger btn-xs d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" title="Delete">
-                                                                            <i class="fas fa-trash"></i>
-                                                                        </button>
-                                                                    </form>
-                                                                </div>
+                                                            <td class="text-center align-middle list-action actBtn-td" style="white-space: nowrap;">
+                                                                <a href="{{ route('admin.collections.tone-families.edit', [$collection->slug, $family->id]) }}" 
+                                                                   class="mx-1 text-primary" data-toggle="tooltip" title="Edit">
+                                                                    <i class="ft-edit-2 font-medium-3"></i>
+                                                                </a>
+                                                                <form action="{{ route('admin.collections.tone-families.delete', [$collection->slug, $family->id]) }}" 
+                                                                      method="POST" style="display: inline-block;" 
+                                                                      onsubmit="return confirm('Are you sure you want to delete this tone family?');">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-link p-0 mx-1 text-danger" data-toggle="tooltip" title="Delete" style="border:none;background:none;">
+                                                                        <i class="icon ft-trash-2 font-medium-3"></i>
+                                                                    </button>
+                                                                </form>
                                                             </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
-                                            </table></div>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th class="text-center">Order</th>
+                                                        <th class="text-center">Image</th>
+                                                        <th>Family Name</th>
+                                                        <th>Colors</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
                                         @else
                                             <div class="text-center py-4">
                                                 <i class="fas fa-swatchbook fa-3x text-muted mb-3"></i>
@@ -616,7 +730,7 @@
                                                         <i class="fas fa-plus"></i> Add Your First Family
                                                     </a>
                                                 @else
-                                                    <p class="text-muted"><small>Save section settings above to start adding families.</small></p>
+                                                    <p class="text-muted"><small>Save section settings above to start adding color families.</small></p>
                                                 @endif
                                             </div>
                                         @endif
@@ -631,10 +745,10 @@
                                 <form action="{{ route('admin.collections.store-places', $collection->slug) }}" method="POST" class="mb-4">
                                     @csrf
                                     
-                                    <div class="card">
+                                    <div class="card inner-section-card places shadow-sm">
                                         <div class="card-header">
                                             <h5 class="card-title mb-0">
-                                                <i class="fas fa-cog"></i> Places Section Configuration
+                                                <i class="fas fa-map-marker-alt mr-1 text-success"></i> Places Section Configuration
                                             </h5>
                                         </div>
                                         <div class="card-body">
@@ -652,7 +766,7 @@
                                                     <div class="custom-control custom-switch">
                                                         <input type="checkbox" class="custom-control-input" id="places_is_active" 
                                                                name="is_active" value="1" 
-                                                               {{ old('is_active', $collection->placesSection->is_active ?? true) ? 'checked' : '' }}>
+                                                               {{ old('is_active', $collection->placesSection->is_active ?? false) ? 'checked' : '' }}>
                                                         <label class="custom-control-label" for="places_is_active">Display on Frontend</label>
                                                     </div>
                                                 </div>
@@ -662,7 +776,7 @@
                                                 <textarea class="form-control" id="places_subtitle" name="subtitle" rows="2">{{ old('subtitle', $collection->placesSection->subtitle ?? 'One system, composed differently for every room') }}</textarea>
                                             </div>
                                             <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> Save Section Settings
+                                                <i class="fas fa-save mr-1"></i> Save Section Settings
                                             </button>
                                         </div>
                                     </div>
@@ -684,53 +798,69 @@
                                     </div>
                                     <div class="card-body">
                                         @if($collection->placesSection && $collection->placesSection->items->count() > 0)
-                                            <div class="table-responsive"><table class="table table-sm mb-0">
-                                                <thead class="thead-light">
+                                            <table class="table data-table table-bordered w-100" data-order='[[ 0, "asc" ]]' id="places-table" style="width:100% !important;">
+                                                <thead>
                                                     <tr>
-                                                        <th style="width: 80px;" class="text-center">Image</th>
-                                                        <th style="width: 80px;" class="text-center">Order</th>
-                                                        <th>Place Name</th>
-                                                        <th>Description</th>
-                                                        <th style="width: 90px;" class="text-center">Status</th>
-                                                        <th style="width: 100px;" class="text-center">Actions</th>
+                                                        <th style="width: 70px; min-width: 60px;" class="text-center">ORDER</th>
+                                                        <th style="width: 90px; min-width: 80px;" class="text-center">IMAGE</th>
+                                                        <th style="width: 25%; min-width: 140px;">PLACE NAME</th>
+                                                        <th style="width: 40%; min-width: 200px;">DESCRIPTION</th>
+                                                        <th style="width: 90px; min-width: 80px;" class="text-center">STATUS</th>
+                                                        <th style="width: 110px; min-width: 100px;" class="text-center">ACTION</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach($collection->placesSection->items->sortBy('order') as $item)
                                                         <tr>
-                                                            <td class="text-center">
-                                                                <img src="{{ $item->image_url }}" alt="{{ $item->place_name }}" 
-                                                                     style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px;">
+                                                            <td class="text-center align-middle font-weight-bold">{{ $item->order ?? 0 }}</td>
+                                                            <td class="img-td text-center align-middle">
+                                                                @if($item->image_url)
+                                                                    <img src="{{ $item->image_url }}" alt="{{ $item->place_name }}" 
+                                                                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #eee;">
+                                                                @else
+                                                                    <div style="width:50px;height:50px;display:flex;align-items:center;justify-content:center;background:#f8f9fa;border:1px solid #eee;border-radius:4px;margin:0 auto;color:#aaa;font-size:10px;">
+                                                                        No Img
+                                                                    </div>
+                                                                @endif
                                                             </td>
-                                                            <td class="text-center"><span class="badge badge-light border">{{ $item->order }}</span></td>
-                                                            <td><strong>{{ $item->place_name }}</strong></td>
-                                                            <td class="text-muted">{{ Str::limit($item->description, 60) }}</td>
-                                                            <td class="text-center">
-                                                                <span class="badge {{ $item->is_active ? 'badge-success' : 'badge-secondary' }}">
-                                                                    {{ $item->is_active ? 'Active' : 'Inactive' }}
-                                                                </span>
+                                                            <td class="align-middle font-weight-bold text-dark">{{ $item->place_name }}</td>
+                                                            <td class="align-middle text-muted">{{ Str::limit($item->description, 60) }}</td>
+                                                            <td class="text-center align-middle">
+                                                                @if($item->is_active)
+                                                                    <span class="badge badge-success" style="font-size: 11px;">Active</span>
+                                                                @else
+                                                                    <span class="badge badge-secondary" style="font-size: 11px;">Inactive</span>
+                                                                @endif
                                                             </td>
-                                                            <td class="text-center">
-                                                                <div class="d-flex justify-content-center" style="gap: 4px;">
-                                                                    <a href="{{ route('admin.collections.place-items.edit', [$collection->slug, $item->id]) }}" 
-                                                                       class="btn btn-info btn-xs d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" title="Edit">
-                                                                        <i class="fas fa-edit"></i>
-                                                                    </a>
-                                                                    <form action="{{ route('admin.collections.place-items.delete', [$collection->slug, $item->id]) }}" 
-                                                                          method="POST" class="m-0" 
-                                                                          onsubmit="return confirm('Delete this place item?');">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn btn-danger btn-xs d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" title="Delete">
-                                                                            <i class="fas fa-trash"></i>
-                                                                        </button>
-                                                                    </form>
-                                                                </div>
+                                                            <td class="text-center align-middle list-action actBtn-td" style="white-space: nowrap;">
+                                                                <a href="{{ route('admin.collections.place-items.edit', [$collection->slug, $item->id]) }}" 
+                                                                   class="mx-1 text-primary" data-toggle="tooltip" title="Edit">
+                                                                    <i class="ft-edit-2 font-medium-3"></i>
+                                                                </a>
+                                                                <form action="{{ route('admin.collections.place-items.delete', [$collection->slug, $item->id]) }}" 
+                                                                      method="POST" style="display: inline-block;" 
+                                                                      onsubmit="return confirm('Delete this place item?');">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-link p-0 mx-1 text-danger" data-toggle="tooltip" title="Delete" style="border:none;background:none;">
+                                                                        <i class="icon ft-trash-2 font-medium-3"></i>
+                                                                    </button>
+                                                                </form>
                                                             </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
-                                            </table></div>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th class="text-center">Order</th>
+                                                        <th class="text-center">Image</th>
+                                                        <th>Place Name</th>
+                                                        <th>Description</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
                                         @else
                                             <div class="text-center py-5">
                                                 <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
@@ -806,3 +936,88 @@
     </div>
 </section>
 @endsection
+
+@section('extra_js')
+<style>
+   .dataTables_filter,
+   .dataTables_info {
+       display: none;
+   }
+   tfoot input {
+       width: 100%;
+       padding: 4px 8px;
+       box-sizing: border-box;
+       border: 1px solid #ced4da;
+       border-radius: 4px;
+       font-size: 13px;
+   }
+   table.dataTable {
+       width: 100% !important;
+       table-layout: auto !important;
+   }
+   table.dataTable thead th, table.dataTable tfoot th {
+       font-size: 13px;
+       font-weight: 600;
+       letter-spacing: 0.5px;
+       vertical-align: middle !important;
+       white-space: nowrap !important;
+   }
+   table.dataTable tbody td {
+       vertical-align: middle !important;
+       font-size: 14px;
+   }
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+    function initDataTable(tableId, nonSortableTargets) {
+        if (!$(tableId).length) return null;
+        
+        $(tableId + ' tfoot th').each(function () {
+            var title = $(this).text().trim();
+            if (title !== 'Action' && title !== 'ACTION' && title !== 'Image' && title !== 'IMAGE' && title !== 'Colors' && title !== 'COLORS') {
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            } else {
+                $(this).html('');
+            }
+        });
+
+        var table = $(tableId).DataTable({
+            searching: true,
+            autoWidth: false,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            order: [[0, "asc"]],
+            columnDefs: [
+                { targets: nonSortableTargets, orderable: false }
+            ]
+        });
+
+        table.columns().every(function () {
+            var that = this;
+            $('input', this.footer()).on('keyup change clear', function () {
+                if (that.search() !== this.value) {
+                    that.search(this.value).draw();
+                }
+            });
+        });
+
+        return table;
+    }
+
+    initDataTable('#parameters-table', [4, 5]);
+    initDataTable('#compositions-table', [1, 4, 5]);
+    initDataTable('#tone-families-table', [1, 3, 4, 5]);
+    initDataTable('#places-table', [1, 4, 5]);
+
+    // Recalculate and adjust columns whenever any tab is shown or clicked
+    $('a[data-toggle="tab"], a[data-bs-toggle="tab"], .nav-tabs .nav-link').on('shown.bs.tab click', function (e) {
+        setTimeout(function() {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        }, 100);
+        setTimeout(function() {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        }, 300);
+    });
+});
+</script>
+@stop

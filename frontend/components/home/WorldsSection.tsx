@@ -4,17 +4,17 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import type { LightWorld } from "@/types/light-world";
 
 interface WorldsSectionProps {
-  lightWorlds: LightWorld[];
+  lightWorlds?: LightWorld[];
 }
 
-export default function WorldsSection({ lightWorlds }: WorldsSectionProps) {
+export default function WorldsSection({ lightWorlds = [] }: WorldsSectionProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  const [totalDots, setTotalDots] = useState(lightWorlds.length);
+  const [totalDots, setTotalDots] = useState(lightWorlds?.length || 0);
 
   const GAP = isMobile ? 10 : 14;
 
@@ -28,7 +28,7 @@ export default function WorldsSection({ lightWorlds }: WorldsSectionProps) {
 
   const updateScrollState = useCallback(() => {
     const el = trackRef.current;
-    if (!el || lightWorlds.length === 0) return;
+    if (!el || !lightWorlds || lightWorlds.length === 0) return;
 
     const scrollLeft = el.scrollLeft;
     const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
@@ -51,7 +51,7 @@ export default function WorldsSection({ lightWorlds }: WorldsSectionProps) {
       const idx = Math.round((scrollLeft / maxScroll) * (numDots - 1));
       setActiveSlide(Math.min(Math.max(0, idx), numDots - 1));
     }
-  }, [lightWorlds.length, isMobile, GAP, getCardWidth]);
+  }, [lightWorlds, isMobile, GAP, getCardWidth]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -83,7 +83,8 @@ export default function WorldsSection({ lightWorlds }: WorldsSectionProps) {
     el.scrollBy({ left: dir * scrollDistance, behavior: 'smooth' });
   };
 
-  const showNav = lightWorlds.length > (isMobile ? 2 : 3);
+  const count = lightWorlds?.length || 0;
+  const showNav = count > (isMobile ? 2 : 3);
 
   const desktopArrow = (isEnabled: boolean): React.CSSProperties => ({
     position: 'absolute',
@@ -106,6 +107,11 @@ export default function WorldsSection({ lightWorlds }: WorldsSectionProps) {
     padding: 0,
     lineHeight: 1,
   });
+
+  // If no dynamic light worlds exist, hide the entire section (including heading)
+  if (!lightWorlds || lightWorlds.length === 0) {
+    return null;
+  }
 
   return (
     <section className="section" id="worlds">

@@ -4,8 +4,6 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { getWatchAndShops } from "@/lib/api/watch-and-shop";
 import type { WatchAndShopItem } from "@/types/watch-and-shop";
 
-
-
 function getEmbedUrl(reel: WatchAndShopItem, autoplay: boolean = true): string | null {
   if (!reel || !reel.video_url) return null;
 
@@ -30,9 +28,11 @@ function getEmbedUrl(reel: WatchAndShopItem, autoplay: boolean = true): string |
 
 export default function WatchAndShopSection() {
   const trackRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [reels, setReels] = useState<WatchAndShopItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [playingReelId, setPlayingReelId] = useState<number | string | null>(null);
 
   useEffect(() => {
@@ -41,9 +41,14 @@ export default function WatchAndShopSection() {
         const data = await getWatchAndShops();
         if (data && data.length > 0) {
           setReels(data);
+        } else {
+          setReels([]);
         }
       } catch (err) {
-        console.error("Error loading reels:", err);
+        console.warn("Failed to load reels:", err);
+        setReels([]);
+      } finally {
+        setIsLoading(false);
       }
     }
     loadReels();
@@ -57,16 +62,22 @@ export default function WatchAndShopSection() {
   }, []);
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
     checkScroll();
     const track = trackRef.current;
     if (track) {
       track.addEventListener("scroll", checkScroll, { passive: true });
       window.addEventListener("resize", checkScroll);
       return () => {
+        window.removeEventListener("resize", checkMobile);
         track.removeEventListener("scroll", checkScroll);
         window.removeEventListener("resize", checkScroll);
       };
     }
+    return () => window.removeEventListener("resize", checkMobile);
   }, [checkScroll, reels]);
 
   const handleSlide = (direction: "left" | "right") => {
@@ -79,7 +90,30 @@ export default function WatchAndShopSection() {
     });
   };
 
-  if (!reels || reels.length === 0) {
+  const showNav = reels.length > (isMobile ? 1 : 4);
+
+  const desktopArrow = (isEnabled: boolean): React.CSSProperties => ({
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)",
+    zIndex: 10,
+    width: 44,
+    height: 60,
+    display: !isMobile && showNav ? "grid" : "none",
+    placeItems: "center",
+    background: "transparent",
+    border: "none",
+    cursor: isEnabled ? "pointer" : "default",
+    color: "#111111",
+    opacity: isEnabled ? 1 : 0.25,
+    pointerEvents: isEnabled ? "auto" : "none",
+    transition: "opacity 0.25s ease",
+    padding: 0,
+    lineHeight: 1,
+  });
+
+  // If loading or no dynamic reels exist, hide section completely
+  if (isLoading || !reels || reels.length === 0) {
     return null;
   }
 
@@ -90,20 +124,24 @@ export default function WatchAndShopSection() {
         <p className="section-deck">
           Play our latest Instagram reels right here — tap a reel to watch without leaving the site.
         </p>
-        <div className="reel-track-wrap">
+        <div className="reel-track-wrap" style={{ position: "relative", width: "100%" }}>
           {/* Desktop Left Arrow */}
-          <button
-            type="button"
-            className="slide-arrow prev"
-            aria-label="Previous reel"
-            onClick={() => handleSlide("left")}
-            disabled={!canScrollLeft}
-          >
-            ‹
-          </button>
+          {!isMobile && (
+            <button
+              type="button"
+              onClick={() => handleSlide("left")}
+              aria-label="Previous reel"
+              style={{ ...desktopArrow(canScrollLeft), left: -50 }}
+              disabled={!canScrollLeft}
+            >
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6"></path>
+              </svg>
+            </button>
+          )}
 
           {/* Mobile Floating Previous Arrow */}
-          {canScrollLeft && (
+          {isMobile && canScrollLeft && (
             <button
               type="button"
               className="reel-mobile-arrow prev"
@@ -150,9 +188,6 @@ export default function WatchAndShopSection() {
                       <img
                         src={reel.thumbnail}
                         alt={reel.title || `Abby Lighting reel ${idx + 1}`}
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
-                        }}
                       />
                       <span className="play">▶</span>
                     </>
@@ -197,18 +232,22 @@ export default function WatchAndShopSection() {
           </div>
 
           {/* Desktop Right Arrow */}
-          <button
-            type="button"
-            className="slide-arrow next"
-            aria-label="Next reel"
-            onClick={() => handleSlide("right")}
-            disabled={!canScrollRight}
-          >
-            ›
-          </button>
+          {!isMobile && (
+            <button
+              type="button"
+              onClick={() => handleSlide("right")}
+              aria-label="Next reel"
+              style={{ ...desktopArrow(canScrollRight), right: -50 }}
+              disabled={!canScrollRight}
+            >
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+            </button>
+          )}
 
           {/* Mobile Floating Next Arrow */}
-          {canScrollRight && (
+          {isMobile && canScrollRight && (
             <button
               type="button"
               className="reel-mobile-arrow next"
@@ -225,4 +264,3 @@ export default function WatchAndShopSection() {
     </section>
   );
 }
-

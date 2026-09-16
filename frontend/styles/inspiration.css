@@ -16,6 +16,11 @@
   overflow: hidden;
 }
 
+@keyframes insp-shimmer {
+  0% { background-position: -800px 0; }
+  100% { background-position: 800px 0; }
+}
+
 /* Hero Section */
 .inspiration-page .insp-hero {
   height: 575px;
@@ -28,7 +33,7 @@
 .inspiration-page .insp-hero::after {
   content: "";
   position: absolute;
-  inset: 95px 35% 0 0;
+  inset: 67px 35% 0 0;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0));
 }
 
@@ -98,7 +103,7 @@
 }
 
 .inspiration-page .insp-section {
-  padding: 78px 0 42px;
+  padding: 80px 0 0px;
 }
 
 .inspiration-page .section-title {
@@ -130,7 +135,7 @@
 }
 
 .inspiration-page .looks-head .section-deck {
-  margin: 14px 0 0;
+  margin: 5px 0 0;
 }
 
 .inspiration-page .filter-wrap,
@@ -338,7 +343,7 @@
 
 /* Reels / Watch & Shop Section */
 .inspiration-page .reels-section {
-  padding: 74px 0 64px;
+  padding: 80px 0 0px;
 }
 
 .inspiration-page .reel-track-wrap {
@@ -348,7 +353,7 @@
 .inspiration-page .reel-track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: calc((100% - 3 * 14px) / 3.5);
+  grid-auto-columns: calc((100% - 3 * 14px) / 4);
   gap: 14px;
   overflow-x: auto;
   scrollbar-width: none;
@@ -485,7 +490,7 @@
 
 /* Journal / Guides & Stories */
 .inspiration-page .journal-section {
-  padding: 40px 0 80px;
+  padding: 80px 0 80px;
 }
 
 .inspiration-page .journal-head {
@@ -1031,11 +1036,18 @@
     padding: 0 20px;
   }
 
+  .insp-shell {
+    padding: 40px 20px !important;
+    padding-bottom: 0px !important;
+  }
+
   .inspiration-page .view-more {
 
     font-size: 9px;
     width: 132px;
     height: 34px;
+    letter-spacing: 4%;
+    font-weight: 500;
 
   }
 
@@ -1060,6 +1072,7 @@
   .inspiration-page .insp-hero h1 {
     font-size: 31.63px;
     line-height: 1.15;
+
   }
 
   .inspiration-page .insp-hero em {
@@ -1068,11 +1081,13 @@
 
   .inspiration-page .section-title {
     font-size: 19px;
+    font-weight: 600;
   }
 
   .inspiration-page .section-deck {
     font-size: 11px;
     margin: 10px 0 20px;
+    max-width: 256px;
   }
 
   .inspiration-page .story-copy span {
@@ -1115,7 +1130,7 @@
   }
 
   .inspiration-page .reels-section {
-    padding: 42px 0;
+    padding: 0px 0;
   }
 
   .inspiration-page .reel-track {
@@ -1132,6 +1147,10 @@
     border-radius: 8px;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+  }
+
+  .inspiration-page .journal-section {
+    padding: 0px 0 40px;
   }
 
   .inspiration-page .slide-arrow {
@@ -1158,6 +1177,10 @@
     padding: 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
     transition: background 0.2s ease, transform 0.15s ease;
+  }
+
+  .inspiration-page .insp-section {
+    padding: 0px 0 0px;
   }
 
   .inspiration-page .reel-mobile-arrow:active {
@@ -1213,16 +1236,16 @@
 
   .inspiration-page .journal-filter-wrap .filter-menu,
   .inspiration-page .journal-sort-wrap .sort-menu {
-    width: 100%;
-    min-width: 100%;
+    width: 58%;
+    min-width: 58%;
     left: 0;
     right: 0;
   }
 
   .inspiration-page .journal-filter-wrap .filter-menu button,
   .inspiration-page .journal-sort-wrap .sort-menu button {
-    height: 36px;
-    font-size: 13px;
+    height: 20px;
+    font-size: 9px;
     padding: 0 8px;
   }
 

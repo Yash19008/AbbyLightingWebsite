@@ -9,14 +9,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 
+use App\Helpers\Common_function;
+
 class BlogAdminController extends Controller
 {
     public function index()
     {
-        $title = "All Blogs";
+        $title = "Blog Articles";
         $main_module = 'Blogs';
+        $tbl = Common_function::encrypt('blogs');
         $blogs = Blog::with('category')->orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
-        return view('admin.blogs.index', compact('title', 'main_module', 'blogs'));
+        return view('admin.blogs.index', compact('title', 'main_module', 'blogs', 'tbl'));
     }
 
     public function add()

@@ -538,7 +538,8 @@ a {
 }
 
 .hero {
-  min-height: 711px
+  min-height: 740px !important;
+
 }
 
 .hero-slide.architectural {
@@ -1045,6 +1046,11 @@ a {
     display: none
   }
 
+  .hero {
+    margin-bottom: 40px;
+
+  }
+
   .world {
     scroll-snap-align: start;
     flex: 0 0 calc(50vw - 24.5px)
@@ -1096,7 +1102,8 @@ a {
 
   .manufacturing h2 {
     font-size: 20.88px;
-    line-height: 1.15
+    line-height: 1.15;
+
   }
 
   .manufacturing h2 em {
@@ -1105,7 +1112,7 @@ a {
   }
 
   .manufacturing p {
-    max-width: 330px;
+    max-width: 250px !important;
     margin-bottom: 14px;
     font-size: 10px !important;
     line-height: 1.5
@@ -1268,10 +1275,11 @@ a {
 
   .image-cta h2 {
     font-size: 20.88px;
+    letter-spacing: 4%;
   }
 
   .image-cta p {
-    max-width: 310px;
+    max-width: 158px;
     font-size: 10px;
     line-height: 1.5
   }
@@ -1659,8 +1667,9 @@ a {
   }
 
   .projects .section-head .project-all-link {
-    gap: 8px;
+    gap: 8px !important;
     font-size: 10.44px !important;
+    font-weight: 400 !important;
   }
 
   .project-all-arrow {

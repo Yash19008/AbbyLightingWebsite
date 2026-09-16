@@ -4,35 +4,10 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import type { NewsItem } from "@/types/news-item";
 
 interface NewsSectionProps {
-  newsItems: NewsItem[];
+  newsItems?: NewsItem[];
 }
 
-const defaultNews: NewsItem[] = [
-
-  {
-    id: 2,
-    title: "Made in India, designed for the world",
-    subtitle: "ELLE DECOR INDIA",
-    image: "/images/reference/news-elle.png",
-    link: "#",
-  },
-  {
-    id: 3,
-    title: "Lighting the country's most iconic workspaces",
-    subtitle: "BUSINESS OF HOME",
-    image: "/images/reference/news-business.png",
-    link: "#",
-  },
-  {
-    id: 4,
-    title: "Abby Lighting Opens New Experience Centre in Pune",
-    subtitle: "PUNEKAR NEWS",
-    image: "/images/reference/news-punekar.png",
-    link: "#",
-  },
-];
-
-export default function NewsSection({ newsItems }: NewsSectionProps) {
+export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -40,7 +15,7 @@ export default function NewsSection({ newsItems }: NewsSectionProps) {
 
   const GAP = isMobile ? 12 : 18;
 
-  const items = newsItems && newsItems.length > 0 ? newsItems : defaultNews;
+  const items = newsItems || [];
 
   const getCardWidth = useCallback(() => {
     const el = trackRef.current;
@@ -113,6 +88,11 @@ export default function NewsSection({ newsItems }: NewsSectionProps) {
     padding: 0,
     lineHeight: 1,
   });
+
+  // If no dynamic news items exist, hide the entire section (including heading)
+  if (!items || items.length === 0) {
+    return null;
+  }
 
   return (
     <section className="section" id="news">

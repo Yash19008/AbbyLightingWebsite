@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CollectionApiController extends Controller
 {
@@ -13,32 +14,40 @@ class CollectionApiController extends Controller
      */
     public function index()
     {
-        $collections = Collection::with('heroSection')
-            ->active()
-            ->ordered()
-            ->get()
-            ->map(function ($collection) {
-                return [
-                    'id' => $collection->id,
-                    'slug' => $collection->slug,
-                    'name' => $collection->name,
-                    'short_description' => $collection->short_description,
-                    'description' => $collection->description,
-                    'hero_section' => $collection->heroSection ? [
-                        'background_image' => $collection->heroSection->background_image 
-                            ? asset('storage/' . $collection->heroSection->background_image) 
-                            : null,
-                        'title_prefix' => $collection->heroSection->title_prefix,
-                        'title_highlight' => $collection->heroSection->title_highlight,
-                        'description' => $collection->heroSection->description,
-                    ] : null,
-                ];
-            });
+        try {
+            $collections = Collection::with('heroSection')
+                ->active()
+                ->ordered()
+                ->get()
+                ->map(function ($collection) {
+                    return [
+                        'id'                => $collection->id,
+                        'slug'              => $collection->slug,
+                        'name'              => $collection->name,
+                        'short_description' => $collection->short_description,
+                        'description'       => $collection->description,
+                        'hero_section'      => $collection->heroSection ? [
+                            'background_image' => $collection->heroSection->background_image
+                                ? asset('storage/' . $collection->heroSection->background_image)
+                                : null,
+                            'title_prefix'    => $collection->heroSection->title_prefix,
+                            'title_highlight' => $collection->heroSection->title_highlight,
+                            'description'     => $collection->heroSection->description,
+                        ] : null,
+                    ];
+                });
 
-        return response()->json([
-            'success' => true,
-            'data' => $collections
-        ]);
+            return response()->json([
+                'success' => true,
+                'data'    => $collections,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('CollectionApiController::index — ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch collections',
+            ], 500);
+        }
     }
 
     /**
@@ -46,8 +55,9 @@ class CollectionApiController extends Controller
      */
     public function show($slug)
     {
-        $collection = Collection::where('slug', $slug)
-            ->with([
+        try {
+            $collection = Collection::where('slug', $slug)
+                ->with([
                 'heroSection',
                 'parametersSection.items' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
@@ -181,8 +191,15 @@ class CollectionApiController extends Controller
         ];
 
         return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
+                'success' => true,
+                'data'    => $data,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('CollectionApiController::show — ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Collection not found',
+            ], 404);
+        }
     }
 }

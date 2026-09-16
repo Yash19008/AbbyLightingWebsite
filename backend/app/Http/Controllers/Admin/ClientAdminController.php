@@ -23,12 +23,9 @@ class ClientAdminController extends Controller
     {
         $data = array('title' => "Clients", 'main_module' => $this->main_module);
 
-        $data['search'] = $request->input('search');
-        $data['results'] = new Client;
-        $data['results'] =  $data['results']->orderBy('id', 'DESC')->paginate(10); //config('custom_config.settings.admin_pagination_limit')
+        $data['results'] = Client::orderBy('id', 'DESC')->get();
         $data['tbl'] = Common_function::encrypt('clients');
 
-        $data['results']->appends(['search' => $data['search']]);
         return view('admin.clients.clients', $data);
     }
     public function add()

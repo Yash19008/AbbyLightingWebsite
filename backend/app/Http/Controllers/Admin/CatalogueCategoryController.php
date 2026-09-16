@@ -8,14 +8,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 
+use App\Helpers\Common_function;
+
 class CatalogueCategoryController extends Controller
 {
     public function index()
     {
         $title = "Catalogue Categories";
         $main_module = 'Catalogue Categories';
+        $tbl = Common_function::encrypt('catalogue_categories');
         $categories = CatalogueCategory::orderBy('sort_order', 'asc')->orderBy('id', 'asc')->get();
-        return view('admin.catalogue-categories.index', compact('title', 'main_module', 'categories'));
+        return view('admin.catalogue-categories.index', compact('title', 'main_module', 'categories', 'tbl'));
     }
 
     public function add()

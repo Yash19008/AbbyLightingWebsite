@@ -74,11 +74,11 @@
                          SECTION: PAGES
                          Manage content per frontend page
                          ══════════════════════════════════════ --}}
-                    <li class="nav-item has-sub {{ (Route::currentRouteName() && (str_starts_with(Route::currentRouteName(), 'homeslider_admin') || str_starts_with(Route::currentRouteName(), 'light_worlds_admin') || Route::currentRouteName() == 'admin.manufacturing.edit' || str_starts_with(Route::currentRouteName() ?? '', 'admin.news-items') || str_starts_with(Route::currentRouteName() ?? '', 'admin.watch_and_shops'))) ? 'open' : '' }}">
+                    <li class="nav-item has-sub {{ (Route::currentRouteName() && (str_starts_with(Route::currentRouteName(), 'homeslider_admin') || str_starts_with(Route::currentRouteName(), 'light_worlds_admin') || Route::currentRouteName() == 'admin.manufacturing.edit' || str_starts_with(Route::currentRouteName() ?? '', 'admin.home_catalogue') || str_starts_with(Route::currentRouteName() ?? '', 'admin.news-items') || str_starts_with(Route::currentRouteName() ?? '', 'admin.watch_and_shops'))) ? 'open' : '' }}">
                         <a href="#"><i class="ft-layout"></i><span class="menu-title">Pages</span></a>
                         <ul class="menu-content">
                             {{-- HOME PAGE --}}
-                            <li class="has-sub {{ (Route::currentRouteName() == 'homeslider_admin' || Route::currentRouteName() == 'homeslider_admin.add' || Route::currentRouteName() == 'homeslider_admin.edit' || str_starts_with(Route::currentRouteName() ?? '', 'light_worlds_admin') || Route::currentRouteName() == 'admin.manufacturing.edit' || str_starts_with(Route::currentRouteName() ?? '', 'admin.news-items')) ? 'open' : '' }}">
+                            <li class="has-sub {{ (Route::currentRouteName() == 'homeslider_admin' || Route::currentRouteName() == 'homeslider_admin.add' || Route::currentRouteName() == 'homeslider_admin.edit' || str_starts_with(Route::currentRouteName() ?? '', 'light_worlds_admin') || Route::currentRouteName() == 'admin.manufacturing.edit' || str_starts_with(Route::currentRouteName() ?? '', 'admin.home_catalogue') || str_starts_with(Route::currentRouteName() ?? '', 'admin.news-items')) ? 'open' : '' }}">
                                 <a href="#" class="menu-item"><i class="ft-home" style="font-size:11px;margin-right:4px;"></i> Home</a>
                                 <ul class="menu-content">
                                     <li class="{{ (Route::currentRouteName() == 'homeslider_admin' || Route::currentRouteName() == 'homeslider_admin.add' || Route::currentRouteName() == 'homeslider_admin.edit') ? 'active' : '' }}">
@@ -89,6 +89,9 @@
                                     </li>
                                     <li class="{{ (Route::currentRouteName() == 'admin.manufacturing.edit') ? 'active' : '' }}">
                                         <a class="menu-item" href="{{ route('admin.manufacturing.edit', 1) }}"> Manufacturing</a>
+                                    </li>
+                                    <li class="{{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.home_catalogue')) ? 'active' : '' }}">
+                                        <a class="menu-item" href="{{ route('admin.home_catalogue.edit', 1) }}"> Catalogue Section</a>
                                     </li>
                                     <li class="{{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.news-items')) ? 'active' : '' }}">
                                         <a class="menu-item" href="{{ route('admin.news-items.index') }}"> News Items</a>

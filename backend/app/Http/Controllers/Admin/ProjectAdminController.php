@@ -36,7 +36,7 @@ class ProjectAdminController extends Controller
     public function list(Request $request)
     {
         if ($request->ajax()) {
-            $data = Project::latest()->get();
+            $data = Project::orderBy('sequence', 'ASC')->orderBy('id', 'DESC')->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->setRowId(function ($row) {
@@ -57,6 +57,16 @@ class ProjectAdminController extends Controller
                 ->addColumn('slug', function ($row) {
                     return $row->slug;
                 })
+                ->addColumn('sequence', function ($row) {
+                    return $row->sequence ?? 1;
+                })
+                ->addColumn('is_featured', function ($row) {
+                    $featured_status = $row->is_featured ? "checked" : "";
+                    return '<div class="custom-control custom-switch text-center">
+                                <input type="checkbox" class="custom-control-input knob switch-featured" data-id="' . $row->id . '" id="customSwitchFeatured' . $row->id . '" ' . $featured_status . '>
+                                <label class="custom-control-label" for="customSwitchFeatured' . $row->id . '"></label>
+                            </div>';
+                })
                 ->addColumn('status', function ($row) {
                     $temp_status = $row->is_active == 'yes' ? "Checked" : "";
                     return '<div class="custom-control custom-switch text-center">
@@ -73,7 +83,7 @@ class ProjectAdminController extends Controller
                                     </div>';
                     return $actions_html;
                 })
-                ->rawColumns(['name', 'project_type', 'description', 'slug', 'status', 'action'])
+                ->rawColumns(['name', 'project_type', 'description', 'slug', 'sequence', 'is_featured', 'status', 'action'])
                 ->make(true);
         }
     }
@@ -119,7 +129,8 @@ class ProjectAdminController extends Controller
             'type_id' => $request->type_id ?? null, // Nullable now
             'type' => $request->type,
             'description' => $request->description,
-            'sequence' => $request->sequence ?? 1,
+            'sequence' => $request->sequence ? (int)$request->sequence : 1,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'slug' => $request->slug,
             'block_column' => $request->block_column,
             'created_at' => $this->currentDateTime,
@@ -128,7 +139,7 @@ class ProjectAdminController extends Controller
 
 
         $project = Project::create($value);
-        if (isset($request->sub_tag_id)) {
+        if (isset($request->sub_tag_id) && is_array($request->sub_tag_id)) {
             foreach ($request->sub_tag_id as $key => $value) {
                 $val = [
                     'project_id' => $project->id,
@@ -158,7 +169,8 @@ class ProjectAdminController extends Controller
             'location' => $request->location,
             'type' => $request->type,
             'description' => $request->description,
-            'sequence' => $request->sequence ?? 1,
+            'sequence' => $request->sequence ? (int)$request->sequence : 1,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'slug' => $request->slug,
             'created_at' => $this->currentDateTime,
             'created_by' => Auth::guard('admin')->user()->id,
@@ -210,6 +222,7 @@ class ProjectAdminController extends Controller
             'description' => $oldProject->description,
             'slug' => $oldProject->slug,
             'sequence' => $oldProject->sequence,
+            'is_featured' => $oldProject->is_featured,
             'block_column' => $oldProject->block_column,
             'is_active' => $oldProject->is_active,
             'created_by' => $oldProject->created_by,
@@ -226,7 +239,8 @@ class ProjectAdminController extends Controller
             'block_column' => $request->block_column,
             'description' => $request->description,
             'slug' => $request->slug,
-            'sequence' => $request->sequence ?? $oldProject->sequence,
+            'sequence' => $request->sequence !== null ? (int)$request->sequence : $oldProject->sequence,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'updated_by' => Auth::guard('admin')->user()->id,
             'updated_at' => $this->currentDateTime,
         );
@@ -249,12 +263,13 @@ class ProjectAdminController extends Controller
         Project::where('id', '=', $id)
             ->update($update_array);
 
-        $deleteableSubtagImages = ProjectSubTag::where('project_id', $id)->whereNotIn('sub_tag_id', $request->sub_tag_id)->get();
-        SubTagProjectImage::where('project_id', $id)->whereIn('sub_tag_id', $deleteableSubtagImages->pluck('sub_tag_id')->toArray())->delete();
-        ProjectSubTag::where('project_id', $id)->forceDelete();
+        $subTagIds = is_array($request->sub_tag_id) ? $request->sub_tag_id : [];
+        if (!empty($subTagIds)) {
+            $deleteableSubtagImages = ProjectSubTag::where('project_id', $id)->whereNotIn('sub_tag_id', $subTagIds)->get();
+            SubTagProjectImage::where('project_id', $id)->whereIn('sub_tag_id', $deleteableSubtagImages->pluck('sub_tag_id')->toArray())->delete();
+            ProjectSubTag::where('project_id', $id)->forceDelete();
 
-        if (isset($request->sub_tag_id)) {
-            foreach ($request->sub_tag_id as $key => $value) {
+            foreach ($subTagIds as $key => $value) {
                 $val = [
                     'project_id' => $id,
                     'sub_tag_id' => $value,
@@ -263,6 +278,9 @@ class ProjectAdminController extends Controller
                 ];
                 ProjectSubTag::create($val);
             }
+        } else {
+            SubTagProjectImage::where('project_id', $id)->delete();
+            ProjectSubTag::where('project_id', $id)->forceDelete();
         }
 
 
@@ -272,7 +290,8 @@ class ProjectAdminController extends Controller
             'type' => $request->type,
             'description' => $request->description,
             'slug' => $request->slug,
-            'sequence' => $request->sequence ?? $oldProject->sequence,
+            'sequence' => $request->sequence !== null ? (int)$request->sequence : $oldProject->sequence,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'updated_by' => Auth::guard('admin')->user()->id,
             'updated_at' => $this->currentDateTime,
         ];
@@ -293,6 +312,25 @@ class ProjectAdminController extends Controller
         ];
         AuditLog::create($auditInfo);
         return redirect()->route('project_admin')->with('success', 'Project has been updated successfully.');
+    }
+    public function toggleFeatured(Request $request)
+    {
+        $id = $request->input('id');
+        $project = Project::find($id);
+        if (!$project) {
+            return response()->json(['code' => 0, 'message' => 'Project not found'], 404);
+        }
+
+        $project->is_featured = $request->has('is_featured') ? (int)$request->input('is_featured') : ($project->is_featured ? 0 : 1);
+        $project->updated_at = $this->currentDateTime;
+        $project->save();
+
+        return response()->json([
+            'code' => 1,
+            'status' => true,
+            'message' => 'Featured status updated successfully',
+            'is_featured' => $project->is_featured
+        ]);
     }
     public function information($id)
     {

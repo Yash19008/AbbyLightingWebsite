@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlogCategory;
+use App\Helpers\Common_function;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
@@ -14,8 +15,9 @@ class BlogCategoryController extends Controller
     {
         $title = "Blog Categories";
         $main_module = 'Blog Categories';
-        $categories = BlogCategory::orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
-        return view('admin.blog-categories.index', compact('title', 'main_module', 'categories'));
+        $tbl = Common_function::encrypt('blog_categories');
+        $categories = BlogCategory::withCount('blogs')->orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
+        return view('admin.blog-categories.index', compact('title', 'main_module', 'tbl', 'categories'));
     }
 
     public function add()

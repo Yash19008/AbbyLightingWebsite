@@ -215,6 +215,7 @@ return [
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Common_function' => App\Helpers\Common_function::class,
     ])->toArray(),
 
 ];

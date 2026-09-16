@@ -1,16 +1,17 @@
 @extends('admin.page')
 
 @section('title', $title)
+
 @section('content_header')
 <div class="row align-items-center mb-3">
     <div class="col-6 col-md-6">
         <h4 class="m-0 font-weight-bold text-dark">
-            <i class="fa fa-download mr-1"></i> Catalog Download Leads
+            <i class="ft-download mr-1"></i> Catalog Download Leads
         </h4>
     </div>
     <div class="col-6 col-md-6 text-right">
-        <a href="{{ route('admin.catalogues.index') }}" class="btn btn-dark btn-sm">
-            <i class="fa fa-book mr-1"></i> Manage Catalogues
+        <a href="{{ route('admin.catalogues.index') }}" class="btn btn-primary btn-sm">
+            <i class="ft-book mr-1"></i> Manage Catalogues
         </a>
     </div>
 </div>
@@ -19,36 +20,38 @@
 @section('content')
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-3">
-                @include('admin.include.notification')
-                <div class="table-responsive">
-                    <table class="table data-table table-bordered table-hover w-100" data-order='[[ 5, "desc" ]]' id="catalogDownloadsTable">
-                        <thead class="thead-light">
-                            <tr>
-                                <th style="width: 40px;" class="text-center">#</th>
-                                <th style="width: 22%;">Catalogue</th>
-                                <th style="width: 18%;">Name</th>
-                                <th style="width: 20%;">Email</th>
-                                <th style="width: 14%;">Mobile</th>
-                                <th class="text-center" style="width: 150px;">Download Date</th>
-                                <th class="text-center" style="width: 110px;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th>Catalogue</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Mobile</th>
-                                <th>Download Date</th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                    </table>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @include('admin.include.notification')
+                        <table class="table data-table table-bordered" data-order='[[ 5, "desc" ]]' id="catalogDownloadsTable" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">#</th>
+                                    <th>CATALOGUE</th>
+                                    <th>NAME</th>
+                                    <th>EMAIL</th>
+                                    <th>MOBILE</th>
+                                    <th class="text-center" style="width: 160px;">DOWNLOAD DATE</th>
+                                    <th class="text-center" style="width: 110px; min-width: 110px;">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th>Catalogue</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th class="text-center">Download Date</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -61,7 +64,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title font-weight-bold" id="viewLeadModalTitle">
-                    <i class="fa fa-file-text-o mr-1"></i> Catalogue Download Details
+                    <i class="ft-file-text mr-1"></i> Catalogue Download Details
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -76,7 +79,7 @@
                         </tr>
                         <tr>
                             <th style="background: #f8f9fa;" class="align-middle">Full Name</th>
-                            <td id="modalName" class="align-middle"></td>
+                            <td id="modalName" class="align-middle font-weight-bold"></td>
                         </tr>
                         <tr>
                             <th style="background: #f8f9fa;" class="align-middle">Email Address</th>
@@ -132,31 +135,23 @@
     .dataTables_info {
         display: none;
     }
-    #catalogDownloadsTable {
-        width: 100% !important;
-    }
-    #catalogDownloadsTable tfoot input {
+    tfoot input {
         width: 100%;
-        box-sizing: border-box;
         padding: 4px 8px;
-        font-size: 12px;
-        border: 1px solid #cbd5e1;
+        box-sizing: border-box;
+        border: 1px solid #ced4da;
         border-radius: 4px;
-    }
-    #catalogDownloadsTable th, #catalogDownloadsTable td {
-        vertical-align: middle !important;
         font-size: 13px;
-        padding: 10px 12px !important;
-        white-space: normal !important;
-        word-break: break-word !important;
     }
-    .table thead th {
-        border-top: none;
-        letter-spacing: 0.3px;
-        font-weight: 700;
-        color: #475569;
-        font-size: 12px;
-        text-transform: uppercase;
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        vertical-align: middle;
+    }
+    table.dataTable tbody td {
+        vertical-align: middle;
+        font-size: 14px;
     }
 </style>
 <script type="text/javascript">
@@ -165,10 +160,12 @@
         $('#viewLeadModal').appendTo('body');
 
         // Setup individual column search boxes in footer
-        $('#catalogDownloadsTable tfoot th').each(function (i) {
-            var title = $(this).text();
-            if (title) {
+        $('#catalogDownloadsTable tfoot th').each(function () {
+            var title = $(this).text().trim();
+            if (title !== 'Action' && title !== 'ACTION' && title !== '#' && title !== '') {
                 $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+            } else {
+                $(this).html('');
             }
         });
 
@@ -178,7 +175,7 @@
                 name: 'DT_RowIndex',
                 orderable: false,
                 searchable: false,
-                width: '40px',
+                width: '50px',
                 class: 'text-center align-middle font-weight-bold text-muted'
             },
             {
@@ -186,21 +183,18 @@
                 name: 'catalogue_name',
                 orderable: true,
                 searchable: true,
-                width: '22%',
-                class: 'align-middle'
+                class: 'align-middle font-weight-bold'
             },
             {
                 data: 'name',
                 name: 'name',
                 orderable: true,
                 searchable: true,
-                width: '18%',
-                class: 'align-middle font-weight-bold'
+                class: 'align-middle'
             },
             {
                 data: 'email',
                 name: 'email',
-                width: '20%',
                 class: 'align-middle',
                 orderable: true,
                 searchable: true,
@@ -208,7 +202,6 @@
             {
                 data: 'mobile',
                 name: 'mobile',
-                width: '14%',
                 class: 'align-middle',
                 orderable: true,
                 searchable: true,
@@ -216,8 +209,8 @@
             {
                 data: 'created_at',
                 name: 'created_at',
-                width: '150px',
-                class: 'text-center align-middle',
+                width: '160px',
+                class: 'text-center align-middle text-muted',
                 orderable: true,
                 searchable: true,
             },
@@ -227,7 +220,7 @@
                 width: '110px',
                 orderable: false,
                 searchable: false,
-                class: 'text-center align-middle'
+                class: 'text-center align-middle list-action actBtn-td'
             }
         ];
 
@@ -237,13 +230,13 @@
             ajax: "{{ route('catalog_admin.list') }}",
             columns: columns,
             searching: true,
-            autoWidth: false,
-            pageLength: 25,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            order: [[5, "desc"]],
             language: {
                 emptyTable: "No catalogue downloads recorded yet."
             }
         });
-
 
         // Apply column footer search
         table.columns().every(function () {

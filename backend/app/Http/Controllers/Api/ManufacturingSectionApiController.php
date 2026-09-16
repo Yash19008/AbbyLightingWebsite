@@ -43,8 +43,7 @@ class ManufacturingSectionApiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch manufacturing section',
-                'error' => $e->getMessage(),
-            ], 500);
+                            ], 500);
         }
     }
 }

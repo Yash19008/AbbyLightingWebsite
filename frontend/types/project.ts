@@ -6,6 +6,7 @@ export interface Project {
   description: string | null;
   slug: string;
   sequence: number;
+  is_featured?: boolean;
   image_url: string | null;
   created_at: string;
   updated_at: string;

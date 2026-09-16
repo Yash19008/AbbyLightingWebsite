@@ -70,16 +70,10 @@ class CatalogDownloadAdminController extends Controller
                         'created_at' => $row->created_at ? $row->created_at->format('F d, Y - h:i A') : 'N/A',
                     ]), ENT_QUOTES, 'UTF-8');
 
-                    return '
-                        <div class="d-flex align-items-center justify-content-center" style="gap:6px;">
-                            <button type="button" class="btn btn-sm btn-info view-lead-btn" data-lead="' . $jsonPayload . '" title="View Full Details" style="padding:4px 10px; font-size:12px; font-weight:600; border-radius:5px;">
-                                <i class="fas fa-eye mr-1"></i> View
-                            </button>
-                            <button type="button" class="btn btn-sm btn-danger delete-lead-btn" data-id="' . $row->id . '" title="Delete" style="padding:4px 9px; font-size:12px; border-radius:5px;">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                    ';
+                    return '<div class="text-center list-action actBtn-td" style="white-space: nowrap;">
+                                <a href="javascript:;" class="view-lead-btn mx-1 text-primary" data-lead="' . $jsonPayload . '" data-toggle="tooltip" title="View Details"><i class="ft-eye font-medium-3"></i></a>
+                                <a href="javascript:;" class="delete-lead-btn mx-1 text-danger" data-id="' . $row->id . '" data-toggle="tooltip" title="Delete"><i class="icon ft-trash-2 font-medium-3"></i></a>
+                            </div>';
                 })
                 ->rawColumns(['catalogue_name', 'name', 'email', 'action'])
                 ->make(true);

@@ -45,6 +45,18 @@
                         <input type="hidden" name="remove_path" value="0">
 
                         <div class="form-group row">
+                            <label for="is_active" class="col-sm-3 control-label">Status</label>
+                            <div class="col-sm-6">
+                                <input type="hidden" name="is_active" value="0">
+                                <div class="custom-control custom-checkbox mt-1">
+                                    <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" value="1" {{ old('is_active', @$slider ? @$slider->is_active : 1) ? 'checked' : '' }}>
+                                    <label class="custom-control-label font-weight-bold" for="is_active">Active (Visible on Homepage)</label>
+                                </div>
+                                <small class="form-text text-muted">Uncheck to deactivate/hide this slider banner from the homepage.</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="inputName" class="col-sm-3 control-label">For_Mobile<i class="text-danger">*</i></label>
                             <div class="col-sm-6">
                                 <input type="hidden" id="for_mobile" name="for_mobile" placeholder="" value="0">

@@ -70,7 +70,7 @@ body:has(.downloads-page) .sitehead {
 .downloads-page .catalogue-section {
   width: min(1126px, calc(100% - 64px));
   margin: 0 auto;
-  padding: 42px 0 112px;
+  padding: 80px 0 112px;
 }
 
 .downloads-page .catalogue-toolbar {
@@ -923,7 +923,7 @@ body:has(.downloads-page) .sitehead {
     position: relative;
     width: auto;
     margin: 0 27px;
-    padding: 26px 0 90px;
+    padding: 40px 0 40px;
   }
 
   .downloads-page .catalogue-filters {

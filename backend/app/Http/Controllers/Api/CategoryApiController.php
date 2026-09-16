@@ -43,8 +43,7 @@ class CategoryApiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch categories',
-                'error' => $e->getMessage(),
-            ], 500);
+                            ], 500);
         }
     }
 }

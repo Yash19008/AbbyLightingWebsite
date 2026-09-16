@@ -453,7 +453,7 @@
     }
 
     .s-section {
-        padding: 46px 14px
+        padding: 40px 14px
     }
 
     .s-head {
@@ -463,12 +463,14 @@
     .s-head h2 {
         font-size: 19px;
         font-weight: 600;
+        width: 240px;
     }
 
     .s-head p {
         font-size: 11px;
         line-height: 1.45;
         font-weight: 300;
+        width: 300px;
     }
 
     .s-parameter-grid {
@@ -602,7 +604,9 @@
     .s-place h3 {
         left: 14px;
         bottom: 10px;
-        font-size: 11px
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        letter-spacing: 4% !important;
     }
 
     .s-catalogue {
@@ -639,10 +643,10 @@
     }
 
     .s-related h3 {
-        font-size: 15px
+        font-size: 12px !important;
     }
 
     .s-related p {
-        font-size: 9px
+        font-size: 10px !important;
     }
 }

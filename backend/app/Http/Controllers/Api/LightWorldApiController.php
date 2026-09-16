@@ -44,8 +44,7 @@ class LightWorldApiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch light worlds',
-                'error' => $e->getMessage(),
-            ], 500);
+                            ], 500);
         }
     }
 }

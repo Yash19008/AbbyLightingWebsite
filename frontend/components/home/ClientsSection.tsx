@@ -1,10 +1,11 @@
 import type { Client } from "@/types/client";
 
 interface ClientsSectionProps {
-  clients: Client[];
+  clients?: Client[];
 }
 
-export default function ClientsSection({ clients }: ClientsSectionProps) {
+export default function ClientsSection({ clients = [] }: ClientsSectionProps) {
+  // If no dynamic client logos exist, hide the entire section (including heading)
   if (!clients || clients.length === 0) {
     return null;
   }
@@ -18,19 +19,18 @@ export default function ClientsSection({ clients }: ClientsSectionProps) {
 
         <div className="marquee reveal">
           <div className="mtrack">
-              <>
-                {clients.map((client, index) => (
-                  <div key={`client-${client.id}`} className="client-logo" aria-hidden="false">
-                    <img src={client.image_url || ''} alt={`Abby Lighting client ${index + 1}`} />
-                  </div>
-                ))}
+            {clients.map((client, index) => (
+              <div key={`client-${client.id}`} className="client-logo" aria-hidden="false">
+                <img src={client.image_url || ''} alt={`Abby Lighting client ${index + 1}`} />
+              </div>
+            ))}
 
-                {clients.map((client) => (
-                  <div key={`client-dup-${client.id}`} className="client-logo" aria-hidden="true">
-                    <img src={client.image_url || ''} alt="" />
-                  </div>
-                ))}
-              </>
+            {/* Duplicates for marquee infinite scroll effect */}
+            {clients.map((client) => (
+              <div key={`client-dup-${client.id}`} className="client-logo" aria-hidden="true">
+                <img src={client.image_url || ''} alt="" />
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -280,6 +280,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/project/insert', [ProjectAdminController::class, 'insert'])->name('project_admin.insert');
         Route::get('/project/edit/{any}', [ProjectAdminController::class, 'edit'])->name('project_admin.edit');
         Route::post('/project/update/{any}', [ProjectAdminController::class, 'update'])->name('project_admin.update');
+        Route::post('/project/toggle-featured', [ProjectAdminController::class, 'toggleFeatured'])->name('project_admin.toggle_featured');
         Route::get('/project/information/{any}', [ProjectAdminController::class, 'information'])->name('project_admin.information');
         Route::get('/project-images/{any}', [ProjectAdminController::class, 'project_images'])->name('project_images');
         Route::get('projects_exports', [ProjectAdminController::class, 'exports']);
@@ -378,6 +379,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/manufacturing-section', [App\Http\Controllers\Admin\ManufacturingSectionController::class, 'index'])->name('admin.manufacturing.index');
         Route::get('/homepage-settings/{id?}', [App\Http\Controllers\Admin\ManufacturingSectionController::class, 'edit'])->name('admin.manufacturing.edit');
         Route::put('/homepage-settings/update', [App\Http\Controllers\Admin\ManufacturingSectionController::class, 'update'])->name('admin.manufacturing.update');
+
+        /********************HOME CATALOGUE SECTION********************/
+        Route::get('/home-catalogue-section', [App\Http\Controllers\Admin\HomeCatalogueSectionController::class, 'index'])->name('admin.home_catalogue.index');
+        Route::get('/home-catalogue-settings/{id?}', [App\Http\Controllers\Admin\HomeCatalogueSectionController::class, 'edit'])->name('admin.home_catalogue.edit');
+        Route::put('/home-catalogue-settings/update', [App\Http\Controllers\Admin\HomeCatalogueSectionController::class, 'update'])->name('admin.home_catalogue.update');
 
         /********************NEWS SECTION********************/
         Route::get('/news-section-settings/{id?}', [App\Http\Controllers\Admin\NewsSectionController::class, 'edit'])->name('admin.news-section.edit');

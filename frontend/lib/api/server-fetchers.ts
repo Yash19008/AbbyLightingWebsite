@@ -7,6 +7,7 @@ import type { Slider } from "@/types/slider";
 import type { Project } from "@/types/project";
 import type { NewsItem } from "@/types/news-item";
 import type { ManufacturingSection } from "@/types/manufacturing-section";
+import type { HomeCatalogueSection } from "@/types/home-catalogue-section";
 import type { NewArrivalCategory } from "@/types/new-arrival";
 import type { LightWorld } from "@/types/light-world";
 
@@ -63,9 +64,10 @@ export async function fetchSliders(): Promise<{ web: Slider[]; mobile: Slider[] 
  * Fetch projects
  * Revalidate: 1800s (30 min) - projects updated occasionally
  */
-export async function fetchProjects(limit: number = 6): Promise<Project[]> {
+export async function fetchProjects(limit: number = 6, featured: boolean = true): Promise<Project[]> {
   try {
-    const response = await fetch(`${API_URL}/api/projects?limit=${limit}`, {
+    const url = `${API_URL}/api/projects?limit=${limit}${featured ? '&featured=1' : ''}`;
+    const response = await fetch(url, {
       next: { revalidate: 1800 }
     });
 
@@ -112,7 +114,7 @@ export async function fetchNewsItems(): Promise<NewsItem[]> {
 export async function fetchManufacturingSection(): Promise<ManufacturingSection | null> {
   try {
     const response = await fetch(`${API_URL}/api/manufacturing-section`, {
-      next: { revalidate: 3600 }
+      next: { revalidate: 60 }
     });
 
     if (!response.ok) {
@@ -176,16 +178,40 @@ export async function fetchLightWorlds(): Promise<LightWorld[]> {
 
 
 /**
+ * Fetch home catalogue section ("Find the right catalogue" homepage section)
+ * Revalidate: 3600s (1 hour) — updated via admin panel only
+ */
+export async function fetchHomeCatalogueSection(): Promise<HomeCatalogueSection | null> {
+  try {
+    const response = await fetch(`${API_URL}/api/home-catalogue-section`, {
+      next: { revalidate: 60 }
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch home catalogue section');
+      return null;
+    }
+
+    const data = await response.json();
+    return data.success && data.data ? data.data : null;
+  } catch (error) {
+    console.error('Error fetching home catalogue section:', error);
+    return null;
+  }
+}
+
+/**
  * Fetch all home page data in parallel
  * This is the main function to use in page.tsx
  */
 export async function fetchHomePageData() {
-  const [sliders, projects, clients, newsItems, manufacturingSection, newArrivalCategories, lightWorlds] = await Promise.all([
+  const [sliders, projects, clients, newsItems, manufacturingSection, homeCatalogueSection, newArrivalCategories, lightWorlds] = await Promise.all([
     fetchSliders(),
     fetchProjects(6),
     fetchClients(),
     fetchNewsItems(),
     fetchManufacturingSection(),
+    fetchHomeCatalogueSection(),
     fetchNewArrivals(),
     fetchLightWorlds()
   ]);
@@ -196,6 +222,7 @@ export async function fetchHomePageData() {
     clients,
     newsItems,
     manufacturingSection,
+    homeCatalogueSection,
     newArrivalCategories,
     lightWorlds
   };

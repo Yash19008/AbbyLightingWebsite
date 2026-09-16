@@ -4,11 +4,19 @@ import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import type { NewArrivalCategory, NewArrivalProduct } from "@/types/new-arrival";
 
 interface NewArrivalsSectionProps {
-  categories: NewArrivalCategory[];
+  categories?: NewArrivalCategory[];
 }
 
-export default function NewArrivalsSection({ categories }: NewArrivalsSectionProps) {
-  const [activeTab, setActiveTab] = useState<string>("Architectural");
+export default function NewArrivalsSection({ categories = [] }: NewArrivalsSectionProps) {
+  // Only categories that actually have products
+  const availableCategories = useMemo(() => {
+    return (categories || []).filter(cat => cat.products && cat.products.length > 0);
+  }, [categories]);
+
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    return availableCategories[0]?.name || categories?.[0]?.name || "Architectural";
+  });
+
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -16,9 +24,16 @@ export default function NewArrivalsSection({ categories }: NewArrivalsSectionPro
 
   const GAP = isMobile ? 10 : 16;
 
+  // If activeTab is no longer in availableCategories, sync it
+  useEffect(() => {
+    if (availableCategories.length > 0 && !availableCategories.some(c => c.name.toLowerCase() === activeTab.toLowerCase())) {
+      setActiveTab(availableCategories[0].name);
+    }
+  }, [availableCategories, activeTab]);
+
   // Derive products for the selected category tab dynamically
   const filteredProducts = useMemo(() => {
-    const category = categories.find(
+    const category = (categories || []).find(
       cat => cat.name.toLowerCase() === activeTab.toLowerCase()
     );
     return category ? category.products : [];
@@ -113,21 +128,28 @@ export default function NewArrivalsSection({ categories }: NewArrivalsSectionPro
     lineHeight: 1,
   });
 
+  // If no dynamic products exist in any category, hide the entire section (including heading)
+  if (availableCategories.length === 0) {
+    return null;
+  }
+
+  const categoryTabs = availableCategories.map(c => c.name);
+
   return (
     <section className="section" id="arrivals">
       <div className="shell" style={{ width: "100%", boxSizing: "border-box" }}>
         <div className="section-head reveal">
           <h2>New Arrivals</h2>
         </div>
-        <div className="product-toolbar">
-          <div className="filter-chips" role="tablist" aria-label="New arrival categories">
-            {["Architectural", "Outdoor"].map((tabName) => (
+        <div className="product-toolbar" style={{ scrollbarWidth: "none", msOverflowStyle: "none", overflowY: "hidden" } as any}>
+          <div className="filter-chips" role="tablist" aria-label="New arrival categories" style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as any}>
+            {categoryTabs.map((tabName) => (
               <button 
                 key={tabName}
                 type="button" 
                 role="tab" 
-                aria-selected={activeTab === tabName}
-                className={activeTab === tabName ? 'active' : ''}
+                aria-selected={activeTab.toLowerCase() === tabName.toLowerCase()}
+                className={activeTab.toLowerCase() === tabName.toLowerCase() ? 'active' : ''}
                 onClick={() => setActiveTab(tabName)}
               >
                 {tabName}

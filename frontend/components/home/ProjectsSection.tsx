@@ -1,10 +1,15 @@
 import type { Project } from "@/types/project";
 
 interface ProjectsSectionProps {
-  projects: Project[];
+  projects?: Project[];
 }
 
-export default function ProjectsSection({ projects }: ProjectsSectionProps) {
+export default function ProjectsSection({ projects = [] }: ProjectsSectionProps) {
+  // If no dynamic projects exist, hide the entire section (including heading)
+  if (!projects || projects.length === 0) {
+    return null;
+  }
+
   return (
     <section className="section projects" id="projects">
       <div className="shell">

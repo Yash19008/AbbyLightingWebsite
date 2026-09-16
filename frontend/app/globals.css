@@ -623,6 +623,7 @@ body {
     font-size: 20.88px;
     font-weight: 600;
     line-height: 21.35px !important;
+    letter-spacing: 4%;
   }
 }
 
@@ -1368,7 +1369,7 @@ body {
   text-decoration: none !important;
   display: inline-flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 12px;
   transition: color 0.2s ease !important;
   white-space: nowrap !important;
   padding-right: 7px;
@@ -1400,8 +1401,13 @@ body {
    Collection Page Alignment & Padding (Unified with Homepage)
    ========================================================================== */
 .s-section {
-  padding: 78px 7vw !important;
+  padding: 80px 7vw !important;
   box-sizing: border-box !important;
+
+}
+
+.s-parameters {
+  padding-bottom: 0px !important;
 }
 
 .s-hero-copy {
@@ -1426,7 +1432,11 @@ body {
 
 @media (max-width: 768px) {
   .s-section {
-    padding: 46px 20px !important;
+    padding: 40px 20px !important
+  }
+
+  .s-parameters {
+    padding-bottom: 0px !important;
   }
 
   .s-hero-copy {
@@ -1464,7 +1474,7 @@ body {
   }
 
   .shell {
-    padding: 48px 6.45vw !important;
+    padding: 40px 6.45vw !important;
     margin: auto !important;
     width: 100% !important;
     box-sizing: border-box !important;
@@ -1713,4 +1723,25 @@ body {
     width: 20px !important;
     height: 20px !important;
   }
+}
+
+/* Fix for New Arrivals product-toolbar right scrollbar / border artifact */
+.product-toolbar,
+.filter-chips {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  overflow-y: hidden !important;
+  border-right: none !important;
+}
+
+.product-toolbar::-webkit-scrollbar,
+.filter-chips::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.filter-chips button {
+  border-right: none !important;
+  outline: none !important;
 }

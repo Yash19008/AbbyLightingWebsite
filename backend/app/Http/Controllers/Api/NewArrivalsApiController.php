@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class NewArrivalsApiController extends Controller
 {
@@ -27,7 +29,7 @@ class NewArrivalsApiController extends Controller
                     'id' => 2,
                     'name' => 'Decorative',
                     'slug' => 'decorative',
-                    'products' => [] // Will be filled from decorative_products table
+                    'products' => []
                 ],
                 [
                     'id' => 3,
@@ -37,8 +39,6 @@ class NewArrivalsApiController extends Controller
                 ]
             ];
 
-
-
             return response()->json([
                 'success' => true,
                 'data' => $result,
@@ -46,10 +46,10 @@ class NewArrivalsApiController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            Log::error('NewArrivalsApiController::index — ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch new arrival products',
-                'error' => $e->getMessage()
             ], 500);
         }
     }

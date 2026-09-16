@@ -10,6 +10,7 @@ class NewsItemApiController extends Controller
     public function index()
     {
         $newsItems = NewsItem::where('is_active', true)
+            ->orderBy('sort_order', 'asc')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -22,6 +23,7 @@ class NewsItemApiController extends Controller
                     'subtitle' => $item->subtitle,
                     'image' => $item->image ? asset('storage/' . $item->image) : null,
                     'link' => $item->link,
+                    'sort_order' => $item->sort_order,
                 ];
             })
         ]);

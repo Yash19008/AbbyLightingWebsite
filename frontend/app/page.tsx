@@ -1,5 +1,4 @@
 import { fetchHomePageData } from "@/lib/api/server-fetchers";
-import SpotlightEffect from "@/components/home/SpotlightEffect";
 import HeroSection from "@/components/home/HeroSection";
 import WorldsSection from "@/components/home/WorldsSection";
 import ManufacturingSection from "@/components/home/ManufacturingSection";
@@ -16,18 +15,17 @@ export const metadata = {
 
 export default async function Home() {
   // Fetch all home page data in parallel on the server
-  const { sliders, projects, clients, newsItems, manufacturingSection, newArrivalCategories, lightWorlds } = await fetchHomePageData();
+  const { sliders, projects, clients, newsItems, manufacturingSection, homeCatalogueSection, newArrivalCategories, lightWorlds } = await fetchHomePageData();
 
   return (
     <>
-      <SpotlightEffect />
       <HeroSection sliders={sliders} />
       <WorldsSection lightWorlds={lightWorlds} />
       <ManufacturingSection data={manufacturingSection} />
       <NewArrivalsSection categories={newArrivalCategories} />
       <ProjectsSection projects={projects} />
       <ClientsSection clients={clients} />
-      <CatalogueSection />
+      <CatalogueSection data={homeCatalogueSection} />
       <NewsSection newsItems={newsItems} />
     </>
   );

@@ -7,6 +7,8 @@ use App\Models\WatchAndShop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+use App\Helpers\Common_function;
+
 class WatchAndShopController extends Controller
 {
     protected $main_module;
@@ -20,6 +22,7 @@ class WatchAndShopController extends Controller
     {
         $title = "Watch & Shop (Reels & Videos)";
         $main_module = $this->main_module;
+        $tbl = Common_function::encrypt('watch_and_shops');
         
         $query = WatchAndShop::query();
         if ($request->filled('search')) {
@@ -30,7 +33,7 @@ class WatchAndShopController extends Controller
         
         $items = $query->orderBy('display_order', 'asc')->orderBy('id', 'desc')->get();
 
-        return view('admin.watch_and_shops.index', compact('items', 'title', 'main_module'));
+        return view('admin.watch_and_shops.index', compact('items', 'title', 'main_module', 'tbl'));
     }
 
     public function add()

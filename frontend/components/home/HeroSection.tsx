@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import type { Slider } from "@/types/slider";
 
 interface HeroSectionProps {
-  sliders: Slider[];
+  sliders?: Slider[];
 }
 
 function formatHeadingHtml(heading?: string | null, highlight?: string | null): string {
@@ -37,7 +37,7 @@ function formatHeadingHtml(heading?: string | null, highlight?: string | null): 
   return `${h} <em>${hl}</em>`.trim();
 }
 
-export default function HeroSection({ sliders }: HeroSectionProps) {
+export default function HeroSection({ sliders = [] }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
 
   // Hero carousel logic
@@ -47,7 +47,7 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
 
     const track = hero.querySelector(".hero-track") as HTMLElement;
     const slides = Array.from(hero.querySelectorAll("[data-hero-slide]"));
-    
+
     if (!track || slides.length === 0) return;
 
     if (slides.length === 1) {
@@ -60,7 +60,14 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
     const previous = hero.querySelector('[aria-label="Previous hero banner"]');
     const next = hero.querySelector('[aria-label="Next hero banner"]');
 
-    if (dots.length !== slides.length || !previous || !next) return;
+    if (!track || slides.length === 0) return;
+
+    // Ensure first slide is active
+    slides[0]?.classList.add("is-active");
+
+    if (slides.length <= 1) {
+      return;
+    }
 
     let currentIndex = 0;
     let autoplayTimer: number = 0;
@@ -82,11 +89,11 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
       });
       const activatedIndex = currentIndex;
       if (immediate) {
-        slides[activatedIndex].classList.add("is-active");
+        slides[activatedIndex]?.classList.add("is-active");
       } else {
         activationFrame = window.requestAnimationFrame(() => {
           activationFrame = window.requestAnimationFrame(() => {
-            if (activatedIndex === currentIndex) slides[activatedIndex].classList.add("is-active");
+            if (activatedIndex === currentIndex) slides[activatedIndex]?.classList.add("is-active");
           });
         });
       }
@@ -104,8 +111,8 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
       autoplayTimer = window.setInterval(() => render(currentIndex + 1, false), 6000);
     };
 
-    previous.addEventListener("click", () => render(currentIndex - 1));
-    next.addEventListener("click", () => render(currentIndex + 1));
+    if (previous) previous.addEventListener("click", () => render(currentIndex - 1));
+    if (next) next.addEventListener("click", () => render(currentIndex + 1));
     dots.forEach((dot, index) => dot.addEventListener("click", () => render(index)));
 
     hero.addEventListener("mouseenter", stopAutoplay);
@@ -152,8 +159,6 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-
-
     render(0, false, true);
     startAutoplay();
 
@@ -163,6 +168,7 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
     };
   }, [sliders]);
 
+  // If no dynamic sliders exist, hide the entire hero slider section
   if (!sliders || sliders.length === 0) {
     return null;
   }
@@ -171,48 +177,54 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
     <section className="hero" data-hero-carousel="true" ref={heroRef}>
       <div className="hero-track">
         {sliders.map((slider, index) => (
-            <div key={slider.id} className={`hero-slide ${slider.image_url ? 'has-media' : ''}`} data-hero-slide="true" aria-hidden={index !== 0 ? "true" : "false"}>
-              {slider.image_url && (
-                <>
-                  <div className="hero-media-fallback" aria-hidden="true"></div>
-                  <picture className="hero-media">
-                    <img src={slider.image_url} alt="" loading={index === 0 ? "eager" : "lazy"} />
-                  </picture>
-                  <div className="hero-media-scrim" aria-hidden="true"></div>
-                </>
+          <div
+            key={slider.id}
+            className={`hero-slide ${index === 0 ? 'is-active' : ''} ${slider.image_url ? 'has-media' : ''}`}
+            data-hero-slide="true"
+            aria-hidden={index !== 0 ? "true" : "false"}
+          >
+            {slider.image_url && (
+              <>
+                <div className="hero-media-fallback" aria-hidden="true"></div>
+                <picture className="hero-media">
+                  <img src={slider.image_url} alt="" loading={index === 0 ? "eager" : "lazy"} />
+                </picture>
+                <div className="hero-media-scrim" aria-hidden="true"></div>
+              </>
+            )}
+            <div className="hero-copy">
+              {(slider.heading || slider.heading_highlight) && (
+                <h1
+                  className="display"
+                  dangerouslySetInnerHTML={{
+                    __html: formatHeadingHtml(slider.heading, slider.heading_highlight),
+                  }}
+                />
               )}
-              <div className="hero-copy">
-                {(slider.heading || slider.heading_highlight) && (
-                  <h1
-                    className="display"
-                    dangerouslySetInnerHTML={{
-                      __html: formatHeadingHtml(slider.heading, slider.heading_highlight),
-                    }}
-                  />
-                )}
-                {slider.description && <p>{slider.description}</p>}
-                {slider.button_text && slider.button_link && (
-                  <a className="btn" href={slider.button_link}>
-                    <span className="cta-d">{slider.button_text}</span>
-                    <span className="cta-m">{slider.button_text}</span>
-                  </a>
-                )}
-              </div>
+              {slider.description && <p>{slider.description}</p>}
+              {slider.button_text && slider.button_link && (
+                <a className="btn" href={slider.button_link}>
+                  <span className="cta-d">{slider.button_text}</span>
+                  <span className="cta-m">{slider.button_text}</span>
+                </a>
+              )}
             </div>
-          ))
-        }
-      </div>
-      {sliders.length > 1 && (
-        <>
-          <button className="hero-arrow hero-arrow-previous" type="button" aria-label="Previous hero banner">‹</button>
-          <button className="hero-arrow hero-arrow-next" type="button" aria-label="Next hero banner">›</button>
-          <div className="dots">
-            {sliders.map((slider, index) => (
-              <button key={slider.id} className={index === 0 ? "active" : ""} aria-current={index === 0 ? "true" : undefined} aria-label={`Show slide ${index + 1}`}></button>
-            ))}
           </div>
-        </>
-      )}
+        ))}
+      </div>
+      {
+        sliders.length > 1 && (
+          <>
+            <button className="hero-arrow hero-arrow-previous" type="button" aria-label="Previous hero banner">‹</button>
+            <button className="hero-arrow hero-arrow-next" type="button" aria-label="Next hero banner">›</button>
+            <div className="dots">
+              {sliders.map((slider, index) => (
+                <button key={slider.id} className={index === 0 ? "active" : ""} aria-current={index === 0 ? "true" : undefined} aria-label={`Show slide ${index + 1}`}></button>
+              ))}
+            </div>
+          </>
+        )
+      }
     </section>
   );
 }

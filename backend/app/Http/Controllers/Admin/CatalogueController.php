@@ -9,12 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 
+use App\Helpers\Common_function;
+
 class CatalogueController extends Controller
 {
     public function index(Request $request)
     {
-        $title = "All Catalogues";
+        $title = "Catalogues";
         $main_module = 'Catalogues';
+        $tbl = Common_function::encrypt('catalogues');
 
         $query = Catalogue::with('category')->withCount('downloads')->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
 
@@ -29,7 +32,7 @@ class CatalogueController extends Controller
         $catalogues = $query->get();
         $categories = CatalogueCategory::active()->ordered()->get();
 
-        return view('admin.catalogues.index', compact('title', 'main_module', 'catalogues', 'categories'));
+        return view('admin.catalogues.index', compact('title', 'main_module', 'catalogues', 'categories', 'tbl'));
     }
 
     public function add()

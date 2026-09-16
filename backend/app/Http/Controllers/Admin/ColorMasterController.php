@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ColorMaster;
+use App\Helpers\Common_function;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -15,7 +16,10 @@ class ColorMasterController extends Controller
     public function index()
     {
         $colors = ColorMaster::ordered()->get();
-        return view('admin.color-masters.index', compact('colors'));
+        $title = "Color Masters";
+        $main_module = 'Color Masters';
+        $tbl = \App\Helpers\Common_function::encrypt('color_masters');
+        return view('admin.color-masters.index', compact('colors', 'title', 'main_module', 'tbl'));
     }
 
     /**

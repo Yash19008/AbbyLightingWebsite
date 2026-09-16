@@ -197,7 +197,7 @@
 @media(max-width:700px) {
     .s-score-grid {
         grid-template-columns: 1fr;
-        gap: 67px
+        gap: 44px
     }
 
     .score-intro {

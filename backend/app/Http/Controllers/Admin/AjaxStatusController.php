@@ -20,13 +20,33 @@ class AjaxStatusController extends Controller
         $db_pre = DB::getTablePrefix();
 
         $tbl = $db_pre.''.Common_function::decrypt($request->input('tbl'));
+        $col = $request->filled('col') ? Common_function::decrypt($request->input('col')) : 'is_active';
 
-        $col = $request->filled('col') ? $db_pre.''.Common_function::decrypt($request->input('col')) : 'is_active';
-        if ($col == 'is_active') {
-            DB::statement("UPDATE ".$tbl." SET is_active =  (CASE WHEN is_active = 'yes' THEN 'no' ELSE 'yes' End), updated_at = '".Carbon::now()."' Where id=".$request->input('id'));
-            return response()->json(['code' => '1']);exit;
+        $id = $request->input('id');
+        $row = DB::table($tbl)->where('id', $id)->first();
+        if ($row) {
+            $curr = $row->$col ?? null;
+            if ($curr === 'yes') {
+                $newVal = 'no';
+            } elseif ($curr === 'no') {
+                $newVal = 'yes';
+            } elseif ($curr === 'active') {
+                $newVal = 'inactive';
+            } elseif ($curr === 'inactive') {
+                $newVal = 'active';
+            } elseif ($curr === 'published') {
+                $newVal = 'draft';
+            } elseif ($curr === 'draft') {
+                $newVal = 'published';
+            } else {
+                $newVal = $curr ? 0 : 1;
+            }
+            DB::table($tbl)->where('id', $id)->update([
+                $col => $newVal,
+                'updated_at' => Carbon::now()
+            ]);
+            return response()->json(['code' => '1', 'status' => true]);
         }
-        DB::statement("UPDATE ".$tbl." SET $col = 1 - $col, updated_at = '".Carbon::now()."' Where id=".$request->input('id'));
-        return response()->json(['code' => '1']);exit;
+        return response()->json(['code' => '0', 'message' => 'Record not found']);
     }
 }

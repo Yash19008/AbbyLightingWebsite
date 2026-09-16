@@ -641,11 +641,11 @@ footer {
     }
 
     .product h3 {
-        font-size: 11.05px;
+        font-size: 11.05px !important;
     }
 
     .product p {
-        font-size: 10px
+        font-size: 10px !important;
     }
 
     .project-grid {
@@ -667,7 +667,8 @@ footer {
         color: var(--amber);
         font-family: Libre Baskerville;
         font-size: 24.25px;
-        display: block
+        display: block;
+        letter-spacing: 0%;
     }
 
     .image-cta {
@@ -2012,6 +2013,7 @@ body.spot-on #spotlight {
 
     .image-cta h2 {
         font-size: 20.88px;
+        letter-spacing: 4%;
     }
 }
 
@@ -2670,9 +2672,10 @@ body .image-cta .btn:focus-visible {
         min-height: 32.43px;
         padding-left: 16px;
         padding-right: 16px;
-        font-size: 8.58px;
+        font-size: 9px;
         width: 80.13px;
         font-weight: 500;
+        letter-spacing: 4%;
     }
 
     .copy-btn {
@@ -3964,7 +3967,7 @@ a {
     }
 
     .manufacturing p {
-        max-width: 330px;
+        max-width: 250px !important;
         margin-bottom: 14px;
         font-size: 10px !important;
         line-height: 1.5
@@ -4063,10 +4066,11 @@ a {
 
     .image-cta h2 {
         font-size: 20.88px;
+        letter-spacing: 4%;
     }
 
     .image-cta p {
-        max-width: 310px;
+        max-width: 158px;
         font-size: 10px;
         line-height: 1.5
     }
@@ -4454,8 +4458,9 @@ a {
     }
 
     .projects .section-head .project-all-link {
-        gap: 8px;
-        font-size: 11px
+        gap: 8px !important;
+        font-size: 11px;
+        font-weight: 400 !important;
     }
 
     .project-all-arrow {
