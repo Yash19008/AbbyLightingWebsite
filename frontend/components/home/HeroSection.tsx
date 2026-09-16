@@ -47,11 +47,20 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
 
     const track = hero.querySelector(".hero-track") as HTMLElement;
     const slides = Array.from(hero.querySelectorAll("[data-hero-slide]"));
+    
+    if (!track || slides.length === 0) return;
+
+    if (slides.length === 1) {
+      // For a single slide, just make it active and skip carousel logic
+      slides[0].classList.add("is-active");
+      return;
+    }
+
     const dots = Array.from(hero.querySelectorAll(".dots button"));
     const previous = hero.querySelector('[aria-label="Previous hero banner"]');
     const next = hero.querySelector('[aria-label="Next hero banner"]');
 
-    if (!track || slides.length === 0 || dots.length !== slides.length || !previous || !next) return;
+    if (dots.length !== slides.length || !previous || !next) return;
 
     let currentIndex = 0;
     let autoplayTimer: number = 0;
@@ -143,22 +152,7 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // Intersection Observer for .reveal elements
-    const revealElements = document.querySelectorAll('.reveal');
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.15
-    });
 
-    revealElements.forEach(el => revealObserver.observe(el));
 
     render(0, false, true);
     startAutoplay();
@@ -166,15 +160,17 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
     return () => {
       stopAutoplay();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      revealObserver.disconnect();
     };
   }, [sliders]);
+
+  if (!sliders || sliders.length === 0) {
+    return null;
+  }
 
   return (
     <section className="hero" data-hero-carousel="true" ref={heroRef}>
       <div className="hero-track">
-        {sliders.length > 0 ? (
-          sliders.map((slider, index) => (
+        {sliders.map((slider, index) => (
             <div key={slider.id} className={`hero-slide ${slider.image_url ? 'has-media' : ''}`} data-hero-slide="true" aria-hidden={index !== 0 ? "true" : "false"}>
               {slider.image_url && (
                 <>
@@ -204,69 +200,19 @@ export default function HeroSection({ sliders }: HeroSectionProps) {
               </div>
             </div>
           ))
-        ) : (
-          <>
-            {/* Fallback slides - only shown if server fetch fails */}
-            <div className="hero-slide decorative " data-hero-slide="true" aria-hidden="false">
-              <div className="hero-copy">
-                <h1 className="display">Designed for <em>beautiful spaces</em></h1>
-                <p>Decorative lighting that brings every interior to life.</p>
-                <a className="btn" href="/#arrivals">
-                  <span className="cta-d">Explore Decorative</span>
-                  <span className="cta-m">Enter Decoratives</span>
-                </a>
-              </div>
-            </div>
-            <div className="hero-slide architectural has-media" data-hero-slide="true" aria-hidden="true">
-              <div className="hero-media-fallback architectural" aria-hidden="true"></div>
-              <picture className="hero-media">
-                <source media="(max-width: 600px)" srcSet="/images/figma-update/hero-architecture-mobile-frame138.png" />
-                <img src="/images/figma-update/hero-architecture-desktop.png" alt="" loading="eager" />
-              </picture>
-              <div className="hero-media-scrim" aria-hidden="true"></div>
-              <div className="hero-copy">
-                <h1 className="display">Shaping the <em>art of light</em></h1>
-                <p>Precision architectural lighting for beautifully designed spaces.</p>
-                <a className="btn" href="/#worlds">
-                  <span className="cta-d">Explore Architecture</span>
-                  <span className="cta-m">Explore Architecture</span>
-                </a>
-              </div>
-            </div>
-            <div className="hero-slide sigma has-media" data-hero-slide="true" aria-hidden="true">
-              <div className="hero-media-fallback sigma" aria-hidden="true"></div>
-              <picture className="hero-media">
-                <source media="(max-width: 600px)" srcSet="/images/figma-update/hero-sigma-mobile-frame145.png" />
-                <img src="/images/figma-update/hero-sigma-desktop.png" alt="" loading="eager" />
-              </picture>
-              <div className="hero-media-scrim" aria-hidden="true"></div>
-              <div className="hero-copy">
-                <h1 className="display">Meet the <em>Sigma range</em></h1>
-                <p>A modular lighting system with precision optics and a unified ceiling aesthetic.</p>
-                <a className="btn" href="/#arrivals">
-                  <span className="cta-d">Learn More</span>
-                  <span className="cta-m">Learn More</span>
-                </a>
-              </div>
-            </div>
-          </>
-        )}
+        }
       </div>
-      <button className="hero-arrow hero-arrow-previous" type="button" aria-label="Previous hero banner">‹</button>
-      <button className="hero-arrow hero-arrow-next" type="button" aria-label="Next hero banner">›</button>
-      <div className="dots">
-        {sliders.length > 0 ? (
-          sliders.map((slider, index) => (
-            <button key={slider.id} className={index === 0 ? "active" : ""} aria-current={index === 0 ? "true" : undefined} aria-label={`Show slide ${index + 1}`}></button>
-          ))
-        ) : (
-          <>
-            <button className="active" aria-current="true" aria-label="Show decorative banner"></button>
-            <button className="" aria-label="Show architectural banner"></button>
-            <button className="" aria-label="Show sigma banner"></button>
-          </>
-        )}
-      </div>
+      {sliders.length > 1 && (
+        <>
+          <button className="hero-arrow hero-arrow-previous" type="button" aria-label="Previous hero banner">‹</button>
+          <button className="hero-arrow hero-arrow-next" type="button" aria-label="Next hero banner">›</button>
+          <div className="dots">
+            {sliders.map((slider, index) => (
+              <button key={slider.id} className={index === 0 ? "active" : ""} aria-current={index === 0 ? "true" : undefined} aria-label={`Show slide ${index + 1}`}></button>
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }

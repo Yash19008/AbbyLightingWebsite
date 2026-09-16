@@ -6,8 +6,7 @@ use App\Http\Controllers\Api\ClientApiController;
 use App\Http\Controllers\Api\HomeSliderApiController;
 use App\Http\Controllers\Api\ProjectApiController;
 use App\Http\Controllers\Api\EventApiController;
-use App\Http\Controllers\Api\DecorativeCategoryApiController;
-use App\Http\Controllers\Api\DecorativeProductsApiController;
+
 use App\Http\Controllers\Api\ManufacturingSectionApiController;
 use App\Http\Controllers\Api\NewsItemApiController;
 use App\Http\Controllers\Api\NewArrivalsApiController;
@@ -35,12 +34,7 @@ Route::get('/projects/{id}', [ProjectApiController::class, 'show']);
 Route::get('/events', [EventApiController::class, 'index']);
 Route::get('/events/{id}', [EventApiController::class, 'show']);
 
-Route::get('/decorative-categories', [DecorativeCategoryApiController::class, 'index']);
-Route::get('/decorative-categories/{slug}', [DecorativeCategoryApiController::class, 'show']);
 
-// Decorative Products — used by Next.js product listing page
-Route::get('/decorative-products', [DecorativeProductsApiController::class, 'index']);
-Route::get('/decorative-products/{slug}', [DecorativeProductsApiController::class, 'show']);
 
 Route::get('/manufacturing-section', [ManufacturingSectionApiController::class, 'index']);
 
@@ -75,6 +69,9 @@ Route::get('/blogs/{slug}', [\App\Http\Controllers\Api\BlogApiController::class,
 
 // Watch & Shop (Reels / Videos) API
 Route::get('/watch-and-shops', [\App\Http\Controllers\Api\WatchAndShopApiController::class, 'index']);
+
+// Compositions
+Route::get('/compositions/showcase', [\App\Http\Controllers\Api\CompositionApiController::class, 'showcase']);
 
 // Catalogues API
 Route::get('/catalogue-categories', [\App\Http\Controllers\Api\CatalogueApiController::class, 'categories']);

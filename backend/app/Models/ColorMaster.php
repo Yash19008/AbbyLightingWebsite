@@ -16,10 +16,7 @@ class ColorMaster extends Model
         'hex_code',
         'gradient_start',
         'gradient_end',
-        'gradient_type',
-        'gradient_direction',
         'description',
-        'category',
         'order',
         'is_active',
     ];
@@ -43,13 +40,8 @@ class ColorMaster extends Model
         $start = $this->gradient_start ?? '#FFFFFF';
         $end = $this->gradient_end ?? '#000000';
         
-        if ($this->gradient_type === 'radial') {
-            return "radial-gradient(circle, {$start}, {$end})";
-        }
-        
-        // Linear gradient
-        $direction = $this->gradient_direction ?? 'to right';
-        return "linear-gradient({$direction}, {$start}, {$end})";
+        // Linear gradient (50/50 135deg)
+        return "linear-gradient(135deg, {$start} 50%, {$end} 50%)";
     }
 
     /**
@@ -76,11 +68,4 @@ class ColorMaster extends Model
         return $query->where('type', $type);
     }
 
-    /**
-     * Scope: Get colors by category
-     */
-    public function scopeInCategory($query, string $category)
-    {
-        return $query->where('category', $category);
-    }
 }

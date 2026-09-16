@@ -90,11 +90,14 @@ class Collection extends Model
             ->withTimestamps();
     }
 
-    public function decorativeProducts()
+
+
+    /**
+     * Relationship: A collection belongs to many master compositions
+     */
+    public function compositions()
     {
-        return $this->belongsToMany(DecorativeProduct::class, 'collection_decorative_products', 'collection_id', 'decorative_product_id')
-            ->select('decorative_products.*')
-            ->withTimestamps();
+        return $this->belongsToMany(Composition::class, 'collection_composition');
     }
 
     /**

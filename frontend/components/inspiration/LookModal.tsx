@@ -173,7 +173,7 @@ export default function LookModal({ isOpen, look, onClose }: LookModalProps) {
                     <div className="product-card-info">
                       <h4 className="product-card-title">{p.name}</h4>
                       <span className="product-card-type">{p.type}</span>
-                      
+
                       {p.colors && p.colors.length > 0 && (
                         <div className="product-card-colors" aria-label="Available colors">
                           {p.colors.map((colorHex, cIdx) => (

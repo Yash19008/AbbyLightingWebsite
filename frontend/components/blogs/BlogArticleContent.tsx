@@ -90,19 +90,10 @@ export default function BlogArticleContent({
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
         const rewriteContentUrls = (html: string): string => {
-          // Replace relative /uploads/ paths with the full backend URL
-          let rewritten = html.replace(
-            /(['"\s])(\/uploads\/)/g,
-            `$1${API_URL}/uploads/`
+          return html.replace(
+            /(src|href)=['"]([^'"]*?\/)?uploads\//gi,
+            `$1="${API_URL}/uploads/`
           );
-          // Also replace any stale absolute URLs that point to a different host
-          // (e.g. http://localhost/uploads/ or http://127.0.0.1/uploads/) with the
-          // current API_URL so old content saved with the wrong host still works.
-          rewritten = rewritten.replace(
-            /https?:\/\/[^"'\s]+\/uploads\//g,
-            `${API_URL}/uploads/`
-          );
-          return rewritten;
         };
 
         return (

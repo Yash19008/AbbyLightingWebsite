@@ -23,19 +23,15 @@ return new class extends Migration
             // For gradient colors
             $table->string('gradient_start', 7)->nullable(); // Start color hex
             $table->string('gradient_end', 7)->nullable(); // End color hex
-            $table->string('gradient_type', 20)->default('linear'); // linear, radial
-            $table->string('gradient_direction', 50)->default('to right'); // e.g., "to right", "135deg"
             
             // Additional metadata
             $table->string('description')->nullable(); // Optional description
-            $table->string('category')->nullable(); // e.g., "Whites", "Blues", "Warm Tones"
             $table->integer('order')->default(0); // Display order
             $table->boolean('is_active')->default(true);
             
             $table->timestamps();
             
             $table->index('type');
-            $table->index('category');
             $table->index('is_active');
         });
     }

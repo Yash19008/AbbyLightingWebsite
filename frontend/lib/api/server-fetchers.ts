@@ -1,7 +1,7 @@
 // Server-side data fetching functions with Next.js caching
 // These functions are designed to run ONLY on the server
 
-import type { DecorativeCategory } from "@/types/decorative-category";
+
 import type { Client } from "@/types/client";
 import type { Slider } from "@/types/slider";
 import type { Project } from "@/types/project";
@@ -12,28 +12,6 @@ import type { LightWorld } from "@/types/light-world";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-/**
- * Fetch decorative categories with parent-child relationships
- * Revalidate: 3600s (1 hour) - categories rarely change
- */
-export async function fetchDecorativeCategories(): Promise<DecorativeCategory[]> {
-  try {
-    const response = await fetch(`${API_URL}/api/decorative-categories`, {
-      next: { revalidate: 3600 }
-    });
-
-    if (!response.ok) {
-      console.error('Failed to fetch decorative categories');
-      return [];
-    }
-
-    const data = await response.json();
-    return data.success && data.data ? data.data : [];
-  } catch (error) {
-    console.error('Error fetching decorative categories:', error);
-    return [];
-  }
-}
 
 /**
  * Fetch clients
@@ -196,26 +174,6 @@ export async function fetchLightWorlds(): Promise<LightWorld[]> {
   }
 }
 
-/**
- * Fetch single decorative product details by slug
- */
-export async function fetchDecorativeProductDetail(slug: string): Promise<any | null> {
-  try {
-    const response = await fetch(`${API_URL}/api/decorative-products/${slug}`, {
-      next: { revalidate: 300 }
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    return data.success && data.data ? data.data : null;
-  } catch (error) {
-    console.error(`Error fetching decorative product detail for ${slug}:`, error);
-    return null;
-  }
-}
 
 /**
  * Fetch all home page data in parallel

@@ -9,7 +9,6 @@ interface ProductsSectionProps {
   collectionName: string;
 }
 
-const fallbackForms = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 
 export default function ProductsSection({ products, collectionName }: ProductsSectionProps) {
   const [expanded, setExpanded] = useState(false);
@@ -25,14 +24,15 @@ export default function ProductsSection({ products, collectionName }: ProductsSe
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const hasDynamicProducts = products && products.length > 0;
-  const itemsCount = hasDynamicProducts ? products.length : fallbackForms.length;
+  if (!products || products.length === 0) {
+    return null;
+  }
+
+  const itemsCount = products.length;
   const visibleCount = expanded ? itemsCount : (isMobile ? 4 : 8);
 
-  const displayTitle = hasDynamicProducts ? `${collectionName} Products` : "Ten Forms";
-  const displaySubtitle = hasDynamicProducts 
-    ? `Explore our range of architectural silhouettes designed for the ${collectionName} collection.` 
-    : "Each note is a distinct silhouette. Available across every Symphony tone.";
+  const displayTitle = `${collectionName} Products`;
+  const displaySubtitle = `Explore our range of architectural silhouettes designed for the ${collectionName} collection.`;
 
   return (
     <section className={`s-section s-products ${expanded ? 'is-expanded' : ''}`}>
@@ -42,15 +42,9 @@ export default function ProductsSection({ products, collectionName }: ProductsSe
       </div>
       <div className="s-products-carousel">
         <div className="decorative-grid is-settled">
-          {hasDynamicProducts ? (
-            products.slice(0, visibleCount).map((product, index) => (
-              <ProductCard key={product.id} index={index} product={product} />
-            ))
-          ) : (
-            fallbackForms.slice(0, visibleCount).map((roman, index) => (
-              <ProductCard key={roman} roman={roman} index={index} />
-            ))
-          )}
+          {products.slice(0, visibleCount).map((product, index) => (
+            <ProductCard key={product.id} index={index} product={product} />
+          ))}
         </div>
       </div>
       {!expanded && itemsCount > visibleCount && (

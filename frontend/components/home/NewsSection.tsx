@@ -8,13 +8,7 @@ interface NewsSectionProps {
 }
 
 const defaultNews: NewsItem[] = [
-  {
-    id: 1,
-    title: "Abby Lighting unveils its first decorative range",
-    subtitle: "ARCHITECTURAL DIGEST",
-    image: "/images/reference/news-architectural.png",
-    link: "#",
-  },
+
   {
     id: 2,
     title: "Made in India, designed for the world",

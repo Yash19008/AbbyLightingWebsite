@@ -1,36 +1,14 @@
 "use client";
 
 import React from "react";
-import type { DecorativeCategory } from "@/types/decorative-category";
+
 
 export default function Header() {
-  const megaContentRef = React.useRef<HTMLDivElement>(null);
-  const categoriesLoadedRef = React.useRef(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   const searchRef = React.useRef<HTMLDivElement>(null);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
 
-  React.useEffect(() => {
-    async function loadCategories() {
-      try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const response = await fetch(`${API_URL}/api/decorative-categories`);
-        
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.data && data.data.length > 0) {
-            // Update DOM directly without causing re-render
-            updateMegaDropdownContent(data.data);
-            categoriesLoadedRef.current = true;
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching decorative categories:', error);
-      }
-    }
 
-    loadCategories();
-  }, []);
 
   // Search toggle functionality
   const handleSearchToggle = () => {
@@ -75,77 +53,7 @@ export default function Header() {
     };
   }, [isSearchOpen]);
 
-  const updateMegaDropdownContent = (categories: DecorativeCategory[]) => {
-    if (!megaContentRef.current || categories.length === 0) return;
 
-    let html = '';
-    
-    categories.forEach((parentCategory, index) => {
-      if (index > 0) {
-        html += '<div class="msep"></div>';
-      }
-
-      // Check if this is the second parent category (index === 1) and has more than 5 children
-      if (index === 1 && parentCategory.children && parentCategory.children.length > 5) {
-        html += `<div class="mgroup m-dec">
-          <div class="mhead">${escapeHtml(parentCategory.name)}</div>
-          <div class="mcols">
-            <div>
-              <div class="msub">Browse by category</div>
-              <ul>`;
-        
-        // First 5 children
-        parentCategory.children.slice(0, 5).forEach(child => {
-          html += `<li><a href="/decorative/${escapeHtml(child.slug)}">${escapeHtml(child.name)}</a></li>`;
-        });
-        
-        html += `</ul>
-            </div>
-            <div class="msep sm"></div>
-            <div>
-              <div class="msub">Browse by collection</div>
-              <ul>`;
-        
-        // Remaining children
-        parentCategory.children.slice(5).forEach(child => {
-          html += `<li><a href="/decorative/${escapeHtml(child.slug)}">${escapeHtml(child.name)}</a></li>`;
-        });
-        
-        html += `</ul>
-            </div>
-          </div>
-        </div>`;
-      } else {
-        // Regular single column layout
-        html += `<div class="mgroup">
-          <div class="mhead">${escapeHtml(parentCategory.name)}</div>
-          <div class="msub">Browse by category</div>
-          <ul>`;
-        
-        if (parentCategory.children && parentCategory.children.length > 0) {
-          parentCategory.children.forEach(child => {
-            html += `<li><a href="/decorative/${escapeHtml(child.slug)}">${escapeHtml(child.name)}</a></li>`;
-          });
-        } else {
-          html += `<li><a href="/decorative/${escapeHtml(parentCategory.slug)}">View All</a></li>`;
-        }
-        
-        html += `</ul>
-        </div>`;
-      }
-    });
-
-    // Only update if we have content
-    if (html) {
-      megaContentRef.current.innerHTML = html;
-    }
-  };
-
-  const escapeHtml = (text: string) => {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  };
 
   return (
     <>
@@ -162,8 +70,7 @@ export default function Header() {
                 </a>
                 <div className="mega">
                   <div className="mega-panel">
-                    <div className="mega-grid" ref={megaContentRef}>
-                      {/* Fallback static content */}
+                    <div className="mega-grid">
                       <div className="mgroup m-arch ">
                         <div className="mhead">Architectural</div>
                         <div className="msub">Browse by category</div>
@@ -173,18 +80,6 @@ export default function Header() {
                           <li><a href="/#arrivals">Profiles</a></li>
                           <li><a href="/#arrivals">Track Lights</a></li>
                           <li><a href="/#arrivals">Washers &amp; Grazers</a></li>
-                        </ul>
-                      </div>
-                      <div className="msep"></div>
-                      <div className="mgroup m-dec ">
-                        <div className="mhead">Decorative <span className="mnew">NEW</span></div>
-                        <div className="msub">Browse by category</div>
-                        <ul>
-                          <li><a href="/#arrivals">Chandelier</a></li>
-                          <li><a href="/#arrivals">Pendant Lights</a></li>
-                          <li><a href="/#arrivals">Wall Lights</a></li>
-                          <li><a href="/#arrivals">Floor Lamps</a></li>
-                          <li><a href="/#arrivals">Table Lamps</a></li>
                         </ul>
                       </div>
                       <div className="msep"></div>

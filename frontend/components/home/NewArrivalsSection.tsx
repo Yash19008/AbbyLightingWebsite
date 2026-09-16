@@ -121,7 +121,7 @@ export default function NewArrivalsSection({ categories }: NewArrivalsSectionPro
         </div>
         <div className="product-toolbar">
           <div className="filter-chips" role="tablist" aria-label="New arrival categories">
-            {["Architectural", "Decorative", "Outdoor"].map((tabName) => (
+            {["Architectural", "Outdoor"].map((tabName) => (
               <button 
                 key={tabName}
                 type="button" 

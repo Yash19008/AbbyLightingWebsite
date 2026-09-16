@@ -3,6 +3,7 @@ import InspirationHero from "@/components/inspiration/InspirationHero";
 import LooksInPlaceSection from "@/components/inspiration/LooksInPlaceSection";
 import WatchAndShopSection from "@/components/inspiration/WatchAndShopSection";
 import JournalSection from "@/components/inspiration/JournalSection";
+import { getShowcaseCompositions } from "@/lib/api/compositions";
 import "@/styles/inspiration.css";
 
 export const metadata: Metadata = {
@@ -10,11 +11,13 @@ export const metadata: Metadata = {
   description: "Ideas, stories and inspiration from Abby Lighting. See light in place, watch latest reels, and read design guides.",
 };
 
-export default function InspirationPage() {
+export default async function InspirationPage() {
+  const { data: compositions } = await getShowcaseCompositions();
+
   return (
     <div className="inspiration-page">
       <InspirationHero />
-      <LooksInPlaceSection />
+      <LooksInPlaceSection compositions={compositions} />
       <WatchAndShopSection />
       <JournalSection />
     </div>

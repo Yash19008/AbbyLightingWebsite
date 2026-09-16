@@ -3,104 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import LookModal, { LookItem } from "./LookModal";
 
-const INITIAL_LOOKS: LookItem[] = [
-  {
-    title: "Stone & light in a hotel arrival",
-    kicker: "Lookbook · Hospitality",
-    room: "living",
-    image: "/images/figma-update/hero-decorative.png",
-  },
-  {
-    title: "The corner cafe",
-    kicker: "Dining · Quarry",
-    room: "dining",
-    image: "/images/reference/news-elle.png",
-  },
-  {
-    title: "Pastel calm",
-    kicker: "Living · Symphony",
-    room: "living",
-    image: "/images/reference/news-architectural.png",
-  },
-  {
-    title: "Geometry & glow",
-    kicker: "Workspace · Quarry",
-    room: "workspace",
-    image: "/images/figma-update/manufacturing.png",
-  },
-  {
-    title: "Earthen warmth",
-    kicker: "Bedroom · Symphony",
-    room: "bedroom",
-    image: "/images/reference/news-business.png",
-  },
-  {
-    title: "A working kitchen",
-    kicker: "Dining · Quarry",
-    room: "dining",
-    image: "/images/figma-update/catalogue.png",
-  },
-  {
-    title: "Vivid accents",
-    kicker: "Living · Symphony",
-    room: "living",
-    image: "/images/reference/product-neoma.png",
-  },
-  {
-    title: "Calm office",
-    kicker: "Workspace · Quarry",
-    room: "workspace",
-    image: "/images/figma-update/hero-architecture-desktop.png",
-  },
-  {
-    title: "A quiet arrival",
-    kicker: "Hospitality",
-    room: "living",
-    image: "/images/reference/project-atlas.png",
-  },
-  {
-    title: "Warm conversations",
-    kicker: "Dining",
-    room: "dining",
-    image: "/images/reference/news-elle.png",
-  },
-  {
-    title: "Focused light",
-    kicker: "Workspace",
-    room: "workspace",
-    image: "/images/reference/news-business.png",
-  },
-  {
-    title: "Layered living",
-    kicker: "Living",
-    room: "living",
-    image: "/images/figma-update/catalogue.png",
-  },
-  {
-    title: "A softer bedroom",
-    kicker: "Bedroom",
-    room: "bedroom",
-    image: "/images/world-decorative-on.png",
-  },
-  {
-    title: "Evening dining",
-    kicker: "Dining",
-    room: "dining",
-    image: "/images/figma-update/hero-decorative.png",
-  },
-  {
-    title: "Sculptural accents",
-    kicker: "Living",
-    room: "living",
-    image: "/images/reference/product-neoma.png",
-  },
-  {
-    title: "Light for focus",
-    kicker: "Workspace",
-    room: "workspace",
-    image: "/images/figma-update/hero-architecture-desktop.png",
-  },
-];
 
 const ROOMS = [
   { id: "all", label: "All" },
@@ -110,7 +12,11 @@ const ROOMS = [
   { id: "workspace", label: "Workspace" },
 ];
 
-export default function LooksInPlaceSection() {
+interface Props {
+  compositions: any[];
+}
+
+export default function LooksInPlaceSection({ compositions = [] }: Props) {
   const [selectedRoom, setSelectedRoom] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(8);
@@ -128,7 +34,14 @@ export default function LooksInPlaceSection() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredLooks = INITIAL_LOOKS.filter(
+  const mappedLooks = compositions.map(c => ({
+    title: c.title,
+    kicker: c.kicker || c.category,
+    room: c.category ? c.category.toLowerCase() : "all",
+    image: c.image
+  }));
+
+  const filteredLooks = mappedLooks.filter(
     (item) => selectedRoom === "all" || item.room === selectedRoom
   );
 
@@ -162,7 +75,7 @@ export default function LooksInPlaceSection() {
               aria-expanded={isFilterOpen}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/>
+                <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
               </svg>
               <span>FILTER BY</span>
             </button>
@@ -184,26 +97,33 @@ export default function LooksInPlaceSection() {
         </div>
 
         <div className="looks-grid">
-          {displayedLooks.map((item, idx) => (
-            <button
-              key={`${item.title}-${idx}`}
-              type="button"
-              className="look-card"
-              onClick={() => setActiveLook(item)}
-            >
-              <img
-                src={item.image}
-                alt={item.title}
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
-                }}
-              />
-              <span className="look-copy">
-                <strong>{item.title}</strong>
-                <span>{item.kicker}</span>
-              </span>
-            </button>
-          ))}
+          {filteredLooks.length > 0 ? (
+            displayedLooks.map((item, index) => (
+              <button
+                key={`${item.title}-${index}`}
+                type="button"
+                className="look-card"
+                onClick={() => setActiveLook(item)}
+                aria-label={`View details for ${item.title}`}
+              >
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
+                  }}
+                />
+                <span className="look-copy">
+                  <strong>{item.title}</strong>
+                  <span>{item.kicker}</span>
+                </span>
+              </button>
+            ))
+          ) : (
+            <div className="w-100 text-center py-5" style={{ gridColumn: "1 / -1", color: "#666" }}>
+              <p>No looks found for this category.</p>
+            </div>
+          )}
         </div>
 
         {visibleCount < filteredLooks.length && (

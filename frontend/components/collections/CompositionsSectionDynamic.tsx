@@ -185,8 +185,8 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
                   background: 'linear-gradient(transparent, rgba(0,0,0,0.82))',
                 }} />
                 <div style={{ position: 'absolute', zIndex: 2, left: isMobile ? 12 : 28, right: isMobile ? 12 : 24, bottom: isMobile ? 12 : 25 }}>
-                  <p style={{ font: isMobile ? '500 italic 12px Inter' : '500 italic 18px Inter', margin: '0 0 4px' }}>{comp.description}</p>
-                  <span style={{ fontSize: isMobile ? 10 : 13 }}>{comp.products}</span>
+                  <p style={{ font: isMobile ? '500 italic 12px Inter' : '500 italic 18px Inter', margin: '0 0 4px' }}>{comp.kicker}</p>
+                  <span style={{ fontSize: isMobile ? 10 : 13 }}>{comp.title} {comp.category ? `· ${comp.category}` : ''}</span>
                 </div>
               </article>
             ))}

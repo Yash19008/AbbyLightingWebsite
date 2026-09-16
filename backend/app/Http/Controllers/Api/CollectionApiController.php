@@ -52,9 +52,8 @@ class CollectionApiController extends Controller
                 'parametersSection.items' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
                 },
-                'compositionsSection.items' => function ($query) {
-                    $query->where('is_active', true)->orderBy('order');
-                },
+                'compositionsSection',
+                'compositions',
                 'tonesSection.families' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
                 },
@@ -65,8 +64,7 @@ class CollectionApiController extends Controller
                     $query->where('is_active', true)->orderBy('order');
                 },
                 'spreadDropSection',
-                'products',
-                'decorativeProducts.primaryImage'
+                'products'
             ])
             ->active()
             ->firstOrFail();
@@ -80,7 +78,7 @@ class CollectionApiController extends Controller
             'meta_title' => $collection->meta_title,
             'meta_description' => $collection->meta_description,
             
-            // Combined Products (Standard + Decorative) linked to this collection
+            // Combined Products (Standard) linked to this collection
             'products' => $collection->products->map(function ($product) {
                 return [
                     'id' => $product->id,
@@ -91,19 +89,7 @@ class CollectionApiController extends Controller
                         : null,
                     'is_decorative' => false,
                 ];
-            })->concat(
-                $collection->decorativeProducts->map(function ($product) {
-                    return [
-                        'id' => $product->id,
-                        'title' => $product->title,
-                        'slug' => $product->slug,
-                        'featured_image' => $product->primaryImage 
-                            ? asset('storage/decorative_products/' . $product->primaryImage->image) 
-                            : null,
-                        'is_decorative' => true,
-                    ];
-                })
-            ),
+            }),
             
             // Hero Section
             'hero_section' => $collection->heroSection && $collection->heroSection->is_active ? [
@@ -138,13 +124,13 @@ class CollectionApiController extends Controller
             'compositions_section' => $collection->compositionsSection && $collection->compositionsSection->is_active ? [
                 'title' => $collection->compositionsSection->title,
                 'subtitle' => $collection->compositionsSection->subtitle,
-                'items' => $collection->compositionsSection->items->map(function ($item) {
+                'items' => $collection->compositions->map(function ($comp) {
                     return [
-                        'id' => $item->id,
-                        'image' => asset('storage/' . $item->image),
-                        'description' => $item->description,
-                        'products' => $item->products,
-                        'order' => $item->order,
+                        'id' => $comp->id,
+                        'image' => asset('storage/uploads/compositions/' . $comp->image),
+                        'title' => $comp->title,
+                        'category' => $comp->category,
+                        'kicker' => $comp->kicker,
                     ];
                 })
             ] : null,

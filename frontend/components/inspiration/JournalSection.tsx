@@ -21,123 +21,10 @@ interface StoryItem {
 }
 
 const DEFAULT_CATEGORIES: CategoryItem[] = [
-  { id: "all", label: "All" },
-  { id: "guide", label: "Guides", slug: "guide" },
-  { id: "trends", label: "Trends", slug: "trends" },
-  { id: "behind", label: "Behind the Scenes", slug: "behind" },
-  { id: "projects", label: "Projects", slug: "projects" },
+  { id: "all", label: "All" }
 ];
 
-const DEFAULT_STORIES: StoryItem[] = [
-  {
-    tag: "Behind the scenes",
-    title: "Made in India, designed for the world",
-    categorySlug: "behind",
-    image: "/images/reference/news-architectural.png",
-    link: "/blogs/made-in-india-designed-for-the-world",
-    order: 0,
-    views: 120,
-  },
-  {
-    tag: "Guide",
-    title: "Room by room: the right colour temperature for every space",
-    categorySlug: "guide",
-    image: "/images/reference/news-elle.png",
-    link: "/blogs",
-    order: 1,
-    views: 95,
-  },
-  {
-    tag: "Guide",
-    title: "How to compose a Symphony pendant cluster",
-    categorySlug: "guide",
-    image: "/images/world-decorative-on.png",
-    link: "/blogs",
-    order: 2,
-    views: 80,
-  },
-  {
-    tag: "Trends",
-    title: "Five lighting ideas for open-plan workspaces",
-    categorySlug: "trends",
-    image: "/images/reference/project-atlas.png",
-    link: "/blogs",
-    order: 3,
-    views: 110,
-  },
-  {
-    tag: "Behind the scenes",
-    title: "The material story behind the Quarry collection",
-    categorySlug: "behind",
-    image: "/images/reference/news-business.png",
-    link: "/blogs",
-    order: 4,
-    views: 65,
-  },
-  {
-    tag: "Trends",
-    title: "Lighting for hospitality: warmth that welcomes",
-    categorySlug: "trends",
-    image: "/images/figma-update/hero-decorative.png",
-    link: "/blogs",
-    order: 5,
-    views: 90,
-  },
-  {
-    tag: "New",
-    title: "Meet Neoma: light as sculpture",
-    categorySlug: "projects",
-    image: "/images/reference/product-neoma.png",
-    link: "/blogs",
-    order: 6,
-    views: 50,
-  },
-  {
-    tag: "Guide",
-    title: "Choosing the right beam angle",
-    categorySlug: "guide",
-    image: "/images/world-architectural-on.png",
-    link: "/blogs",
-    order: 7,
-    views: 75,
-  },
-  {
-    tag: "Projects",
-    title: "A workplace shaped by light",
-    categorySlug: "projects",
-    image: "/images/figma-update/hero-architecture-desktop.png",
-    link: "/blogs",
-    order: 8,
-    views: 85,
-  },
-  {
-    tag: "Trends",
-    title: "Decorative lighting for intimate spaces",
-    categorySlug: "trends",
-    image: "/images/reference/product-quarry.png",
-    link: "/blogs",
-    order: 9,
-    views: 70,
-  },
-  {
-    tag: "Behind the scenes",
-    title: "Inside the Abby Lighting workshop",
-    categorySlug: "behind",
-    image: "/images/figma-update/manufacturing.png",
-    link: "/blogs",
-    order: 10,
-    views: 60,
-  },
-  {
-    tag: "Guide",
-    title: "How to layer light across a room",
-    categorySlug: "guide",
-    image: "/images/figma-update/catalogue.png",
-    link: "/blogs",
-    order: 11,
-    views: 55,
-  },
-];
+const DEFAULT_STORIES: StoryItem[] = [];
 
 const SORT_OPTIONS = [
   { id: "popular", label: "Most popular" },
@@ -280,6 +167,19 @@ export default function JournalSection() {
   });
 
   const displayedStories = filteredStories.slice(0, visibleCount);
+
+  if (stories.length === 0) {
+    return (
+      <section className="journal-section">
+        <div className="insp-shell" style={{ textAlign: "center", padding: "120px 20px" }}>
+          <h2 className="section-title">Guides, trends &amp; stories</h2>
+          <p style={{ marginTop: "20px", color: "#888", fontSize: "1.1rem" }}>
+            No stories available at the moment.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="journal-section">

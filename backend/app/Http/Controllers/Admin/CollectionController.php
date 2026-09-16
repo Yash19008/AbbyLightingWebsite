@@ -66,8 +66,9 @@ class CollectionController extends Controller
      */
     public function edit(Collection $collection)
     {
-        $collection->load('heroSection', 'parametersSection.items', 'compositionsSection.items', 'tonesSection.families.colors', 'placesSection.items', 'spreadDropSection');
-        return view('admin.collections.edit', compact('collection'));
+        $collection->load('heroSection', 'parametersSection.items', 'compositionsSection.items', 'tonesSection.families.colors', 'placesSection.items', 'spreadDropSection', 'compositions');
+        $allCompositions = \App\Models\Composition::orderBy('title')->get();
+        return view('admin.collections.edit', compact('collection', 'allCompositions'));
     }
 
     /**
@@ -313,6 +314,8 @@ class CollectionController extends Controller
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string',
             'is_active' => 'boolean',
+            'composition_ids' => 'nullable|array',
+            'composition_ids.*' => 'exists:compositions,id',
         ]);
 
         // Create or update compositions section
@@ -325,6 +328,9 @@ class CollectionController extends Controller
             ]
         );
 
+        // Sync many-to-many compositions
+        $collection->compositions()->sync($request->input('composition_ids', []));
+
         if ($request->ajax()) {
             return response()->json(['success' => true, 'message' => 'Compositions section saved successfully!']);
         }
@@ -334,131 +340,6 @@ class CollectionController extends Controller
             ->with('success', 'Compositions section saved successfully!');
     }
 
-    /**
-     * Show form to add a composition item.
-     */
-    public function addCompositionItem(Collection $collection)
-    {
-        // Ensure compositions section exists
-        if (!$collection->compositionsSection) {
-            return redirect()
-                ->route('admin.collections.edit', $collection->slug)
-                ->with('error', 'Please create compositions section first!');
-        }
-
-        $colorMasters = \App\Models\ColorMaster::orderBy('name')->get();
-        return view('admin.collections.composition-add', compact('collection', 'colorMasters'));
-    }
-
-    /**
-     * Store a new composition item.
-     */
-    public function storeCompositionItem(Request $request, Collection $collection)
-    {
-        $validated = $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'description' => 'required|string',
-            'products' => 'required|string|max:255',
-            'bg_color' => 'nullable|string|max:20',
-            'hover_bg_color' => 'nullable|string|max:20',
-            'order' => 'required|integer',
-            'is_active' => 'boolean',
-        ]);
-
-        // Handle image upload
-        $imagePath = $request->file('image')->store('collections/compositions', 'public');
-
-        $collection->compositionsSection->items()->create([
-            'image' => $imagePath,
-            'description' => $validated['description'],
-            'products' => $validated['products'],
-            'bg_color' => $validated['bg_color'] ?? null,
-            'hover_bg_color' => $validated['hover_bg_color'] ?? null,
-            'order' => $validated['order'],
-            'is_active' => $request->has('is_active'),
-        ]);
-
-        $redirectUrl = route('admin.collections.edit', $collection->slug) . '?tab=compositions';
-
-        if ($request->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Composition card added successfully!', 'redirect_url' => $redirectUrl]);
-        }
-
-        return redirect($redirectUrl)->with('success', 'Composition card added successfully!');
-    }
-
-    /**
-     * Show form to edit a composition item.
-     */
-    public function editCompositionItem(Collection $collection, CollectionCompositionItem $item)
-    {
-        $colorMasters = \App\Models\ColorMaster::orderBy('name')->get();
-        return view('admin.collections.composition-edit', compact('collection', 'item', 'colorMasters'));
-    }
-
-    /**
-     * Update a composition item.
-     */
-    public function updateCompositionItem(Request $request, Collection $collection, CollectionCompositionItem $item)
-    {
-        $validated = $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'description' => 'required|string',
-            'products' => 'required|string|max:255',
-            'bg_color' => 'nullable|string|max:20',
-            'hover_bg_color' => 'nullable|string|max:20',
-            'order' => 'required|integer',
-            'is_active' => 'boolean',
-        ]);
-
-        // Handle image upload if new image provided
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($item->image) {
-                Storage::delete($item->image);
-            }
-            $validated['image'] = $request->file('image')->store('collections/compositions', 'public');
-        }
-
-        $item->update([
-            'image' => $validated['image'] ?? $item->image,
-            'description' => $validated['description'],
-            'products' => $validated['products'],
-            'bg_color' => $validated['bg_color'] ?? null,
-            'hover_bg_color' => $validated['hover_bg_color'] ?? null,
-            'order' => $validated['order'],
-            'is_active' => $request->has('is_active'),
-        ]);
-
-        $redirectUrl = route('admin.collections.edit', $collection->slug) . '?tab=compositions';
-
-        if ($request->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Composition card updated successfully!', 'redirect_url' => $redirectUrl]);
-        }
-
-        return redirect($redirectUrl)->with('success', 'Composition card updated successfully!');
-    }
-
-    /**
-     * Delete a composition item.
-     */
-    public function deleteCompositionItem(Collection $collection, CollectionCompositionItem $item)
-    {
-        // Delete image file
-        if ($item->image) {
-            Storage::delete($item->image);
-        }
-
-        $item->delete();
-
-        $redirectUrl = route('admin.collections.edit', $collection->slug) . '?tab=compositions';
-
-        if (request()->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Composition card deleted successfully!', 'redirect_url' => $redirectUrl]);
-        }
-
-        return redirect($redirectUrl)->with('success', 'Composition card deleted successfully!');
-    }
 
     /**
      * Store or update tones section for a collection.

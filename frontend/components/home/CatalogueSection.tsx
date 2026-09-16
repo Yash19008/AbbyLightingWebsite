@@ -11,7 +11,7 @@ export default function CatalogueSection() {
           Find the right <em>catalogue.</em>
         </h2>
         <p>
-          Explore our complete collection of architectural, decorative and outdoor lighting, with detailed specifications for every luminaire.
+          Explore our complete collection of architectural and outdoor lighting, with detailed specifications for every luminaire.
         </p>
         <a className="btn copy-btn" href="/#contact">
           Browse the Library

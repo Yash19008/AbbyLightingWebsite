@@ -3,30 +3,25 @@
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 
-const compositions = [
-  {
-    image: '/images/symphony/look-pastel.png',
-    description: 'Pastel hues that settle gently into the space.',
-    products: 'Symphony II · Symphony VII',
-  },
-  {
-    image: '/images/symphony/look-vivid.png',
-    description: 'Warm interiors, vivid accents, colour taking the lead.',
-    products: 'Symphony X · Symphony VIII',
-  },
-  {
-    image: '/images/symphony/look-earth.png',
-    description: 'Clay reds, aged timber, earth tones shaped by time.',
-    products: 'Symphony X',
-  },
-  {
-    image: '/images/symphony/look-neutral.png',
-    description: 'White surfaces, deliberate restraint, composed in neutrals.',
-    products: 'Symphony IX',
-  },
-];
+type CompositionItem = {
+  id: number;
+  image: string;
+  title: string;
+  category: string;
+  kicker: string;
+};
 
-export default function CompositionsSection() {
+type CompositionsSectionData = {
+  title: string;
+  subtitle: string;
+  items: CompositionItem[];
+};
+
+type Props = {
+  data: CompositionsSectionData;
+};
+
+export default function CompositionsSection({ data }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
@@ -55,8 +50,8 @@ export default function CompositionsSection() {
   return (
     <section className="s-section s-inspire">
       <div className="s-head">
-        <h2>Compositions to inspire</h2>
-        <p>Each look explores a relationship between form, colour and arrangement — examples of what Symphony can be, not definitions of what it should be.</p>
+        <h2>{data.title || "Compositions to inspire"}</h2>
+        <p>{data.subtitle}</p>
       </div>
       <div className="s-carousel">
         <button
@@ -70,7 +65,7 @@ export default function CompositionsSection() {
           </svg>
         </button>
         <div className="s-scroll" ref={scrollRef}>
-          {compositions.map((comp, index) => (
+          {data.items.map((comp, index) => (
             <article
               key={index}
               className={`s-look ${activeIndex === index ? 'is-active' : ''}`}
@@ -79,14 +74,14 @@ export default function CompositionsSection() {
             >
               <Image
                 src={comp.image}
-                alt="Symphony composition"
+                alt={comp.title || "Composition"}
                 width={400}
                 height={500}
                 style={{ objectFit: 'cover' }}
               />
               <div>
-                <p>{comp.description}</p>
-                <span>{comp.products}</span>
+                {comp.kicker && <p>{comp.kicker}</p>}
+                <span>{comp.title} {comp.category ? `· ${comp.category}` : ''}</span>
               </div>
             </article>
           ))}

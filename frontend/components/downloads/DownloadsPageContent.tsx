@@ -16,18 +16,7 @@ interface CatalogueItem {
   isFeatured?: boolean;
 }
 
-const FALLBACK_CATALOGUES: CatalogueItem[] = [
-  { id: 1, title: "Architectural", category: "Architecture", categorySlug: "architecture", image: "/images/figma-update/catalogue.png", pdfUrl: "http://localhost:8000/1product-catalog.pdf", downloadUrl: "http://localhost:8000/api/catalogues/1/download-pdf", fileSize: "24.5 MB", isFeatured: true },
-  { id: 2, title: "Black Jack", category: "Architecture", categorySlug: "architecture", image: "/images/reference/product-black-jack.png", pdfUrl: "http://localhost:8000/1product-catalog.pdf", downloadUrl: "http://localhost:8000/api/catalogues/2/download-pdf", fileSize: "12.8 MB", isFeatured: false },
-  { id: 3, title: "Brava", category: "Outdoor", categorySlug: "outdoor", image: "/images/inspiration/look-04.png", pdfUrl: "http://localhost:8000/1product-catalog.pdf", downloadUrl: "http://localhost:8000/api/catalogues/3/download-pdf", fileSize: "18.2 MB", isFeatured: true },
-  { id: 4, title: "Quarry", category: "Decorative", categorySlug: "decorative", image: "/images/reference/product-quarry.png", pdfUrl: "http://localhost:8000/1product-catalog.pdf", downloadUrl: "http://localhost:8000/api/catalogues/4/download-pdf", fileSize: "15.4 MB", isFeatured: true },
-  { id: 5, title: "Neoma", category: "Decorative", categorySlug: "decorative", image: "/images/reference/product-neoma.png", pdfUrl: "http://localhost:8000/1product-catalog.pdf", downloadUrl: "http://localhost:8000/api/catalogues/5/download-pdf", fileSize: "14.1 MB", isFeatured: false },
-  { id: 6, title: "Symphony", category: "Decorative", categorySlug: "decorative", image: "/images/inspiration/look-03.png", pdfUrl: "http://localhost:8000/1product-catalog.pdf", downloadUrl: "http://localhost:8000/api/catalogues/6/download-pdf", fileSize: "22.0 MB", isFeatured: true },
-  { id: 7, title: "Circulo", category: "Decorative", categorySlug: "decorative", image: "/images/circulo-figma/collection.png", pdfUrl: "http://localhost:8000/1product-catalog.pdf", downloadUrl: "http://localhost:8000/api/catalogues/7/download-pdf", fileSize: "16.7 MB", isFeatured: false },
-  { id: 8, title: "Cymbal", category: "Decorative", categorySlug: "decorative", image: "/images/cymbal/image-01.jpg", pdfUrl: "http://localhost:8000/1product-catalog.pdf", downloadUrl: "http://localhost:8000/api/catalogues/8/download-pdf", fileSize: "13.9 MB", isFeatured: false },
-  { id: 9, title: "Stellar", category: "Architecture", categorySlug: "architecture", image: "/images/reference/product-stellar.png", pdfUrl: "http://localhost:8000/1product-catalog.pdf", downloadUrl: "http://localhost:8000/api/catalogues/9/download-pdf", fileSize: "19.3 MB", isFeatured: false },
-  { id: 10, title: "Outdoor Collection", category: "Outdoor", categorySlug: "outdoor", image: "/images/inspiration/look-02.png", pdfUrl: "http://localhost:8000/1product-catalog.pdf", downloadUrl: "http://localhost:8000/api/catalogues/10/download-pdf", fileSize: "21.5 MB", isFeatured: false },
-];
+
 
 const DEFAULT_CATEGORIES = [
   { id: 0, name: "All", slug: "all" },
@@ -44,7 +33,7 @@ type SortMode = "popular" | "new" | "az" | "za";
 
 export default function DownloadsPageContent() {
   const [categories, setCategories] = useState<{ id: number; name: string; slug: string }[]>(DEFAULT_CATEGORIES);
-  const [catalogues, setCatalogues] = useState<CatalogueItem[]>(FALLBACK_CATALOGUES);
+  const [catalogues, setCatalogues] = useState<CatalogueItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [activeFilter, setActiveFilter] = useState<string>("All");
@@ -105,7 +94,7 @@ export default function DownloadsPageContent() {
         ]);
 
         if (isMounted) {
-          let loadedCatalogues: CatalogueItem[] = FALLBACK_CATALOGUES;
+          let loadedCatalogues: CatalogueItem[] = [];
           if (itemsRes.success && itemsRes.data && itemsRes.data.length > 0) {
             loadedCatalogues = itemsRes.data.map((item) => ({
               id: item.id,
@@ -468,6 +457,13 @@ export default function DownloadsPageContent() {
             </div>
           </div>
         </div>
+
+        {/* Empty State */}
+        {displayedCatalogues.length === 0 && (
+          <div className="empty-state">
+            <p>No catalogues available at the moment.</p>
+          </div>
+        )}
 
         {/* Cards Grid */}
         <div className="catalogue-grid">

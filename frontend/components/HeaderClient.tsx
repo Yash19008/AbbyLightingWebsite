@@ -8,16 +8,14 @@ export default function HeaderClient() {
   const searchRef = React.useRef<HTMLDivElement>(null);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
   const [architecturalCategories, setArchitecturalCategories] = React.useState<Array<{ id: number; title?: string; name?: string; slug?: string; uri?: string }>>([]);
-  const [decorativeCategories, setDecorativeCategories] = React.useState<Array<{ id: number; name: string; slug: string }>>([]);
   const [collections, setCollections] = React.useState<Array<{ id: number; name: string; slug: string }>>([]);
 
   React.useEffect(() => {
     async function fetchMenuData() {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const [archRes, catRes, colRes] = await Promise.all([
+        const [archRes, colRes] = await Promise.all([
           fetch(`${API_URL}/api/categories`),
-          fetch(`${API_URL}/api/decorative-categories`),
           fetch(`${API_URL}/api/collections`)
         ]);
 
@@ -25,13 +23,6 @@ export default function HeaderClient() {
           const archData = await archRes.json();
           if (archData.success && Array.isArray(archData.data)) {
             setArchitecturalCategories(archData.data);
-          }
-        }
-
-        if (catRes.ok) {
-          const catData = await catRes.json();
-          if (catData.success && Array.isArray(catData.data)) {
-            setDecorativeCategories(catData.data);
           }
         }
 
@@ -61,6 +52,47 @@ export default function HeaderClient() {
     window.addEventListener('scroll', handleScroll);
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Global Reveal Observer for animations
+  React.useEffect(() => {
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.15
+    });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // Handle dynamically added elements
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement) {
+            if (node.classList.contains('reveal')) {
+              revealObserver.observe(node);
+            }
+            const childReveals = node.querySelectorAll('.reveal');
+            childReveals.forEach(el => revealObserver.observe(el));
+          }
+        });
+      });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      revealObserver.disconnect();
+      observer.disconnect();
+    };
   }, []);
 
   // Search toggle functionality
@@ -405,56 +437,6 @@ export default function HeaderClient() {
 
                       <div className="msep"></div>
 
-                      {/* DECORATIVE - Dynamic (Two Columns) */}
-                      <div className="mgroup m-dec">
-                        <div className="mhead">Decorative <span className="mnew">NEW</span></div>
-                        <div className="mcols">
-                          {/* Left Column - Browse by Category */}
-                          <div>
-                            <div className="msub">Browse by category</div>
-                            <ul>
-                              {decorativeCategories.length > 0 ? (
-                                decorativeCategories.map((category) => (
-                                  <li key={category.id}>
-                                    <a href={`/decorative/${category.slug}`}>{category.name}</a>
-                                  </li>
-                                ))
-                              ) : (
-                                <>
-                                  <li><a href="/decorative">Chandelier</a></li>
-                                  <li><a href="/decorative">Pendant Lights</a></li>
-                                  <li><a href="/decorative">Wall Lights</a></li>
-                                  <li><a href="/decorative">Floor Lamps</a></li>
-                                  <li><a href="/decorative">Table Lamps</a></li>
-                                </>
-                              )}
-                            </ul>
-                          </div>
-
-                          <div className="msep sm"></div>
-
-                          {/* Right Column - Browse by Collection */}
-                          <div>
-                            <div className="msub">Browse by collection</div>
-                            <ul>
-                              {collections.length > 0 ? (
-                                collections.map((col) => (
-                                  <li key={col.id}>
-                                    <a href={`/collections/${col.slug}`}>{col.name}</a>
-                                  </li>
-                                ))
-                              ) : (
-                                <>
-                                  <li><a href="/collections/symphony">Symphony</a></li>
-                                  <li><a href="/collections/quarry">Quarry</a></li>
-                                  <li><a href="/collections/neoma">Neoma</a></li>
-                                </>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-
                       <div className="msep lg"></div>
                       <div className="m-worlds">
                         <a className="mgroup m-out" href="/#worlds"
@@ -704,79 +686,6 @@ export default function HeaderClient() {
                           <li><a href="/products" onClick={closeSheet}>Profiles</a></li>
                           <li><a href="/products" onClick={closeSheet}>Track Lights</a></li>
                           <li><a href="/products" onClick={closeSheet}>Washers &amp; Grazers</a></li>
-                        </>
-                      )}
-                    </ul>
-                  </div>
-                )}
-              </div>
-
-              {/* 2. Decorative Accordion */}
-              <div className={`pdrop-acc ${productAccordion === 'dec' ? 'is-open' : ''}`}>
-                <button
-                  type="button"
-                  className="pdrop-acc-toggle"
-                  onClick={() => setProductAccordion(prev => prev === 'dec' ? null : 'dec')}
-                >
-                  <span className={productAccordion === 'dec' ? 'pdrop-amber-text' : ''} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                    Decorative <span className="pdrop-badge-new">NEW</span>
-                  </span>
-                  <span className="pdrop-caret">
-                    {productAccordion === 'dec' ? (
-                      <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
-                        <polygon points="0,7 11,7 5.5,0" />
-                      </svg>
-                    ) : (
-                      <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
-                        <polygon points="0,0 11,0 5.5,7" />
-                      </svg>
-                    )}
-                  </span>
-                </button>
-                {productAccordion === 'dec' && (
-                  <div className="pdrop-acc-content">
-                    <div className="pdrop-section-label">BROWSE BY CATEGORY</div>
-                    <ul className="pdrop-list">
-                      {decorativeCategories.length > 0 ? (
-                        decorativeCategories.map(cat => (
-                          <li key={cat.id}>
-                            <a
-                              href={`/decorative/${cat.slug}`}
-                              onClick={closeSheet}
-                            >
-                              {cat.name}
-                            </a>
-                          </li>
-                        ))
-                      ) : (
-                        <>
-                          <li><a href="/decorative" onClick={closeSheet}>Chandelier</a></li>
-                          <li><a href="/decorative" onClick={closeSheet}>Pendant Lights</a></li>
-                          <li><a href="/decorative" onClick={closeSheet}>Wall Lights</a></li>
-                          <li><a href="/decorative" onClick={closeSheet}>Floor Lamps</a></li>
-                          <li><a href="/decorative" onClick={closeSheet}>Table Lamps</a></li>
-                        </>
-                      )}
-                    </ul>
-
-                    <div className="pdrop-section-label" style={{ marginTop: '24px' }}>BROWSE BY COLLECTION</div>
-                    <ul className="pdrop-list">
-                      {collections.length > 0 ? (
-                        collections.map(col => (
-                          <li key={col.id}>
-                            <a
-                              href={`/collections/${col.slug}`}
-                              onClick={closeSheet}
-                            >
-                              {col.name}
-                            </a>
-                          </li>
-                        ))
-                      ) : (
-                        <>
-                          <li><a href="/collections/symphony" onClick={closeSheet}>Symphony</a></li>
-                          <li><a href="/collections/quarry" onClick={closeSheet}>Quarry</a></li>
-                          <li><a href="/collections/neoma" onClick={closeSheet}>Neoma</a></li>
                         </>
                       )}
                     </ul>

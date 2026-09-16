@@ -42,27 +42,6 @@ class AppServiceProvider extends ServiceProvider
             'catalogDownloadForm', url('catalog-download-user-form')
         );
         
-        // Share decorative categories with all views for mega dropdown
-        view()->composer('*', function ($view) {
-            try {
-                $decorativeCategories = \App\Models\DecorativeCategory::where('status', 'active')
-                    ->where('show_in_mega_dropdown', true)
-                    ->orderBy('sort_order', 'ASC')
-                    ->orderBy('name', 'ASC')
-                    ->get()
-                    ->map(function ($category) {
-                        return [
-                            'id' => $category->id,
-                            'name' => $category->name,
-                            'slug' => $category->slug,
-                        ];
-                    })
-                    ->toArray();
-                
-                $view->with('decorativeCategories', $decorativeCategories);
-            } catch (\Exception $e) {
-                $view->with('decorativeCategories', []);
-            }
-        });
+
     }
 }

@@ -28,9 +28,9 @@ export interface ParametersSection {
 export interface CompositionItem {
   id: number;
   image: string;
-  description: string;
-  products: string;
-  order: number;
+  title: string;
+  category: string;
+  kicker: string;
 }
 
 export interface CompositionsSection {

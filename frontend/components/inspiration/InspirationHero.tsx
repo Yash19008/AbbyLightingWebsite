@@ -7,8 +7,6 @@ export default function InspirationHero() {
       <nav className="site-breadcrumb site-breadcrumb--on-dark insp-hero-breadcrumb" aria-label="Breadcrumb">
         <Link href="/">Home</Link>
         &nbsp;&nbsp;/&nbsp;&nbsp;
-        <Link href="/decorative-products">Decorative</Link>
-        &nbsp;&nbsp;/&nbsp;&nbsp;
         <span>Inspiration</span>
       </nav>
       <div className="insp-hero-copy">

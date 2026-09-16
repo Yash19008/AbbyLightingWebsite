@@ -3,106 +3,88 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\DecorativeCategory;
+use App\Models\Decorative\DecCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class DecorativeCategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $title = "Decorative Categories";
-        $main_module = 'Decorative Product';
-        $categories = DecorativeCategory::with('parent')->orderBy('sort_order', 'asc')->get();
-        return view('admin.decorative-categories.index', compact('title', 'main_module', 'categories'));
+        $query = DecCategory::withCount('products');
+        
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('slug', 'like', "%{$search}%");
+        }
+
+        $categories = $query->orderBy('name', 'asc')->paginate(20);
+        return view('admin.decorative_categories.index', compact('categories'));
     }
 
-    public function add()
+    public function create()
     {
-        $title = "Add Decorative Category";
-        $main_module = 'Decorative Product';
-        $parent_categories = DecorativeCategory::whereNull('parent_id')->orderBy('name', 'asc')->get();
-        return view('admin.decorative-categories.add', compact('title', 'main_module', 'parent_categories'));
+        return view('admin.decorative_categories.add');
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:decorative_categories,slug',
-            'parent_id' => 'nullable|exists:decorative_categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'slug' => 'required|string|max:255|unique:dec_categories,slug',
         ]);
 
-        $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->name);
-
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $name = time() . '-' . $request->file('image')->getClientOriginalName();
-            $request->file('image')->move(public_path('uploads/decorative_categories'), $name);
-            $imagePath = $name;
-        }
-
-        DecorativeCategory::create([
+        DecCategory::create([
             'name' => $request->name,
-            'slug' => $slug,
-            'parent_id' => $request->parent_id,
-            'image' => $imagePath,
-            'status' => $request->status ?? 'active',
-            'show_in_mega_dropdown' => $request->has('show_in_mega_dropdown') ? (bool)$request->show_in_mega_dropdown : true,
-            'sort_order' => $request->sort_order ?? 0,
+            'slug' => Str::slug($request->slug),
+            'description' => $request->description,
         ]);
 
-        return redirect()->route('decorative_category_admin')->with('success', 'Category added successfully.');
+        return redirect()->route('decorative_category_admin')->with('success', 'Category created successfully');
     }
 
     public function edit($id)
     {
-        $title = "Edit Decorative Category";
-        $main_module = 'Decorative Product';
-        $category = DecorativeCategory::findOrFail($id);
-        $parent_categories = DecorativeCategory::whereNull('parent_id')->where('id', '!=', $id)->orderBy('name', 'asc')->get();
-        $action = route('decorative_category_admin.update', $id);
-        return view('admin.decorative-categories.edit', compact('title', 'main_module', 'category', 'parent_categories', 'action'));
+        $category = DecCategory::findOrFail($id);
+        return view('admin.decorative_categories.edit', compact('category'));
     }
 
     public function update(Request $request, $id)
     {
-        $category = DecorativeCategory::findOrFail($id);
+        $category = DecCategory::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:decorative_categories,slug,' . $id,
-            'parent_id' => 'nullable|exists:decorative_categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'slug' => 'required|string|max:255|unique:dec_categories,slug,'.$id,
         ]);
-
-        $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->name);
-
-        $imagePath = $category->image;
-        if ($request->hasFile('image')) {
-            $name = time() . '-' . $request->file('image')->getClientOriginalName();
-            $request->file('image')->move(public_path('uploads/decorative_categories'), $name);
-            $imagePath = $name;
-        }
 
         $category->update([
             'name' => $request->name,
-            'slug' => $slug,
-            'parent_id' => $request->parent_id,
-            'image' => $imagePath,
-            'status' => $request->status ?? 'active',
-            'show_in_mega_dropdown' => $request->has('show_in_mega_dropdown') ? (bool)$request->show_in_mega_dropdown : true,
-            'sort_order' => $request->sort_order ?? 0,
+            'slug' => Str::slug($request->slug),
+            'description' => $request->description,
         ]);
 
-        return redirect()->route('decorative_category_admin')->with('success', 'Category updated successfully.');
+        return redirect()->route('decorative_category_admin')->with('success', 'Category updated successfully');
     }
 
     public function destroy($id)
     {
-        $category = DecorativeCategory::findOrFail($id);
+        $category = DecCategory::findOrFail($id);
+        
+        // Prevent deleting if products are attached
+        if ($category->products()->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete category because it has products attached.'
+            ]);
+        }
+
         $category->delete();
-        return redirect()->route('decorative_category_admin')->with('success', 'Category deleted successfully.');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category deleted successfully'
+        ]);
     }
 }
