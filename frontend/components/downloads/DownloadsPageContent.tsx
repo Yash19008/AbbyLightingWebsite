@@ -486,7 +486,7 @@ export default function DownloadsPageContent() {
         </div>
 
         {/* Empty State */}
-        {displayedCatalogues.length === 0 && (
+        {!loading && catalogues.length === 0 && (
           <div className="empty-state">
             <p>No catalogues available at the moment.</p>
           </div>
