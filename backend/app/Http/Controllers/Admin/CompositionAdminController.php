@@ -24,18 +24,17 @@ class CompositionAdminController extends Controller
         $data = array('title' => "Compositions", 'main_module' => $this->main_module);
 
         $data['search'] = $request->input('search');
-        $data['results'] = new Composition;
+        $query = Composition::query();
 
-        if ($data['search'] != '') {
-            $data['results'] = $data['results']->where(function ($query) use ($data) {
-                $query->where('title', 'LIKE', '%' . $data['search'] . '%')
-                      ->orWhere('category', 'LIKE', '%' . $data['search'] . '%');
+        if (!empty($data['search'])) {
+            $query->where(function ($q) use ($data) {
+                $q->where('title', 'LIKE', '%' . $data['search'] . '%')
+                  ->orWhere('category', 'LIKE', '%' . $data['search'] . '%');
             });
         }
-        $data['results'] = $data['results']->orderBy('id', 'DESC')->paginate(10);
+        $data['results'] = $query->orderBy('id', 'DESC')->get();
         $data['tbl'] = Common_function::encrypt('compositions');
         
-        $data['results']->appends(['search' => $data['search']]);
         return view('admin.compositions', $data);
     }
 
