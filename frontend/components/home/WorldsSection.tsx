@@ -163,8 +163,8 @@ export default function WorldsSection({ lightWorlds }: WorldsSectionProps) {
                     display: 'block',
                     position: 'relative',
                     boxSizing: 'border-box',
-                    "--i": index
-                  } as any}
+                    "--i": index,
+                  } as React.CSSProperties}
                   href={world.link || '/#arrivals'}
                 >
                   <div

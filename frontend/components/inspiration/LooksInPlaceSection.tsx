@@ -13,7 +13,7 @@ const ROOMS = [
 ];
 
 interface Props {
-  compositions: any[];
+  compositions: LookItem[];
 }
 
 export default function LooksInPlaceSection({ compositions = [] }: Props) {

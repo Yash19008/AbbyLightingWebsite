@@ -20,7 +20,7 @@ export default function CollectionsPage() {
     <div className="symphony-page">
       <CollectionHero />
       <ParametersSection />
-      <CompositionsSection />
+      <CompositionsSection data={{ title: '', subtitle: '', items: [] }} />
       <ProductsSection products={[]} collectionName="Symphony" />
       <TonesSection />
       <ScoreSection />

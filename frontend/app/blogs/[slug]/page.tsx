@@ -67,7 +67,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
   const { processedHtml, tocItems } = processArticleContent(blog?.content);
 
   // Format the latest blogs (excluding current open article) for the Keep Reading section
-  const relatedArticles = latestBlogs.map((b: any) => {
+  const relatedArticles = latestBlogs.map((b: { featured_image?: string, secondary_image?: string, featured_image_caption?: string, slug?: string, title?: string, category?: { name?: string }, published_at?: string }) => {
     const imgUrl = b.featured_image
       ? `${API_URL}/uploads/blogs/${b.featured_image}`
       : (b.secondary_image

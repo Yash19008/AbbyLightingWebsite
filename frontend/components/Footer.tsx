@@ -20,7 +20,7 @@ export default function Footer() {
         <div className="footer-main">
           <div className="footer-identity">
             <img className="footer-logo" src="/images/abby-logo.png" alt="Abby Lighting"/>
-            <p>For over three generations, Abby Lighting has been one of India's leading architectural lighting manufacturers, designing and manufacturing premium architectural and outdoor lighting entirely in-house. From concept and engineering to precision manufacturing and testing, every luminaire is built for consistency, performance and long-term reliability, making Abby Lighting the trusted partner for architects, interior designers and consultants across residential, commercial and hospitality projects.</p>
+            <p>For over three generations, Abby Lighting has been one of India&apos;s leading architectural lighting manufacturers, designing and manufacturing premium architectural and outdoor lighting entirely in-house. From concept and engineering to precision manufacturing and testing, every luminaire is built for consistency, performance and long-term reliability, making Abby Lighting the trusted partner for architects, interior designers and consultants across residential, commercial and hospitality projects.</p>
           </div>
           <nav className="footer-links footer-products" aria-label="Product links">
             <div className={`footer-accordion ${productsOpen ? 'is-open' : ''}`}>

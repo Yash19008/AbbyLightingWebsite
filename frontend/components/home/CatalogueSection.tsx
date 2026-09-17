@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function CatalogueSection() {
   return (
     <section className="image-cta">
@@ -13,9 +15,9 @@ export default function CatalogueSection() {
         <p>
           Explore our complete collection of architectural and outdoor lighting, with detailed specifications for every luminaire.
         </p>
-        <a className="btn copy-btn" href="/#contact">
+        <Link className="btn copy-btn" href="/#contact">
           Browse the Library
-        </a>
+        </Link>
       </div>
     </section>
   );

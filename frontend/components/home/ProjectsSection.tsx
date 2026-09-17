@@ -36,7 +36,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
               key={project.id} 
               href={`/projects/${project.slug}`} 
               className="project" 
-              style={{"--i": index} as any}
+              style={{"--i": index} as React.CSSProperties}
             >
               {project.image_url ? (
                 <img src={project.image_url} alt={project.name} />

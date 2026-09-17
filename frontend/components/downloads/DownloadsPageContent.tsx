@@ -34,7 +34,6 @@ type SortMode = "popular" | "new" | "az" | "za";
 export default function DownloadsPageContent() {
   const [categories, setCategories] = useState<{ id: number; name: string; slug: string }[]>(DEFAULT_CATEGORIES);
   const [catalogues, setCatalogues] = useState<CatalogueItem[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const [sortMode, setSortMode] = useState<SortMode>("popular");
@@ -558,7 +557,7 @@ export default function DownloadsPageContent() {
             </button>
             <h2 id="download-dialog-title">Download Catalogue</h2>
             <p>
-              Fill in your details to access Abby Lighting's complete <strong>{selectedCatalogue?.title}</strong> catalogue, including product specifications, technical details, finishes, and application references.
+              Fill in your details to access Abby Lighting&apos;s complete <strong>{selectedCatalogue?.title}</strong> catalogue, including product specifications, technical details, finishes, and application references.
             </p>
 
             <form className="download-form" onSubmit={handleFormSubmit}>
@@ -738,7 +737,7 @@ export default function DownloadsPageContent() {
                   onChange={handleFormChange}
                   required
                 />
-                <span>I'm not a robot</span>
+                <span>I&apos;m not a robot</span>
               </label>
 
               <button

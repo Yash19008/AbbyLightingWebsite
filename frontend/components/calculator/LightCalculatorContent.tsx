@@ -596,7 +596,7 @@ export default function LightCalculatorContent() {
                     i
                   </button>
                   <span className="field-help" role="tooltip">
-                    Select the option that most closely matches the room's ceiling construction.
+                    Select the option that most closely matches the room&apos;s ceiling construction.
                   </span>
                 </div>
                 <CustomSelect
@@ -725,7 +725,7 @@ export default function LightCalculatorContent() {
                     i
                   </button>
                   <span className="field-help" role="tooltip">
-                    Estimates how much of the fixture's emitted light effectively reaches useful room surfaces. Default value: 0.65.
+                    Estimates how much of the fixture&apos;s emitted light effectively reaches useful room surfaces. Default value: 0.65.
                   </span>
                 </div>
                 <input
@@ -931,7 +931,7 @@ export default function LightCalculatorContent() {
             >
               ×
             </button>
-            <h2 id="contact-dialog-title">Let's Discuss Your Lighting Requirements</h2>
+            <h2 id="contact-dialog-title">Let&apos;s Discuss Your Lighting Requirements</h2>
             <p>Tell us about your project, and our team will get back to you shortly.</p>
 
             <form className="calculator-contact-form" onSubmit={handleContactSubmit}>

@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\LightWorldApiController;
 use App\Http\Controllers\Api\CollectionApiController;
 use App\Http\Controllers\Api\ColorMasterApiController;
 use App\Http\Controllers\Api\CategoryApiController;
+use App\Http\Controllers\Api\DecorativeProductApiController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -43,6 +44,10 @@ Route::get('/news-items', [NewsItemApiController::class, 'index']);
 Route::get('/products/new-arrivals', [NewArrivalsApiController::class, 'index']);
 
 Route::get('/light-worlds', [LightWorldApiController::class, 'index']);
+
+// Decorative Products
+Route::get('/dec-products', [DecorativeProductApiController::class, 'index']);
+Route::get('/dec-products/{slug}', [DecorativeProductApiController::class, 'show']);
 
 // Collections — used by Next.js collection pages
 Route::get('/collections', [CollectionApiController::class, 'index']);

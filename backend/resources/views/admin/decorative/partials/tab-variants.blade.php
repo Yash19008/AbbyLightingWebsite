@@ -27,7 +27,7 @@
                                                     <td><strong>{{ $variant->name }}</strong><br><small class="text-muted">SKU: {{ $variant->sku ?? 'N/A' }}</small></td>
                                                     <td>
                                                         @if($variant->colorMaster)
-                                                            <span class="color-indicator" style="display:inline-block;width:15px;height:15px;border-radius:50%;background-color:{{ $variant->colorMaster->hex_code ?? '#ccc' }};border:1px solid #ddd;vertical-align:middle;margin-right:5px;"></span>
+                                                            <span class="color-indicator" style="display:inline-block;width:15px;height:15px;border-radius:50%;background:{{ $variant->colorMaster->css_value ?? '#ccc' }};border:1px solid #ddd;vertical-align:middle;margin-right:5px;"></span>
                                                             {{ $variant->colorMaster->name }}
                                                         @else
                                                             -
