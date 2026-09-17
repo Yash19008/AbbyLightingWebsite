@@ -220,8 +220,8 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
                       position: "relative",
                       boxSizing: "border-box",
                       "--i": index,
-                    } as React.CSSProperties} 
-                    href="/#contact"
+                    } as React.CSSProperties}
+                    href={product.slug ? `/product-detail/${product.slug}` : "/#contact"}
                   >
                     <div
                       className="photo"

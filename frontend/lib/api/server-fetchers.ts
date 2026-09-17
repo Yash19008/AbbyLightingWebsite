@@ -137,7 +137,7 @@ export async function fetchManufacturingSection(): Promise<ManufacturingSection 
 export async function fetchNewArrivals(): Promise<NewArrivalCategory[]> {
   try {
     const response = await fetch(`${API_URL}/api/products/new-arrivals`, {
-      next: { revalidate: 600 }
+      next: { revalidate: 60 }
     });
 
     if (!response.ok) {

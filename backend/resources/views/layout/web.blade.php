@@ -46,9 +46,12 @@
     @stack('css')
     
     <style>
-        /* Add padding to body to account for fixed Next.js header */
+        /* Add padding to body to account for fixed Next.js header (82px) */
         body {
-            padding-top: 95px;
+            padding-top: 82px;
+        }
+        body.home-page {
+            padding-top: 0 !important;
         }
     </style>
 </head>

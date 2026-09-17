@@ -62,7 +62,9 @@ class CollectionApiController extends Controller
                 'parametersSection.items' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
                 },
-                'compositionsSection',
+                'compositionsSection.items' => function ($query) {
+                    $query->where('is_active', true)->orderBy('order');
+                },
                 'compositions',
                 'tonesSection.families' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
@@ -131,18 +133,34 @@ class CollectionApiController extends Controller
             ] : null,
             
             // Compositions Section
-            'compositions_section' => $collection->compositionsSection && $collection->compositionsSection->is_active ? [
+            'compositions_section' => ($collection->compositionsSection && $collection->compositionsSection->is_active) ? [
                 'title' => $collection->compositionsSection->title,
                 'subtitle' => $collection->compositionsSection->subtitle,
-                'items' => $collection->compositions->map(function ($comp) {
-                    return [
-                        'id' => $comp->id,
-                        'image' => asset('storage/uploads/compositions/' . $comp->image),
-                        'title' => $comp->title,
-                        'category' => $comp->category,
-                        'kicker' => $comp->kicker,
-                    ];
-                })
+                'items' => ($collection->compositionsSection->items && $collection->compositionsSection->items->count() > 0)
+                    ? $collection->compositionsSection->items->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'image' => $item->image_url ?? ($item->image ? asset('storage/' . $item->image) : ''),
+                            'title' => $item->products ?? '',
+                            'category' => '',
+                            'kicker' => $item->description ?? '',
+                        ];
+                    })
+                    : $collection->compositions->map(function ($comp) {
+                        $img = $comp->image;
+                        if ($img && !str_starts_with($img, 'http')) {
+                            $img = str_starts_with($img, 'uploads/compositions/')
+                                ? asset('storage/' . $img)
+                                : asset('storage/uploads/compositions/' . $img);
+                        }
+                        return [
+                            'id' => $comp->id,
+                            'image' => $img,
+                            'title' => $comp->title,
+                            'category' => $comp->category ?? '',
+                            'kicker' => $comp->kicker ?? '',
+                        ];
+                    }),
             ] : null,
             
             // Tones Section

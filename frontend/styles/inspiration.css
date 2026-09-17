@@ -17,8 +17,13 @@
 }
 
 @keyframes insp-shimmer {
-  0% { background-position: -800px 0; }
-  100% { background-position: 800px 0; }
+  0% {
+    background-position: -800px 0;
+  }
+
+  100% {
+    background-position: 800px 0;
+  }
 }
 
 /* Hero Section */
@@ -33,7 +38,7 @@
 .inspiration-page .insp-hero::after {
   content: "";
   position: absolute;
-  inset: 67px 35% 0 0;
+  inset: -13px 35% 0 0;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0));
 }
 

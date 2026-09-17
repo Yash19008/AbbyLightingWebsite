@@ -597,6 +597,910 @@
 .main-box .footer-accordion-icon{
   transition: transform 0.3s ease;
 }
+
+/* Fix for mega dropdown with dynamic categories */
+@media (min-width: 901px) {
+  .main-box .sitehead .mega-grid {
+    display: grid !important;
+    grid-template-columns: 192px 1px 9px 370px 1px 34px 144px !important;
+    align-items: start !important;
+    width: 888px !important;
+    height: auto !important;
+    min-height: 227px !important;
+    position: relative !important;
+  }
+
+  .main-box .sitehead .mgroup:nth-child(1) {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    height: 100%;
+  }
+
+  .main-box .sitehead .mega-grid>.msep:nth-child(2) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    align-self: stretch !important;
+    width: 1px !important;
+    height: auto !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    height: 100%;
+  }
+
+  .main-box .sitehead .mgroup:nth-child(3) {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    height: 100%;
+  }
+
+  .main-box .sitehead .mega-grid>.msep:nth-child(4) {
+    grid-column: 5 !important;
+    grid-row: 1 !important;
+    align-self: stretch !important;
+    width: 1px !important;
+    height: auto !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+  }
+
+  .main-box .sitehead .mgroup:nth-child(5) {
+    grid-column: 7 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+    width: 144px !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+  }
+
+  .main-box .sitehead .mgroup {
+    border-radius: 1px !important;
+    width: auto !important;
+    padding: 10px 14px !important;
+    box-sizing: border-box !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .main-box .sitehead .mgroup:before {
+    content: "" !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(156deg, #ac8b5c4f 11%, #4226004f 92%) !important;
+    border: 1px solid #ffffff4f !important;
+    border-radius: 1px !important;
+    position: absolute !important;
+    inset: 0 !important;
+    opacity: 0 !important;
+  }
+
+  .main-box .sitehead .mgroup:hover:before,
+  .main-box .sitehead .mgroup:focus-within:before {
+    opacity: 1 !important;
+  }
+
+  .main-box .sitehead .mgroup:hover>.mhead,
+  .main-box .sitehead .mgroup:focus-within>.mhead {
+    color: #f6c177 !important;
+  }
+
+  .main-box .sitehead .mega-grid>.msep {
+    background: #ffffff38 !important;
+  }
+
+  .main-box .sitehead .mcols .msep.sm {
+    align-self: stretch !important;
+    height: auto !important;
+  }
+}
+
+/* Floating Bottom Dock & Mobile Drawer */
+.halo-nav-wrap,
+.main-box .halo-nav-wrap,
+.dock,
+.main-box .dock {
+  display: none !important;
+}
+
+.custom-mobile-dock,
+.main-box .custom-mobile-dock,
+.pdrop-modal,
+.main-box .pdrop-modal,
+.custom-sheet-backdrop,
+.main-box .custom-sheet-backdrop {
+  display: none !important;
+}
+
+.sitehead .nav-cta .lbl-d,
+.main-box .sitehead .nav-cta .lbl-d {
+  display: inline;
+}
+
+.sitehead .nav-cta .lbl-m,
+.main-box .sitehead .nav-cta .lbl-m {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .custom-mobile-dock,
+  .main-box .custom-mobile-dock {
+    display: block !important;
+    position: fixed !important;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 50% !important;
+    transform: translate(-50%, calc(100% + 40px)) !important;
+    width: min(360px, calc(100vw - 28px)) !important;
+    z-index: 9999 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.35s ease !important;
+  }
+
+  .custom-mobile-dock.is-visible,
+  .main-box .custom-mobile-dock.is-visible {
+    transform: translate(-50%, 0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .custom-mobile-dock.is-hidden,
+  .main-box .custom-mobile-dock.is-hidden {
+    transform: translate(-50%, calc(100% + 40px)) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* Mobile Header Search Icon Circle */
+  .sitehead .right,
+  .main-box .sitehead .right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+
+  .sitehead .abby-search,
+  .main-box .sitehead .abby-search {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    position: relative !important;
+  }
+
+  .sitehead .abby-search-toggle,
+  .main-box .sitehead .abby-search-toggle {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    color: #ffffff !important;
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    transform: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-sizing: border-box !important;
+  }
+
+  .sitehead .abby-search-toggle svg,
+  .main-box .sitehead .abby-search-toggle svg {
+    width: 17px !important;
+    height: 17px !important;
+    display: block !important;
+    stroke: currentColor !important;
+  }
+
+  .sitehead .abby-search-toggle:hover,
+  .sitehead .abby-search-toggle:active,
+  .main-box .sitehead .abby-search-toggle:hover,
+  .main-box .sitehead .abby-search-toggle:active {
+    border-color: #f6c177 !important;
+    color: #f6c177 !important;
+    background: rgba(246, 193, 119, 0.1) !important;
+  }
+
+  /* Mobile Header Contact CTA Label */
+  .sitehead .nav-cta,
+  .main-box .sitehead .nav-cta {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .sitehead .nav-cta .lbl-d,
+  .main-box .sitehead .nav-cta .lbl-d {
+    display: none !important;
+  }
+
+  .sitehead .nav-cta .lbl-m,
+  .main-box .sitehead .nav-cta .lbl-m {
+    display: inline !important;
+  }
+
+  .custom-sheet-backdrop,
+  .main-box .custom-sheet-backdrop {
+    display: block !important;
+  }
+
+  .pdrop-modal,
+  .main-box .pdrop-modal {
+    display: block !important;
+  }
+
+  .custom-dock-bar,
+  .main-box .custom-dock-bar {
+    background: #191919 !important;
+    border: 1.5px solid rgba(246, 193, 119, 0.55) !important;
+    border-radius: 6px !important;
+    height: 56px !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    align-items: stretch !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85) !important;
+    position: relative !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    touch-action: none !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+
+  .custom-dock-bar:active,
+  .custom-dock-bar.is-dragging,
+  .main-box .custom-dock-bar:active,
+  .main-box .custom-dock-bar.is-dragging {
+    cursor: pointer !important;
+  }
+
+  .custom-dock-slider,
+  .main-box .custom-dock-slider {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 20% !important;
+    height: 100% !important;
+    pointer-events: none !important;
+    z-index: 5 !important;
+    transform: translateX(calc(var(--dock-index, 0) * 100%)) !important;
+    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease !important;
+    will-change: transform, opacity !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+  }
+
+  .custom-dock-slider.is-blank,
+  .main-box .custom-dock-slider.is-blank {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateX(calc(var(--dock-index, 0) * 100%)) translateY(14px) scale(0.75) !important;
+  }
+
+  .custom-dock-slider.is-dragging,
+  .main-box .custom-dock-slider.is-dragging {
+    transition: transform 0.06s ease-out, opacity 0.15s ease !important;
+    cursor: pointer !important;
+  }
+
+  .custom-dock-tab,
+  .main-box .custom-dock-tab {
+    position: relative !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    color: #ffffff !important;
+    -webkit-tap-highlight-color: transparent !important;
+    z-index: 2 !important;
+  }
+
+  .custom-dock-tab:not(:last-child)::after,
+  .main-box .custom-dock-tab:not(:last-child)::after {
+    content: "" !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 14px !important;
+    bottom: 14px !important;
+    width: 1px !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    pointer-events: none !important;
+  }
+
+  .custom-dock-icon,
+  .main-box .custom-dock-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+    opacity: 0.95 !important;
+    transform: translateY(0) scale(1) !important;
+    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease !important;
+  }
+
+  .custom-dock-tab.is-active .custom-dock-icon,
+  .custom-dock-tab.is-active:hover .custom-dock-icon,
+  .main-box .custom-dock-tab.is-active .custom-dock-icon,
+  .main-box .custom-dock-tab.is-active:hover .custom-dock-icon {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .custom-dock-icon-product,
+  .main-box .custom-dock-icon-product {
+    padding-top: 4px !important;
+  }
+
+  .custom-dock-tab:not(.is-active):hover .custom-dock-icon,
+  .main-box .custom-dock-tab:not(.is-active):hover .custom-dock-icon {
+    opacity: 1 !important;
+    transform: scale(1.06) !important;
+  }
+
+  .custom-dock-notch,
+  .main-box .custom-dock-notch {
+    position: absolute !important;
+    top: -27px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 54px !important;
+    height: 38px !important;
+    background: #191919 !important;
+    border-bottom: none !important;
+    border-radius: 6px 6px 0 0 !important;
+    z-index: 1 !important;
+  }
+
+  .custom-dock-active-box,
+  .main-box .custom-dock-active-box {
+    position: absolute !important;
+    top: -22px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 44px !important;
+    height: 44px !important;
+    background: #f6c177 !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 2 !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.65) !important;
+    animation: dockBoxPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  }
+
+  @keyframes dockBoxPop {
+    0% {
+      transform: translateX(-50%) translateY(14px) scale(0.7);
+      opacity: 0.4;
+    }
+
+    100% {
+      transform: translateX(-50%) translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .custom-dock-active-box svg,
+  .main-box .custom-dock-active-box svg {
+    stroke: #111111 !important;
+  }
+
+  .custom-dock-label,
+  .main-box .custom-dock-label {
+    position: absolute !important;
+    bottom: 10px !important;
+    left: 0 !important;
+    right: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-family: 'Poppins', 'Inter', sans-serif !important;
+    font-size: 8px !important;
+    font-weight: 600 !important;
+    color: #f6c177 !important;
+    text-align: center !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    z-index: 3 !important;
+    pointer-events: none !important;
+    animation: dockLabelIn 0.22s cubic-bezier(0.23, 1, 0.32, 1) !important;
+  }
+
+  @keyframes dockLabelIn {
+    0% {
+      opacity: 0;
+      transform: translateY(4px) scale(0.9);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Sheet Drawer */
+  .custom-sheet-backdrop,
+  .main-box .custom-sheet-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.65) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    z-index: 9990 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+  }
+
+  .custom-sheet-backdrop.is-open,
+  .main-box .custom-sheet-backdrop.is-open {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Fullscreen Dropdown Drawer */
+  .pdrop-modal,
+  .main-box .pdrop-modal {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 10000 !important;
+    background: #000000 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(100%) !important;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0.25s ease !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    color: #ffffff !important;
+    box-sizing: border-box !important;
+  }
+
+  .pdrop-modal.is-open,
+  .main-box .pdrop-modal.is-open {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+  }
+
+  .pdrop-container,
+  .main-box .pdrop-container {
+    width: 100% !important;
+    min-height: 100% !important;
+    padding: 24px 26px 100px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .pdrop-header,
+  .main-box .pdrop-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding-bottom: 24px !important;
+  }
+
+  .pdrop-logo img,
+  .main-box .pdrop-logo img {
+    height: 38px !important;
+    width: auto !important;
+    object-fit: contain !important;
+    filter: brightness(0) invert(1) !important;
+    display: block !important;
+  }
+
+  .pdrop-actions,
+  .main-box .pdrop-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+
+  .pdrop-search-btn,
+  .main-box .pdrop-search-btn {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    background: transparent !important;
+    color: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+  }
+
+  .pdrop-contact-btn,
+  .main-box .pdrop-contact-btn {
+    background: #f6c177 !important;
+    color: #111111 !important;
+    font-family: 'Poppins', 'Inter', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    padding: 7px 16px !important;
+    border-radius: 3px !important;
+    text-decoration: none !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .pdrop-body,
+  .main-box .pdrop-body {
+    padding-top: 10px !important;
+  }
+
+  .pdrop-title-row,
+  .main-box .pdrop-title-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding-bottom: 18px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .pdrop-title,
+  .main-box .pdrop-title {
+    font-family: 'Poppins', 'Inter', sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    text-transform: uppercase !important;
+  }
+
+  .pdrop-circle-close,
+  .main-box .pdrop-circle-close {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    background: transparent !important;
+    color: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+    transition: border-color 0.2s, opacity 0.2s !important;
+  }
+
+  .pdrop-circle-close:hover,
+  .main-box .pdrop-circle-close:hover {
+    border-color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  .pdrop-acc,
+  .main-box .pdrop-acc {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+
+  .pdrop-acc-toggle,
+  .main-box .pdrop-acc-toggle {
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 16px 0 !important;
+    color: #ffffff !important;
+    font-family: 'Poppins', 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-align: left !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    cursor: pointer !important;
+  }
+
+  .pdrop-amber-text,
+  .main-box .pdrop-amber-text {
+    color: #f6c177 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .pdrop-badge-new,
+  .main-box .pdrop-badge-new {
+    background: #f6c177 !important;
+    color: #111111 !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    padding: 2px 5px !important;
+    border-radius: 2px !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    line-height: 1 !important;
+  }
+
+  .pdrop-caret,
+  .main-box .pdrop-caret {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 24px !important;
+    height: 24px !important;
+    color: #ffffff !important;
+    opacity: 0.9 !important;
+    flex-shrink: 0 !important;
+    margin-right: 3px !important;
+  }
+
+  .pdrop-acc-content,
+  .main-box .pdrop-acc-content {
+    padding: 0 0 16px 0 !important;
+  }
+
+  .pdrop-section-label,
+  .main-box .pdrop-section-label {
+    font-family: 'Poppins', 'Inter', sans-serif !important;
+    font-size: 8.5px !important;
+    font-weight: 300 !important;
+    letter-spacing: 0.1em !important;
+    color: white !important;
+    text-transform: uppercase !important;
+    margin: 8px 0 12px 0 !important;
+  }
+
+  .pdrop-list,
+  .main-box .pdrop-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .pdrop-list li a,
+  .main-box .pdrop-list li a {
+    color: white !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    text-decoration: none !important;
+    transition: color 0.2s !important;
+    display: block !important;
+  }
+
+  .pdrop-list li a:hover,
+  .main-box .pdrop-list li a:hover {
+    color: #ffffff !important;
+  }
+
+  .pdrop-direct-row,
+  .main-box .pdrop-direct-row {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+
+  .pdrop-direct-row a,
+  .main-box .pdrop-direct-row a {
+    display: block !important;
+    padding: 16px 0 !important;
+    color: #ffffff !important;
+    font-family: 'Poppins', 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    transition: color 0.2s !important;
+  }
+
+  .pdrop-direct-row a:hover,
+  .main-box .pdrop-direct-row a:hover {
+    color: #f6c177 !important;
+  }
+
+  .pdrop-arrow-row,
+  .main-box .pdrop-arrow-row {
+    border-bottom: 1px solid rgb(255, 255, 255, 0.25) !important;
+  }
+
+  .pdrop-arrow-row:last-child,
+  .pdrop-arrow-row:last-of-type,
+  .pdrop-direct-row:last-child,
+  .pdrop-direct-row:last-of-type,
+  .main-box .pdrop-arrow-row:last-child,
+  .main-box .pdrop-arrow-row:last-of-type,
+  .main-box .pdrop-direct-row:last-child,
+  .main-box .pdrop-direct-row:last-of-type {
+    border-bottom: none !important;
+  }
+
+  .pdrop-arrow-row a,
+  .main-box .pdrop-arrow-row a {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 16px 0 !important;
+    color: #ffffff !important;
+    font-family: 'Poppins', 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-align: left !important;
+    text-decoration: none !important;
+    transition: color 0.2s !important;
+  }
+
+  .pdrop-arrow-row a:hover,
+  .main-box .pdrop-arrow-row a:hover {
+    color: #f6c177 !important;
+  }
+
+  .pdrop-arrow-row a .pdrop-arrow,
+  .main-box .pdrop-arrow-row a .pdrop-arrow {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+    width: 24px !important;
+    height: 24px !important;
+    opacity: 0.85 !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    transition: transform 0.2s, stroke 0.2s !important;
+    margin-right: 3px !important;
+  }
+
+  .pdrop-arrow-row a:hover .pdrop-arrow,
+  .main-box .pdrop-arrow-row a:hover .pdrop-arrow {
+    stroke: #f6c177 !important;
+    transform: translateX(3px) !important;
+  }
+}
+
+/* ==================================================================
+   SEARCH TOGGLE & DROPDOWN - EXACT NEXT.JS BEHAVIOR
+   ================================================================== */
+.abby-search .abby-search-toggle,
+.main-box .abby-search .abby-search-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+}
+
+.abby-search:not(.is-open) #searchIcon,
+.main-box .abby-search:not(.is-open) #searchIcon {
+  display: block !important;
+}
+
+.abby-search:not(.is-open) #closeIcon,
+.main-box .abby-search:not(.is-open) #closeIcon {
+  display: none !important;
+}
+
+.abby-search.is-open #searchIcon,
+.main-box .abby-search.is-open #searchIcon {
+  display: none !important;
+}
+
+.abby-search.is-open #closeIcon,
+.main-box .abby-search.is-open #closeIcon {
+  display: block !important;
+}
+
+@media (max-width: 900px) {
+  .main-box .sitehead .right {
+    gap: 12px !important;
+  }
+
+  .main-box .abby-search {
+    position: relative !important;
+    margin-top: 0 !important;
+    width: 38px !important;
+    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 38px !important;
+  }
+  
+  .main-box .abby-search-toggle {
+    width: 38px !important;
+    height: 38px !important;
+    position: static !important;
+    transform: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .main-box .abby-search.is-open .abby-search-toggle {
+    transform: none !important;
+  }
+
+  .main-box .abby-search-form {
+    position: fixed !important;
+    top: 86px !important;
+    left: 16px !important;
+    right: 16px !important;
+    width: calc(100% - 32px) !important;
+    height: 48px !important;
+    background: #1a1c1d !important;
+    border: 1px solid rgba(246, 193, 119, 0.35) !important;
+    border-radius: 4px !important;
+    z-index: 5050 !important;
+  }
+
+  .main-box .abby-search.is-open .abby-search-form {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .main-box .abby-search-results {
+    position: fixed !important;
+    top: 140px !important;
+    left: 16px !important;
+    right: 16px !important;
+    width: calc(100% - 32px) !important;
+    background: #1a1c1d !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    z-index: 5050 !important;
+    max-height: 280px !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* Header Background State - Solid Black on Scroll & Non-Home Inner Pages */
+.main-box header.sitehead {
+  transition: background-color 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+/* Scrolled state: solid black background */
+.main-box header.sitehead.scrolled,
+header.sitehead.scrolled,
+.sitehead.scrolled {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Inner pages: always solid black header background */
+body:not(.home-page) .main-box header.sitehead,
+body:not(.home-page) header.sitehead,
+body:not(.home-page) .sitehead {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
 </style>
 <div class="main-box">
     <header class="sitehead">
@@ -608,7 +1512,7 @@
             <nav aria-label="Primary navigation">
                 <ul>
                     <li class="has-mega">
-                        <a class="link" href="/#worlds">
+                        <a class="link" href="/products">
                             Product<span class="caret"></span>
                         </a>
                         <div class="mega">
@@ -617,36 +1521,25 @@
                                     <div class="mgroup m-arch">
                                         <div class="mhead">Architectural</div>
                                         <div class="msub">Browse by category</div>
-                                        <ul>
-                                            <li><a href="/#arrivals">Spots & Accents</a></li>
-                                            <li><a href="/#arrivals">Downlights</a></li>
-                                            <li><a href="/#arrivals">Profiles</a></li>
-                                            <li><a href="/#arrivals">Track Lights</a></li>
-                                            <li><a href="/#arrivals">Washers & Grazers</a></li>
+                                        <ul id="bladeArchitecturalCategories">
+                                            <li><a href="/products">Spots &amp; Accents</a></li>
+                                            <li><a href="/products">Downlights</a></li>
+                                            <li><a href="/products">Profiles</a></li>
+                                            <li><a href="/products">Track Lights</a></li>
+                                            <li><a href="/products">Washers &amp; Grazers</a></li>
                                         </ul>
                                     </div>
                                     <div class="msep"></div>
-                                    <div class="mgroup m-dec">
-                                        <div class="mhead">Decorative <span class="mnew">NEW</span></div>
-                                        <div class="msub">Browse by category</div>
-                                        <ul>
-                                            <li><a href="/#arrivals">Chandelier</a></li>
-                                            <li><a href="/#arrivals">Pendant Lights</a></li>
-                                            <li><a href="/#arrivals">Wall Lights</a></li>
-                                            <li><a href="/#arrivals">Floor Lamps</a></li>
-                                            <li><a href="/#arrivals">Table Lamps</a></li>
-                                        </ul>
+                                    <div class="msep lg"></div>
+                                    <div class="m-worlds">
+                                        <a class="mgroup m-out" href="/#worlds">
+                                            <span class="mhead">Outdoor</span>
+                                        </a>
+                                        <div class="msep hz"></div>
+                                        <a class="mgroup m-smart" href="/#worlds">
+                                            <span class="mhead">Smart Lighting</span>
+                                        </a>
                                     </div>
-                                     <div class="msep lg"></div>
-                        <div class="m-worlds">
-                          <a class="mgroup m-out" href="/#worlds"
-                            ><span class="mhead">Outdoor</span></a
-                          >
-                          <div class="msep hz"></div>
-                          <a class="mgroup m-smart" href="/#worlds"
-                            ><span class="mhead">Smart Lighting</span></a
-                          >
-                        </div>
                                 </div>
                             </div>
                         </div>
@@ -661,7 +1554,7 @@
                         </div>
                     </li>
                     <li>
-                        <a class="link" href="/#news">Inspiration</a>
+                        <a class="link" href="/inspiration">Inspiration</a>
                     </li>
                     <li class="has-drop">
                         <a class="link" href="/company">
@@ -719,114 +1612,481 @@
         </div>
     </header>
 
-    <!-- MOBILE HALO NAV -->
-    <nav class="halo-nav-wrap halo-visible" aria-label="Mobile sections">
-        <div class="halo-nav">
-            <span class="halo-nav-shadow" aria-hidden="true"></span>
-            <div class="halo-tabs" role="tablist" aria-label="Page sections">
-                <button class="halo-tab" role="tab" type="button">
-                    <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M3.5 10.6 12 3.9l8.5 6.7"></path>
-                        <path d="M5.7 9.2v9.1a1.6 1.6 0 0 0 1.6 1.6h9.4a1.6 1.6 0 0 0 1.6-1.6V9.2"></path>
-                    </svg>
-                    <span class="halo-label">Home</span>
-                </button>
-                <button class="halo-tab" role="tab" type="button">
-                    <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M12 3.4v3.1"></path>
-                        <path d="M6.6 13.4a5.4 5.4 0 0 1 10.8 0Z"></path>
-                        <path d="M9.7 13.4a2.3 2.3 0 0 0 4.6 0"></path>
-                    </svg>
-                    <span class="halo-label">Products</span>
-                </button>
-                <button class="halo-tab" role="tab" type="button">
-                    <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M3.5 7.1h6.2l2 2h8.8v8.7a1.8 1.8 0 0 1-1.8 1.8H5.3a1.8 1.8 0 0 1-1.8-1.8Z"></path>
-                        <path d="M3.5 10h17"></path>
-                    </svg>
-                    <span class="halo-label">Our Work</span>
-                </button>
-                <button class="halo-tab" role="tab" type="button">
-                    <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M9.1 16.3a5 5 0 1 1 5.8 0 1.6 1.6 0 0 0-.6 1.2v.4H9.7v-.4a1.6 1.6 0 0 0-.6-1.2Z"></path>
-                        <path d="M10 20.1h4"></path>
-                    </svg>
-                    <span class="halo-label">Inspiration</span>
-                </button>
-                <button class="halo-tab" role="tab" type="button">
-                    <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M4.5 8.2h15"></path>
-                        <path d="M4.5 12h15"></path>
-                        <path d="M4.5 15.8h15"></path>
-                    </svg>
-                    <span class="halo-label">More</span>
-                </button>
+    <!-- Floating Bottom Dock (Mobile Only) -->
+    <nav class="custom-mobile-dock" id="mobileDock" aria-label="Mobile bottom navigation">
+        <div class="custom-dock-bar" id="dockBar" style="--dock-index: 0;">
+            <!-- Active Indicator (Notch + Amber Box + Label) -->
+            <div class="custom-dock-slider is-blank" id="dockSlider">
+                <div class="custom-dock-notch" aria-hidden="true"></div>
+                <div class="custom-dock-active-box" id="dockActiveBox"></div>
+                <span class="custom-dock-label" id="dockActiveLabel"></span>
             </div>
+
+            <!-- 5 Grid Tabs -->
+            <button type="button" class="custom-dock-tab" data-tab="home" aria-label="Home">
+                <div class="custom-dock-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 11.5L12 4l9 7.5v7a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5v-7z" />
+                    </svg>
+                </div>
+            </button>
+            <button type="button" class="custom-dock-tab" data-tab="products" aria-label="Products">
+                <div class="custom-dock-icon custom-dock-icon-product">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="3" x2="12" y2="8" />
+                        <path d="M5 15a7 7 0 0 1 14 0H5z" />
+                        <path d="M10 15a2 2 0 0 0 4 0" />
+                    </svg>
+                </div>
+            </button>
+            <button type="button" class="custom-dock-tab" data-tab="work" aria-label="Our works">
+                <div class="custom-dock-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 6h4.5l2 2h8a1 1 0 0 1 1 1v1.5H3.5V7a1 1 0 0 1 1-1z" />
+                        <path d="M2.5 10.5h18a1 1 0 0 1 1 1.2l-1.3 6.8a1 1 0 0 1-1 .8H4.2a1 1 0 0 1-1-.8L1.8 11.7a1 1 0 0 1 .7-1.2z" />
+                    </svg>
+                </div>
+            </button>
+            <button type="button" class="custom-dock-tab" data-tab="inspiration" aria-label="Our inspiration">
+                <div class="custom-dock-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 2.2-1.2 3.8-2.2 5.1-.5.7-.8 1.4-.8 2.4H9.5c0-1-.3-1.7-.8-2.4-1-1.3-2.2-2.9-2.2-5.1z" />
+                        <line x1="9" y1="20" x2="15" y2="20" />
+                    </svg>
+                </div>
+            </button>
+            <button type="button" class="custom-dock-tab" data-tab="more" aria-label="More">
+                <div class="custom-dock-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="8" x2="19" y2="8" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <line x1="5" y1="16" x2="19" y2="16" />
+                    </svg>
+                </div>
+            </button>
         </div>
     </nav>
+
+    <!-- Backdrop for Mobile Drawers -->
+    <div class="custom-sheet-backdrop" id="sheetBackdrop" aria-hidden="true"></div>
+
+    <!-- Fullscreen Mobile Drawer Modal -->
+    <div class="pdrop-modal" id="sheetModal" role="dialog" aria-modal="true">
+        <div class="pdrop-container">
+            <div class="pdrop-header">
+                <a href="/" class="pdrop-logo">
+                    <img src="{{ asset('images/abby-logo.png') }}" alt="Abby Lighting" />
+                </a>
+                <div class="pdrop-actions">
+                    <button type="button" class="pdrop-search-btn" id="modalSearchBtn" aria-label="Search">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="7" />
+                            <path d="M21 21l-4.35-4.35" />
+                        </svg>
+                    </button>
+                    <a href="/contact" class="pdrop-contact-btn">CONTACT</a>
+                </div>
+            </div>
+
+            <!-- PRODUCTS MENU -->
+            <div class="pdrop-body" id="sheetProducts" style="display: none;">
+                <div class="pdrop-title-row">
+                    <h2 class="pdrop-title">PRODUCTS</h2>
+                    <button type="button" class="pdrop-circle-close sheet-close-btn" aria-label="Close menu">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="pdrop-acc is-open" id="modalArchAccordion">
+                    <button type="button" class="pdrop-acc-toggle" id="modalArchToggle">
+                        <span class="pdrop-amber-text">Architectural</span>
+                        <span class="pdrop-caret">
+                            <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
+                                <polygon points="0,7 11,7 5.5,0" />
+                            </svg>
+                        </span>
+                    </button>
+                    <div class="pdrop-acc-content" id="modalArchContent">
+                        <div class="pdrop-section-label">BROWSE BY CATEGORY</div>
+                        <ul class="pdrop-list" id="modalArchList">
+                            <li><a href="/products">Spots &amp; Accents</a></li>
+                            <li><a href="/products">Downlights</a></li>
+                            <li><a href="/products">Profiles</a></li>
+                            <li><a href="/products">Track Lights</a></li>
+                            <li><a href="/products">Washers &amp; Grazers</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="pdrop-direct-row">
+                    <a href="/#worlds">Outdoor</a>
+                </div>
+                <div class="pdrop-direct-row">
+                    <a href="/#worlds">Smart Lighting</a>
+                </div>
+            </div>
+
+            <!-- OUR WORKS MENU -->
+            <div class="pdrop-body" id="sheetWork" style="display: none;">
+                <div class="pdrop-title-row">
+                    <h2 class="pdrop-title">OUR WORKS</h2>
+                    <button type="button" class="pdrop-circle-close sheet-close-btn" aria-label="Close menu">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="pdrop-arrow-row">
+                    <a href="/projects">
+                        <span>Projects</span>
+                        <svg class="pdrop-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="20" y2="12" />
+                            <polyline points="14 6 20 12 14 18" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="pdrop-arrow-row">
+                    <a href="/clients">
+                        <span>Clients</span>
+                        <svg class="pdrop-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="20" y2="12" />
+                            <polyline points="14 6 20 12 14 18" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- MORE MENU -->
+            <div class="pdrop-body" id="sheetMore" style="display: none;">
+                <div class="pdrop-title-row">
+                    <h2 class="pdrop-title">MORE</h2>
+                    <button type="button" class="pdrop-circle-close sheet-close-btn" aria-label="Close menu">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="pdrop-arrow-row">
+                    <a href="/company">
+                        <span>About</span>
+                        <svg class="pdrop-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="20" y2="12" />
+                            <polyline points="14 6 20 12 14 18" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="pdrop-arrow-row">
+                    <a href="/career">
+                        <span>Careers</span>
+                        <svg class="pdrop-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="20" y2="12" />
+                            <polyline points="14 6 20 12 14 18" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="pdrop-arrow-row">
+                    <a href="/contact">
+                        <span>Contact</span>
+                        <svg class="pdrop-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="20" y2="12" />
+                            <polyline points="14 6 20 12 14 18" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="pdrop-arrow-row">
+                    <a href="/privacy-policy">
+                        <span>Policies</span>
+                        <svg class="pdrop-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="20" y2="12" />
+                            <polyline points="14 6 20 12 14 18" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-// Next.js Header JavaScript - Scoped to avoid conflicts
-(function() {
-    const header = document.getElementById('nextjs-header');
-    const searchContainer = document.getElementById('nextjsSearchContainer');
-    const searchToggle = document.getElementById('nextjsSearchToggle');
-    const searchInput = searchContainer ? searchContainer.querySelector('input[type="search"]') : null;
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Fetch Dynamic Categories for Mega Menu & Mobile Drawer
+    fetch('/api/categories')
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+                const list = document.getElementById('bladeArchitecturalCategories');
+                const modalList = document.getElementById('modalArchList');
+                if (list) {
+                    list.innerHTML = data.data.map(cat => 
+                        `<li><a href="${cat.uri || ('/products?category=' + (cat.slug || ''))}">${cat.title || cat.name}</a></li>`
+                    ).join('');
+                }
+                if (modalList) {
+                    modalList.innerHTML = data.data.map(cat => 
+                        `<li><a href="${cat.uri || ('/products?category=' + (cat.slug || ''))}">${cat.title || cat.name}</a></li>`
+                    ).join('');
+                }
+            }
+        })
+        .catch(err => console.log('Category fetch skipped', err));
 
-    // Scroll detection for header background
-    if (header) {
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 50) {
-                header.classList.add('nextjs-scrolled');
+    // 2. Mobile Dock & Drawer Navigation Logic
+    const mobileDock = document.getElementById('mobileDock');
+    const dockBar = document.getElementById('dockBar');
+    const dockSlider = document.getElementById('dockSlider');
+    const dockActiveBox = document.getElementById('dockActiveBox');
+    const dockActiveLabel = document.getElementById('dockActiveLabel');
+    const sheetBackdrop = document.getElementById('sheetBackdrop');
+    const sheetModal = document.getElementById('sheetModal');
+    const sheetProducts = document.getElementById('sheetProducts');
+    const sheetWork = document.getElementById('sheetWork');
+    const sheetMore = document.getElementById('sheetMore');
+    const closeBtns = document.querySelectorAll('.sheet-close-btn');
+
+    let activeTab = null;
+    let activeSheet = null;
+    let scrollTimeout = null;
+
+    const TAB_DATA = {
+        home: {
+            index: 0,
+            label: 'Home',
+            icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5L12 4l9 7.5v7a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5v-7z" /></svg>'
+        },
+        products: {
+            index: 1,
+            label: 'Products',
+            icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="8" /><path d="M5 15a7 7 0 0 1 14 0H5z" /><path d="M10 15a2 2 0 0 0 4 0" /></svg>'
+        },
+        work: {
+            index: 2,
+            label: 'Our works',
+            icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h4.5l2 2h8a1 1 0 0 1 1 1v1.5H3.5V7a1 1 0 0 1 1-1z" /><path d="M2.5 10.5h18a1 1 0 0 1 1 1.2l-1.3 6.8a1 1 0 0 1-1 .8H4.2a1 1 0 0 1-1-.8L1.8 11.7a1 1 0 0 1 .7-1.2z" /></svg>'
+        },
+        inspiration: {
+            index: 3,
+            label: 'Our inspiration',
+            icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 2.2-1.2 3.8-2.2 5.1-.5.7-.8 1.4-.8 2.4H9.5c0-1-.3-1.7-.8-2.4-1-1.3-2.2-2.9-2.2-5.1z" /><line x1="9" y1="20" x2="15" y2="20" /></svg>'
+        },
+        more: {
+            index: 4,
+            label: 'More',
+            icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="8" x2="19" y2="8" /><line x1="5" y1="12" x2="19" y2="12" /><line x1="5" y1="16" x2="19" y2="16" /></svg>'
+        }
+    };
+
+    // Auto-detect page for tab
+    const pathname = window.location.pathname;
+    if (pathname.startsWith('/inspiration') || pathname.startsWith('/blogs')) {
+        activeTab = 'inspiration';
+    } else if (pathname.startsWith('/projects') || pathname.startsWith('/clients')) {
+        activeTab = 'work';
+    }
+
+    const tabButtons = document.querySelectorAll('.custom-dock-tab');
+
+    function renderActiveTab(tabId) {
+        if (!dockBar || !dockSlider) return;
+        tabButtons.forEach(btn => {
+            btn.classList.toggle('is-active', btn.getAttribute('data-tab') === tabId);
+        });
+        if (!tabId || !TAB_DATA[tabId]) {
+            dockSlider.classList.add('is-blank');
+            return;
+        }
+        const data = TAB_DATA[tabId];
+        dockBar.style.setProperty('--dock-index', data.index);
+        dockActiveBox.innerHTML = data.icon;
+        dockActiveLabel.textContent = data.label;
+        dockSlider.classList.remove('is-blank');
+    }
+
+    renderActiveTab(activeTab);
+
+    // Scroll & touch visibility for mobile dock
+    function showDockTemporarily() {
+        if (!mobileDock) return;
+        mobileDock.classList.add('is-visible');
+        mobileDock.classList.remove('is-hidden');
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+            if (!activeSheet) {
+                mobileDock.classList.remove('is-visible');
+                mobileDock.classList.add('is-hidden');
+            }
+        }, 1800);
+    }
+
+    if (mobileDock) {
+        window.addEventListener('scroll', showDockTemporarily, { passive: true });
+        window.addEventListener('touchmove', showDockTemporarily, { passive: true });
+        mobileDock.addEventListener('pointerenter', function() {
+            if (scrollTimeout) clearTimeout(scrollTimeout);
+            mobileDock.classList.add('is-visible');
+        });
+        mobileDock.addEventListener('pointerleave', function() {
+            showDockTemporarily();
+        });
+        // Initial glimpse on mobile load
+        setTimeout(showDockTemporarily, 600);
+    }
+
+    function openSheet(sheetName) {
+        activeSheet = sheetName;
+        document.body.style.overflow = 'hidden';
+        sheetBackdrop.classList.add('is-open');
+        sheetModal.classList.add('is-open');
+        sheetProducts.style.display = (sheetName === 'products') ? 'block' : 'none';
+        sheetWork.style.display = (sheetName === 'work') ? 'block' : 'none';
+        sheetMore.style.display = (sheetName === 'more') ? 'block' : 'none';
+        if (mobileDock) {
+            mobileDock.classList.add('is-visible');
+        }
+    }
+
+    function closeAllSheets() {
+        activeSheet = null;
+        document.body.style.overflow = '';
+        if (sheetBackdrop) sheetBackdrop.classList.remove('is-open');
+        if (sheetModal) sheetModal.classList.remove('is-open');
+        if (sheetProducts) sheetProducts.style.display = 'none';
+        if (sheetWork) sheetWork.style.display = 'none';
+        if (sheetMore) sheetMore.style.display = 'none';
+    }
+
+    if (sheetBackdrop) sheetBackdrop.addEventListener('click', closeAllSheets);
+    closeBtns.forEach(btn => btn.addEventListener('click', closeAllSheets));
+
+    // Tab buttons event
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tab = this.getAttribute('data-tab');
+            activeTab = tab;
+            renderActiveTab(tab);
+
+            if (tab === 'home') {
+                closeAllSheets();
+                if (window.location.pathname === '/') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    window.location.href = '/';
+                }
+            } else if (tab === 'inspiration') {
+                closeAllSheets();
+                window.location.href = '/inspiration';
+            } else if (tab === 'products' || tab === 'work' || tab === 'more') {
+                if (activeSheet === tab) {
+                    closeAllSheets();
+                } else {
+                    openSheet(tab);
+                }
+            }
+        });
+    });
+
+    // Modal Architectural Accordion Toggle
+    const modalArchToggle = document.getElementById('modalArchToggle');
+    const modalArchAccordion = document.getElementById('modalArchAccordion');
+    if (modalArchToggle && modalArchAccordion) {
+        modalArchToggle.addEventListener('click', function() {
+            const isOpen = modalArchAccordion.classList.contains('is-open');
+            const caret = modalArchToggle.querySelector('.pdrop-caret');
+            const text = modalArchToggle.querySelector('span:first-child');
+            if (isOpen) {
+                modalArchAccordion.classList.remove('is-open');
+                document.getElementById('modalArchContent').style.display = 'none';
+                if (caret) caret.innerHTML = '<svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor"><polygon points="0,0 11,0 5.5,7" /></svg>';
+                if (text) text.classList.remove('pdrop-amber-text');
             } else {
-                header.classList.remove('nextjs-scrolled');
+                modalArchAccordion.classList.add('is-open');
+                document.getElementById('modalArchContent').style.display = 'block';
+                if (caret) caret.innerHTML = '<svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor"><polygon points="0,7 11,7 5.5,0" /></svg>';
+                if (text) text.classList.add('pdrop-amber-text');
             }
         });
     }
 
-    // Search toggle functionality
+    // Modal Search button
+    const modalSearchBtn = document.getElementById('modalSearchBtn');
+    if (modalSearchBtn) {
+        modalSearchBtn.addEventListener('click', function() {
+            closeAllSheets();
+            const searchToggle = document.getElementById('searchToggle');
+            if (searchToggle) searchToggle.click();
+        });
+    }
+
+    // Header Search Toggle & Submit Logic
+    const searchToggle = document.getElementById('searchToggle');
+    const searchContainer = document.getElementById('searchContainer');
+    const searchInput = document.getElementById('searchInput');
+
     if (searchToggle && searchContainer) {
-        searchToggle.addEventListener('click', function() {
-            const isOpen = searchContainer.classList.contains('nextjs-is-open');
-            
+        searchToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isOpen = searchContainer.classList.contains('is-open');
             if (isOpen) {
-                searchContainer.classList.remove('nextjs-is-open');
+                searchContainer.classList.remove('is-open');
                 searchToggle.setAttribute('aria-expanded', 'false');
                 searchToggle.setAttribute('aria-label', 'Open search');
-                searchToggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"></circle><path d="m16 16 4.5 4.5"></path></svg>';
             } else {
-                searchContainer.classList.add('nextjs-is-open');
+                searchContainer.classList.add('is-open');
                 searchToggle.setAttribute('aria-expanded', 'true');
                 searchToggle.setAttribute('aria-label', 'Close search');
-                searchToggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6L18 18M18 6L6 18"></path></svg>';
                 if (searchInput) {
-                    setTimeout(() => searchInput.focus(), 100);
+                    setTimeout(() => searchInput.focus(), 120);
                 }
             }
         });
 
-        // Close search on outside click
-        document.addEventListener('click', function(e) {
-            if (!searchContainer.contains(e.target) && !searchToggle.contains(e.target)) {
-                if (searchContainer.classList.contains('nextjs-is-open')) {
-                    searchContainer.classList.remove('nextjs-is-open');
-                    searchToggle.setAttribute('aria-expanded', 'false');
-                    searchToggle.setAttribute('aria-label', 'Open search');
-                    searchToggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"></circle><path d="m16 16 4.5 4.5"></path></svg>';
-                }
-            }
-        });
-
-        // Close search on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && searchContainer.classList.contains('nextjs-is-open')) {
-                searchContainer.classList.remove('nextjs-is-open');
+        document.addEventListener('pointerdown', function(e) {
+            if (!searchContainer.contains(e.target)) {
+                searchContainer.classList.remove('is-open');
                 searchToggle.setAttribute('aria-expanded', 'false');
                 searchToggle.setAttribute('aria-label', 'Open search');
-                searchToggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"></circle><path d="m16 16 4.5 4.5"></path></svg>';
             }
         });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && searchContainer.classList.contains('is-open')) {
+                searchContainer.classList.remove('is-open');
+                searchToggle.setAttribute('aria-expanded', 'false');
+                searchToggle.setAttribute('aria-label', 'Open search');
+            }
+        });
+
+        const searchForm = searchContainer.querySelector('.abby-search-form');
+        if (searchForm && searchInput) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const q = searchInput.value.trim();
+                if (q) {
+                    window.location.href = '/products?search=' + encodeURIComponent(q);
+                }
+            });
+            searchInput.addEventListener('input', function() {
+                const goBtn = searchForm.querySelector('.abby-search-go');
+                if (goBtn) {
+                    goBtn.disabled = !this.value.trim();
+                }
+            });
+        }
     }
-})();
+
+    // Header Scroll & Background Handler
+    const siteHeader = document.querySelector('header.sitehead');
+    const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
+
+    function handleHeaderScroll() {
+        if (!siteHeader) return;
+        if (!isHomePage || window.scrollY > 20) {
+            siteHeader.classList.add('scrolled');
+        } else {
+            siteHeader.classList.remove('scrolled');
+        }
+    }
+
+    handleHeaderScroll();
+    window.addEventListener('scroll', handleHeaderScroll, { passive: true });
+});
 </script>
