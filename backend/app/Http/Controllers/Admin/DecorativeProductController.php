@@ -82,8 +82,9 @@ class DecorativeProductController extends Controller
         $collections  = Collection::orderBy('order', 'asc')->get();
         $categories   = DecCategory::orderBy('name', 'asc')->get();
         $color_masters = ColorMaster::orderBy('name', 'asc')->get();
+        $spec_attributes = \App\Models\Decorative\DecSpecAttribute::orderBy('name', 'asc')->get();
 
-        return view('admin.decorative.edit', compact('product', 'collections', 'categories', 'color_masters'));
+        return view('admin.decorative.edit', compact('product', 'collections', 'categories', 'color_masters', 'spec_attributes'));
     }
 
     public function update(Request $request, $id)

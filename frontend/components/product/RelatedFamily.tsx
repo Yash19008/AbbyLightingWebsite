@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { DecRelatedProduct } from "@/types/decorative";
 
 interface RelatedFamilyProps {
@@ -93,10 +94,15 @@ export default function RelatedFamily({
               style={{ transitionDelay: isSettled ? "0ms" : `${i * 60}ms` }}
               href={`/product-detail/${product.slug}`}
             >
-              <img 
-                src={product.featured_image ? `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"}/storage/${product.featured_image}` : "/images/symphony-iv-figma-live/family-v.png"} 
-                alt={product.name} 
-              />
+              <div className="related-image-wrapper">
+                <Image 
+                  src={product.featured_image ? `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"}/storage/${product.featured_image}` : "/images/symphony-iv-figma-live/family-v.png"} 
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 600px) 50vw, 33vw"
+                  className="related-image"
+                />
+              </div>
               <h3>{product.name}</h3>
               <span>{product.category?.name || "Product"}</span>
             </a>

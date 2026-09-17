@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\ClientApiController;
 use App\Http\Controllers\Api\HomeSliderApiController;
 use App\Http\Controllers\Api\ProjectApiController;
 use App\Http\Controllers\Api\EventApiController;
-
 use App\Http\Controllers\Api\ManufacturingSectionApiController;
 use App\Http\Controllers\Api\NewsItemApiController;
 use App\Http\Controllers\Api\NewArrivalsApiController;
@@ -15,76 +14,94 @@ use App\Http\Controllers\Api\CollectionApiController;
 use App\Http\Controllers\Api\ColorMasterApiController;
 use App\Http\Controllers\Api\CategoryApiController;
 use App\Http\Controllers\Api\DecorativeProductApiController;
+use App\Http\Controllers\Api\BlogCategoryApiController;
+use App\Http\Controllers\Api\BlogApiController;
+use App\Http\Controllers\Api\WatchAndShopApiController;
+use App\Http\Controllers\Api\CompositionApiController;
+use App\Http\Controllers\Api\CatalogueApiController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Categories (Architectural)
 Route::get('/categories', [CategoryApiController::class, 'index']);
 
-Route::get('/clients', [ClientApiController::class, 'index']);
-Route::get('/clients/{id}', [ClientApiController::class, 'show']);
+// Clients
+Route::controller(ClientApiController::class)->group(function () {
+    Route::get('/clients', 'index');
+    Route::get('/clients/{id}', 'show');
+});
 
-Route::get('/sliders', [HomeSliderApiController::class, 'index']);
-Route::get('/sliders/{id}', [HomeSliderApiController::class, 'show']);
+// Sliders
+Route::controller(HomeSliderApiController::class)->group(function () {
+    Route::get('/sliders', 'index');
+    Route::get('/sliders/{id}', 'show');
+});
 
-Route::get('/projects', [ProjectApiController::class, 'index']);
-Route::get('/projects/slug/{slug}', [ProjectApiController::class, 'showBySlug']);
-Route::get('/projects/{id}', [ProjectApiController::class, 'show']);
+// Projects
+Route::controller(ProjectApiController::class)->group(function () {
+    Route::get('/projects', 'index');
+    Route::get('/projects/slug/{slug}', 'showBySlug');
+    Route::get('/projects/{id}', 'show');
+});
 
-Route::get('/events', [EventApiController::class, 'index']);
-Route::get('/events/{id}', [EventApiController::class, 'show']);
+// Events
+Route::controller(EventApiController::class)->group(function () {
+    Route::get('/events', 'index');
+    Route::get('/events/{id}', 'show');
+});
 
-
-
+// General Sections
 Route::get('/manufacturing-section', [ManufacturingSectionApiController::class, 'index']);
-
 Route::get('/news-items', [NewsItemApiController::class, 'index']);
-
 Route::get('/products/new-arrivals', [NewArrivalsApiController::class, 'index']);
-
 Route::get('/light-worlds', [LightWorldApiController::class, 'index']);
 
-// Decorative Products
-Route::get('/dec-products', [DecorativeProductApiController::class, 'index']);
-Route::get('/dec-products/{slug}', [DecorativeProductApiController::class, 'show']);
+// Decorative Products & Categories
+Route::controller(DecorativeProductApiController::class)->group(function () {
+    Route::get('/dec-categories', 'categories');
+    Route::get('/dec-products', 'index');
+    Route::get('/dec-products/{slug}', 'show');
+});
 
-// Collections — used by Next.js collection pages
-Route::get('/collections', [CollectionApiController::class, 'index']);
-Route::get('/collections/{slug}', [CollectionApiController::class, 'show']);
+// Collections
+Route::controller(CollectionApiController::class)->group(function () {
+    Route::get('/collections', 'index');
+    Route::get('/collections/{slug}', 'show');
+});
 
-// Color Masters — for tones section
-Route::get('/color-masters', [ColorMasterApiController::class, 'index']);
-Route::get('/collections', [CollectionApiController::class, 'index']);
-Route::get('/collections/{slug}', [CollectionApiController::class, 'show']);
+// Color Masters
+Route::controller(ColorMasterApiController::class)->group(function () {
+    Route::get('/color-masters', 'index');
+    Route::get('/colors', 'index');
+    Route::get('/colors/by-category', 'byCategory');
+    Route::get('/colors/categories', 'categories');
+    Route::get('/colors/{code}', 'show');
+});
 
-// Color Masters — used for displaying colors across the application
-Route::get('/colors', [ColorMasterApiController::class, 'index']);
-Route::get('/colors/by-category', [ColorMasterApiController::class, 'byCategory']);
-Route::get('/colors/categories', [ColorMasterApiController::class, 'categories']);
-Route::get('/colors/{code}', [ColorMasterApiController::class, 'show']);
+// Blogs & Blog Categories
+Route::controller(BlogCategoryApiController::class)->group(function () {
+    Route::get('/blog-categories', 'index');
+    Route::get('/blog-categories/{slug}', 'show');
+});
 
-// Blog Categories API
-Route::get('/blog-categories', [\App\Http\Controllers\Api\BlogCategoryApiController::class, 'index']);
-Route::get('/blog-categories/{slug}', [\App\Http\Controllers\Api\BlogCategoryApiController::class, 'show']);
+Route::controller(BlogApiController::class)->group(function () {
+    Route::get('/blogs', 'index');
+    Route::get('/blogs/{slug}', 'show');
+});
 
-// Blogs API
-Route::get('/blogs', [\App\Http\Controllers\Api\BlogApiController::class, 'index']);
-Route::get('/blogs/{slug}', [\App\Http\Controllers\Api\BlogApiController::class, 'show']);
-
-// Watch & Shop (Reels / Videos) API
-Route::get('/watch-and-shops', [\App\Http\Controllers\Api\WatchAndShopApiController::class, 'index']);
+// Watch & Shop
+Route::get('/watch-and-shops', [WatchAndShopApiController::class, 'index']);
 
 // Compositions
-Route::get('/compositions/showcase', [\App\Http\Controllers\Api\CompositionApiController::class, 'showcase']);
+Route::get('/compositions/showcase', [CompositionApiController::class, 'showcase']);
 
-// Catalogues API
-Route::get('/catalogue-categories', [\App\Http\Controllers\Api\CatalogueApiController::class, 'categories']);
-Route::get('/catalogues', [\App\Http\Controllers\Api\CatalogueApiController::class, 'index']);
-Route::get('/catalogues/{slug}', [\App\Http\Controllers\Api\CatalogueApiController::class, 'show']);
-Route::get('/catalogues/{id}/download-pdf', [\App\Http\Controllers\Api\CatalogueApiController::class, 'downloadPdf']);
-Route::post('/catalog-downloads', [\App\Http\Controllers\Api\CatalogueApiController::class, 'storeDownloadLead']);
-
-
-
-
+// Catalogues
+Route::controller(CatalogueApiController::class)->group(function () {
+    Route::get('/catalogue-categories', 'categories');
+    Route::get('/catalogues', 'index');
+    Route::get('/catalogues/{slug}', 'show');
+    Route::get('/catalogues/{id}/download-pdf', 'downloadPdf');
+    Route::post('/catalog-downloads', 'storeDownloadLead');
+});

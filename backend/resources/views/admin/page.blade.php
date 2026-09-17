@@ -141,11 +141,14 @@
                     {{-- ══════════════════════════════════════
                          SECTION: DECORATIVE PRODUCTS (NEW)
                          ══════════════════════════════════════ --}}
-                    <li class="nav-item has-sub {{ (str_starts_with(Route::currentRouteName() ?? '', 'decorative_product_admin') || str_starts_with(Route::currentRouteName() ?? '', 'decorative_category_admin')) ? 'open' : '' }}">
+                    <li class="nav-item has-sub {{ (str_starts_with(Route::currentRouteName() ?? '', 'decorative_product_admin') || str_starts_with(Route::currentRouteName() ?? '', 'decorative_category_admin') || str_starts_with(Route::currentRouteName() ?? '', 'decorative_spec_attributes_admin')) ? 'open' : '' }}">
                         <a href="#"><i class="ft-feather"></i><span class="menu-title">Decorative</span></a>
                         <ul class="menu-content">
                             <li class="{{ (str_starts_with(Route::currentRouteName() ?? '', 'decorative_category_admin')) ? 'active' : '' }}">
                                 <a class="menu-item" href="{{ route('decorative_category_admin') }}"><i class="ft-list" style="font-size:11px;margin-right:4px;"></i> Categories</a>
+                            </li>
+                            <li class="{{ (str_starts_with(Route::currentRouteName() ?? '', 'decorative_spec_attributes_admin')) ? 'active' : '' }}">
+                                <a class="menu-item" href="{{ route('decorative_spec_attributes_admin') }}"><i class="ft-list" style="font-size:11px;margin-right:4px;"></i> Spec Attributes</a>
                             </li>
                             <li class="{{ (Route::currentRouteName() == 'decorative_product_admin') ? 'active' : '' }}">
                                 <a class="menu-item" href="{{ route('decorative_product_admin') }}"><i class="ft-package" style="font-size:11px;margin-right:4px;"></i> Products</a>

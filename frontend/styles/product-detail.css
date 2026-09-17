@@ -1467,9 +1467,210 @@
 }
 
 @media (width<=600px) {
+  .product-page .collection-band>div h2 em {
+    margin-top: -1px !important;
+    font: 400 italic 19.844px/24.804px "Libre Baskerville", serif !important;
+    letter-spacing: 0 !important
+  }
+
+  .product-page .collection-band>div>span {
+    width: 260px !important;
+    max-width: 100% !important;
+    margin-top: 25px !important;
+    font: 300 10px/1.2 Inter, sans-serif !important
+  }
+
+  .product-page .collection-band>div>a {
+    width: 158px !important;
+    height: 34px !important;
+    margin-top: 21px !important;
+    padding: 0 !important;
+    font: 400 9px/1 Poppins, sans-serif !important;
+    background: #f6c177;
+    color: #000
+  }
+
+  .product-page .collection-band>div>a:hover {
+    background: #fff;
+    color: #000
+  }
+
+  .product-page .product-specs {
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 54px 22px 44px !important
+  }
+
+  .product-page .product-specs>h2 {
+    font-size: 25.6px !important;
+    margin-bottom: 28px !important
+  }
+
+  .product-page .spec-grid>details {
+    margin-top: 24px !important
+  }
+
+  .product-page .spec-accordion button {
+    font-size: 15px !important;
+    padding: 18px 0 !important
+  }
+
+  .product-page .spec-body p,
+  .spec-body .spec-item-row {
+    grid-template-columns: 127px 1fr !important;
+    gap: 12px !important;
+    font-size: 11px !important;
+    padding: 12px 0 !important
+  }
+
+  .product-page .spec-body .figma-spec-note {
+    font-size: 9px;
+    line-height: 1.35;
+    margin-top: 6px
+  }
+
+  .product-page:has(.symphony-stage) .spec-grid>.spec-accordion:first-child .spec-body p,
+  .spec-body .spec-item-row:nth-child(n+7):nth-child(-n+11) {
+    grid-template-columns: 127px 1fr !important;
+    padding-left: 20px !important;
+    padding-right: 8px !important
+  }
+
+  .product-page .spec-grid>details summary {
+    padding: 18px 0 !important;
+    font-size: 15px !important
+  }
+
+  .product-page .download-row {
+    display: grid !important;
+    grid-template-columns: 134px 134px !important;
+    gap: 8px !important;
+    padding-bottom: 24px !important
+  }
+
+  .product-page .download-row button {
+    width: 134px !important;
+    height: 31px !important;
+    padding: 0 7px !important;
+    font-size: 9px !important
+  }
+
+  .product-page .related-section {
+    padding: 12px 22px 70px !important
+  }
+
+  .product-page .related-section>h2 {
+    font-size: 25.6px !important;
+    margin: 0 0 24px !important
+  }
+
+  .product-page .related-track {
+    gap: 10px !important
+  }
+
+  .product-page .related-track>a {
+    flex-basis: calc((100vw - 54px)/2) !important;
+    min-width: calc((100vw - 54px)/2) !important
+  }
+}
+
+/* Zoom Icon and SVG Arrows */
+.product-page .product-stage {
+  position: relative;
+}
+
+.product-page .zoom-icon {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.2s;
+  pointer-events: none;
+}
+
+.product-page .product-stage:hover .zoom-icon {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.product-page .gallery-arrow {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  border: none !important;
+  color: #000;
+  z-index: 20;
+}
+
+.product-page .gallery-arrow svg {
+  width: 32px;
+  height: 32px;
+}
+
+.product-page .swatches button i:after,
+.product-page .combination-swatches button i:after {
+  display: none !important;
+}
+
+
+/* Base spec row styles */
+.spec-body .spec-item-row {
+  border-top: 1px solid #eee;
+  grid-template-columns: 34% 1fr;
+  margin: 0;
+  padding: 13px 0;
+  font: 300 15px Inter, sans-serif;
+  display: grid;
+}
+
+.spec-body .spec-item-row b {
+  color: #737373;
+  font-weight: 300;
+}
+
+.spec-body .spec-item-row span {
+  color: #000;
+}
+
+.spec-body .spec-item {
+  border-top: 1px solid #eee;
+  grid-template-columns: 34% 1fr;
+  margin: 0;
+  padding: 13px 0;
+  font: 300 15px Inter;
+  display: grid
+}
+
+.spec-body .spec-item b {
+  color: #737373;
+  font-weight: 300
+}
+
+.spec-body .spec-item .spec-value {
+  color: #000
+}
+
+@media (width<=600px) {
   .spec-body .spec-item {
     grid-template-columns: 42% 1fr;
     gap: 12px;
     font-size: 12px
   }
 }
+
+.related-image-wrapper { position: relative; width: 100%; aspect-ratio: 1; background: #f2f2f2; }
+.gallery-thumb-wrapper { position: relative; }
+.gallery-thumb-image { object-fit: cover; }
+.gallery-stage-wrapper { position: relative; }
+.gallery-stage-image { object-fit: cover; }
+.collection-band-image { object-fit: cover; }

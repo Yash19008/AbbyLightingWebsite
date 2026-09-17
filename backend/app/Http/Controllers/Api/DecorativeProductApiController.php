@@ -21,6 +21,21 @@ class DecorativeProductApiController extends Controller
         return response()->json($products);
     }
 
+    /**
+     * Get featured categories for frontend tabs
+     */
+    public function categories()
+    {
+        $categories = \App\Models\Decorative\DecCategory::where('is_featured', true)
+            ->orderBy('name', 'asc')
+            ->get();
+            
+        return response()->json([
+            'success' => true,
+            'data' => $categories
+        ]);
+    }
+
     private function getImagePath($filename, $directory) {
         if (!$filename) return null;
         if (str_starts_with($filename, 'http')) return $filename;
@@ -43,6 +58,7 @@ class DecorativeProductApiController extends Controller
             'variants.specRows' => function ($query) {
                 $query->orderBy('order');
             },
+            'variants.specRows.attribute',
             'galleries' => function ($query) {
                 $query->orderBy('order');
             },
@@ -58,7 +74,7 @@ class DecorativeProductApiController extends Controller
             
             foreach ($variant->specRows as $row) {
                 $specData = [
-                    'label' => $row->label,
+                    'label' => $row->attribute ? $row->attribute->name : '',
                     'value' => $row->value,
                     'note' => $row->note
                 ];

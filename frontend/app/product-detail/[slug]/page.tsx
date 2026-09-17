@@ -11,7 +11,7 @@ const API_URL = baseUrl.endsWith("/api") ? baseUrl : `${baseUrl}/api`;
 async function fetchProductBySlug(slug: string): Promise<DecProductDetail | null> {
   try {
     const res = await fetch(`${API_URL}/dec-products/${slug}`, {
-      cache: 'no-store', // Disable caching completely for now to avoid 404 locking
+      next: { revalidate: 3600 }, // Cache for 1 hour
     });
     
     if (!res.ok) {
@@ -23,6 +23,22 @@ async function fetchProductBySlug(slug: string): Promise<DecProductDetail | null
   } catch (error) {
     console.error("Error fetching product:", error);
     return null;
+  }
+}
+
+export async function generateStaticParams() {
+  try {
+    const res = await fetch(`${API_URL}/dec-products`);
+    if (!res.ok) return [];
+    
+    const json = await res.json();
+    const products: DecProductDetail[] = json.data || [];
+    return products.map((product) => ({
+      slug: product.slug,
+    }));
+  } catch (error) {
+    console.error("Error in generateStaticParams:", error);
+    return [];
   }
 }
 

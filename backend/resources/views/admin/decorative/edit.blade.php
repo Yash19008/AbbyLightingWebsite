@@ -263,8 +263,13 @@
                 <input type="hidden" id="spec-edit-id">
 
                 <div class="form-group mb-3">
-                    <label class="font-weight-bold" style="font-size:13px;">Label <span class="text-danger">*</span></label>
-                    <input type="text" id="spec-edit-label" class="form-control" placeholder="e.g. Primary Material, Height, Color Temperature...">
+                    <label class="font-weight-bold" style="font-size:13px;">Attribute <span class="text-danger">*</span></label>
+                    <select id="spec-edit-label" class="form-control select2" style="width: 100%;">
+                        <option value="">-- Select Attribute --</option>
+                        @foreach($spec_attributes as $attr)
+                            <option value="{{ $attr->id }}">{{ $attr->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="form-group mb-3">
@@ -922,10 +927,14 @@ $(document).ready(function() {
         if (!currentSpecVariantId) { toastr.error('Select a variant first'); return; }
         var $btn = $(this);
         $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i>');
+        
+        // Grab first attribute as default
+        var defaultAttrId = $('#spec-edit-label option:nth-child(2)').val() || 1;
+
         $.ajax({
             url: '{{ url('admin/decorative-products/variants') }}/' + currentSpecVariantId + '/specs',
             method: 'POST',
-            data: { _token: '{{ csrf_token() }}', section: section, label: 'New Specification' },
+            data: { _token: '{{ csrf_token() }}', section: section, dec_spec_attribute_id: defaultAttrId },
             success: function(res) {
                 $btn.attr('disabled', false).html('<i class="ft-plus"></i> Add Row');
                 if (res.success) {
@@ -944,7 +953,18 @@ $(document).ready(function() {
     // Open edit modal for a spec row
     function openSpecEdit(row) {
         $('#spec-edit-id').val(row.id);
-        $('#spec-edit-label').val(row.label || '');
+        
+        // Find the option in the select dropdown that matches the row's label text, or set by id if we had it
+        // We can just find the option by text since we have the label
+        var matchingOption = $('#spec-edit-label option').filter(function() { return $(this).text() === row.label; });
+        if (matchingOption.length) {
+            $('#spec-edit-label').val(matchingOption.val()).trigger('change');
+        } else if (row.dec_spec_attribute_id) {
+            $('#spec-edit-label').val(row.dec_spec_attribute_id).trigger('change');
+        } else {
+            $('#spec-edit-label').val($('#spec-edit-label option:nth-child(2)').val()).trigger('change');
+        }
+
         $('#spec-edit-value-type').val(row.value_type || 'text');
 
         // Set active type option button
@@ -1023,7 +1043,9 @@ $(document).ready(function() {
     $('#btn-spec-modal-save').on('click', function() {
         var id     = $('#spec-edit-id').val();
         var type   = $('#spec-edit-value-type').val();
-        var label  = $('#spec-edit-label').val();
+        var attrId = $('#spec-edit-label').val();
+        var label  = $('#spec-edit-label option:selected').text();
+        
         var value  = type === 'richtext'
             ? (tinymce.get('spec-edit-value-rich') ? tinymce.get('spec-edit-value-rich').getContent() : '')
             : $('#spec-edit-value-plain').val();
@@ -1034,7 +1056,7 @@ $(document).ready(function() {
         $.ajax({
             url: '{{ url('admin/decorative-products/specs') }}/' + id,
             method: 'PUT',
-            data: { _token: '{{ csrf_token() }}', label: label, value: value, value_type: type },
+            data: { _token: '{{ csrf_token() }}', dec_spec_attribute_id: attrId, value: value, value_type: type },
             success: function(res) {
                 $btn.attr('disabled', false).html('<i class="ft-save"></i> Save');
                 if (res.success) {
@@ -1088,6 +1110,7 @@ $(document).ready(function() {
 
     // Delete spec row
     $(document).on('click', '.btn-delete-spec', function() {
+        if (!confirm('Are you sure you want to delete this specification?')) return;
         var id    = $(this).data('id');
         var tr    = $(this).closest('tr');
         var tbody = tr.closest('tbody');
@@ -1104,7 +1127,13 @@ $(document).ready(function() {
                             $(noMsgId).show();
                         }
                     });
+                    if (res.message) toastr.success(res.message);
+                } else {
+                    if (res.message) toastr.error(res.message);
                 }
+            },
+            error: function() {
+                toastr.error('Error deleting specification.');
             }
         });
     });
@@ -1581,7 +1610,17 @@ $(document).ready(function() {
             });
         }
     });
-@endif
+    @endif
+
+    // Initialize Select2 for Specification Attribute Dropdown
+    if ($('#spec-edit-label').length) {
+        $('#spec-edit-label').select2({
+            dropdownParent: $('#spec-edit-modal'),
+            placeholder: "-- Select Attribute --",
+            allowClear: true,
+            width: '100%'
+        });
+    }
 
 }); // end document.ready
 

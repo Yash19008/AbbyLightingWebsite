@@ -1,0 +1,2 @@
+.s-carousel{position:relative}.s-carousel-arrow{z-index:5;color:#111;cursor:pointer;background:transparent;border:0;place-items:center;width:38px;height:54px;padding:0;font:300 32px/1 Inter,sans-serif;display:grid;position:absolute;top:50%;transform:translateY(-50%)}.s-carousel-prev{left:-48px}.s-carousel-next{right:18px}.s-carousel-arrow:active{transform:translateY(-50%) scale(.98)}
+@media(max-width:700px){.s-carousel-arrow{width:28px;height:42px;font-size:24px}.s-carousel-prev{left:-12px}.s-carousel-next{right:4px}}

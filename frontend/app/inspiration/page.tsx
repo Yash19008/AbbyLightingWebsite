@@ -17,7 +17,7 @@ export default async function InspirationPage() {
   return (
     <div className="inspiration-page">
       <InspirationHero />
-      <LooksInPlaceSection compositions={compositions} />
+      <LooksInPlaceSection compositions={compositions as any} />
       <WatchAndShopSection />
       <JournalSection />
     </div>

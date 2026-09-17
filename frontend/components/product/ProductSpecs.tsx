@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import DOMPurify from 'isomorphic-dompurify';
 import { DecSpecItem } from "@/types/decorative";
 
 interface ProductSpecsProps {
@@ -35,10 +36,10 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
                 <td className="spec-value">
                   {item.label === "Size" ? (
                     <div className="spec-size-value">
-                      <i className="spec-code">OS</i> <span dangerouslySetInnerHTML={{ __html: item.value }} />
+                      <i className="spec-code">OS</i> <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.value) }} />
                     </div>
                   ) : (
-                    <div dangerouslySetInnerHTML={{ __html: item.value }} />
+                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.value) }} />
                   )}
                   {item.note && (
                     <small className="figma-spec-note">
@@ -90,7 +91,7 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
                   const spec = v.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
                   return (
                     <td key={v.id} className="spec-value">
-                      {spec ? <div dangerouslySetInnerHTML={{ __html: spec.value }} /> : "-"}
+                      {spec ? <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(spec.value) }} /> : "-"}
                     </td>
                   );
                 })}

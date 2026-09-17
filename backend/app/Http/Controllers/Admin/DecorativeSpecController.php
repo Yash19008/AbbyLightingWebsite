@@ -12,10 +12,15 @@ class DecorativeSpecController extends Controller
 {
     public function getRows($variantId)
     {
-        $rows = DecProductSpecRow::where('variant_id', $variantId)
+        $rows = DecProductSpecRow::with('attribute')
+            ->where('variant_id', $variantId)
             ->orderBy('section')
             ->orderBy('order', 'asc')
             ->get()
+            ->map(function($row) {
+                $row->label = $row->attribute ? $row->attribute->name : '';
+                return $row;
+            })
             ->groupBy('section');
 
         return response()->json(['success' => true, 'rows' => $rows]);
@@ -25,7 +30,7 @@ class DecorativeSpecController extends Controller
     {
         $request->validate([
             'section' => 'required|in:basic_specifications,dimensions',
-            'label' => 'required|string|max:255',
+            'dec_spec_attribute_id' => 'required|exists:dec_spec_attributes,id',
             'value_type' => 'nullable|in:text,richtext'
         ]);
 
@@ -42,11 +47,14 @@ class DecorativeSpecController extends Controller
         $row = DecProductSpecRow::create([
             'variant_id' => $variantId,
             'section'    => $request->section,
-            'label'      => $request->label,
+            'dec_spec_attribute_id' => $request->dec_spec_attribute_id,
             'value'      => $value,
             'value_type' => $request->value_type ?? 'text',
             'order'      => $maxOrder + 1,
         ]);
+
+        $row->load('attribute');
+        $row->label = $row->attribute ? $row->attribute->name : '';
 
         return response()->json(['success' => true, 'row' => $row]);
     }
@@ -56,7 +64,7 @@ class DecorativeSpecController extends Controller
         $row = DecProductSpecRow::findOrFail($id);
 
         $request->validate([
-            'label'      => 'required|string|max:255',
+            'dec_spec_attribute_id' => 'required|exists:dec_spec_attributes,id',
             'value_type' => 'nullable|in:text,richtext'
         ]);
 
@@ -67,10 +75,13 @@ class DecorativeSpecController extends Controller
             : $request->value;
 
         $row->update([
-            'label'      => $request->label,
+            'dec_spec_attribute_id' => $request->dec_spec_attribute_id,
             'value'      => $value,
             'value_type' => $request->value_type ?? 'text',
         ]);
+
+        $row->load('attribute');
+        $row->label = $row->attribute ? $row->attribute->name : '';
 
         return response()->json(['success' => true, 'row' => $row]);
     }
@@ -128,7 +139,7 @@ class DecorativeSpecController extends Controller
             DecProductSpecRow::create([
                 'variant_id' => $variantId,
                 'section'    => $row->section,
-                'label'      => $row->label,
+                'dec_spec_attribute_id' => $row->dec_spec_attribute_id,
                 'value'      => $value,
                 'value_type' => $row->value_type,
                 'order'      => $row->order,
@@ -155,10 +166,10 @@ class DecorativeSpecController extends Controller
 
         $structure = [
             'basic_specifications' => $rows->where('section', 'basic_specifications')->map(function($r) {
-                return ['label' => $r->label, 'value' => $r->value, 'value_type' => $r->value_type];
+                return ['dec_spec_attribute_id' => $r->dec_spec_attribute_id, 'value' => $r->value, 'value_type' => $r->value_type];
             })->values()->toArray(),
             'dimensions' => $rows->where('section', 'dimensions')->map(function($r) {
-                return ['label' => $r->label, 'value' => $r->value, 'value_type' => $r->value_type];
+                return ['dec_spec_attribute_id' => $r->dec_spec_attribute_id, 'value' => $r->value, 'value_type' => $r->value_type];
             })->values()->toArray(),
         ];
 
@@ -185,14 +196,22 @@ class DecorativeSpecController extends Controller
         foreach (['basic_specifications', 'dimensions'] as $section) {
             if (isset($structure[$section]) && is_array($structure[$section])) {
                 foreach ($structure[$section] as $index => $row) {
-                    DecProductSpecRow::create([
-                        'variant_id' => $variantId,
-                        'section' => $section,
-                        'label' => $row['label'],
-                        'value' => $row['value'],
-                        'value_type' => $row['value_type'] ?? 'text',
-                        'order' => $index + 1,
-                    ]);
+                    $attrId = $row['dec_spec_attribute_id'] ?? null;
+                    if (!$attrId && isset($row['label'])) {
+                        $attr = \App\Models\Decorative\DecSpecAttribute::firstOrCreate(['name' => $row['label']]);
+                        $attrId = $attr->id;
+                    }
+
+                    if ($attrId) {
+                        DecProductSpecRow::create([
+                            'variant_id' => $variantId,
+                            'section' => $section,
+                            'dec_spec_attribute_id' => $attrId,
+                            'value' => $row['value'],
+                            'value_type' => $row['value_type'] ?? 'text',
+                            'order' => $index + 1,
+                        ]);
+                    }
                 }
             }
         }

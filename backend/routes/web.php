@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\VariantAdminController;
 use App\Http\Controllers\Admin\ProfileAdminController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\EventAdminController;
+use App\Http\Controllers\Admin\IconAdminController;
 use App\Http\Controllers\Admin\DecorativeProductController;
 use App\Http\Controllers\Admin\DecorativeCategoryController;
 use App\Http\Controllers\Admin\DecorativeVariantController;
@@ -57,34 +58,45 @@ use App\Http\Controllers\DataCollectionController;
 |
 */
 
-Route::get('/', [WebsiteHomeController::class, 'index'])->name('pages.home');
+Route::controller(WebsiteHomeController::class)->group(function () {
+    Route::get('/', 'index')->name('pages.home');
+    Route::get('subscribe-newsletter', 'subscribe')->name('subscribe');
+    Route::get('verify_email/{any}', 'verify_email')->name('verify_email');
+    Route::post('/catalog-download-user-form', 'catalogDownloadUserForm')->name('catalog-download-user-form');
+});
 
 // DEBUG: Test CSS URL generation
 Route::get('/test-css-urls', function() {
     return view('test-css');
 });
 
-Route::get('fair-events', [EventController::class, 'index'])->name('page.fair-events');
-Route::get('event-detail/{any}', [EventController::class, 'show'])->name('event.detail');
+Route::controller(EventController::class)->group(function () {
+    Route::get('fair-events', 'index')->name('page.fair-events');
+    Route::get('event-detail/{any}', 'show')->name('event.detail');
+});
 
 
-Route::get('projects', [ProjectController::class, 'index'])->name('page.projects');
-Route::get('projects/{any}', [ProjectController::class, 'show'])->name('project-detail');
-Route::get('projects/category/{any}', [ProjectController::class, 'projectsByFilter'])->name('projects-with-filter');
+Route::controller(ProjectController::class)->prefix('projects')->group(function () {
+    Route::get('/', 'index')->name('page.projects');
+    Route::get('category/{any}', 'projectsByFilter')->name('projects-with-filter');
+    Route::get('{any}', 'show')->name('project-detail'); // Placed last to avoid intercepting `category/{any}`
+});
 
-Route::get('products', [ProductController::class, 'subTags'])->name('sub-tags');
-Route::get('products/{any}', [ProductController::class, 'products'])->name('products');
-Route::get('product/{any}', [ProductController::class, 'product'])->name('product');
-Route::get('product/{any}/pdf', [ProductController::class, 'pdf'])->name('product.pdf');
-Route::get('product/{any}/download-pdf', [ProductController::class, 'downloadPdf'])->name('product.download-pdf');
-Route::get('products/category/{any}', [ProductController::class, 'subTagsByFilter'])->name('sub-tags-with-filter');
+Route::controller(ProductController::class)->group(function () {
+    Route::get('products', 'subTags')->name('sub-tags');
+    Route::get('products/category/{any}', 'subTagsByFilter')->name('sub-tags-with-filter');
+    Route::get('products/{any}', 'products')->name('products');
+    
+    Route::get('product/{any}', 'product')->name('product');
+    Route::get('product/{any}/pdf', 'pdf')->name('product.pdf');
+    Route::get('product/{any}/download-pdf', 'downloadPdf')->name('product.download-pdf');
+    
+    Route::get('search', 'search')->name('search');
+    Route::get('category/{any}', 'search')->name('category');
+});
 
-Route::get('search', [ProductController::class, 'search'])->name('search');
-Route::get('category/{any}', [ProductController::class, 'search'])->name('category');
 
-
-Route::get('subscribe-newsletter', [WebsiteHomeController::class, 'subscribe'])->name('subscribe');
-Route::get('verify_email/{any}', [WebsiteHomeController::class, 'verify_email'])->name('verify_email');
+// WebsiteHomeController routes moved to top block
 
 Route::get('career', function () {
     $openings = JobOpening::all();
@@ -95,8 +107,10 @@ Route::get('contact', function () {
     return view('pages.contact');
 })->name('page.contact');
 
-Route::post('contact', [DataCollectionController::class, 'contact'])->name('mail.contact.send');
-Route::post('product-inquiry', [DataCollectionController::class, 'productInquiry'])->name('mail.product.send');
+Route::controller(DataCollectionController::class)->group(function () {
+    Route::post('contact', 'contact')->name('mail.contact.send');
+    Route::post('product-inquiry', 'productInquiry')->name('mail.product.send');
+});
 
 Route::get('company', function () {
     return view('pages.company');
@@ -123,7 +137,7 @@ Route::get('privacy-policy', function () {
     return view('pages.privacy-policy');
 })->name('page.privacy-policy');
 
-Route::post('/catalog-download-user-form', [WebsiteHomeController::class, 'catalogDownloadUserForm'])->name('catalog-download-user-form');
+// catalog-download-user-form moved to WebsiteHomeController block
 
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/', [LoginAdminController::class, 'showLoginForm'])->name('login_admin_main');
@@ -205,298 +219,363 @@ Route::group(['prefix' => 'admin'], function () {
             Route::delete('/{id}', [DecorativeCategoryController::class, 'destroy'])->name('decorative_category_admin.destroy');
         });
 
+        Route::group(['prefix' => 'decorative-spec-attributes'], function () {
+            Route::get('/', [\App\Http\Controllers\Admin\DecorativeSpecAttributeController::class, 'index'])->name('decorative_spec_attributes_admin');
+            Route::get('/create', [\App\Http\Controllers\Admin\DecorativeSpecAttributeController::class, 'create'])->name('decorative_spec_attributes_admin.add');
+            Route::post('/', [\App\Http\Controllers\Admin\DecorativeSpecAttributeController::class, 'store'])->name('decorative_spec_attributes_admin.store');
+            Route::get('/{id}/edit', [\App\Http\Controllers\Admin\DecorativeSpecAttributeController::class, 'edit'])->name('decorative_spec_attributes_admin.edit');
+            Route::post('/{id}', [\App\Http\Controllers\Admin\DecorativeSpecAttributeController::class, 'update'])->name('decorative_spec_attributes_admin.update');
+            Route::delete('/{id}', [\App\Http\Controllers\Admin\DecorativeSpecAttributeController::class, 'destroy'])->name('decorative_spec_attributes_admin.delete');
+        });
+
         /********************CONTACT FORMS********************/
-        Route::get('/contact-forms', [ContactFormAdminController::class, 'index'])->name('contact_form_admin');
-        Route::post('/contact-forms/upload-banner',[ContactFormAdminController::class,'uploadBanner'])->name('contact_form_admin.upload');
-        Route::get('/contact-forms/list', [ContactFormAdminController::class, 'list'])->name('contact_form_admin.list');
-        Route::get('/subscriptions', [ContactFormAdminController::class, 'subscriptions'])->name('subscriptions_admin');
-        Route::get('/subscriptions/list', [ContactFormAdminController::class, 'subscriptions_list'])->name('subscriptions_admin.list');
+        Route::controller(ContactFormAdminController::class)->group(function () {
+            Route::get('/contact-forms', 'index')->name('contact_form_admin');
+            Route::post('/contact-forms/upload-banner', 'uploadBanner')->name('contact_form_admin.upload');
+            Route::get('/contact-forms/list', 'list')->name('contact_form_admin.list');
+            Route::get('/subscriptions', 'subscriptions')->name('subscriptions_admin');
+            Route::get('/subscriptions/list', 'subscriptions_list')->name('subscriptions_admin.list');
+        });
 
         /********************CATEGORIES********************/
-        Route::get('/categories', [CategoryAdminController::class, 'index'])->name('category_admin');
-        Route::get('/categories/list', [CategoryAdminController::class, 'list'])->name('category_admin.list');
-        Route::get('/categories/add', [CategoryAdminController::class, 'add'])->name('category_admin.add');
-        Route::get('/categories/edit/{any}', [CategoryAdminController::class, 'edit'])->name('category_admin.edit');
-        Route::post('/categories/insert', [CategoryAdminController::class, 'insert'])->name('category_admin.insert');
-        Route::post('/categories/update/{any}', [CategoryAdminController::class, 'update'])->name('category_admin.update');
-        Route::get('/categories/information/{any}', [CategoryAdminController::class, 'information'])->name('category_admin.information');
+        Route::controller(CategoryAdminController::class)->prefix('categories')->group(function () {
+            Route::get('/', 'index')->name('category_admin');
+            Route::get('/list', 'list')->name('category_admin.list');
+            Route::get('/add', 'add')->name('category_admin.add');
+            Route::get('/edit/{any}', 'edit')->name('category_admin.edit');
+            Route::post('/insert', 'insert')->name('category_admin.insert');
+            Route::post('/update/{any}', 'update')->name('category_admin.update');
+            Route::get('/information/{any}', 'information')->name('category_admin.information');
+        });
 
         /********************FAMILIES********************/
-        Route::get('/families', [FamilyAdminController::class, 'index'])->name('family_admin');
-        Route::get('/families/add', [FamilyAdminController::class, 'add'])->name('family_admin.add');
-        Route::get('/families/add_product', [FamilyAdminController::class, 'add_product'])->name('add_product.add');
-        Route::get('/families/edit/{any}', [FamilyAdminController::class, 'edit'])->name('family_admin.edit');
+        Route::controller(FamilyAdminController::class)->prefix('families')->group(function () {
+            Route::get('/', 'index')->name('family_admin');
+            Route::get('/add', 'add')->name('family_admin.add');
+            Route::get('/add_product', 'add_product')->name('add_product.add');
+            Route::get('/edit/{any}', 'edit')->name('family_admin.edit');
+        });
 
         /********************TAGS********************/
-        Route::get('/tags', [TagAdminController::class, 'index'])->name('tag_admin');
-        Route::get('/tags/add', [TagAdminController::class, 'add'])->name('tag_admin.add');
-        Route::post('/tags/insert', [TagAdminController::class, 'insert'])->name('tag_admin.insert');
-        Route::get('/tags/edit/{any}', [TagAdminController::class, 'edit'])->name('tag_admin.edit');
-        Route::post('/tags/update/{any}', [TagAdminController::class, 'update'])->name('tag_admin.update');
+        Route::controller(TagAdminController::class)->prefix('tags')->group(function () {
+            Route::get('/', 'index')->name('tag_admin');
+            Route::get('/add', 'add')->name('tag_admin.add');
+            Route::post('/insert', 'insert')->name('tag_admin.insert');
+            Route::get('/edit/{any}', 'edit')->name('tag_admin.edit');
+            Route::post('/update/{any}', 'update')->name('tag_admin.update');
+        });
 
         /********************SUB TAGS********************/
-        Route::get('/sub_tags', [SubTagAdminController::class, 'index'])->name('sub_tag_admin');
-        Route::get('/sub_tags/add', [SubTagAdminController::class, 'add'])->name('sub_tag_admin.add');
-        Route::post('/sub_tags/insert', [SubTagAdminController::class, 'insert'])->name('sub_tag_admin.insert');
-        Route::get('/sub_tags/edit/{any}', [SubTagAdminController::class, 'edit'])->name('sub_tag_admin.edit');
-        Route::post('/sub_tags/update/{any}', [SubTagAdminController::class, 'update'])->name('sub_tag_admin.update');
-        Route::post('/sub_tags/upload-banner', [SubTagAdminController::class, 'uploadBanner'])->name('sub_tag_admin.upload');
-        Route::get('sub_tags_exports', [SubTagAdminController::class, 'exports']);
+        Route::controller(SubTagAdminController::class)->prefix('sub_tags')->group(function () {
+            Route::get('/', 'index')->name('sub_tag_admin');
+            Route::get('/add', 'add')->name('sub_tag_admin.add');
+            Route::post('/insert', 'insert')->name('sub_tag_admin.insert');
+            Route::get('/edit/{any}', 'edit')->name('sub_tag_admin.edit');
+            Route::post('/update/{any}', 'update')->name('sub_tag_admin.update');
+            Route::post('/upload-banner', 'uploadBanner')->name('sub_tag_admin.upload');
+            Route::get('/exports', 'exports'); // Assuming exports can use prefix
+        });
 
         /********************PRODUCTS********************/
-        Route::get('/product', [ProductAdminController::class, 'index'])->name('product_admin');
-        Route::get('/product/list', [ProductAdminController::class, 'list'])->name('product_admin.list');
-        Route::get('/product/add', [ProductAdminController::class, 'add'])->name('product_admin.add');
-        Route::post('/product/insert', [ProductAdminController::class, 'insert'])->name('product_admin.insert');
-        Route::get('/product/edit/{any}', [ProductAdminController::class, 'edit'])->name('product_admin.edit');
-        Route::post('/product/update/{any}', [ProductAdminController::class, 'update'])->name('product_admin.update');
-        Route::get('/product/information/{any}', [ProductAdminController::class, 'information'])->name('product_admin.information');
-        Route::post('/product-variant/insert', [ProductAdminController::class, 'product_variant_insert'])->name('product_admin.variant_insert');
-        Route::post('/delete-variant', [ProductAdminController::class, 'delete_variant'])->name('delete_variant');
-        Route::post('/edit-variant/{any}', [ProductAdminController::class, 'edit_variant'])->name('edit_variant');
-        Route::post('/update-variant/{any}', [ProductAdminController::class, 'update_variant'])->name('update_variant');
-        Route::get('products_exports', [ProductAdminController::class, 'exports']);
-        Route::post('/product/duplicate/{id}', [ProductAdminController::class, 'duplicate'])->name('product_admin.duplicate');
+        Route::controller(ProductAdminController::class)->group(function () {
+            Route::get('/product', 'index')->name('product_admin');
+            Route::get('/product/list', 'list')->name('product_admin.list');
+            Route::get('/product/add', 'add')->name('product_admin.add');
+            Route::post('/product/insert', 'insert')->name('product_admin.insert');
+            Route::get('/product/edit/{any}', 'edit')->name('product_admin.edit');
+            Route::post('/product/update/{any}', 'update')->name('product_admin.update');
+            Route::get('/product/information/{any}', 'information')->name('product_admin.information');
+            Route::post('/product-variant/insert', 'product_variant_insert')->name('product_admin.variant_insert');
+            Route::post('/delete-variant', 'delete_variant')->name('delete_variant');
+            Route::post('/edit-variant/{any}', 'edit_variant')->name('edit_variant');
+            Route::post('/update-variant/{any}', 'update_variant')->name('update_variant');
+            Route::get('/products_exports', 'exports');
+            Route::post('/product/duplicate/{id}', 'duplicate')->name('product_admin.duplicate');
+        });
 
 
         /********************CATALOG DOWNLOADS********************/
-        Route::get('/catalog', [CatalogDownloadAdminController::class, 'index'])->name('catalog_admin');
-        Route::get('/catalog/list', [CatalogDownloadAdminController::class, 'list'])->name('catalog_admin.list');
-        Route::delete('/catalog/delete/{id}', [CatalogDownloadAdminController::class, 'destroy'])->name('catalog_admin.destroy');
-        Route::post('/upload-catalog', [CatalogDownloadAdminController::class, 'uploadCatalog'])->name('catalog_admin.upload');
+        Route::controller(CatalogDownloadAdminController::class)->prefix('catalog')->group(function () {
+            Route::get('/', 'index')->name('catalog_admin');
+            Route::get('/list', 'list')->name('catalog_admin.list');
+            Route::delete('/delete/{id}', 'destroy')->name('catalog_admin.destroy');
+            Route::post('/upload-catalog', 'uploadCatalog')->name('catalog_admin.upload'); // Note: previously /upload-catalog, keeping as /catalog/upload-catalog would change URL, wait. Original was Route::post('/upload-catalog', ...) which is not prefixed by /catalog. Let me not use prefix here to be safe.
+        });
 
         /********************COMPOSITIONS********************/
-        Route::get('/compositions', [CompositionAdminController::class, 'index'])->name('composition_admin');
-        Route::get('/compositions/list', [CompositionAdminController::class, 'list'])->name('composition_admin.list');
-        Route::get('/compositions/add', [CompositionAdminController::class, 'add'])->name('composition_admin.add');
-        Route::post('/compositions/insert', [CompositionAdminController::class, 'insert'])->name('composition_admin.insert');
-        Route::get('/compositions/edit/{any}', [CompositionAdminController::class, 'edit'])->name('composition_admin.edit');
-        Route::post('/compositions/update/{any}', [CompositionAdminController::class, 'update'])->name('composition_admin.update');
+        Route::controller(CompositionAdminController::class)->prefix('compositions')->group(function () {
+            Route::get('/', 'index')->name('composition_admin');
+            Route::get('/list', 'list')->name('composition_admin.list');
+            Route::get('/add', 'add')->name('composition_admin.add');
+            Route::post('/insert', 'insert')->name('composition_admin.insert');
+            Route::get('/edit/{any}', 'edit')->name('composition_admin.edit');
+            Route::post('/update/{any}', 'update')->name('composition_admin.update');
+        });
 
         /********************PROJECT********************/
-        Route::get('/project', [ProjectAdminController::class, 'index'])->name('project_admin');
-        Route::get('/project/list', [ProjectAdminController::class, 'list'])->name('project_admin.list');
-        Route::get('/project/add', [ProjectAdminController::class, 'add'])->name('project_admin.add');
-        Route::post('/project/insert', [ProjectAdminController::class, 'insert'])->name('project_admin.insert');
-        Route::get('/project/edit/{any}', [ProjectAdminController::class, 'edit'])->name('project_admin.edit');
-        Route::post('/project/update/{any}', [ProjectAdminController::class, 'update'])->name('project_admin.update');
-        Route::get('/project/information/{any}', [ProjectAdminController::class, 'information'])->name('project_admin.information');
-        Route::get('/project-images/{any}', [ProjectAdminController::class, 'project_images'])->name('project_images');
-        Route::get('projects_exports', [ProjectAdminController::class, 'exports']);
+        Route::controller(ProjectAdminController::class)->group(function () {
+            Route::get('/project', 'index')->name('project_admin');
+            Route::get('/project/list', 'list')->name('project_admin.list');
+            Route::get('/project/add', 'add')->name('project_admin.add');
+            Route::post('/project/insert', 'insert')->name('project_admin.insert');
+            Route::get('/project/edit/{any}', 'edit')->name('project_admin.edit');
+            Route::post('/project/update/{any}', 'update')->name('project_admin.update');
+            Route::get('/project/information/{any}', 'information')->name('project_admin.information');
+            Route::get('/project-images/{any}', 'project_images')->name('project_images');
+            Route::get('/projects_exports', 'exports');
+        });
 
         /********************UPLOAD CSV********************/
         Route::get('/upload-csv', [UploadCSVAdminController::class, 'index'])->name('upload_csv_admin');
 
         /********************ATTRIBUTE MASTER********************/
-        Route::get('/attributes', [AttributeAdminController::class, 'index'])->name('attribute_admin');
-        Route::get('/attributes/list', [AttributeAdminController::class, 'list'])->name('attribute_admin.list');
-        Route::get('/attributes/add', [AttributeAdminController::class, 'add'])->name('attribute_admin.add');
-        Route::post('/attributes/insert', [AttributeAdminController::class, 'insert'])->name('attribute_admin.insert');
-        Route::get('/attributes/edit/{any}', [AttributeAdminController::class, 'edit'])->name('attribute_admin.edit');
-        Route::post('/attributes/update/{any}', [AttributeAdminController::class, 'update'])->name('attribute_admin.update');
+        Route::controller(AttributeAdminController::class)->prefix('attributes')->group(function () {
+            Route::get('/', 'index')->name('attribute_admin');
+            Route::get('/list', 'list')->name('attribute_admin.list');
+            Route::get('/add', 'add')->name('attribute_admin.add');
+            Route::post('/insert', 'insert')->name('attribute_admin.insert');
+            Route::get('/edit/{any}', 'edit')->name('attribute_admin.edit');
+            Route::post('/update/{any}', 'update')->name('attribute_admin.update');
+        });
 
         /********************GROUP MASTER********************/
-        Route::get('/groups', [GroupAdminController::class, 'index'])->name('group_admin');
-        Route::get('/groups/list', [GroupAdminController::class, 'list'])->name('group_admin.list');
-        Route::get('/groups/add', [GroupAdminController::class, 'add'])->name('group_admin.add');
-        Route::post('/groups/insert', [GroupAdminController::class, 'insert'])->name('group_admin.insert');
-        Route::get('/groups/edit/{any}', [GroupAdminController::class, 'edit'])->name('group_admin.edit');
-        Route::post('/groups/update/{any}', [GroupAdminController::class, 'update'])->name('group_admin.update');
+        Route::controller(GroupAdminController::class)->prefix('groups')->group(function () {
+            Route::get('/', 'index')->name('group_admin');
+            Route::get('/list', 'list')->name('group_admin.list');
+            Route::get('/add', 'add')->name('group_admin.add');
+            Route::post('/insert', 'insert')->name('group_admin.insert');
+            Route::get('/edit/{any}', 'edit')->name('group_admin.edit');
+            Route::post('/update/{any}', 'update')->name('group_admin.update');
+        });
 
         /********************VARIANT MASTER********************/
-        Route::get('/variants', [VariantAdminController::class, 'index'])->name('variant_admin');
-        Route::get('/variants/list', [VariantAdminController::class, 'list'])->name('variant_admin.list');
-        Route::get('/variants/add', [VariantAdminController::class, 'add'])->name('variant_admin.add');
-        Route::post('/variants/insert', [VariantAdminController::class, 'insert'])->name('variant_admin.insert');
-        Route::get('/variants/edit/{any}', [VariantAdminController::class, 'edit'])->name('variant_admin.edit');
-        Route::post('/variants/update/{any}', [VariantAdminController::class, 'update'])->name('variant_admin.update');
+        Route::controller(VariantAdminController::class)->group(function () {
+            Route::get('/variants', 'index')->name('variant_admin');
+            Route::get('/variants/list', 'list')->name('variant_admin.list');
+            Route::get('/variants/add', 'add')->name('variant_admin.add');
+            Route::post('/variants/insert', 'insert')->name('variant_admin.insert');
+            Route::get('/variants/edit/{any}', 'edit')->name('variant_admin.edit');
+            Route::post('/variants/update/{any}', 'update')->name('variant_admin.update');
 
-        Route::get('/variant-attributes', [VariantAdminController::class, 'variant_attribute_index'])->name('variant_attribute_admin');
-        Route::get('/variant-attributes/list', [VariantAdminController::class, 'variant_attr_list'])->name('variant_attribute_admin.list');
-        Route::get('/variant-attributes/add', [VariantAdminController::class, 'variant_attr_add'])->name('variant_attribute_admin.add');
-        Route::post('/variant-attributes/insert', [VariantAdminController::class, 'variant_attr_insert'])->name('variant_attribute_admin.insert');
-        Route::get('/variant-attributes/edit/{any}', [VariantAdminController::class, 'variant_attr_edit'])->name('variant_attribute_admin.edit');
-        Route::post('/variant-attributes/update/{any}', [VariantAdminController::class, 'variant_attr_update'])->name('variant_attribute_admin.update');
+            Route::get('/variant-attributes', 'variant_attribute_index')->name('variant_attribute_admin');
+            Route::get('/variant-attributes/list', 'variant_attr_list')->name('variant_attribute_admin.list');
+            Route::get('/variant-attributes/add', 'variant_attr_add')->name('variant_attribute_admin.add');
+            Route::post('/variant-attributes/insert', 'variant_attr_insert')->name('variant_attribute_admin.insert');
+            Route::get('/variant-attributes/edit/{any}', 'variant_attr_edit')->name('variant_attribute_admin.edit');
+            Route::post('/variant-attributes/update/{any}', 'variant_attr_update')->name('variant_attribute_admin.update');
+        });
 
         Route::get('/change-password', [ProfileAdminController::class, 'index'])->name('change_pass');
         Route::post('/change-password/update', [ProfileAdminController::class, 'update'])->name('change_pass.update');
 
         /********************ICONS********************/
-        Route::get('/icons', [IconAdminController::class, 'index'])->name('icon_admin');
-        Route::get('/icons/list', [IconAdminController::class, 'list'])->name('icon_admin.list');
-        Route::get('/icons/add', [IconAdminController::class, 'add'])->name('icon_admin.add');
-        Route::post('/icons/insert', [IconAdminController::class, 'insert'])->name('icon_admin.insert');
-        Route::get('/icons/edit/{any}', [IconAdminController::class, 'edit'])->name('icon_admin.edit');
-        Route::post('/icons/update/{any}', [IconAdminController::class, 'update'])->name('icon_admin.update');
-        Route::get('/icons/information/{any}', [IconAdminController::class, 'information'])->name('icon_admin.information');
+        Route::controller(IconAdminController::class)->prefix('icons')->group(function () {
+            Route::get('/', 'index')->name('icon_admin');
+            Route::get('/list', 'list')->name('icon_admin.list');
+            Route::get('/add', 'add')->name('icon_admin.add');
+            Route::post('/insert', 'insert')->name('icon_admin.insert');
+            Route::get('/edit/{any}', 'edit')->name('icon_admin.edit');
+            Route::post('/update/{any}', 'update')->name('icon_admin.update');
+            Route::get('/information/{any}', 'information')->name('icon_admin.information');
+        });
 
-        /********************ICONS********************/
-        Route::get('/events', [EventAdminController::class, 'index'])->name('event_admin');
-        Route::get('/events/list', [EventAdminController::class, 'list'])->name('event_admin.list');
-        Route::get('/events/add', [EventAdminController::class, 'add'])->name('event_admin.add');
-        Route::post('/events/insert', [EventAdminController::class, 'insert'])->name('event_admin.insert');
-        Route::get('/events/edit/{any}', [EventAdminController::class, 'edit'])->name('event_admin.edit');
-        Route::post('/events/update/{any}', [EventAdminController::class, 'update'])->name('event_admin.update');
-        Route::get('/events/information/{any}', [EventAdminController::class, 'information'])->name('event_admin.information');
+        /********************EVENTS********************/
+        Route::controller(EventAdminController::class)->prefix('events')->group(function () {
+            Route::get('/', 'index')->name('event_admin');
+            Route::get('/list', 'list')->name('event_admin.list');
+            Route::get('/add', 'add')->name('event_admin.add');
+            Route::post('/insert', 'insert')->name('event_admin.insert');
+            Route::get('/edit/{any}', 'edit')->name('event_admin.edit');
+            Route::post('/update/{any}', 'update')->name('event_admin.update');
+            Route::get('/information/{any}', 'information')->name('event_admin.information');
+        });
 
-        /********************CATEGORIES********************/
-        Route::get('/jobs', [JobAdminController::class, 'index'])->name('job_admin');
-        Route::get('/jobs/list', [JobAdminController::class, 'list'])->name('job_admin.list');
-        Route::get('/jobs/add', [JobAdminController::class, 'add'])->name('job_admin.add');
-        Route::get('/jobs/edit/{any}', [JobAdminController::class, 'edit'])->name('job_admin.edit');
-        Route::post('/jobs/insert', [JobAdminController::class, 'insert'])->name('job_admin.insert');
-        Route::post('/jobs/update/{any}', [JobAdminController::class, 'update'])->name('job_admin.update');
-        Route::get('/jobs/information/{any}', [JobAdminController::class, 'information'])->name('job_admin.information');
-        Route::post('/jobs/upload-banner', [JobAdminController::class, 'uploadBanner'])->name('job_admin.upload');
+        /********************JOBS********************/
+        Route::controller(JobAdminController::class)->prefix('jobs')->group(function () {
+            Route::get('/', 'index')->name('job_admin');
+            Route::get('/list', 'list')->name('job_admin.list');
+            Route::get('/add', 'add')->name('job_admin.add');
+            Route::get('/edit/{any}', 'edit')->name('job_admin.edit');
+            Route::post('/insert', 'insert')->name('job_admin.insert');
+            Route::post('/update/{any}', 'update')->name('job_admin.update');
+            Route::get('/information/{any}', 'information')->name('job_admin.information');
+            Route::post('/upload-banner', 'uploadBanner')->name('job_admin.upload');
+        });
 
-        /********************CATEGORIES********************/
-        Route::get('/clients', [ClientAdminController::class, 'index'])->name('client_admin');
-        Route::get('/clients/list', [ClientAdminController::class, 'list'])->name('client_admin.list');
-        Route::get('/clients/add', [ClientAdminController::class, 'add'])->name('client_admin.add');
-        Route::get('/clients/edit/{any}', [ClientAdminController::class, 'edit'])->name('client_admin.edit');
-        Route::post('/clients/insert', [ClientAdminController::class, 'insert'])->name('client_admin.insert');
-        Route::post('/clients/update/{any}', [ClientAdminController::class, 'update'])->name('client_admin.update');
-        Route::get('/clients/information/{any}', [ClientAdminController::class, 'information'])->name('client_admin.information');
-        Route::post('/clients/upload-banner', [ClientAdminController::class, 'uploadBanner'])->name('client_admin.upload');
+        /********************CLIENTS********************/
+        Route::controller(ClientAdminController::class)->prefix('clients')->group(function () {
+            Route::get('/', 'index')->name('client_admin');
+            Route::get('/list', 'list')->name('client_admin.list');
+            Route::get('/add', 'add')->name('client_admin.add');
+            Route::get('/edit/{any}', 'edit')->name('client_admin.edit');
+            Route::post('/insert', 'insert')->name('client_admin.insert');
+            Route::post('/update/{any}', 'update')->name('client_admin.update');
+            Route::get('/information/{any}', 'information')->name('client_admin.information');
+            Route::post('/upload-banner', 'uploadBanner')->name('client_admin.upload');
+        });
 
-        /********************CATEGORIES********************/
-        Route::get('/homeslider', [AdminHomeSliderController::class, 'index'])->name('homeslider_admin');
-        Route::get('/homeslider/add', [AdminHomeSliderController::class, 'add'])->name('homeslider_admin.add');
-        Route::get('/homeslider/edit/{any}', [AdminHomeSliderController::class, 'edit'])->name('homeslider_admin.edit');
-        Route::post('/homeslider/insert', [AdminHomeSliderController::class, 'insert'])->name('homeslider_admin.insert');
-        Route::post('/homeslider/update/{any}', [AdminHomeSliderController::class, 'update'])->name('homeslider_admin.update');
+        /********************HOME SLIDERS********************/
+        Route::controller(AdminHomeSliderController::class)->prefix('homeslider')->group(function () {
+            Route::get('/', 'index')->name('homeslider_admin');
+            Route::get('/add', 'add')->name('homeslider_admin.add');
+            Route::get('/edit/{any}', 'edit')->name('homeslider_admin.edit');
+            Route::post('/insert', 'insert')->name('homeslider_admin.insert');
+            Route::post('/update/{any}', 'update')->name('homeslider_admin.update');
+        });
 
         /********************LIGHT WORLDS********************/
-        Route::get('/light-worlds', [App\Http\Controllers\Admin\LightWorldController::class, 'index'])->name('light_worlds_admin');
-        Route::get('/light-worlds/add', [App\Http\Controllers\Admin\LightWorldController::class, 'add'])->name('light_worlds_admin.add');
-        Route::get('/light-worlds/edit/{id}', [App\Http\Controllers\Admin\LightWorldController::class, 'edit'])->name('light_worlds_admin.edit');
-        Route::post('/light-worlds/insert', [App\Http\Controllers\Admin\LightWorldController::class, 'insert'])->name('light_worlds_admin.insert');
-        Route::post('/light-worlds/update/{id}', [App\Http\Controllers\Admin\LightWorldController::class, 'update'])->name('light_worlds_admin.update');
-        Route::delete('/light-worlds/delete/{id}', [App\Http\Controllers\Admin\LightWorldController::class, 'delete'])->name('light_worlds_admin.delete');
+        Route::controller(App\Http\Controllers\Admin\LightWorldController::class)->prefix('light-worlds')->group(function () {
+            Route::get('/', 'index')->name('light_worlds_admin');
+            Route::get('/add', 'add')->name('light_worlds_admin.add');
+            Route::get('/edit/{id}', 'edit')->name('light_worlds_admin.edit');
+            Route::post('/insert', 'insert')->name('light_worlds_admin.insert');
+            Route::post('/update/{id}', 'update')->name('light_worlds_admin.update');
+            Route::delete('/delete/{id}', 'delete')->name('light_worlds_admin.delete');
+        });
 
         /********************MANUFACTURING SECTION / HOMEPAGE SETTINGS********************/
-        Route::get('/manufacturing-section', [App\Http\Controllers\Admin\ManufacturingSectionController::class, 'index'])->name('admin.manufacturing.index');
-        Route::get('/homepage-settings/{id?}', [App\Http\Controllers\Admin\ManufacturingSectionController::class, 'edit'])->name('admin.manufacturing.edit');
-        Route::put('/homepage-settings/update', [App\Http\Controllers\Admin\ManufacturingSectionController::class, 'update'])->name('admin.manufacturing.update');
+        Route::controller(App\Http\Controllers\Admin\ManufacturingSectionController::class)->group(function () {
+            Route::get('/manufacturing-section', 'index')->name('admin.manufacturing.index');
+            Route::get('/homepage-settings/{id?}', 'edit')->name('admin.manufacturing.edit');
+            Route::put('/homepage-settings/update', 'update')->name('admin.manufacturing.update');
+        });
 
         /********************NEWS SECTION********************/
-        Route::get('/news-section-settings/{id?}', [App\Http\Controllers\Admin\NewsSectionController::class, 'edit'])->name('admin.news-section.edit');
-        Route::put('/news-section-settings/update', [App\Http\Controllers\Admin\NewsSectionController::class, 'update'])->name('admin.news-section.update');
+        Route::controller(App\Http\Controllers\Admin\NewsSectionController::class)->group(function () {
+            Route::get('/news-section-settings/{id?}', 'edit')->name('admin.news-section.edit');
+            Route::put('/news-section-settings/update', 'update')->name('admin.news-section.update');
+        });
 
         /********************NEWS ITEMS********************/
-        Route::get('/news-items', [App\Http\Controllers\Admin\NewsItemController::class, 'index'])->name('admin.news-items.index');
-        Route::get('/news-items/add', [App\Http\Controllers\Admin\NewsItemController::class, 'add'])->name('admin.news-items.add');
-        Route::post('/news-items/store', [App\Http\Controllers\Admin\NewsItemController::class, 'store'])->name('admin.news-items.store');
-        Route::get('/news-items/edit/{id}', [App\Http\Controllers\Admin\NewsItemController::class, 'edit'])->name('admin.news-items.edit');
-        Route::put('/news-items/update/{id}', [App\Http\Controllers\Admin\NewsItemController::class, 'update'])->name('admin.news-items.update');
-        Route::delete('/news-items/delete/{id}', [App\Http\Controllers\Admin\NewsItemController::class, 'delete'])->name('admin.news-items.delete');
+        Route::controller(App\Http\Controllers\Admin\NewsItemController::class)->prefix('news-items')->group(function () {
+            Route::get('/', 'index')->name('admin.news-items.index');
+            Route::get('/add', 'add')->name('admin.news-items.add');
+            Route::post('/store', 'store')->name('admin.news-items.store');
+            Route::get('/edit/{id}', 'edit')->name('admin.news-items.edit');
+            Route::put('/update/{id}', 'update')->name('admin.news-items.update');
+            Route::delete('/delete/{id}', 'delete')->name('admin.news-items.delete');
+        });
         /********************BLOG CATEGORIES********************/
-        Route::get('/blog-categories', [App\Http\Controllers\Admin\BlogCategoryController::class, 'index'])->name('admin.blog-categories.index');
-        Route::get('/blog-categories/add', [App\Http\Controllers\Admin\BlogCategoryController::class, 'add'])->name('admin.blog-categories.add');
-        Route::post('/blog-categories/store', [App\Http\Controllers\Admin\BlogCategoryController::class, 'store'])->name('admin.blog-categories.store');
-        Route::get('/blog-categories/edit/{id}', [App\Http\Controllers\Admin\BlogCategoryController::class, 'edit'])->name('admin.blog-categories.edit');
-        Route::put('/blog-categories/update/{id}', [App\Http\Controllers\Admin\BlogCategoryController::class, 'update'])->name('admin.blog-categories.update');
-        Route::delete('/blog-categories/delete/{id}', [App\Http\Controllers\Admin\BlogCategoryController::class, 'destroy'])->name('admin.blog-categories.destroy');
+        Route::controller(App\Http\Controllers\Admin\BlogCategoryController::class)->prefix('blog-categories')->group(function () {
+            Route::get('/', 'index')->name('admin.blog-categories.index');
+            Route::get('/add', 'add')->name('admin.blog-categories.add');
+            Route::post('/store', 'store')->name('admin.blog-categories.store');
+            Route::get('/edit/{id}', 'edit')->name('admin.blog-categories.edit');
+            Route::put('/update/{id}', 'update')->name('admin.blog-categories.update');
+            Route::delete('/delete/{id}', 'destroy')->name('admin.blog-categories.destroy');
+        });
 
         /********************BLOGS********************/
-        Route::get('/blogs', [App\Http\Controllers\Admin\BlogAdminController::class, 'index'])->name('admin.blogs.index');
-        Route::get('/blogs/add', [App\Http\Controllers\Admin\BlogAdminController::class, 'add'])->name('admin.blogs.add');
-        Route::post('/blogs/store', [App\Http\Controllers\Admin\BlogAdminController::class, 'store'])->name('admin.blogs.store');
-        Route::get('/blogs/edit/{id}', [App\Http\Controllers\Admin\BlogAdminController::class, 'edit'])->name('admin.blogs.edit');
-        Route::put('/blogs/update/{id}', [App\Http\Controllers\Admin\BlogAdminController::class, 'update'])->name('admin.blogs.update');
-        Route::delete('/blogs/delete/{id}', [App\Http\Controllers\Admin\BlogAdminController::class, 'destroy'])->name('admin.blogs.destroy');
-        Route::post('/blogs/upload-image', [App\Http\Controllers\Admin\BlogAdminController::class, 'uploadImage'])->name('admin.blogs.upload_image');
+        Route::controller(App\Http\Controllers\Admin\BlogAdminController::class)->prefix('blogs')->group(function () {
+            Route::get('/', 'index')->name('admin.blogs.index');
+            Route::get('/add', 'add')->name('admin.blogs.add');
+            Route::post('/store', 'store')->name('admin.blogs.store');
+            Route::get('/edit/{id}', 'edit')->name('admin.blogs.edit');
+            Route::put('/update/{id}', 'update')->name('admin.blogs.update');
+            Route::delete('/delete/{id}', 'destroy')->name('admin.blogs.destroy');
+            Route::post('/upload-image', 'uploadImage')->name('admin.blogs.upload_image');
+        });
 
         /********************WATCH & SHOP (REELS)********************/
-        Route::get('/watch-and-shops', [App\Http\Controllers\Admin\WatchAndShopController::class, 'index'])->name('admin.watch_and_shops.index');
-        Route::get('/watch-and-shops/add', [App\Http\Controllers\Admin\WatchAndShopController::class, 'add'])->name('admin.watch_and_shops.add');
-        Route::post('/watch-and-shops/store', [App\Http\Controllers\Admin\WatchAndShopController::class, 'store'])->name('admin.watch_and_shops.store');
-        Route::get('/watch-and-shops/edit/{id}', [App\Http\Controllers\Admin\WatchAndShopController::class, 'edit'])->name('admin.watch_and_shops.edit');
-        Route::put('/watch-and-shops/update/{id}', [App\Http\Controllers\Admin\WatchAndShopController::class, 'update'])->name('admin.watch_and_shops.update');
-        Route::delete('/watch-and-shops/delete/{id}', [App\Http\Controllers\Admin\WatchAndShopController::class, 'delete'])->name('admin.watch_and_shops.delete');
+        Route::controller(App\Http\Controllers\Admin\WatchAndShopController::class)->prefix('watch-and-shops')->group(function () {
+            Route::get('/', 'index')->name('admin.watch_and_shops.index');
+            Route::get('/add', 'add')->name('admin.watch_and_shops.add');
+            Route::post('/store', 'store')->name('admin.watch_and_shops.store');
+            Route::get('/edit/{id}', 'edit')->name('admin.watch_and_shops.edit');
+            Route::put('/update/{id}', 'update')->name('admin.watch_and_shops.update');
+            Route::delete('/delete/{id}', 'delete')->name('admin.watch_and_shops.delete');
+        });
 
         /********************CATALOGUE CATEGORIES********************/
-        Route::get('/catalogue-categories', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'index'])->name('admin.catalogue-categories.index');
-        Route::get('/catalogue-categories/add', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'add'])->name('admin.catalogue-categories.add');
-        Route::post('/catalogue-categories/store', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'store'])->name('admin.catalogue-categories.store');
-        Route::get('/catalogue-categories/edit/{id}', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'edit'])->name('admin.catalogue-categories.edit');
-        Route::put('/catalogue-categories/update/{id}', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'update'])->name('admin.catalogue-categories.update');
-        Route::delete('/catalogue-categories/delete/{id}', [App\Http\Controllers\Admin\CatalogueCategoryController::class, 'destroy'])->name('admin.catalogue-categories.destroy');
-
+        Route::controller(App\Http\Controllers\Admin\CatalogueCategoryController::class)->prefix('catalogue-categories')->group(function () {
+            Route::get('/', 'index')->name('admin.catalogue-categories.index');
+            Route::get('/add', 'add')->name('admin.catalogue-categories.add');
+            Route::post('/store', 'store')->name('admin.catalogue-categories.store');
+            Route::get('/edit/{id}', 'edit')->name('admin.catalogue-categories.edit');
+            Route::put('/update/{id}', 'update')->name('admin.catalogue-categories.update');
+            Route::delete('/delete/{id}', 'destroy')->name('admin.catalogue-categories.destroy');
+        });
         /********************CATALOGUES********************/
-        Route::get('/catalogues', [App\Http\Controllers\Admin\CatalogueController::class, 'index'])->name('admin.catalogues.index');
-        Route::get('/catalogues/add', [App\Http\Controllers\Admin\CatalogueController::class, 'add'])->name('admin.catalogues.add');
-        Route::post('/catalogues/store', [App\Http\Controllers\Admin\CatalogueController::class, 'store'])->name('admin.catalogues.store');
-        Route::get('/catalogues/edit/{id}', [App\Http\Controllers\Admin\CatalogueController::class, 'edit'])->name('admin.catalogues.edit');
-        Route::put('/catalogues/update/{id}', [App\Http\Controllers\Admin\CatalogueController::class, 'update'])->name('admin.catalogues.update');
-        Route::delete('/catalogues/delete/{id}', [App\Http\Controllers\Admin\CatalogueController::class, 'destroy'])->name('admin.catalogues.destroy');
+        Route::controller(App\Http\Controllers\Admin\CatalogueController::class)->prefix('catalogues')->group(function () {
+            Route::get('/', 'index')->name('admin.catalogues.index');
+            Route::get('/add', 'add')->name('admin.catalogues.add');
+            Route::post('/store', 'store')->name('admin.catalogues.store');
+            Route::get('/edit/{id}', 'edit')->name('admin.catalogues.edit');
+            Route::put('/update/{id}', 'update')->name('admin.catalogues.update');
+            Route::delete('/delete/{id}', 'destroy')->name('admin.catalogues.destroy');
+        });
 
 
 
         /********************COLOR MASTERS********************/
-        Route::get('/color-masters', [App\Http\Controllers\Admin\ColorMasterController::class, 'index'])->name('color_master_admin');
-        Route::get('/color-masters/add', [App\Http\Controllers\Admin\ColorMasterController::class, 'add'])->name('color_master_admin.add');
-        Route::post('/color-masters/insert', [App\Http\Controllers\Admin\ColorMasterController::class, 'insert'])->name('color_master_admin.insert');
-        Route::get('/color-masters/edit/{any}', [App\Http\Controllers\Admin\ColorMasterController::class, 'edit'])->name('color_master_admin.edit');
-        Route::post('/color-masters/update/{any}', [App\Http\Controllers\Admin\ColorMasterController::class, 'update'])->name('color_master_admin.update');
-        Route::delete('/color-masters/delete/{any}', [App\Http\Controllers\Admin\ColorMasterController::class, 'delete'])->name('color_master_admin.delete');
-        Route::get('/color-masters/information/{any}', [App\Http\Controllers\Admin\ColorMasterController::class, 'information'])->name('color_master_admin.information');
+        Route::controller(App\Http\Controllers\Admin\ColorMasterController::class)->prefix('color-masters')->group(function () {
+            Route::get('/', 'index')->name('color_master_admin');
+            Route::get('/add', 'add')->name('color_master_admin.add');
+            Route::post('/insert', 'insert')->name('color_master_admin.insert');
+            Route::get('/edit/{any}', 'edit')->name('color_master_admin.edit');
+            Route::post('/update/{any}', 'update')->name('color_master_admin.update');
+            Route::delete('/delete/{any}', 'delete')->name('color_master_admin.delete');
+            Route::get('/information/{any}', 'information')->name('color_master_admin.information');
+        });
 
         /********************COLLECTIONS********************/
-        Route::get('/collections', [CollectionController::class, 'index'])->name('admin.collections.index');
-        Route::get('/collections/create', [CollectionController::class, 'create'])->name('admin.collections.create');
-        Route::post('/collections', [CollectionController::class, 'store'])->name('admin.collections.store');
-        Route::get('/collections/{collection}/edit', [CollectionController::class, 'edit'])->name('admin.collections.edit');
-        Route::put('/collections/{collection}', [CollectionController::class, 'update'])->name('admin.collections.update');
-        Route::delete('/collections/{collection}', [CollectionController::class, 'destroy'])->name('admin.collections.destroy');
-        Route::patch('/collections/{collection}/toggle-active', [CollectionController::class, 'toggleActive'])->name('admin.collections.toggle-active');
-        Route::post('/collections/{collection}/hero-section', [CollectionController::class, 'storeHeroSection'])->name('admin.collections.store-hero');
-        Route::post('/collections/{collection}/parameters-section', [CollectionController::class, 'storeParametersSection'])->name('admin.collections.store-parameters');
-        
-        // Parameter Items CRUD
-        Route::get('/collections/{collection}/parameter-items/add', [CollectionController::class, 'addParameterItem'])->name('admin.collections.parameter-items.add');
-        Route::post('/collections/{collection}/parameter-items', [CollectionController::class, 'storeParameterItem'])->name('admin.collections.parameter-items.store');
-        Route::get('/collections/{collection}/parameter-items/{item}/edit', [CollectionController::class, 'editParameterItem'])->name('admin.collections.parameter-items.edit');
-        Route::put('/collections/{collection}/parameter-items/{item}', [CollectionController::class, 'updateParameterItem'])->name('admin.collections.parameter-items.update');
-        Route::delete('/collections/{collection}/parameter-items/{item}', [CollectionController::class, 'deleteParameterItem'])->name('admin.collections.parameter-items.delete');
+        Route::controller(CollectionController::class)->prefix('collections')->group(function () {
+            Route::get('/', 'index')->name('admin.collections.index');
+            Route::get('/create', 'create')->name('admin.collections.create');
+            Route::post('/', 'store')->name('admin.collections.store');
+            Route::get('/{collection}/edit', 'edit')->name('admin.collections.edit');
+            Route::put('/{collection}', 'update')->name('admin.collections.update');
+            Route::delete('/{collection}', 'destroy')->name('admin.collections.destroy');
+            Route::patch('/{collection}/toggle-active', 'toggleActive')->name('admin.collections.toggle-active');
+            Route::post('/{collection}/hero-section', 'storeHeroSection')->name('admin.collections.store-hero');
+            Route::post('/{collection}/parameters-section', 'storeParametersSection')->name('admin.collections.store-parameters');
+            
+            // Parameter Items CRUD
+            Route::get('/{collection}/parameter-items/add', 'addParameterItem')->name('admin.collections.parameter-items.add');
+            Route::post('/{collection}/parameter-items', 'storeParameterItem')->name('admin.collections.parameter-items.store');
+            Route::get('/{collection}/parameter-items/{item}/edit', 'editParameterItem')->name('admin.collections.parameter-items.edit');
+            Route::put('/{collection}/parameter-items/{item}', 'updateParameterItem')->name('admin.collections.parameter-items.update');
+            Route::delete('/{collection}/parameter-items/{item}', 'deleteParameterItem')->name('admin.collections.parameter-items.delete');
 
-        // Compositions Section
-        Route::post('/collections/{collection}/compositions-section', [CollectionController::class, 'storeCompositionsSection'])->name('admin.collections.store-compositions');
-        
-        // Composition Items CRUD
-        Route::get('/collections/{collection}/composition-items/add', [CollectionController::class, 'addCompositionItem'])->name('admin.collections.composition-items.add');
-        Route::post('/collections/{collection}/composition-items', [CollectionController::class, 'storeCompositionItem'])->name('admin.collections.composition-items.store');
-        Route::get('/collections/{collection}/composition-items/{item}/edit', [CollectionController::class, 'editCompositionItem'])->name('admin.collections.composition-items.edit');
-        Route::put('/collections/{collection}/composition-items/{item}', [CollectionController::class, 'updateCompositionItem'])->name('admin.collections.composition-items.update');
-        Route::delete('/collections/{collection}/composition-items/{item}', [CollectionController::class, 'deleteCompositionItem'])->name('admin.collections.composition-items.delete');
+            // Compositions Section
+            Route::post('/{collection}/compositions-section', 'storeCompositionsSection')->name('admin.collections.store-compositions');
+            
+            // Composition Items CRUD
+            Route::get('/{collection}/composition-items/add', 'addCompositionItem')->name('admin.collections.composition-items.add');
+            Route::post('/{collection}/composition-items', 'storeCompositionItem')->name('admin.collections.composition-items.store');
+            Route::get('/{collection}/composition-items/{item}/edit', 'editCompositionItem')->name('admin.collections.composition-items.edit');
+            Route::put('/{collection}/composition-items/{item}', 'updateCompositionItem')->name('admin.collections.composition-items.update');
+            Route::delete('/{collection}/composition-items/{item}', 'deleteCompositionItem')->name('admin.collections.composition-items.delete');
 
-        // Tones Section
-        Route::post('/collections/{collection}/tones-section', [CollectionController::class, 'storeTonesSection'])->name('admin.collections.store-tones');
-        
-        // Tone Families CRUD
-        Route::get('/collections/{collection}/tone-families/add', [CollectionController::class, 'addToneFamily'])->name('admin.collections.tone-families.add');
-        Route::post('/collections/{collection}/tone-families', [CollectionController::class, 'storeToneFamily'])->name('admin.collections.tone-families.store');
-        Route::get('/collections/{collection}/tone-families/{family}/edit', [CollectionController::class, 'editToneFamily'])->name('admin.collections.tone-families.edit');
-        Route::put('/collections/{collection}/tone-families/{family}', [CollectionController::class, 'updateToneFamily'])->name('admin.collections.tone-families.update');
-        Route::delete('/collections/{collection}/tone-families/{family}', [CollectionController::class, 'deleteToneFamily'])->name('admin.collections.tone-families.delete');
+            // Tones Section
+            Route::post('/{collection}/tones-section', 'storeTonesSection')->name('admin.collections.store-tones');
+            
+            // Tone Families CRUD
+            Route::get('/{collection}/tone-families/add', 'addToneFamily')->name('admin.collections.tone-families.add');
+            Route::post('/{collection}/tone-families', 'storeToneFamily')->name('admin.collections.tone-families.store');
+            Route::get('/{collection}/tone-families/{family}/edit', 'editToneFamily')->name('admin.collections.tone-families.edit');
+            Route::put('/{collection}/tone-families/{family}', 'updateToneFamily')->name('admin.collections.tone-families.update');
+            Route::delete('/{collection}/tone-families/{family}', 'deleteToneFamily')->name('admin.collections.tone-families.delete');
 
-        // Places Section
-        Route::post('/collections/{collection}/places-section', [CollectionController::class, 'storePlacesSection'])->name('admin.collections.store-places');
-        
-        // Place Items CRUD
-        Route::get('/collections/{collection}/place-items/add', [CollectionController::class, 'addPlaceItem'])->name('admin.collections.place-items.add');
-        Route::post('/collections/{collection}/place-items', [CollectionController::class, 'storePlaceItem'])->name('admin.collections.place-items.store');
-        Route::get('/collections/{collection}/place-items/{item}/edit', [CollectionController::class, 'editPlaceItem'])->name('admin.collections.place-items.edit');
-        Route::put('/collections/{collection}/place-items/{item}', [CollectionController::class, 'updatePlaceItem'])->name('admin.collections.place-items.update');
-        Route::delete('/collections/{collection}/place-items/{item}', [CollectionController::class, 'deletePlaceItem'])->name('admin.collections.place-items.delete');
-
-        // Spread & Drop Section
-        Route::post('/collections/{collection}/spread-drop-section', [CollectionController::class, 'storeSpreadDropSection'])->name('admin.collections.store-spread-drop');
+            // Places Section
+            Route::post('/{collection}/places-section', 'storePlacesSection')->name('admin.collections.store-places');
+            
+            // Place Items CRUD
+            Route::get('/{collection}/place-items/add', 'addPlaceItem')->name('admin.collections.place-items.add');
+            Route::post('/{collection}/place-items', 'storePlaceItem')->name('admin.collections.place-items.store');
+            Route::get('/{collection}/place-items/{item}/edit', 'editPlaceItem')->name('admin.collections.place-items.edit');
+            Route::put('/{collection}/place-items/{item}', 'updatePlaceItem')->name('admin.collections.place-items.update');
+            Route::delete('/{collection}/place-items/{item}', 'deletePlaceItem')->name('admin.collections.place-items.delete');
+            // Spread & Drop Section
+            Route::post('/{collection}/spread-drop-section', 'storeSpreadDropSection')->name('admin.collections.store-spread-drop');
+        });
 
         // DEBUG ROUTES - REMOVE IN PRODUCTION
-        Route::get('/debug/tone-families', [CollectionController::class, 'debugToneFamilies'])->name('admin.debug.tone-families');
-        Route::get('/debug/tone-families/{family}/test-edit', [CollectionController::class, 'debugEditToneFamily'])->name('admin.debug.tone-families.edit');
-        Route::post('/debug/tone-families/{family}/test-update', [CollectionController::class, 'debugUpdateToneFamily'])->name('admin.debug.tone-families.update');
+        Route::controller(CollectionController::class)->prefix('debug')->group(function () {
+            Route::get('/tone-families', 'debugToneFamilies')->name('admin.debug.tone-families');
+            Route::get('/tone-families/{family}/test-edit', 'debugEditToneFamily')->name('admin.debug.tone-families.edit');
+            Route::post('/tone-families/{family}/test-update', 'debugUpdateToneFamily')->name('admin.debug.tone-families.update');
+        });
 
     });
 });

@@ -16,4 +16,9 @@ class DecProductSpecRow extends Model
     {
         return $this->belongsTo(DecProductVariant::class, 'variant_id');
     }
+
+    public function attribute()
+    {
+        return $this->belongsTo(DecSpecAttribute::class, 'dec_spec_attribute_id');
+    }
 }
