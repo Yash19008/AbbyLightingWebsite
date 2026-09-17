@@ -47,6 +47,7 @@
                                                 <th>Name</th>
                                                 <th>Slug</th>
                                                 <th>Products Count</th>
+                                                <th>Featured</th>
                                                 <th width="150">Actions</th>
                                             </tr>
                                         </thead>
@@ -57,6 +58,13 @@
                                                 <td><strong>{{ $category->name }}</strong></td>
                                                 <td>{{ $category->slug }}</td>
                                                 <td>{{ $category->products_count }}</td>
+                                                <td>
+                                                    @if($category->is_featured)
+                                                        <span class="badge badge-success">Featured</span>
+                                                    @else
+                                                        <span class="badge badge-secondary">No</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <a href="{{ route('decorative_category_admin.edit', $category->id) }}" class="btn btn-sm btn-outline-primary mb-1" title="Edit">
                                                         <i class="ft-edit"></i> Edit

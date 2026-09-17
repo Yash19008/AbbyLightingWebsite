@@ -263,8 +263,13 @@
                 <input type="hidden" id="spec-edit-id">
 
                 <div class="form-group mb-3">
-                    <label class="font-weight-bold" style="font-size:13px;">Label <span class="text-danger">*</span></label>
-                    <input type="text" id="spec-edit-label" class="form-control" placeholder="e.g. Primary Material, Height, Color Temperature...">
+                    <label class="font-weight-bold" style="font-size:13px;">Attribute <span class="text-danger">*</span></label>
+                    <select id="spec-edit-label" class="form-control select2" style="width: 100%;">
+                        <option value="">-- Select Attribute --</option>
+                        @foreach($spec_attributes as $attr)
+                            <option value="{{ $attr->id }}">{{ $attr->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="form-group mb-3">
@@ -922,10 +927,14 @@ $(document).ready(function() {
         if (!currentSpecVariantId) { toastr.error('Select a variant first'); return; }
         var $btn = $(this);
         $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i>');
+        
+        // Grab first attribute as default
+        var defaultAttrId = $('#spec-edit-label option:nth-child(2)').val() || 1;
+
         $.ajax({
             url: '{{ url('admin/decorative-products/variants') }}/' + currentSpecVariantId + '/specs',
             method: 'POST',
-            data: { _token: '{{ csrf_token() }}', section: section, label: 'New Specification' },
+            data: { _token: '{{ csrf_token() }}', section: section, dec_spec_attribute_id: defaultAttrId },
             success: function(res) {
                 $btn.attr('disabled', false).html('<i class="ft-plus"></i> Add Row');
                 if (res.success) {
@@ -944,7 +953,18 @@ $(document).ready(function() {
     // Open edit modal for a spec row
     function openSpecEdit(row) {
         $('#spec-edit-id').val(row.id);
-        $('#spec-edit-label').val(row.label || '');
+        
+        // Find the option in the select dropdown that matches the row's label text, or set by id if we had it
+        // We can just find the option by text since we have the label
+        var matchingOption = $('#spec-edit-label option').filter(function() { return $(this).text() === row.label; });
+        if (matchingOption.length) {
+            $('#spec-edit-label').val(matchingOption.val()).trigger('change');
+        } else if (row.dec_spec_attribute_id) {
+            $('#spec-edit-label').val(row.dec_spec_attribute_id).trigger('change');
+        } else {
+            $('#spec-edit-label').val($('#spec-edit-label option:nth-child(2)').val()).trigger('change');
+        }
+
         $('#spec-edit-value-type').val(row.value_type || 'text');
 
         // Set active type option button
@@ -1023,7 +1043,9 @@ $(document).ready(function() {
     $('#btn-spec-modal-save').on('click', function() {
         var id     = $('#spec-edit-id').val();
         var type   = $('#spec-edit-value-type').val();
-        var label  = $('#spec-edit-label').val();
+        var attrId = $('#spec-edit-label').val();
+        var label  = $('#spec-edit-label option:selected').text();
+        
         var value  = type === 'richtext'
             ? (tinymce.get('spec-edit-value-rich') ? tinymce.get('spec-edit-value-rich').getContent() : '')
             : $('#spec-edit-value-plain').val();
@@ -1034,7 +1056,7 @@ $(document).ready(function() {
         $.ajax({
             url: '{{ url('admin/decorative-products/specs') }}/' + id,
             method: 'PUT',
-            data: { _token: '{{ csrf_token() }}', label: label, value: value, value_type: type },
+            data: { _token: '{{ csrf_token() }}', dec_spec_attribute_id: attrId, value: value, value_type: type },
             success: function(res) {
                 $btn.attr('disabled', false).html('<i class="ft-save"></i> Save');
                 if (res.success) {
@@ -1088,6 +1110,7 @@ $(document).ready(function() {
 
     // Delete spec row
     $(document).on('click', '.btn-delete-spec', function() {
+        if (!confirm('Are you sure you want to delete this specification?')) return;
         var id    = $(this).data('id');
         var tr    = $(this).closest('tr');
         var tbody = tr.closest('tbody');
@@ -1104,7 +1127,13 @@ $(document).ready(function() {
                             $(noMsgId).show();
                         }
                     });
+                    if (res.message) toastr.success(res.message);
+                } else {
+                    if (res.message) toastr.error(res.message);
                 }
+            },
+            error: function() {
+                toastr.error('Error deleting specification.');
             }
         });
     });
@@ -1357,26 +1386,24 @@ $(document).ready(function() {
     }
 
     function loadRelatedProducts() {
-        $.get('{{ url('admin/decorative-products/'.$product->id.'/related') }}', function(res) {
-            if (res.success) {
-                // Update toggles
-                $('#toggle-family-section').prop('checked', res.show_family_section);
-                if (res.show_family_section) {
-                    $('#family-section-card').css('opacity', '1');
-                } else {
-                    $('#family-section-card').css('opacity', '0.6');
-                }
+        $.ajax({
+            url: '{{ url('admin/decorative-products/'.$product->id.'/related') }}',
+            method: 'GET',
+            cache: false,
+            success: function(res) {
+                if (res.success) {
 
-                // Render Manual
-                var mBody = $('.related-tbody[data-type="manual"]').empty();
-                if (res.manual.length > 0) {
-                    $('#no-related-manual').hide();
-                    res.manual.forEach(function(item) { mBody.append(renderRelatedRow(item)); });
-                } else {
-                    $('#no-related-manual').show();
-                }
+                    // Render Manual
+                    var mBody = $('.related-tbody[data-type="manual"]').empty();
+                    if (res.manual.length > 0) {
+                        $('#no-related-manual').hide();
+                        res.manual.forEach(function(item) { mBody.append(renderRelatedRow(item)); });
+                    } else {
+                        $('#no-related-manual').show();
+                    }
 
-                initRelatedSortables();
+                    initRelatedSortables();
+                }
             }
         });
     }
@@ -1388,21 +1415,7 @@ $(document).ready(function() {
         }
     });
 
-    // Toggle family
-    $('#toggle-family-section').on('change', function() {
-        var isChecked = $(this).is(':checked');
-        $.ajax({
-            url: '{{ url('admin/decorative-products/'.$product->id.'/related/toggle-family') }}',
-            method: 'POST',
-            data: { _token: '{{ csrf_token() }}', show_family_section: isChecked ? 1 : 0 },
-            success: function(res) {
-                if (res.success) {
-                    $('#family-section-card').css('opacity', isChecked ? '1' : '0.6');
-                    toastr.success('Settings updated');
-                }
-            }
-        });
-    });
+
 
     // Open Search Modal
     $('.btn-add-related').on('click', function() {
@@ -1429,25 +1442,30 @@ $(document).ready(function() {
             $('#related-search-results').empty().hide();
             $('#related-search-loading').show();
             
-            $.get('{{ url('admin/decorative-products/related/search') }}', { q: q, exclude_id: {{ $product->id }} }, function(res) {
-                $('#related-search-loading').hide();
-                var html = '';
-                if (res.results && res.results.length > 0) {
-                    html += '<ul class="list-group list-group-flush mb-0">';
-                    res.results.forEach(function(p) {
-                        html += '<li class="list-group-item d-flex align-items-center justify-content-between p-2" style="font-size:13px;">' +
-                            '<div class="d-flex align-items-center">' +
-                                '<div style="width:32px; height:32px; border-radius:4px; border:1px solid #eee; background:url(\'' + (p.image || '') + '\') center/cover; margin-right:10px;"></div>' +
-                                '<div><div style="font-weight:600; color:#374151;">' + p.name + '</div><div style="font-size:11px; color:#6b7280;">' + (p.sku || '') + '</div></div>' +
-                            '</div>' +
-                            '<button type="button" class="btn btn-sm btn-outline-primary btn-attach-related px-2 py-1" data-id="' + p.id + '" style="font-size:12px; font-weight:600;"><i class="ft-plus"></i> Add</button>' +
-                        '</li>';
-                    });
-                    html += '</ul>';
-                } else {
-                    html = '<div class="p-3 text-center text-muted" style="font-size:13px;">No products found.</div>';
+            $.ajax({
+                url: '{{ url('admin/decorative-products/related/search') }}',
+                method: 'GET',
+                data: { q: q, exclude_id: {{ $product->id }} },
+                cache: false,
+                success: function(res) {
+                    $('#related-search-loading').hide();
+                    var $res = $('#related-search-results').empty();
+                    if (res.results && res.results.length > 0) {
+                        res.results.forEach(function(r) {
+                            var imgHtml = r.image ? '<div style="width:36px; height:36px; border-radius:6px; border:1px solid #eee; background:url(\''+r.image+'\') center/cover; margin-right:12px; flex-shrink:0;"></div>' : '<div style="width:36px; height:36px; border-radius:6px; border:1px solid #eee; background:#f9fafb; margin-right:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center;"><i class="ft-image text-muted"></i></div>';
+                            var skuHtml = r.sku ? '<div style="font-size:11px; color:#6b7280;">SKU: ' + r.sku + '</div>' : '';
+                            $res.append(
+                                '<div class="search-result-item d-flex align-items-center justify-content-between" style="padding:10px 16px; border-bottom:1px solid #f3f4f6;">' +
+                                    '<div class="d-flex align-items-center">' + imgHtml + '<div><div style="font-weight:600; font-size:13px; color:#374151;">' + r.name + '</div>' + skuHtml + '</div></div>' +
+                                    '<button type="button" class="btn btn-sm btn-outline-primary btn-attach-related p-1 px-2" data-id="'+r.id+'" style="font-size:11px; font-weight:600;"><i class="ft-plus"></i> Add</button>' +
+                                '</div>'
+                            );
+                        });
+                        $res.show();
+                    } else {
+                        $res.html('<div class="p-3 text-center text-muted" style="font-size:13px;">No products found.</div>').show();
+                    }
                 }
-                $('#related-search-results').html(html).show();
             });
         }, 400);
     });
@@ -1581,7 +1599,17 @@ $(document).ready(function() {
             });
         }
     });
-@endif
+    @endif
+
+    // Initialize Select2 for Specification Attribute Dropdown
+    if ($('#spec-edit-label').length) {
+        $('#spec-edit-label').select2({
+            dropdownParent: $('#spec-edit-modal'),
+            placeholder: "-- Select Attribute --",
+            allowClear: true,
+            width: '100%'
+        });
+    }
 
 }); // end document.ready
 

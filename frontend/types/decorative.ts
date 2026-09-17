@@ -34,13 +34,23 @@ export interface DecGallery {
 }
 
 export interface DecRelatedProduct {
-  id: number;
-  name: string;
+  id: string;
   slug: string;
-  featured_image: string | null;
-  category: {
+  name: string;
+  category: string;
+  collection: string;
+  isNew: boolean;
+  variants: {
+    id: string;
     name: string;
-  } | null;
+    color: string;
+    imageOff: string;
+    imageOn: string;
+  }[];
+  galleries?: {
+    id: string;
+    image: string;
+  }[];
 }
 
 export interface DecCollection {

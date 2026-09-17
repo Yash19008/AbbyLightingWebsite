@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { DecCollection } from "@/types/decorative";
 
 interface CollectionBandProps {
@@ -36,7 +37,15 @@ export default function CollectionBand({
       className={`collection-band ${inView ? "collection-inview" : ""}`}
       ref={bandRef}
     >
-      {imageUrl && <img src={imageUrl} alt={`${collection.name} collection`} />}
+      {imageUrl && (
+        <Image 
+          src={imageUrl} 
+          alt={`${collection.name} collection`}
+          fill
+          sizes="100vw"
+          className="collection-band-image"
+        />
+      )}
       <div className="product-reveal">
         <h2>
           Part of <em>{collection.name} Collection</em>

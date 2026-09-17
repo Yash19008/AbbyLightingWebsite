@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import EnquireModal from "./EnquireModal";
 import { DecProductDetail, DecVariant } from "@/types/decorative";
 
+import DOMPurify from 'isomorphic-dompurify';
+
 interface ProductInfoProps {
   product: DecProductDetail;
   activeVariant: DecVariant | undefined;
@@ -29,7 +31,7 @@ export default function ProductInfo({
       <h1>{product.name}</h1>
       <p className="mobile-category">{product.category?.name}</p>
       {product.description ? (
-        <div className="product-desc" dangerouslySetInnerHTML={{ __html: product.description }} />
+        <div className="product-desc" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }} />
       ) : (
         <p className="product-desc">{product.short_description}</p>
       )}

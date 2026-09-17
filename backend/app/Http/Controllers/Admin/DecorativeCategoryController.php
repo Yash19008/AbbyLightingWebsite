@@ -39,6 +39,7 @@ class DecorativeCategoryController extends Controller
             'name' => $request->name,
             'slug' => Str::slug($request->slug),
             'description' => $request->description,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
         ]);
 
         return redirect()->route('decorative_category_admin')->with('success', 'Category created successfully');
@@ -63,6 +64,7 @@ class DecorativeCategoryController extends Controller
             'name' => $request->name,
             'slug' => Str::slug($request->slug),
             'description' => $request->description,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
         ]);
 
         return redirect()->route('decorative_category_admin')->with('success', 'Category updated successfully');

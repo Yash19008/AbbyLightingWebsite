@@ -89,9 +89,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         />
       )}
 
-      {product.show_family_section && product.related_products.length > 0 && (
+      {product.related_products && product.related_products.length > 0 && (
         <RelatedFamily 
-            familyName={product.collection?.name || product.name} 
             products={product.related_products} 
         />
       )}

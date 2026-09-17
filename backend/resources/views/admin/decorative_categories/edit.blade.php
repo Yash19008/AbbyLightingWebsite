@@ -34,6 +34,13 @@
                             <label class="font-weight-bold">Description</label>
                             <textarea name="description" class="form-control" rows="3">{{ old('description', $category->description) }}</textarea>
                         </div>
+                        <div class="col-md-12 form-group">
+                            <label class="font-weight-bold">Is Featured</label>
+                            <div>
+                                <input type="checkbox" class="js-switch" name="is_featured" value="1" {{ old('is_featured', $category->is_featured) ? 'checked' : '' }} />
+                                <small class="text-muted ml-1">If checked, this category will appear as a tab on the frontend product listing page.</small>
+                            </div>
+                        </div>
                     </div>
                     <hr>
                     <button type="submit" class="btn btn-primary"><i class="ft-check"></i> Save Changes</button>

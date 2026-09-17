@@ -1,0 +1,157 @@
+.decorative-toolbar {
+  position: relative;
+  z-index: auto;
+  background: #fff;
+}
+
+.decorative-grid {
+  gap: 30px 24px;
+  grid-auto-flow: row;
+  align-items: start;
+}
+
+.decorative-grid > .decorative-grid-item-motion {
+  grid-column: auto !important;
+  grid-row: auto !important;
+}
+
+.decorative-grid > .decorative-grid-item-motion.decorative2-is-hidden {
+  display: none !important;
+}
+
+.decorative2-floating-toolbar {
+  --decorative2-floating-top: 111px;
+  position: fixed;
+  z-index: 4000;
+  top: var(--decorative2-floating-top);
+  right: 0;
+  left: 0;
+  box-sizing: border-box;
+  background: #fff;
+  border-bottom: 1px solid #dedede;
+  box-shadow: 0 10px 24px rgba(20, 20, 20, .08);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: transform 200ms cubic-bezier(.23, 1, .32, 1), opacity 180ms ease-out;
+}
+
+.decorative2-floating-toolbar.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.decorative2-floating-toolbar .decorative-toolbar {
+  /* Deliberately inherit the page toolbar dimensions and category underline. */
+  margin: 0;
+}
+
+.decorative2-floating-toolbar .decorative-filter-button:active,
+.decorative2-floating-toolbar .decorative-sort:active,
+.decorative2-floating-toolbar .decorative-light-toggle:active {
+  transform: scale(.97);
+}
+
+@media (width < 768px) {
+  .decorative-mobile-category,
+  .decorative-tabs {
+    display: none !important;
+  }
+
+  .decorative-toolbar {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% + 64px);
+    min-height: 52px;
+    margin-right: -32px;
+    margin-left: -32px;
+    padding: 10px 32px;
+  }
+
+  .decorative-tools {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 7px;
+    padding: 0;
+  }
+
+  .decorative-filter-button,
+  .decorative-sort {
+    flex: 1 1 0;
+    width: auto;
+    max-width: 126px;
+  }
+
+  .decorative-filter-button {
+    display: inline-flex !important;
+    font-size: 0;
+  }
+
+  .decorative-filter-button::after {
+    content: "Filter";
+    font: 500 9.6px/1 Poppins, sans-serif;
+  }
+
+  .decorative-light-toggle {
+    flex: 0 0 45px;
+  }
+}
+
+@media (width <= 600px) {
+  .decorative-grid {
+    /* Match the reference catalogue's mobile two-up grid and spacing. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 36px 10px;
+  }
+
+  .decorative-card-image {
+    /* Do not use the taller mobile-only crop from the shared source page. */
+    aspect-ratio: 3 / 3.5;
+  }
+
+  .decorative2-floating-toolbar {
+    top: auto;
+    right: 0;
+    bottom: var(--decorative2-dock-offset, calc(97px + env(safe-area-inset-bottom)));
+    left: 0;
+    border: 0;
+    background: #fff;
+    box-shadow: 0 -8px 22px rgba(20, 20, 20, .10);
+    transform: translateY(12px);
+  }
+
+  .decorative2-floating-toolbar.is-visible {
+    transform: translateY(0);
+  }
+
+  .decorative2-floating-toolbar > .decorative-shell {
+    width: calc(100% - 64px);
+  }
+
+  .decorative2-floating-toolbar .decorative-toolbar {
+    /* Same dimensions and styling as the in-page mobile toolbar. */
+    width: 100%;
+    margin: 0;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .decorative2-floating-toolbar,
+  .decorative2-floating-toolbar.is-visible {
+    transform: none;
+    transition: opacity 180ms ease-out;
+  }
+
+  .decorative2-floating-toolbar .decorative-filter-button:active,
+  .decorative2-floating-toolbar .decorative-sort:active,
+  .decorative2-floating-toolbar .decorative-light-toggle:active {
+    transform: none;
+  }
+}

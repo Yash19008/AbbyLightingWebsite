@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { DecRelatedProduct } from "@/types/decorative";
+import DecorativeCard from "@/components/decorative/DecorativeCard";
 
 interface RelatedFamilyProps {
-  familyName: string;
   products: DecRelatedProduct[];
 }
 
 export default function RelatedFamily({
-  familyName,
   products,
 }: RelatedFamilyProps) {
   const [inView, setInView] = useState(false);
@@ -58,7 +58,7 @@ export default function RelatedFamily({
 
   useEffect(() => {
     if (!trackRef.current) return;
-    const cards = trackRef.current.querySelectorAll("a");
+    const cards = trackRef.current.querySelectorAll(".related-card-wrapper");
     if (!cards.length) return;
     const gap = 22; // From CSS
     const step = cards[0].getBoundingClientRect().width + gap;
@@ -74,7 +74,7 @@ export default function RelatedFamily({
       }`}
       ref={sectionRef}
     >
-      <h2 className="product-reveal">The {familyName} Family</h2>
+      <h2 className="product-reveal">Related Products</h2>
       <div className="related-carousel">
         <button
           className="related-arrow related-prev"
@@ -87,19 +87,22 @@ export default function RelatedFamily({
         </button>
         <div className="related-track" ref={trackRef}>
           {products.map((product, i) => (
-            <a
+            <div 
               key={product.id}
-              className="product-reveal"
-              style={{ transitionDelay: isSettled ? "0ms" : `${i * 60}ms` }}
-              href={`/product-detail/${product.slug}`}
+              className="product-reveal related-card-wrapper"
+              style={{ 
+                transitionDelay: isSettled ? "0ms" : `${i * 60}ms`,
+                width: 'calc(33.333% - 14.66px)',
+                flexShrink: 0
+              }}
             >
-              <img 
-                src={product.featured_image ? `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"}/storage/${product.featured_image}` : "/images/symphony-iv-figma-live/family-v.png"} 
-                alt={product.name} 
+              <DecorativeCard 
+                product={product} 
+                order={i} 
+                filterDelay={0} 
+                isGlobalLightOn={true} 
               />
-              <h3>{product.name}</h3>
-              <span>{product.category?.name || "Product"}</span>
-            </a>
+            </div>
           ))}
         </div>
         <button
