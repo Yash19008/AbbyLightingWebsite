@@ -159,7 +159,7 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
                     borderRadius: 6,
                     overflow: "hidden",
                     "--i": index,
-                  } as any}
+                  } as React.CSSProperties}
                 >
                   <div
                     className="photo"

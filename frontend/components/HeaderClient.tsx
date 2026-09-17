@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 
 export default function HeaderClient() {
   const [isScrolled, setIsScrolled] = React.useState(false);
@@ -398,9 +399,9 @@ export default function HeaderClient() {
     <>
       <header className={`sitehead ${isScrolled ? 'scrolled' : ''}`}>
         <div className="wrap">
-          <a href="/" className="logo" aria-label="Abby Lighting home">
+          <Link href="/" className="logo" aria-label="Abby Lighting home">
             <img className="logo-asset" src="/images/abby-logo.png" alt="Abby Lighting" />
-          </a>
+          </Link>
           <nav aria-label="Primary navigation">
             <ul>
               <li className="has-mega">
@@ -439,39 +440,39 @@ export default function HeaderClient() {
 
                       <div className="msep lg"></div>
                       <div className="m-worlds">
-                        <a className="mgroup m-out" href="/#worlds"
-                        ><span className="mhead">Outdoor</span></a
-                        >
+                        <Link className="mgroup m-out" href="/#worlds">
+                          <span className="mhead">Outdoor</span>
+                        </Link>
                         <div className="msep hz"></div>
-                        <a className="mgroup m-smart" href="/#worlds"
-                        ><span className="mhead">Smart Lighting</span></a
-                        >
+                        <Link className="mgroup m-smart" href="/#worlds">
+                          <span className="mhead">Smart Lighting</span>
+                        </Link>
                       </div>
                     </div>
                   </div>
                 </div>
               </li>
               <li className="has-drop">
-                <a className="link" href="/projects">
+                <Link className="link" href="/projects">
                   Our Work<span className="caret"></span>
-                </a>
+                </Link>
                 <div className="drop">
                   <a href="/projects">Projects</a>
                   <a href="/clients">Clients</a>
                 </div>
               </li>
               <li>
-                <a className="link" href="/inspiration">Inspiration</a>
+                <Link className="link" href="/inspiration">Inspiration</Link>
               </li>
               <li className="has-drop">
-                <a className="link" href="/company">
+                <Link className="link" href="/company">
                   More<span className="caret"></span>
-                </a>
+                </Link>
                 <div className="drop">
-                  <a href="/company">About Us</a>
-                  <a href="/contact">Contact Us</a>
-                  <a href="/career">Careers</a>
-                  <a href="/#contact">Catalogues</a>
+                  <Link href="/company">About Us</Link>
+                  <Link href="/contact">Contact Us</Link>
+                  <Link href="/career">Careers</Link>
+                  <Link href="/#contact">Catalogues</Link>
                 </div>
               </li>
             </ul>
@@ -605,9 +606,9 @@ export default function HeaderClient() {
         <div className="pdrop-container">
           {/* Top Header Row with Logo, Search and Contact button */}
           <div className="pdrop-header">
-            <a href="/" onClick={closeSheet} className="pdrop-logo">
+            <Link href="/" onClick={closeSheet} className="pdrop-logo">
               <img src="/images/abby-logo.png" alt="Abby Lighting" />
-            </a>
+            </Link>
             <div className="pdrop-actions">
               <button
                 type="button"
@@ -695,16 +696,16 @@ export default function HeaderClient() {
 
               {/* 3. Outdoor */}
               <div className="pdrop-direct-row">
-                <a href="/#worlds" onClick={closeSheet}>
+                <Link href="/#worlds" onClick={closeSheet}>
                   Outdoor
-                </a>
+                </Link>
               </div>
 
               {/* 4. Smart Lighting */}
               <div className="pdrop-direct-row">
-                <a href="/#worlds" onClick={closeSheet}>
+                <Link href="/#worlds" onClick={closeSheet}>
                   Smart Lighting
-                </a>
+                </Link>
               </div>
             </div>
           )}

@@ -118,11 +118,11 @@ export default function HeroSection({ sliders = [] }: HeroSectionProps) {
     hero.addEventListener("mouseenter", stopAutoplay);
     hero.addEventListener("mouseleave", startAutoplay);
     hero.addEventListener("focusin", stopAutoplay);
-    hero.addEventListener("focusout", (event: any) => {
-      if (!hero.contains(event.relatedTarget)) startAutoplay();
+    hero.addEventListener("focusout", (event: FocusEvent) => {
+      if (!hero.contains(event.relatedTarget as Node)) startAutoplay();
     });
 
-    hero.addEventListener("touchstart", (event: any) => {
+    hero.addEventListener("touchstart", (event: TouchEvent) => {
       const touch = event.touches[0];
       if (!touch) return;
       touchStartX = touch.clientX;
@@ -130,7 +130,7 @@ export default function HeroSection({ sliders = [] }: HeroSectionProps) {
       stopAutoplay();
     }, { passive: true });
 
-    hero.addEventListener("touchend", (event: any) => {
+    hero.addEventListener("touchend", (event: TouchEvent) => {
       const touch = event.changedTouches[0];
       if (!touch || touchStartX === null || touchStartY === null) {
         startAutoplay();

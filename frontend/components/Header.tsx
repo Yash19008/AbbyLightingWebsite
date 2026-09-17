@@ -2,6 +2,8 @@
 
 import React from "react";
 
+import Link from "next/link";
+
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
@@ -59,15 +61,15 @@ export default function Header() {
     <>
       <header className="sitehead ">
         <div className="wrap">
-          <a href="/" className="logo" aria-label="Abby Lighting home">
+          <Link href="/" className="logo" aria-label="Abby Lighting home">
             <img className="logo-asset" src="/images/abby-logo.png" alt="Abby Lighting" />
-          </a>
+          </Link>
           <nav aria-label="Primary navigation">
             <ul>
               <li className="has-mega">
-                <a className="link" href="/#worlds">
+                <Link className="link" href="/#worlds">
                   Product<span className="caret"></span>
-                </a>
+                </Link>
                 <div className="mega">
                   <div className="mega-panel">
                     <div className="mega-grid">
@@ -75,11 +77,11 @@ export default function Header() {
                         <div className="mhead">Architectural</div>
                         <div className="msub">Browse by category</div>
                         <ul>
-                          <li><a href="/#arrivals">Spots &amp; Accents</a></li>
-                          <li><a href="/#arrivals">Downlights</a></li>
-                          <li><a href="/#arrivals">Profiles</a></li>
-                          <li><a href="/#arrivals">Track Lights</a></li>
-                          <li><a href="/#arrivals">Washers &amp; Grazers</a></li>
+                          <li><Link href="/#arrivals">Spots &amp; Accents</Link></li>
+                          <li><Link href="/#arrivals">Downlights</Link></li>
+                          <li><Link href="/#arrivals">Profiles</Link></li>
+                          <li><Link href="/#arrivals">Track Lights</Link></li>
+                          <li><Link href="/#arrivals">Washers &amp; Grazers</Link></li>
                         </ul>
                       </div>
                       <div className="msep"></div>
@@ -87,9 +89,9 @@ export default function Header() {
                         <div className="mhead">Outdoor</div>
                         <div className="msub">Browse by category</div>
                         <ul>
-                          <li><a href="/#arrivals">Wall Lights</a></li>
-                          <li><a href="/#arrivals">Path Lights</a></li>
-                          <li><a href="/#arrivals">Bollards</a></li>
+                          <li><Link href="/#arrivals">Wall Lights</Link></li>
+                          <li><Link href="/#arrivals">Path Lights</Link></li>
+                          <li><Link href="/#arrivals">Bollards</Link></li>
                         </ul>
                       </div>
                     </div>
@@ -97,26 +99,26 @@ export default function Header() {
                 </div>
               </li>
               <li className="has-drop">
-                <a className="link" href="/projects">
+                <Link className="link" href="/projects">
                   Our Work<span className="caret"></span>
-                </a>
+                </Link>
                 <div className="drop">
-                  <a href="/projects">Projects</a>
-                  <a href="/clients">Clients</a>
+                  <Link href="/projects">Projects</Link>
+                  <Link href="/clients">Clients</Link>
                 </div>
               </li>
               <li>
-                <a className="link" href="/inspiration">Inspiration</a>
+                <Link className="link" href="/inspiration">Inspiration</Link>
               </li>
               <li className="has-drop">
-                <a className="link" href="/company">
+                <Link className="link" href="/company">
                   More<span className="caret"></span>
-                </a>
+                </Link>
                 <div className="drop">
-                  <a href="/company">About Us</a>
-                  <a href="/contact">Contact Us</a>
-                  <a href="/career">Careers</a>
-                  <a href="/#contact">Catalogues</a>
+                  <Link href="/company">About Us</Link>
+                  <Link href="/contact">Contact Us</Link>
+                  <Link href="/career">Careers</Link>
+                  <Link href="/#contact">Catalogues</Link>
                 </div>
               </li>
             </ul>
@@ -161,10 +163,10 @@ export default function Header() {
                 )}
               </button>
             </div>
-            <a href="/contact" className="nav-cta">
+            <Link href="/contact" className="nav-cta">
               <span className="lbl-d">Get in Touch</span>
               <span className="lbl-m">Contact</span>
-            </a>
+            </Link>
           </div>
         </div>
       </header>

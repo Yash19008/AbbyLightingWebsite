@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import Link from "next/link";
 import type { NewArrivalCategory, NewArrivalProduct } from "@/types/new-arrival";
 
 interface NewArrivalsSectionProps {
@@ -194,7 +195,7 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
             >
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product: NewArrivalProduct, index: number) => (
-                  <a 
+                  <Link 
                     key={product.id}
                     className="product reveal is-visible" 
                     style={{
@@ -219,7 +220,7 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
                       position: "relative",
                       boxSizing: "border-box",
                       "--i": index,
-                    } as any} 
+                    } as React.CSSProperties} 
                     href="/#contact"
                   >
                     <div
@@ -276,7 +277,7 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
                     >
                       {product.parent_category} · {product.category}
                     </p>
-                  </a>
+                  </Link>
                 ))
               ) : (
                 <div className="products-empty-state" style={{ width: "100%", padding: "40px 0" }}>
