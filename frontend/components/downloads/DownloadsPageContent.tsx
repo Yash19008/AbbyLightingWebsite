@@ -41,6 +41,7 @@ export default function DownloadsPageContent() {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [visibleLimit, setVisibleLimit] = useState<number>(6);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -86,7 +87,7 @@ export default function DownloadsPageContent() {
     let isMounted = true;
     async function loadData() {
       try {
-        setLoading(true);
+        setIsLoading(true);
         const [catRes, itemsRes] = await Promise.all([
           getCatalogueCategories(),
           getCatalogues(),
@@ -127,9 +128,9 @@ export default function DownloadsPageContent() {
           }
         }
       } catch (err) {
-        console.error("Error loading catalogues:", err);
+        console.error("Error loading catalogue data:", err);
       } finally {
-        if (isMounted) setLoading(false);
+        setIsLoading(false);
       }
     }
 

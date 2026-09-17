@@ -13,10 +13,78 @@ class DecorativeProductApiController extends Controller
      */
     public function index(Request $request)
     {
-        $products = DecProduct::with(['category', 'collection'])
-            ->where('status', 'published')
-            ->orderBy('order')
-            ->paginate($request->get('per_page', 15));
+        $query = DecProduct::with([
+            'category', 
+            'collection', 
+            'variants' => function($q) { 
+                $q->where('status', 'active')->orderBy('order'); 
+            }, 
+            'variants.colorMaster', 
+            'galleries' => function($q) { 
+                $q->orderBy('order')->limit(3); 
+            }
+        ])->where('status', 'published');
+
+        if ($request->has('category')) {
+            $categories = array_filter(explode(',', $request->get('category')));
+            if (count($categories) > 0) {
+                $query->whereHas('category', function($q) use ($categories) {
+                    $q->whereIn('name', $categories);
+                });
+            }
+        }
+
+        if ($request->has('collection')) {
+            $collections = array_filter(explode(',', $request->get('collection')));
+            if (count($collections) > 0) {
+                $query->whereHas('collection', function($q) use ($collections) {
+                    $q->whereIn('name', $collections);
+                });
+            }
+        }
+
+        $sort = $request->get('sort', 'new');
+        if ($sort === 'new') {
+            $query->orderBy('created_at', 'desc');
+        } elseif ($sort === 'name_asc') {
+            $query->orderBy('name', 'asc');
+        } elseif ($sort === 'name_desc') {
+            $query->orderBy('name', 'desc');
+        } else {
+            $query->orderBy('order', 'asc');
+        }
+
+        $products = $query->paginate($request->get('per_page', 8));
+
+        $products->getCollection()->transform(function ($product) {
+            $variants = $product->variants->map(function ($variant) {
+                return [
+                    'id' => $variant->id,
+                    'name' => $variant->name,
+                    'color' => $variant->colorMaster ? $variant->colorMaster->css_value : '#e0e0e0',
+                    'imageOff' => $this->getImagePath($variant->main_image, 'uploads/decorative'),
+                    'imageOn' => $this->getImagePath($variant->lighton_image, 'uploads/decorative')
+                ];
+            });
+
+            $galleries = $product->galleries->map(function ($gallery) {
+                return [
+                    'id' => $gallery->id,
+                    'image' => $this->getImagePath($gallery->image, 'uploads/decorative_gallery')
+                ];
+            });
+
+            return [
+                'id' => $product->id,
+                'slug' => $product->slug,
+                'name' => $product->name,
+                'category' => $product->category ? $product->category->name : 'Uncategorized',
+                'collection' => $product->collection ? $product->collection->name : 'General',
+                'isNew' => $product->created_at ? $product->created_at->diffInDays(now()) <= 30 : false,
+                'variants' => $variants,
+                'galleries' => $galleries
+            ];
+        });
 
         return response()->json($products);
     }
@@ -36,11 +104,24 @@ class DecorativeProductApiController extends Controller
         ]);
     }
 
+    /**
+     * Get all collections for frontend filter
+     */
+    public function collections()
+    {
+        $collections = \App\Models\Collection::where('is_active', true)->orderBy('name', 'asc')->get();
+            
+        return response()->json([
+            'success' => true,
+            'data' => $collections
+        ]);
+    }
+
     private function getImagePath($filename, $directory) {
         if (!$filename) return null;
         if (str_starts_with($filename, 'http')) return $filename;
-        if (str_contains($filename, '/')) return $filename; // Already has a path
-        return $directory . '/' . $filename;
+        if (str_contains($filename, '/')) return url('/') . '/' . ltrim($filename, '/'); // Already has a path
+        return asset('storage/' . $directory . '/' . $filename);
     }
 
     /**
@@ -62,7 +143,15 @@ class DecorativeProductApiController extends Controller
             'galleries' => function ($query) {
                 $query->orderBy('order');
             },
-            'relatedProducts.category' // Load related products and their categories
+            'relatedProducts.category',
+            'relatedProducts.collection',
+            'relatedProducts.variants' => function ($q) {
+                $q->where('status', 'active')->orderBy('order');
+            },
+            'relatedProducts.variants.colorMaster',
+            'relatedProducts.galleries' => function ($q) {
+                $q->orderBy('order')->limit(3);
+            }
         ])->where('slug', $slug)
           ->where('status', 'published')
           ->firstOrFail();
@@ -107,6 +196,8 @@ class DecorativeProductApiController extends Controller
             ];
         });
 
+
+
         $response = [
             'id' => $product->id,
             'name' => $product->name,
@@ -136,14 +227,32 @@ class DecorativeProductApiController extends Controller
                 ];
             }),
             'related_products' => $product->relatedProducts->map(function ($related) {
+                $variants = $related->variants->map(function ($variant) {
+                    return [
+                        'id' => $variant->id,
+                        'name' => $variant->name,
+                        'color' => $variant->colorMaster ? $variant->colorMaster->css_value : '#e0e0e0',
+                        'imageOff' => $this->getImagePath($variant->main_image, 'uploads/decorative'),
+                        'imageOn' => $this->getImagePath($variant->lighton_image, 'uploads/decorative')
+                    ];
+                });
+
+                $galleries = $related->galleries->map(function ($gallery) {
+                    return [
+                        'id' => $gallery->id,
+                        'image' => $this->getImagePath($gallery->image, 'uploads/decorative_gallery')
+                    ];
+                });
+
                 return [
                     'id' => $related->id,
-                    'name' => $related->name,
                     'slug' => $related->slug,
-                    'featured_image' => $this->getImagePath($related->featured_image, 'uploads/decorative'),
-                    'category' => $related->category ? [
-                        'name' => $related->category->name
-                    ] : null
+                    'name' => $related->name,
+                    'category' => $related->category ? $related->category->name : 'Uncategorized',
+                    'collection' => $related->collection ? $related->collection->name : 'General',
+                    'isNew' => false,
+                    'variants' => $variants,
+                    'galleries' => $galleries
                 ];
             })
         ];

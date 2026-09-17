@@ -11,7 +11,7 @@ const API_URL = baseUrl.endsWith("/api") ? baseUrl : `${baseUrl}/api`;
 async function fetchProductBySlug(slug: string): Promise<DecProductDetail | null> {
   try {
     const res = await fetch(`${API_URL}/dec-products/${slug}`, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      cache: 'no-store', // Disable cache in development
     });
     
     if (!res.ok) {

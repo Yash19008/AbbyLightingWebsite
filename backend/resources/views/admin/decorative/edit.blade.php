@@ -1386,26 +1386,24 @@ $(document).ready(function() {
     }
 
     function loadRelatedProducts() {
-        $.get('{{ url('admin/decorative-products/'.$product->id.'/related') }}', function(res) {
-            if (res.success) {
-                // Update toggles
-                $('#toggle-family-section').prop('checked', res.show_family_section);
-                if (res.show_family_section) {
-                    $('#family-section-card').css('opacity', '1');
-                } else {
-                    $('#family-section-card').css('opacity', '0.6');
-                }
+        $.ajax({
+            url: '{{ url('admin/decorative-products/'.$product->id.'/related') }}',
+            method: 'GET',
+            cache: false,
+            success: function(res) {
+                if (res.success) {
 
-                // Render Manual
-                var mBody = $('.related-tbody[data-type="manual"]').empty();
-                if (res.manual.length > 0) {
-                    $('#no-related-manual').hide();
-                    res.manual.forEach(function(item) { mBody.append(renderRelatedRow(item)); });
-                } else {
-                    $('#no-related-manual').show();
-                }
+                    // Render Manual
+                    var mBody = $('.related-tbody[data-type="manual"]').empty();
+                    if (res.manual.length > 0) {
+                        $('#no-related-manual').hide();
+                        res.manual.forEach(function(item) { mBody.append(renderRelatedRow(item)); });
+                    } else {
+                        $('#no-related-manual').show();
+                    }
 
-                initRelatedSortables();
+                    initRelatedSortables();
+                }
             }
         });
     }
@@ -1417,21 +1415,7 @@ $(document).ready(function() {
         }
     });
 
-    // Toggle family
-    $('#toggle-family-section').on('change', function() {
-        var isChecked = $(this).is(':checked');
-        $.ajax({
-            url: '{{ url('admin/decorative-products/'.$product->id.'/related/toggle-family') }}',
-            method: 'POST',
-            data: { _token: '{{ csrf_token() }}', show_family_section: isChecked ? 1 : 0 },
-            success: function(res) {
-                if (res.success) {
-                    $('#family-section-card').css('opacity', isChecked ? '1' : '0.6');
-                    toastr.success('Settings updated');
-                }
-            }
-        });
-    });
+
 
     // Open Search Modal
     $('.btn-add-related').on('click', function() {
@@ -1458,25 +1442,30 @@ $(document).ready(function() {
             $('#related-search-results').empty().hide();
             $('#related-search-loading').show();
             
-            $.get('{{ url('admin/decorative-products/related/search') }}', { q: q, exclude_id: {{ $product->id }} }, function(res) {
-                $('#related-search-loading').hide();
-                var html = '';
-                if (res.results && res.results.length > 0) {
-                    html += '<ul class="list-group list-group-flush mb-0">';
-                    res.results.forEach(function(p) {
-                        html += '<li class="list-group-item d-flex align-items-center justify-content-between p-2" style="font-size:13px;">' +
-                            '<div class="d-flex align-items-center">' +
-                                '<div style="width:32px; height:32px; border-radius:4px; border:1px solid #eee; background:url(\'' + (p.image || '') + '\') center/cover; margin-right:10px;"></div>' +
-                                '<div><div style="font-weight:600; color:#374151;">' + p.name + '</div><div style="font-size:11px; color:#6b7280;">' + (p.sku || '') + '</div></div>' +
-                            '</div>' +
-                            '<button type="button" class="btn btn-sm btn-outline-primary btn-attach-related px-2 py-1" data-id="' + p.id + '" style="font-size:12px; font-weight:600;"><i class="ft-plus"></i> Add</button>' +
-                        '</li>';
-                    });
-                    html += '</ul>';
-                } else {
-                    html = '<div class="p-3 text-center text-muted" style="font-size:13px;">No products found.</div>';
+            $.ajax({
+                url: '{{ url('admin/decorative-products/related/search') }}',
+                method: 'GET',
+                data: { q: q, exclude_id: {{ $product->id }} },
+                cache: false,
+                success: function(res) {
+                    $('#related-search-loading').hide();
+                    var $res = $('#related-search-results').empty();
+                    if (res.results && res.results.length > 0) {
+                        res.results.forEach(function(r) {
+                            var imgHtml = r.image ? '<div style="width:36px; height:36px; border-radius:6px; border:1px solid #eee; background:url(\''+r.image+'\') center/cover; margin-right:12px; flex-shrink:0;"></div>' : '<div style="width:36px; height:36px; border-radius:6px; border:1px solid #eee; background:#f9fafb; margin-right:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center;"><i class="ft-image text-muted"></i></div>';
+                            var skuHtml = r.sku ? '<div style="font-size:11px; color:#6b7280;">SKU: ' + r.sku + '</div>' : '';
+                            $res.append(
+                                '<div class="search-result-item d-flex align-items-center justify-content-between" style="padding:10px 16px; border-bottom:1px solid #f3f4f6;">' +
+                                    '<div class="d-flex align-items-center">' + imgHtml + '<div><div style="font-weight:600; font-size:13px; color:#374151;">' + r.name + '</div>' + skuHtml + '</div></div>' +
+                                    '<button type="button" class="btn btn-sm btn-outline-primary btn-attach-related p-1 px-2" data-id="'+r.id+'" style="font-size:11px; font-weight:600;"><i class="ft-plus"></i> Add</button>' +
+                                '</div>'
+                            );
+                        });
+                        $res.show();
+                    } else {
+                        $res.html('<div class="p-3 text-center text-muted" style="font-size:13px;">No products found.</div>').show();
+                    }
                 }
-                $('#related-search-results').html(html).show();
             });
         }, 400);
     });

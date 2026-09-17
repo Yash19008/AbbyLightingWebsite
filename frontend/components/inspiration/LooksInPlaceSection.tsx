@@ -34,11 +34,11 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const mappedLooks = compositions.map(c => ({
-    title: c.title,
-    kicker: c.kicker || c.category,
-    room: c.category ? c.category.toLowerCase() : "all",
-    image: c.image
+  const mappedLooks = compositions.map((c: Record<string, unknown>) => ({
+    title: c.title as string,
+    kicker: (c.kicker as string) || (c.category as string),
+    room: c.category ? (c.category as string).toLowerCase() : "all",
+    image: c.image as string
   }));
 
   const filteredLooks = mappedLooks.filter(

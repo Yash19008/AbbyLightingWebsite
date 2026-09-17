@@ -1674,3 +1674,6 @@
 .gallery-stage-wrapper { position: relative; }
 .gallery-stage-image { object-fit: cover; }
 .collection-band-image { object-fit: cover; }
+
+.related-card-wrapper .decorative-card-copy h3 { font-size: 14px !important; margin-bottom: 2px !important; }
+.related-card-wrapper .decorative-card-copy p, .related-card-wrapper .decorative-collection { font-size: 11px !important; }

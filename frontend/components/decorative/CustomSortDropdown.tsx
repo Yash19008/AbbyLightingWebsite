@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const SORT_OPTIONS = [
-  { label: 'Most popular', value: 'popular' },
   { label: 'New products', value: 'new' },
   { label: 'Alphabetical A-Z', value: 'name_asc' },
   { label: 'Alphabetical Z-A', value: 'name_desc' },

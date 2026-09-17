@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -12,7 +12,12 @@ interface Variant {
   imageOn: string;
 }
 
-interface Product {
+interface Gallery {
+  id: string;
+  image: string;
+}
+
+export interface Product {
   id: string;
   slug: string;
   name: string;
@@ -20,6 +25,7 @@ interface Product {
   collection: string;
   isNew: boolean;
   variants: Variant[];
+  galleries?: Gallery[];
 }
 
 interface DecorativeCardProps {
@@ -31,18 +37,27 @@ interface DecorativeCardProps {
 
 export default function DecorativeCard({ product, order, filterDelay, isGlobalLightOn }: DecorativeCardProps) {
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  const totalImages = 1 + (product.galleries?.length || 0);
+
+  useEffect(() => {
+    setActiveImageIndex(0);
+  }, [isGlobalLightOn]);
 
   const handleNext = (e: React.MouseEvent) => {
     e.preventDefault();
-    setActiveVariantIndex((prev) => (prev + 1) % product.variants.length);
+    setActiveImageIndex((prev) => (prev + 1) % totalImages);
   };
 
   const handlePrev = (e: React.MouseEvent) => {
     e.preventDefault();
-    setActiveVariantIndex((prev) => (prev - 1 + product.variants.length) % product.variants.length);
+    setActiveImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
   };
 
-  const activeVariant = product.variants[activeVariantIndex];
+  const activeVariant = product.variants && product.variants.length > 0 
+    ? product.variants[activeVariantIndex] 
+    : null;
 
   return (
     <div
@@ -53,32 +68,51 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
         className="decorative-card decorative-reveal is-visible"
         style={{ '--card-order': order, '--light-delay': `${order * 50}ms` } as React.CSSProperties}
       >
-        <div className={`decorative-card-image ${isGlobalLightOn ? 'is-lit' : ''}`}>
+        <div className={`decorative-card-image ${isGlobalLightOn ? 'is-lit' : 'is-unlit'}`}>
           <Link
             className="decorative-card-main-link"
             href={`/product-detail/${product.slug}`}
             aria-label={`View ${product.name}`}
           >
-            <Image
-              className="decorative-product-image is-current is-light-off"
-              src={activeVariant.imageOff}
-              alt=""
-              fill
-              sizes="(max-width: 600px) 100vw, 33vw"
-              aria-hidden="true"
-            />
-            <Image
-              className="decorative-product-image is-current is-light-on"
-              src={activeVariant.imageOn}
-              alt={`${product.name} in ${activeVariant.name}, light on`}
-              fill
-              sizes="(max-width: 600px) 100vw, 33vw"
-            />
+            {activeImageIndex === 0 ? (
+              <>
+                {activeVariant?.imageOff && (
+                  <Image
+                    className="decorative-product-image is-current is-light-off"
+                    src={activeVariant.imageOff}
+                    alt=""
+                    fill
+                    sizes="(max-width: 600px) 100vw, 33vw"
+                    aria-hidden="true"
+                  />
+                )}
+                {activeVariant?.imageOn && (
+                  <Image
+                    className="decorative-product-image is-current is-light-on"
+                    src={activeVariant.imageOn}
+                    alt={`${product.name} in ${activeVariant?.name || 'default'}, light on`}
+                    fill
+                    sizes="(max-width: 600px) 100vw, 33vw"
+                  />
+                )}
+              </>
+            ) : (
+              product.galleries?.[activeImageIndex - 1]?.image && (
+                <Image
+                  className="decorative-product-image is-current is-light-off is-light-on"
+                  src={product.galleries[activeImageIndex - 1].image}
+                  alt={`${product.name} gallery image`}
+                  fill
+                  sizes="(max-width: 600px) 100vw, 33vw"
+                  style={{ objectFit: 'cover' }}
+                />
+              )
+            )}
           </Link>
 
           {product.isNew && <span className="decorative-badge">New</span>}
 
-          {product.variants.length > 1 && (
+          {totalImages > 1 && (
             <>
               <button
                 type="button"
@@ -97,15 +131,16 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                 ›
               </button>
               <span className="decorative-gallery-dots">
-                {product.variants.map((variant, index) => (
+                {/* 1 dot for variant, plus dots for galleries */}
+                {[0, ...(product.galleries || []).map((_, i) => i + 1)].map((dotIndex) => (
                   <button
-                    key={variant.id}
+                    key={dotIndex}
                     type="button"
-                    className={index === activeVariantIndex ? 'active' : ''}
-                    aria-label={`Show ${product.name} view ${index + 1}`}
+                    className={dotIndex === activeImageIndex ? 'active' : ''}
+                    aria-label={`Show ${product.name} view ${dotIndex + 1}`}
                     onClick={(e) => {
                       e.preventDefault();
-                      setActiveVariantIndex(index);
+                      setActiveImageIndex(dotIndex);
                     }}
                   />
                 ))}
@@ -118,7 +153,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
           <h3>{product.name}</h3>
           <p>{product.category}</p>
           <div className="decorative-swatches" aria-label={`${product.name} finishes`}>
-            {product.variants.map((variant, index) => (
+            {product.variants.slice(0, 8).map((variant, index) => (
               <button
                 key={variant.id}
                 type="button"
@@ -129,11 +164,20 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                 onClick={(e) => {
                   e.preventDefault();
                   setActiveVariantIndex(index);
+                  setActiveImageIndex(0); // Snap back to main image
                 }}
               />
             ))}
+            {product.variants.length > 8 && (
+              <span 
+                className="decorative-swatch-more" 
+                style={{ fontSize: '11px', color: 'var(--decorative-muted)', display: 'flex', alignItems: 'center', marginLeft: '2px' }}
+              >
+                +{product.variants.length - 8}
+              </span>
+            )}
           </div>
-          <span className="decorative-collection">{product.collection} Collection</span>
+          <span className="decorative-collection">{product.collection}</span>
         </div>
       </article>
     </div>

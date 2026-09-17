@@ -15,6 +15,7 @@ interface DecorativeToolbarProps {
   setSortBy: (val: string) => void;
   isLightOn: boolean;
   setIsLightOn: (on: boolean) => void;
+  categories: string[];
 }
 
 export default function DecorativeToolbar({
@@ -26,6 +27,7 @@ export default function DecorativeToolbar({
   setSortBy,
   isLightOn,
   setIsLightOn,
+  categories,
 }: DecorativeToolbarProps) {
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
@@ -56,7 +58,7 @@ export default function DecorativeToolbar({
           value={activeCategory}
           onChange={(e) => setActiveCategory(e.target.value)}
         >
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
             </option>
@@ -73,7 +75,7 @@ export default function DecorativeToolbar({
             transform: `translateX(${indicatorStyle.left}px)`,
           }}
         />
-        {CATEGORIES.map((cat) => (
+        {categories.map((cat) => (
           <button
             key={cat}
             ref={(el) => {
@@ -95,10 +97,11 @@ export default function DecorativeToolbar({
           type="button"
           className="abby-desktop-action-btn decorative-filter-button"
           onClick={() => setIsFilterModalOpen(true)}
+          style={{ whiteSpace: 'nowrap' }}
         >
           <span style={{ fontSize: '14px', lineHeight: 1 }} aria-hidden="true">☷</span>
           FILTER BY
-          {(activeFilters.category.length > 0 || activeFilters.finish.length > 0 || activeFilters.collection.length > 0) && (
+          {(activeFilters.category.length > 0 || activeFilters.collection.length > 0) && (
             <span style={{ background: '#f6c177', borderRadius: '50%', width: '6px', height: '6px', display: 'inline-block' }} />
           )}
         </button>

@@ -21,8 +21,8 @@ export default async function MegaDropdown() {
             <div className="msub">Browse by category</div>
             <ul>
               {architecturalCategories.length > 0 ? (
-                architecturalCategories.map((category) => (
-                  <li key={category.id}>
+                architecturalCategories.map((category: Record<string, unknown>) => (
+                  <li key={category.id as number}>
                     <a href={category.uri ? category.uri : `/products?category=${category.slug || ''}`}>
                       {category.title || category.name}
                     </a>

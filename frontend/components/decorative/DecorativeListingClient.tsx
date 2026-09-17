@@ -1,177 +1,114 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import DecorativeCard from './DecorativeCard';
 import DecorativeFilterModal, { FilterState } from './DecorativeFilterModal';
 import DecorativeToolbar from './DecorativeToolbar';
 
-// Temporary static data based on reference.html
-const STATIC_PRODUCTS = [
-  {
-    id: 'p1',
-    slug: 'cymbal',
-    name: 'Cymbal',
-    category: 'Pendant',
-    collection: 'Quarry',
-    isNew: true,
-    variants: [
-      { id: 'v1', name: 'White', color: '#f2f0ea', imageOff: '/images/decorative/cymbal-off.png', imageOn: '/images/decorative/cymbal-on.png' },
-      { id: 'v2', name: 'Black', color: '#1f1f1f', imageOff: '/images/decorative/cymbal-off.png', imageOn: '/images/decorative/cymbal-on.png' },
-      { id: 'v3', name: 'Terra', color: '#9c482a', imageOff: '/images/decorative/cymbal-off.png', imageOn: '/images/decorative/cymbal-on.png' },
-    ]
-  },
-  {
-    id: 'p2',
-    slug: 'dew',
-    name: 'Dew',
-    category: 'Pendant',
-    collection: 'Quarry',
-    isNew: false,
-    variants: [
-      { id: 'v4', name: 'White', color: '#f2f0ea', imageOff: '/images/decorative/dew-off.png', imageOn: '/images/decorative/dew-on.png' },
-      { id: 'v5', name: 'Black', color: '#1f1f1f', imageOff: '/images/decorative/dew-off.png', imageOn: '/images/decorative/dew-on.png' },
-      { id: 'v6', name: 'Terra', color: '#9c482a', imageOff: '/images/decorative/dew-off.png', imageOn: '/images/decorative/dew-on.png' },
-    ]
-  },
-  {
-    id: 'p3',
-    slug: 'apex',
-    name: 'Apex',
-    category: 'Pendant',
-    collection: 'Quarry',
-    isNew: false,
-    variants: [
-      { id: 'v7', name: 'White', color: '#f2f0ea', imageOff: '/images/decorative/apex-off.png', imageOn: '/images/decorative/apex-on.png' },
-      { id: 'v8', name: 'Black', color: '#1f1f1f', imageOff: '/images/decorative/apex-off.png', imageOn: '/images/decorative/apex-on.png' },
-      { id: 'v9', name: 'Terra', color: '#9c482a', imageOff: '/images/decorative/apex-off.png', imageOn: '/images/decorative/apex-on.png' },
-    ]
-  },
-  {
-    id: 'p4',
-    slug: 'node',
-    name: 'Node',
-    category: 'Pendant',
-    collection: 'Quarry',
-    isNew: false,
-    variants: [
-      { id: 'v10', name: 'White', color: '#f2f0ea', imageOff: '/images/decorative/node-off.png', imageOn: '/images/decorative/node-on.png' },
-      { id: 'v11', name: 'Black', color: '#1f1f1f', imageOff: '/images/decorative/node-off.png', imageOn: '/images/decorative/node-on.png' },
-      { id: 'v12', name: 'Terra', color: '#9c482a', imageOff: '/images/decorative/node-off.png', imageOn: '/images/decorative/node-on.png' },
-    ]
-  },
-  {
-    id: 'p5',
-    slug: 'seam',
-    name: 'Seam',
-    category: 'Pendant',
-    collection: 'Quarry',
-    isNew: false,
-    variants: [
-      { id: 'v13', name: 'White', color: '#f2f0ea', imageOff: '/images/decorative/seam-off.png', imageOn: '/images/decorative/seam-on.png' },
-      { id: 'v14', name: 'Black', color: '#1f1f1f', imageOff: '/images/decorative/seam-off.png', imageOn: '/images/decorative/seam-on.png' },
-      { id: 'v15', name: 'Terra', color: '#9c482a', imageOff: '/images/decorative/seam-off.png', imageOn: '/images/decorative/seam-on.png' },
-    ]
-  },
-  {
-    id: 'p6',
-    slug: 'orb',
-    name: 'Orb',
-    category: 'Pendant',
-    collection: 'Quarry',
-    isNew: false,
-    variants: [
-      { id: 'v16', name: 'White', color: '#f2f0ea', imageOff: '/images/decorative/orb-off.png', imageOn: '/images/decorative/orb-on.png' },
-      { id: 'v17', name: 'Black', color: '#1f1f1f', imageOff: '/images/decorative/orb-off.png', imageOn: '/images/decorative/orb-on.png' },
-      { id: 'v18', name: 'Terra', color: '#9c482a', imageOff: '/images/decorative/orb-off.png', imageOn: '/images/decorative/orb-on.png' },
-    ]
-  },
-  {
-    id: 'p7',
-    slug: 'canopy',
-    name: 'Canopy',
-    category: 'Pendant',
-    collection: 'Quarry',
-    isNew: false,
-    variants: [
-      { id: 'v19', name: 'White', color: '#f2f0ea', imageOff: '/images/decorative/canopy-off.png', imageOn: '/images/decorative/canopy-on.png' },
-      { id: 'v20', name: 'Black', color: '#1f1f1f', imageOff: '/images/decorative/canopy-off.png', imageOn: '/images/decorative/canopy-on.png' },
-      { id: 'v21', name: 'Terra', color: '#9c482a', imageOff: '/images/decorative/canopy-off.png', imageOn: '/images/decorative/canopy-on.png' },
-    ]
-  },
-  {
-    id: 'p8',
-    slug: 'turret',
-    name: 'Turret',
-    category: 'Pendant',
-    collection: 'Quarry',
-    isNew: false,
-    variants: [
-      { id: 'v22', name: 'White', color: '#f2f0ea', imageOff: '/images/decorative/turret-off.png', imageOn: '/images/decorative/turret-on.png' },
-      { id: 'v23', name: 'Black', color: '#1f1f1f', imageOff: '/images/decorative/turret-off.png', imageOn: '/images/decorative/turret-on.png' },
-      { id: 'v24', name: 'Terra', color: '#9c482a', imageOff: '/images/decorative/turret-off.png', imageOn: '/images/decorative/turret-on.png' },
-    ]
-  },
-  {
-    id: 'p9',
-    slug: 'symphony-iv',
-    name: 'Symphony IV',
-    category: 'Pendant',
-    collection: 'Symphony',
-    isNew: false,
-    variants: [
-      { id: 'v25', name: 'Coral', color: '#c0392b', imageOff: '/images/decorative/symphonyiv-off.png', imageOn: '/images/decorative/symphonyiv-on.png' },
-      { id: 'v26', name: 'Amber', color: '#e6b422', imageOff: '/images/decorative/symphonyiv-off.png', imageOn: '/images/decorative/symphonyiv-on.png' },
-      { id: 'v27', name: 'Teal', color: '#1f7a7a', imageOff: '/images/decorative/symphonyiv-off.png', imageOn: '/images/decorative/symphonyiv-on.png' },
-    ]
-  },
-];
-
+import { Product } from './DecorativeCard';
 
 export default function DecorativeListingClient() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [featuredCategories, setFeaturedCategories] = useState<string[]>(['All']);
+  const [availableCollections, setAvailableCollections] = useState<string[]>([]);
+  
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPaginating, setIsPaginating] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+
   const [activeCategory, setActiveCategory] = useState('All');
   const [isLightOn, setIsLightOn] = useState(true);
   const [sortBy, setSortBy] = useState('new');
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<FilterState>({
     category: [],
-    finish: [],
     collection: [],
   });
 
+  const handleTabChange = (cat: string) => {
+    setActiveCategory(cat);
+    setActiveFilters((prev) => ({
+      ...prev,
+      category: cat === 'All' ? [] : [cat]
+    }));
+    setPage(1);
+  };
 
-  const filteredProducts = useMemo(() => {
-    let result = [...STATIC_PRODUCTS];
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        
+        const [categoriesRes, collectionsRes] = await Promise.all([
+          fetch(`${API_URL}/api/dec-categories`),
+          fetch(`${API_URL}/api/dec-collections`)
+        ]);
 
-    if (activeCategory !== 'All') {
-      result = result.filter((p) => p.category === activeCategory);
-    }
+        const categoriesData = await categoriesRes.json();
+        if (categoriesData.data) {
+          const categoryNames = categoriesData.data.map((c: any) => c.name);
+          setFeaturedCategories(['All', ...categoryNames]);
+        }
 
-    if (activeFilters.category.length > 0) {
-      result = result.filter((p) => activeFilters.category.includes(p.category));
-    }
-    if (activeFilters.collection.length > 0) {
-      result = result.filter((p) => activeFilters.collection.includes(p.collection));
-    }
-    if (activeFilters.finish.length > 0) {
-      result = result.filter((p) =>
-        p.variants.some((v) => activeFilters.finish.includes(v.name))
-      );
-    }
+        const collectionsData = await collectionsRes.json();
+        if (collectionsData.data) {
+          const collectionNames = collectionsData.data.map((c: any) => c.name);
+          setAvailableCollections(collectionNames);
+        }
+      } catch (error) {
+        console.error('Error fetching filters:', error);
+      }
+    };
+    fetchFilters();
+  }, []);
 
-    if (sortBy === 'name_asc') {
-      result.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortBy === 'name_desc') {
-      result.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (sortBy === 'popular') {
-      // Stub: in real app, sort by view count or sales
-      result.sort((a, b) => (a.isNew === b.isNew ? 0 : a.isNew ? -1 : 1));
-    } else {
-      // sort by new
-      result.sort((a, b) => (a.isNew === b.isNew ? 0 : a.isNew ? -1 : 1));
-    }
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        if (page === 1) setIsLoading(true);
+        else setIsPaginating(true);
+        
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const params = new URLSearchParams({
+          page: page.toString(),
+          per_page: '8',
+          sort: sortBy,
+        });
 
-    return result;
-  }, [activeCategory, sortBy, activeFilters]);
+        if (activeFilters.category.length > 0) {
+          params.append('category', activeFilters.category.join(','));
+        }
+        if (activeFilters.collection.length > 0) {
+          params.append('collection', activeFilters.collection.join(','));
+        }
+
+        const response = await fetch(`${API_URL}/api/dec-products?${params.toString()}`);
+        const data = await response.json();
+        
+        if (data.data) {
+          if (page === 1) {
+            setProducts(data.data);
+          } else {
+            setProducts((prev) => [...prev, ...data.data]);
+          }
+          setHasMore(data.current_page < data.last_page);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setIsLoading(false);
+        setIsPaginating(false);
+      }
+    };
+    fetchProducts();
+  }, [page, activeFilters, sortBy]);
+
+  const availableCategories = useMemo(() => {
+    return featuredCategories.filter((c) => c !== 'All');
+  }, [featuredCategories]);
+
+
 
   return (
     <div className="decorative-page">
@@ -195,33 +132,49 @@ export default function DecorativeListingClient() {
         <div className="decorative-shell">
           <DecorativeToolbar
             activeCategory={activeCategory}
-            setActiveCategory={setActiveCategory}
+            setActiveCategory={handleTabChange}
             activeFilters={activeFilters}
             setIsFilterModalOpen={setIsFilterModalOpen}
             sortBy={sortBy}
-            setSortBy={setSortBy}
+            setSortBy={(val) => {
+              setSortBy(val);
+              setPage(1);
+            }}
             isLightOn={isLightOn}
             setIsLightOn={setIsLightOn}
+            categories={featuredCategories}
           />
 
           <div className="decorative-grid is-settled">
-            {filteredProducts.map((product, index) => (
-              <DecorativeCard
-                key={product.id}
-                product={product}
-                order={index % 3} // for staggered animation
-                filterDelay={index * 40}
-                isGlobalLightOn={isLightOn}
-              />
-            ))}
+            {isLoading ? (
+              <div style={{ textAlign: 'center', padding: '64px 0', color: '#666', gridColumn: '1 / -1' }}>
+                Loading products...
+              </div>
+            ) : products.length > 0 ? (
+              products.map((product, index) => (
+                <DecorativeCard
+                  key={product.id}
+                  product={product}
+                  order={index % 3} // for staggered animation
+                  filterDelay={index * 40}
+                  isGlobalLightOn={isLightOn}
+                />
+              ))
+            ) : null}
           </div>
 
-          {filteredProducts.length > 0 && (
+          {hasMore && (
             <div className="decorative-load-more">
-              <button type="button">Load more</button>
+              <button 
+                type="button" 
+                onClick={() => setPage((p) => p + 1)}
+                disabled={isPaginating}
+              >
+                {isPaginating ? 'Loading...' : 'Load more'}
+              </button>
             </div>
           )}
-          {filteredProducts.length === 0 && (
+          {!isLoading && products.length === 0 && (
             <div style={{ textAlign: 'center', padding: '64px 0', color: '#666' }}>
               No products found in this category.
             </div>
@@ -246,10 +199,16 @@ export default function DecorativeListingClient() {
       {isFilterModalOpen && (
         <DecorativeFilterModal
           initialFilters={activeFilters}
+          availableCategories={availableCategories}
+          availableCollections={availableCollections}
           onApply={(filters) => {
             setActiveFilters(filters);
-            // In original JS, applying filter also resets the top category tabs to "All"
-            setActiveCategory('All');
+            setPage(1);
+            if (filters.category.length === 1) {
+              setActiveCategory(filters.category[0]);
+            } else {
+              setActiveCategory('All');
+            }
           }}
           onClose={() => setIsFilterModalOpen(false)}
         />
