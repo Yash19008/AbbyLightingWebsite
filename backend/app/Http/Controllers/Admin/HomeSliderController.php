@@ -52,7 +52,9 @@ class HomeSliderController extends Controller
         // VALIDATION RULE
         $validation_array = array(
             'path'=>'required|image',
-            'for_mobile'=>'required|boolean',
+            'mobile_path'=>'nullable|image',
+            'tablet_path'=>'nullable|image',
+            'for_mobile'=>'nullable|boolean',
             'sort_order'=>'required|numeric',
             'is_active'=>'nullable|boolean',
             'heading'=>'nullable|string|max:255',
@@ -67,7 +69,9 @@ class HomeSliderController extends Controller
 
         $data = [
             'path' => $request->path->store('/uploads/homeslider','public'),
-            'for_mobile' => $request->for_mobile,
+            'mobile_path' => $request->hasFile('mobile_path') ? $request->mobile_path->store('/uploads/homeslider','public') : null,
+            'tablet_path' => $request->hasFile('tablet_path') ? $request->tablet_path->store('/uploads/homeslider','public') : null,
+            'for_mobile' => $request->input('for_mobile', 0),
             'is_active' => $request->input('is_active', 1) ? 1 : 0,
             'url' => $request->url ? $request->url : NULL,
             'sort_order' => $request->sort_order,
@@ -96,7 +100,7 @@ class HomeSliderController extends Controller
     public function update(Request $request, $id)
     {
         $update_array = array(
-            'for_mobile' => $request->for_mobile,
+            'for_mobile' => $request->input('for_mobile', 0),
             'is_active' => $request->input('is_active', 0) ? 1 : 0,
             'url' => $request->url ? $request->url : NULL,
             'sort_order' => $request->sort_order,
@@ -108,9 +112,20 @@ class HomeSliderController extends Controller
             'updated_at' => $this->currentDateTime
         );
 
-        $file = $request->path;
-        if ($file) {
+        if ($request->hasFile('path')) {
             $update_array['path'] = $request->path->store('/uploads/homeslider','public');
+        }
+
+        if ($request->hasFile('mobile_path')) {
+            $update_array['mobile_path'] = $request->mobile_path->store('/uploads/homeslider','public');
+        } elseif ($request->input('remove_mobile_path') == '1') {
+            $update_array['mobile_path'] = null;
+        }
+
+        if ($request->hasFile('tablet_path')) {
+            $update_array['tablet_path'] = $request->tablet_path->store('/uploads/homeslider','public');
+        } elseif ($request->input('remove_tablet_path') == '1') {
+            $update_array['tablet_path'] = null;
         }
 
         HomeSlider::where('id', '=', $id)

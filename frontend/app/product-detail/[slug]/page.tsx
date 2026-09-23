@@ -4,6 +4,9 @@ import "@/styles/product-detail.css";
 import { DecProductDetail } from "@/types/decorative";
 import { notFound } from "next/navigation";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Base URL for the API
 const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api").replace(/\/$/, "");
 const API_URL = baseUrl.endsWith("/api") ? baseUrl : `${baseUrl}/api`;
@@ -11,7 +14,7 @@ const API_URL = baseUrl.endsWith("/api") ? baseUrl : `${baseUrl}/api`;
 async function fetchProductBySlug(slug: string): Promise<DecProductDetail | null> {
   try {
     const res = await fetch(`${API_URL}/dec-products/${slug}`, {
-      cache: 'no-store', // Disable cache in development
+      cache: 'no-store',
     });
     
     if (!res.ok) {
@@ -28,7 +31,7 @@ async function fetchProductBySlug(slug: string): Promise<DecProductDetail | null
 
 export async function generateStaticParams() {
   try {
-    const res = await fetch(`${API_URL}/dec-products`);
+    const res = await fetch(`${API_URL}/dec-products`, { cache: 'no-store' });
     if (!res.ok) return [];
     
     const json = await res.json();

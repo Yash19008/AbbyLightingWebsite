@@ -27,8 +27,12 @@ const SORT_OPTIONS = [
   { id: "za", label: "Alphabetical Z-A" },
 ];
 
+const DEFAULT_JOURNAL_CATEGORIES: CategoryItem[] = [
+  { id: "all", label: "All" },
+];
+
 export default function JournalSection() {
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [categories, setCategories] = useState<CategoryItem[]>(DEFAULT_JOURNAL_CATEGORIES);
   const [stories, setStories] = useState<StoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -61,19 +65,19 @@ export default function JournalSection() {
   useEffect(() => {
     async function loadCategories() {
       try {
-        const catRes = await fetch(`${API_URL}/api/blog-categories?only_used=1`);
+        const catRes = await fetch(`${API_URL}/api/blog-categories?only_used=1`, { cache: 'no-store' });
         if (catRes.ok) {
           const catJson = await catRes.json();
           if (catJson.success && Array.isArray(catJson.data)) {
-            const dynamicCats: CategoryItem[] = [
+            const apiCats: CategoryItem[] = catJson.data.map((c: { slug: string; name: string }) => ({
+              id: c.slug,
+              label: c.name ? c.name.charAt(0).toUpperCase() + c.name.slice(1) : c.slug,
+              slug: c.slug,
+            }));
+            setCategories([
               { id: "all", label: "All" },
-              ...catJson.data.map((c: { slug: string; name: string }) => ({
-                id: c.slug,
-                label: c.name ? c.name.charAt(0).toUpperCase() + c.name.slice(1) : c.slug,
-                slug: c.slug,
-              })),
-            ];
-            setCategories(dynamicCats);
+              ...apiCats,
+            ]);
           }
         }
       } catch (err) {
@@ -99,7 +103,7 @@ export default function JournalSection() {
           params.set("category", activeCategory);
         }
 
-        const res = await fetch(`${API_URL}/api/blogs?${params.toString()}`);
+        const res = await fetch(`${API_URL}/api/blogs?${params.toString()}`, { cache: 'no-store' });
         if (res.ok && isMounted) {
           const json = await res.json();
           if (json.success && Array.isArray(json.data)) {
@@ -222,7 +226,7 @@ export default function JournalSection() {
       <div className="insp-shell">
         <div className="journal-head">
           <h2 className="section-title">Guides, trends &amp; stories</h2>
-          
+
           <div className="journal-actions">
             {/* Filter By */}
             {categories.length > 1 && (
@@ -237,12 +241,12 @@ export default function JournalSection() {
                   aria-expanded={isFilterOpen}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/>
+                    <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
                   </svg>
                   <span>FILTER BY</span>
                 </button>
                 {isFilterOpen && (
-                  <div className="filter-menu">
+                  <div className="filter-menu filter-manu-ex">
                     {categories.map((cat) => (
                       <button
                         key={cat.id}
@@ -299,7 +303,14 @@ export default function JournalSection() {
         </div>
 
         {categories.length > 1 && (
-          <div className="journal-tabs">
+          <div
+            className="journal-tabs"
+            onWheel={(e) => {
+              if (e.deltaY !== 0) {
+                e.currentTarget.scrollLeft += e.deltaY;
+              }
+            }}
+          >
             {categories.map((cat) => (
               <button
                 key={cat.id}

@@ -138,6 +138,30 @@
     scrollbar-width: none
 }
 
+.s-view-more-btn {
+    display: inline-block;
+    width: 218px;
+    height: 48px;
+    margin: 40px auto 0;
+    border: 1px solid #1a1c1d;
+    border-radius: 2px;
+    background: #fff;
+    color: #1a1c1d;
+    text-transform: uppercase;
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 46px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 180ms ease, color 180ms ease;
+}
+
+.s-view-more-btn:hover {
+    background: #111;
+    color: #fff;
+}
+
 .s-look,
 .s-place {
     position: relative;
@@ -327,7 +351,7 @@
 }
 
 .s-catalogue {
-    height: 420px;
+    height: 450px;
     position: relative;
     color: #fff
 }
@@ -359,7 +383,7 @@
 
 .s-catalogue h2 em {
     display: block;
-    font: italic 45px 'Libre Baskerville';
+    font: italic 37px 'Libre Baskerville';
     color: #f6c177
 }
 
@@ -648,5 +672,291 @@
 
     .s-related p {
         font-size: 10px !important;
+    }
+}
+
+/* ==========================================================================
+   Tablet Responsiveness (701px - 1024px)
+   ========================================================================== */
+@media (min-width: 701px) and (max-width: 1024px) {
+    /* Hero Section */
+    .s-hero {
+        height: 480px;
+        min-height: 440px;
+    }
+
+    .s-hero-copy {
+        padding: 100px 5vw 32px;
+    }
+
+    .s-crumb {
+        top: 96px;
+        left: 5vw;
+        font-size: 11.5px;
+    }
+
+    .s-hero h1 {
+        font-size: 38px;
+        line-height: 1.3;
+        padding-top: 30px;
+    }
+
+    .s-hero h1 em {
+        font-size: 40px;
+        line-height: 1.2;
+    }
+
+    .s-hero-copy > p:last-child {
+        font-size: 15px;
+        line-height: 1.4;
+        max-width: 560px;
+        margin-top: 24px;
+    }
+
+    /* Section Headers */
+    .s-section {
+        padding: 56px 5vw;
+    }
+
+    .s-head {
+        margin-bottom: 32px;
+    }
+
+    .s-head h2 {
+        font-size: 28px;
+        line-height: 1.25;
+        margin-bottom: 10px;
+        max-width: 100%;
+        width: auto;
+    }
+
+    .s-head p {
+        font-size: 14.5px;
+        line-height: 1.5;
+        max-width: 100%;
+        width: auto;
+    }
+
+    /* Parameters Grid */
+    .s-parameter-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .s-parameter-grid article {
+        height: 270px;
+        padding: 24px 22px;
+    }
+
+    .s-parameter-grid small {
+        font-size: 12px;
+    }
+
+    .s-parameter-grid h3 {
+        font-size: 18px;
+    }
+
+    .s-parameter-grid p {
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    /* Compositions / Looks Section */
+    .s-inspire,
+    .s-places {
+        padding-right: 5vw;
+    }
+
+    .s-scroll {
+        gap: 14px;
+        padding-right: 5vw;
+    }
+
+    .s-look,
+    .s-place {
+        flex: 0 0 250px;
+        height: 320px !important;
+    }
+
+    .s-inspire,
+    .s-inspire .s-carousel,
+    .s-inspire .s-scroll,
+    .s-places,
+    .s-places .s-carousel,
+    .s-places .s-scroll {
+        min-height: 320px !important;
+    }
+
+    .s-look > div {
+        left: 18px;
+        right: 16px;
+        bottom: 18px;
+    }
+
+    .s-look p {
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+
+    .s-look span {
+        font-size: 11px;
+    }
+
+    .s-view-more-btn {
+        width: 190px;
+        height: 44px;
+        line-height: 42px;
+        font-size: 13px;
+        margin-top: 32px;
+    }
+
+    /* Products Section */
+    .s-products .decorative-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 32px 20px;
+    }
+
+    .s-products .decorative-card-copy {
+        padding: 14px 14px 16px;
+    }
+
+    .s-products .decorative-card-copy h3 {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .s-products .decorative-card-copy p {
+        font-size: 11px;
+    }
+
+    /* Tones Section */
+    .s-tone-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .s-tone-grid article {
+        grid-template-columns: 1fr 1fr;
+        min-height: 210px;
+    }
+
+    .s-tone-grid article > div {
+        padding: 22px;
+    }
+
+    .s-tone-grid h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .s-tone-grid p {
+        font-size: 12px;
+        line-height: 1.9;
+    }
+
+    /* Score Section */
+    .s-score-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .score-intro {
+        min-height: auto;
+        padding-bottom: 12px;
+    }
+
+    .score-intro h3 {
+        font-size: 18px;
+    }
+
+    .score-intro p {
+        font-size: 13px;
+    }
+
+    .score-items {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 0 !important;
+    }
+
+    .score-item {
+        min-height: 200px;
+        padding: 36px 12px 0 0;
+    }
+
+    .score-item + .score-item {
+        padding-left: 18px;
+    }
+
+    .score-item h4 {
+        font-size: 12px;
+        margin: 28px 0 6px;
+    }
+
+    .score-item p {
+        font-size: 11px;
+    }
+
+    /* Places Section */
+    .s-places {
+        padding-right: 5vw;
+    }
+
+    .s-place h3 {
+        left: 20px;
+        bottom: 18px;
+        font-size: 15px !important;
+    }
+
+    /* Catalogue Section */
+    .s-catalogue {
+        height: 380px;
+    }
+
+    .s-catalogue > div {
+        left: 5vw;
+        top: 90px;
+        right: 5vw;
+    }
+
+    .s-catalogue h2 {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .s-catalogue h2 em {
+        font-size: 28px;
+    }
+
+    .s-catalogue a {
+        font-size: 12px;
+        padding: 10px 20px;
+        font-weight: 500;
+    }
+
+    /* Related Collections */
+    .s-related > div:last-child {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .s-related a {
+        height: 240px;
+        padding: 0 18px 18px;
+    }
+
+    .s-related h3 {
+        font-size: 18px !important;
+    }
+
+    .s-related p {
+        font-size: 14px !important;
+    }
+}
+
+/* Tablet Narrow (701px - 850px) extra adjustment for product grid */
+@media (min-width: 701px) and (max-width: 850px) {
+    .s-products .decorative-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px 16px;
     }
 }

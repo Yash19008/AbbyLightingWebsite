@@ -235,9 +235,10 @@
             plugins: 'advlist autolink lists link image charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking table emoticons template help',
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print | insertfile image media template link anchor codesample | ltr rtl',
             menubar: 'file edit view insert format tools table help',
+            font_family_formats: 'Poppins=Poppins,sans-serif; Inter=Inter,sans-serif',
             image_title: true,
             automatic_uploads: true,
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px } img { max-width: 100%; height: auto; }',
+            content_style: "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap'); body { font-family: 'Poppins', 'Inter', sans-serif; font-size:16px } img { max-width: 100%; height: auto; }",
             images_upload_handler: function (blobInfo, progress) {
                 return new Promise(function(resolve, reject) {
                     var xhr, formData;

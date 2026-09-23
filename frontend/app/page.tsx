@@ -8,6 +8,9 @@ import ClientsSection from "@/components/home/ClientsSection";
 import CatalogueSection from "@/components/home/CatalogueSection";
 import NewsSection from "@/components/home/NewsSection";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata = {
   title: 'Abby Lighting | Architectural & Decorative Lighting',
   description: 'Precision architectural lighting and decorative fixtures for beautifully designed spaces. Designed, engineered, and manufactured in-house.',

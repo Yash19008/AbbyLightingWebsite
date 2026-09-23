@@ -1,7 +1,11 @@
 export interface Slider {
   id: number;
   path: string;
+  mobile_path?: string | null;
+  tablet_path?: string | null;
   image_url: string | null;
+  mobile_image_url?: string | null;
+  tablet_image_url?: string | null;
   for_mobile: number;
   sort_order: number;
   url: string | null;

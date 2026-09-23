@@ -1,15 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import DOMPurify from 'isomorphic-dompurify';
-import { DecSpecItem } from "@/types/decorative";
+import { DecSpecItem, DecVariant } from "@/types/decorative";
 
 interface ProductSpecsProps {
   specRows: {
     basic_specifications: DecSpecItem[];
     dimensions: DecSpecItem[];
   };
-  allVariants?: Record<string, unknown>[];
+  allVariants?: DecVariant[];
   installationGuide: string | null;
   careInstructions: string | null;
 }
@@ -36,10 +35,10 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
                 <td className="spec-value">
                   {item.label === "Size" ? (
                     <div className="spec-size-value">
-                      <i className="spec-code">OS</i> <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.value) }} />
+                      <i className="spec-code">OS</i> <span dangerouslySetInnerHTML={{ __html: item.value }} />
                     </div>
                   ) : (
-                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.value) }} />
+                    <div dangerouslySetInnerHTML={{ __html: item.value }} />
                   )}
                   {item.note && (
                     <small className="figma-spec-note">
@@ -60,13 +59,13 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
     );
   };
 
-  const renderComparisonTable = (variants: Record<string, unknown>[]) => {
+  const renderComparisonTable = (variants: DecVariant[]) => {
     if (!variants || variants.length === 0) return null;
 
     // Collect all unique dimension labels across all variants
     const dimensionLabels = new Set<string>();
-    variants.forEach(v => {
-      (v.spec_rows as Record<string, unknown>)?.dimensions?.forEach((d: DecSpecItem) => dimensionLabels.add(d.label));
+    variants.forEach((v) => {
+      v.spec_rows?.dimensions?.forEach((d: DecSpecItem) => dimensionLabels.add(d.label));
     });
 
     if (dimensionLabels.size === 0) return null;
@@ -78,20 +77,20 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
           <tbody>
             <tr>
               <td className="spec-label">Size</td>
-              {variants.map(v => (
+              {variants.map((v) => (
                 <td key={v.id} className="spec-value">
                   <strong>{v.size || v.name}</strong>
                 </td>
               ))}
             </tr>
-            {labelsArray.map(label => (
+            {labelsArray.map((label) => (
               <tr key={label}>
                 <td className="spec-label">{label}</td>
-                {variants.map(v => {
+                {variants.map((v) => {
                   const spec = v.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
                   return (
                     <td key={v.id} className="spec-value">
-                      {spec ? <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(spec.value) }} /> : "-"}
+                      {spec ? <div dangerouslySetInnerHTML={{ __html: spec.value }} /> : "-"}
                     </td>
                   );
                 })}

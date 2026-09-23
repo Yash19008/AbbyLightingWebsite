@@ -14,7 +14,7 @@ export default function CatalogueSection() {
         <h2>
           See the whole <em>collection.</em>
         </h2>
-        <Link href="/#contact">Download catalogue</Link>
+        <Link href="/catalogues">Download catalogue</Link>
       </div>
     </section>
   );

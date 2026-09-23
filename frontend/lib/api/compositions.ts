@@ -4,7 +4,7 @@ import { CompositionItem } from '@/types/collection';
 export async function getShowcaseCompositions(): Promise<{ success: boolean; data: CompositionItem[] }> {
   try {
     const res = await fetch(`${API_BASE_URL}/api/compositions/showcase`, {
-      next: { revalidate: 60 } // Cache for 60 seconds
+      cache: 'no-store'
     });
     
     if (!res.ok) {

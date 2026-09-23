@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 
-const SORT_OPTIONS = [
-  { label: 'New products', value: 'new' },
+export const SORT_OPTIONS = [
+  { label: 'Most Popular', value: 'popular' },
+  { label: 'New Products', value: 'new' },
   { label: 'Alphabetical A-Z', value: 'name_asc' },
   { label: 'Alphabetical Z-A', value: 'name_desc' },
 ];
@@ -28,77 +29,46 @@ export default function CustomSortDropdown({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const activeLabel = SORT_OPTIONS.find((opt) => opt.value === value)?.label || 'Newest';
-
   return (
-    <div
-      ref={containerRef}
-      style={{
-        position: 'relative',
-        display: 'inline-block',
-        fontFamily: 'Inter, sans-serif',
-        textAlign: 'left'
-      }}
-    >
-
-      <div
-        className="abby-desktop-action-btn decorative-sort"
+    <div className="sort-wrap decorative-sort-wrap" ref={containerRef}>
+      <button
+        type="button"
+        className={`sort-button ${isOpen ? 'is-open' : ''}`}
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
       >
+        <span>SORT BY</span>
         <svg
-          width="14"
-          height="14"
+          width="12"
+          height="12"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
+          aria-hidden="true"
         >
-          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+          <polyline points={isOpen ? "18 15 12 9 6 15" : "6 9 12 15 18 9"} />
         </svg>
-        <span>Sort By</span>
-      </div>
+      </button>
 
       {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            minWidth: '180px',
-            background: '#fff',
-            border: '1px solid #1a1c1d',
-            borderTop: 'none',
-            zIndex: 10,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-            padding: '8px 0'
-          }}
-        >
+        <div className="sort-menu" role="menu">
           {SORT_OPTIONS.map((opt) => (
-            <div
+            <button
               key={opt.value}
+              type="button"
+              role="menuitem"
+              className={value === opt.value ? 'is-active' : ''}
               onClick={() => {
                 onChange(opt.value);
                 setIsOpen(false);
               }}
-              style={{
-                padding: '10px 16px',
-                cursor: 'pointer',
-                fontSize: '13px',
-                color: value === opt.value ? '#1a1c1d' : '#6f6f6f',
-                fontWeight: value === opt.value ? 500 : 400,
-                transition: 'background 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#f7f7f7';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#fff';
-              }}
             >
               {opt.label}
-            </div>
+            </button>
           ))}
         </div>
       )}

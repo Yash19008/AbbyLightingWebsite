@@ -27,6 +27,9 @@ const parameters = [
 
 export default function ParametersSection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  const visibleParameters = parameters.slice(0, visibleCount);
 
   const handleClick = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -48,7 +51,7 @@ export default function ParametersSection() {
         <p>Every Symphony installation is built from four choices that work together as one system.</p>
       </div>
       <div className="s-parameter-grid">
-        {parameters.map((param, index) => (
+        {visibleParameters.map((param, index) => (
           <article
             key={index}
             tabIndex={0}
@@ -63,6 +66,18 @@ export default function ParametersSection() {
           </article>
         ))}
       </div>
+
+      {visibleCount < parameters.length && (
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <button
+            type="button"
+            className="s-view-more-btn"
+            onClick={() => setVisibleCount((prev) => prev + 8)}
+          >
+            View More
+          </button>
+        </div>
+      )}
     </section>
   );
 }

@@ -12,6 +12,8 @@ class HomeSlider extends Model
 
     protected $fillable = [
         'path', 
+        'mobile_path',
+        'tablet_path',
         'for_mobile', 
         'sort_order', 
         'is_active',

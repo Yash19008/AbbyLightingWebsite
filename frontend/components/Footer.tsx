@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Footer() {
   const [productsOpen, setProductsOpen] = useState(false);
@@ -23,7 +24,7 @@ export default function Footer() {
             <p>For over three generations, Abby Lighting has been one of India&apos;s leading architectural lighting manufacturers, designing and manufacturing premium architectural and outdoor lighting entirely in-house. From concept and engineering to precision manufacturing and testing, every luminaire is built for consistency, performance and long-term reliability, making Abby Lighting the trusted partner for architects, interior designers and consultants across residential, commercial and hospitality projects.</p>
           </div>
           <nav className="footer-links footer-products" aria-label="Product links">
-            <div className={`footer-accordion ${productsOpen ? 'is-open' : ''}`}>
+            <div className={`footer-accordion ${productsOpen ? 'is-open open' : ''}`}>
               <button 
                 className="footer-accordion-toggle" 
                 type="button" 
@@ -40,7 +41,7 @@ export default function Footer() {
                 <a href="/abby-smart">Smart Lighting</a>
               </div>
             </div>
-            <div className={`footer-accordion ${ourWorkOpen ? 'is-open' : ''}`}>
+            <div className={`footer-accordion ${ourWorkOpen ? 'is-open open' : ''}`}>
               <button 
                 className="footer-accordion-toggle" 
                 type="button" 
@@ -62,7 +63,7 @@ export default function Footer() {
             <a href="/company">About Us</a>
             <a href="/contact">Contact Us</a>
             <a href="/career">Careers</a>
-            <a href="/catalog-download-user-form">Catalogues</a>
+            <Link href="/catalogues">Catalogues</Link>
             <a className="footer-mobile-legal" href="/privacy-policy">Privacy Policy</a>
             <a className="footer-mobile-legal" href="/terms-and-conditions">Terms of Use</a>
             <a href="/fair-events">Fairs &amp; Events</a>

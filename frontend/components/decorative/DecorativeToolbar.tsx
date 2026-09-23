@@ -66,7 +66,16 @@ export default function DecorativeToolbar({
         </select>
       </label>
 
-      <div className="decorative-tabs" role="tablist" aria-label="Product category">
+      <div
+        className="decorative-tabs"
+        role="tablist"
+        aria-label="Product category"
+        onWheel={(e) => {
+          if (e.deltaY !== 0) {
+            e.currentTarget.scrollLeft += e.deltaY;
+          }
+        }}
+      >
         <span
           className="decorative-tab-indicator"
           aria-hidden="true"
@@ -108,12 +117,12 @@ export default function DecorativeToolbar({
         <CustomSortDropdown value={sortBy} onChange={setSortBy} />
 
         <label className={`decorative-light-toggle ${isLightOn ? 'is-on' : 'is-off'}`}>
-          <span className="decorative-light-desktop">Light {isLightOn ? 'on' : 'off'}</span>
-          <span className="decorative-light-mobile">{isLightOn ? 'On' : 'Off'}</span>
+          <span className="decorative-light-text">LIGHT {isLightOn ? 'ON' : 'OFF'}</span>
           <input
             type="checkbox"
             checked={isLightOn}
             onChange={(e) => setIsLightOn(e.target.checked)}
+            aria-label="Toggle light"
           />
           <i aria-hidden="true" />
         </label>

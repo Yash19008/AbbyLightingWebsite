@@ -14,7 +14,7 @@ a {
   color: #1a1c1d;
   letter-spacing: 0;
   margin: 0;
-  font: 300 14px/1.4 Poppins, sans-serif
+  font: 400 12px/1.4 Poppins, sans-serif
 }
 
 .site-breadcrumb a {
@@ -1279,7 +1279,7 @@ a {
   }
 
   .image-cta p {
-    max-width: 158px;
+    max-width: 210px;
     font-size: 10px;
     line-height: 1.5
   }
@@ -1658,7 +1658,7 @@ a {
   }
 
   .figma-footer {
-    padding: 11px 5px 36px;
+    padding: 11px 5px 36px !important;
   }
 
   .projects .section-head {
@@ -1691,7 +1691,7 @@ a {
 
   .footer-main {
     grid-template-columns: 1fr 1fr;
-    gap: 42px 28px
+    gap: 34px 5px
   }
 
   .footer-identity {
@@ -3390,7 +3390,7 @@ footer#contact {
   }
 
   .halo-label {
-    font-size: 10px
+    font-size: 7px
   }
 }
 

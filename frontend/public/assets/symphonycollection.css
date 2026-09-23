@@ -327,7 +327,7 @@
 }
 
 .s-catalogue {
-    height: 420px;
+    height: 450px !important;
     position: relative;
     color: #fff
 }
@@ -359,7 +359,7 @@
 
 .s-catalogue h2 em {
     display: block;
-    font: italic 45px 'Libre Baskerville';
+    font: italic 37px 'Libre Baskerville';
     color: #f6c177
 }
 

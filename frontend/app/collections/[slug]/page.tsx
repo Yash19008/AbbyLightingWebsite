@@ -12,6 +12,9 @@ import RelatedCollections from '@/components/collections/RelatedCollections';
 import MobileNav from '@/components/collections/MobileNav';
 import '../../../styles/collections.css';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface CollectionPageProps {
   params: Promise<{
     slug: string;
@@ -50,7 +53,10 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
 
         {/* Parameters Section - Dynamic if data exists */}
         {collection.parameters_section && (
-          <ParametersSectionDynamic parametersSection={collection.parameters_section} />
+          <ParametersSectionDynamic
+            parametersSection={collection.parameters_section}
+            collectionSlug={collection.slug}
+          />
         )}
 
         {/* Compositions Section - Dynamic if data exists */}
@@ -96,7 +102,7 @@ export async function generateMetadata({ params }: CollectionPageProps) {
       title: collection.meta_title || `${collection.name} | Abby Lighting`,
       description: collection.meta_description || collection.description,
     };
-  } catch (error) {
+  } catch {
     return {
       title: 'Collection Not Found',
       description: 'The requested collection could not be found.',

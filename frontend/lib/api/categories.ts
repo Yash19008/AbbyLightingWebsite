@@ -1,6 +1,14 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-export async function getArchitecturalCategories(): Promise<unknown[]> {
+export interface CategoryItem {
+  id: number | string;
+  name?: string;
+  title?: string;
+  slug?: string;
+  uri?: string;
+}
+
+export async function getArchitecturalCategories(): Promise<CategoryItem[]> {
   try {
     const response = await fetch(`${API_URL}/api/categories`, {
       next: { revalidate: 3600 }

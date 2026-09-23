@@ -1,399 +1,616 @@
 {{-- Next.js Style Footer with Accordion - Pixel-Identical to Next.js Frontend --}}
 <style>
 /* ==================================================================
-   NEXTJS FOOTER - PIXEL IDENTICAL STYLES
+   NEXTJS FOOTER - EXACT 1:1 STYLES MATCHING FRONTEND
    ================================================================== */
 
 footer#contact {
-  color: #ffffff !important;
-  background: #000000 !important;
-  background-color: #000000 !important;
-  padding: 86px 0 46px !important;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  position: relative !important;
-  box-sizing: border-box !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-  margin: 0 !important;
-  display: block !important;
+  color: #ffffff;
+  background: #1a1c1d !important;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  display: block;
+  overflow: hidden;
 }
 
 footer#contact * {
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
-footer#contact .figma-footer {
-  width: min(1240px, 100% - 64px) !important;
-  margin: 0 auto !important;
-  box-sizing: border-box !important;
-  position: relative !important;
-  padding: 0 !important;
-  height: auto !important;
-  overflow: visible !important;
-}
-
-footer#contact .footer-main {
-  grid-template-columns: 2.45fr 0.85fr 1.2fr 0.85fr !important;
-  align-items: start !important;
-  gap: 68px !important;
-  display: grid !important;
-  width: 100% !important;
-  height: auto !important;
-  overflow: visible !important;
-}
-
-footer#contact .footer-identity {
-  display: block !important;
-  height: auto !important;
-  overflow: visible !important;
-}
-
-footer#contact .footer-identity .footer-logo {
-  object-fit: contain !important;
-  object-position: left center !important;
-  width: 112px !important;
-  height: auto !important;
-  max-height: 74px !important;
-  margin: 0 0 40px !important;
-  display: block !important;
-}
-
-footer#contact .footer-identity p {
-  color: #e1e1e1 !important;
-  width: min(330px, 100%) !important;
-  margin: 0 !important;
-  font-family: Inter, sans-serif !important;
-  font-weight: 300 !important;
-  font-size: 16px !important;
-  line-height: 1.42 !important;
-  letter-spacing: normal !important;
-  overflow: visible !important;
-  height: auto !important;
-}
-
-footer#contact .footer-links {
-  padding-top: 3px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  height: auto !important;
-}
-
-footer#contact .footer-links a {
-  color: #aaaaaa !important;
-  margin: 0 0 23px !important;
-  font-family: Inter, sans-serif !important;
-  font-weight: 300 !important;
-  font-size: 16px !important;
-  line-height: 1.32 !important;
-  transition: color 0.22s ease !important;
-  display: block !important;
-  text-decoration: none !important;
-  width: max-content !important;
-}
-
-footer#contact .footer-links a:hover,
-footer#contact .footer-links a:focus-visible {
-  color: #ffffff !important;
-}
-
-/* Accordion Component */
+/* Base accordion styles */
 footer#contact .footer-accordion {
-  width: 100% !important;
-  margin-bottom: 23px !important;
-  display: block !important;
+  width: 100%;
+  margin: 0;
+  display: block;
 }
 
 footer#contact .footer-accordion-toggle {
-  color: #ffffff !important;
-  text-align: left !important;
-  cursor: pointer !important;
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  justify-content: flex-start !important;
-  align-items: center !important;
-  gap: 8px !important;
-  width: 100% !important;
-  min-height: 22px !important;
-  padding: 0 !important;
-  font-family: Inter, sans-serif !important;
-  font-weight: 300 !important;
-  font-size: 16px !important;
-  line-height: 1.32 !important;
-  display: flex !important;
-  transition: color 0.22s ease !important;
+  color: #f7f7f7;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 22px;
+  padding: 0;
+  font-family: Inter, sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 22px;
+  display: flex;
+  transition: color 0.22s ease;
 }
 
 footer#contact .footer-accordion-toggle:hover {
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
 footer#contact .footer-accordion-icon {
-  border-bottom: 1.5px solid currentColor !important;
-  border-right: 1.5px solid currentColor !important;
-  flex: none !important;
-  width: 7px !important;
-  height: 7px !important;
-  margin-left: 2px !important;
-  margin-top: -3px !important;
-  transition: transform 0.22s ease !important;
-  transform: rotate(45deg) !important;
-  display: inline-block !important;
+  border-bottom: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-left: 2px;
+  margin-top: -3px;
+  transition: transform 0.22s ease;
+  transform: rotate(45deg);
+  display: inline-block;
 }
 
 footer#contact .footer-accordion.open .footer-accordion-icon,
 footer#contact .footer-accordion.is-open .footer-accordion-icon {
-  transform: rotate(225deg) translate(-2px, -2px) !important;
-  margin-top: 2px !important;
+  transform: rotate(225deg) translate(-2px, -2px);
+  margin-top: 2px;
 }
 
 footer#contact .footer-accordion-panel {
-  opacity: 0 !important;
-  max-height: 0 !important;
-  padding-left: 10px !important;
-  margin: 0 !important;
-  transition: max-height 0.3s ease, opacity 0.2s ease, margin 0.3s ease !important;
-  display: grid !important;
-  overflow: hidden !important;
+  opacity: 0;
+  max-height: 0;
+  padding-left: 10px;
+  margin: 0;
+  transition: max-height 0.3s ease, opacity 0.2s ease, margin 0.3s ease;
+  display: grid;
+  overflow: hidden;
 }
 
 footer#contact .footer-accordion.open .footer-accordion-panel,
 footer#contact .footer-accordion.is-open .footer-accordion-panel {
-  opacity: 1 !important;
-  max-height: 140px !important;
-  margin: 10px 0 14px !important;
+  opacity: 1;
+  max-height: 160px;
+  margin: 6px 0 10px;
 }
 
 footer#contact .footer-accordion-panel a {
-  color: #b6b6b6 !important;
-  margin: 0 0 10px !important;
-  font-family: Inter, sans-serif !important;
-  font-weight: 300 !important;
-  font-size: 14px !important;
-  line-height: 1.35 !important;
-  display: block !important;
-}
-
-footer#contact .footer-accordion-panel a:last-child {
-  margin-bottom: 0 !important;
+  color: #b6b6b6;
+  margin: 0;
+  padding: 2px 0;
+  font-family: Inter, sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 20px;
+  display: block;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 footer#contact .footer-accordion-panel a:hover {
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
 footer#contact .footer-inspiration {
-  color: #aaaaaa !important;
-  margin: 0 0 23px !important;
-  font-family: Inter, sans-serif !important;
-  font-weight: 300 !important;
-  font-size: 16px !important;
-  line-height: 1.32 !important;
-  display: block !important;
-  text-decoration: none !important;
+  color: #f7f7f7;
+  font-family: Inter, sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 22px;
+  display: block;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 footer#contact .footer-inspiration:hover {
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
-/* Hide mobile legal links on desktop (> 900px) */
-footer#contact .footer-mobile-legal,
-footer#contact .footer-links a.footer-mobile-legal {
-  display: none !important;
+footer#contact .footer-links a {
+  color: #f7f7f7;
+  font-family: Inter, sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 22px;
+  transition: color 0.22s ease;
+  display: block;
+  text-decoration: none;
 }
 
-footer#contact .footer-legal {
-  display: flex !important;
-}
-
-footer#contact .footer-rule {
-  background: #5f5f5f !important;
-  height: 1px !important;
-  margin: 80px 0 42px !important;
-  border: none !important;
-  display: block !important;
-  width: 100% !important;
-}
-
-footer#contact .footer-base {
-  justify-content: space-between !important;
-  align-items: center !important;
-  gap: 32px !important;
-  display: flex !important;
-  width: 100% !important;
-}
-
-footer#contact .footer-base > span {
-  color: #e4e4e4 !important;
-  font-family: Inter, sans-serif !important;
-  font-weight: 300 !important;
-  font-size: 15px !important;
-  line-height: 1.4 !important;
-}
-
-footer#contact .footer-social {
-  align-items: center !important;
-  gap: 36px !important;
-  display: flex !important;
+footer#contact .footer-links a:hover,
+footer#contact .footer-links a:focus-visible {
+  color: #ffffff;
 }
 
 footer#contact .footer-social a {
-  color: #ffffff !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 28px !important;
-  height: 28px !important;
-  transition: color 0.2s ease, transform 0.2s ease !important;
-  display: flex !important;
-  text-decoration: none !important;
+  color: #ffffff;
+  justify-content: center;
+  align-items: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  text-decoration: none;
 }
 
 footer#contact .footer-social a:hover {
-  color: #f6c177 !important;
-  transform: translateY(-2px) !important;
-}
-
-footer#contact .footer-social svg {
-  width: 24px !important;
-  height: 24px !important;
-  display: block !important;
-}
-
-footer#contact .footer-social-icon.footer-icon-desktop {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-footer#contact .footer-social-icon.footer-icon-mobile {
-  display: none !important;
+  color: #f6c177;
+  transform: translateY(-2px);
 }
 
 /* ==================================================================
-   RESPONSIVE: TABLET (< 901px)
+   DESKTOP (>= 901px) - EXACT NEXT.JS POSITIONING & SIZING
    ================================================================== */
-@media (max-width: 900px) {
+@media (min-width: 901px) {
   footer#contact {
-    padding: 72px 0 110px !important;
+    background: #1a1c1d !important;
+    height: 466px;
+    padding: 0;
   }
 
   footer#contact .figma-footer {
-    width: calc(100% - 48px) !important;
+    width: 100%;
+    max-width: 100%;
+    height: 466px;
+    margin: 0 auto;
+    position: relative;
   }
 
   footer#contact .footer-main {
-    grid-template-columns: 1.7fr repeat(2, 1fr) !important;
-    gap: 34px !important;
-  }
-
-  footer#contact .footer-rule {
-    margin: 60px 0 32px !important;
-  }
-
-  footer#contact .footer-identity p {
-    font-size: 14px !important;
-  }
-
-  footer#contact .footer-links a {
-    margin-bottom: 18px !important;
-    font-size: 14px !important;
-  }
-
-  footer#contact .footer-social {
-    gap: 25px !important;
-  }
-
-  footer#contact .footer-accordion {
-    width: 100% !important;
-    margin-bottom: 18px !important;
-  }
-
-  footer#contact .footer-accordion-toggle {
-    color: #aaaaaa !important;
-    font-size: 15px !important;
-  }
-
-  /* Show mobile legal links inside company column */
-  footer#contact .footer-mobile-legal,
-  footer#contact .footer-links a.footer-mobile-legal {
-    display: block !important;
-  }
-
-  /* Hide separate legal column on mobile/tablet */
-  footer#contact .footer-legal {
-    display: none !important;
-  }
-}
-
-/* ==================================================================
-   RESPONSIVE: MOBILE (< 601px)
-   ================================================================== */
-@media (max-width: 600px) {
-  footer#contact {
-    padding: 58px 0 112px !important;
-  }
-
-  footer#contact .figma-footer {
-    width: calc(100% - 40px) !important;
-  }
-
-  footer#contact .footer-main {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 42px 28px !important;
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: static;
   }
 
   footer#contact .footer-identity {
-    grid-column: 1 / 3 !important;
+    position: absolute;
+    top: 57px;
+    left: clamp(72px, 9.7vw, 114px);
+    display: block;
   }
 
   footer#contact .footer-identity .footer-logo {
-    width: 104px !important;
-    height: auto !important;
-    max-height: 68px !important;
-    margin-bottom: 25px !important;
+    object-fit: contain;
+    object-position: left center;
+    width: 131px;
+    height: 90px;
+    margin: 0;
+    display: block;
   }
 
   footer#contact .footer-identity p {
-    max-width: 100% !important;
+    color: #ffffff;
+    width: 498px;
+    max-width: calc(100vw - 780px);
+    margin: 26px 0 0;
+    font-family: Inter, sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.42;
+  }
+
+  footer#contact .footer-links {
+    padding: 0;
+    position: absolute;
+    top: 66px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  footer#contact .footer-products {
+    width: 158px;
+    left: calc(50% + 157px);
+  }
+
+  footer#contact .footer-products .footer-accordion + .footer-accordion {
+    margin-top: 13px;
+  }
+
+  footer#contact .footer-products .footer-inspiration {
+    margin: 14px 0 0;
+    display: block;
+  }
+
+  footer#contact .footer-company {
+    left: 75% !important;
+  }
+
+  footer#contact .footer-company a {
+    margin-bottom: 14px;
+  }
+
+  footer#contact .footer-company a:last-child {
+    margin-bottom: 0;
+  }
+
+  footer#contact .footer-legal {
+    right: 115px;
+    display: flex;
+  }
+
+  footer#contact .footer-legal a {
+    margin-bottom: 11px;
+  }
+
+  footer#contact .footer-legal a:last-child {
+    margin-bottom: 0;
+  }
+
+  footer#contact .footer-mobile-legal {
+    display: none !important;
   }
 
   footer#contact .footer-rule {
-    margin: 44px 0 28px !important;
+    background: #ffffff59;
+    height: 1px;
+    margin: 0;
+    border: none;
+    position: absolute;
+    top: 349px;
+    left: clamp(72px, 9.77vw, 114px);
+    right: clamp(72px, 9.77vw, 114px);
+    display: block;
   }
 
   footer#contact .footer-base {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 24px !important;
+    align-items: center;
+    justify-content: space-between;
+    height: 45px;
+    display: flex;
+    position: absolute;
+    top: 386px;
+    left: clamp(90px, 10.95vw, 114px);
+    right: clamp(90px, 8.6vw, 114px);
   }
 
   footer#contact .footer-base > span {
-    font-size: 12px !important;
+    color: #ffffff;
+    font-family: Inter, sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 22px;
   }
 
   footer#contact .footer-social {
-    gap: 26px !important;
+    align-items: center;
+    gap: 25px;
+    display: flex;
+  }
+
+  footer#contact .footer-social a,
+  footer#contact .footer-social-icon {
+    width: 30px;
+    height: 32px;
+  }
+
+  footer#contact .footer-social-icon svg {
+    width: 25px;
+    height: 25px;
+    display: block;
+  }
+
+  footer#contact .footer-social a:last-child,
+  footer#contact .footer-social a:last-child .footer-social-icon {
+    width: 37px;
+    height: 45px;
+  }
+
+  footer#contact .footer-social a:last-child svg {
+    width: 29px;
+    height: 29px;
+  }
+
+  footer#contact .footer-social-icon.footer-icon-desktop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  footer#contact .footer-social-icon.footer-icon-mobile {
+    display: none;
+  }
+}
+
+/* ==================================================================
+   TABLET (601px - 900px)
+   ================================================================== */
+@media (max-width: 900px) and (min-width: 601px) {
+  footer#contact {
+    padding: 72px 0 110px;
+    height: auto;
+  }
+
+  footer#contact .figma-footer {
+    width: calc(100% - 48px);
+    margin: 0 auto;
+    position: static;
+  }
+
+  footer#contact .footer-main {
+    grid-template-columns: 1.7fr repeat(2, 1fr);
+    gap: 34px;
+    display: grid;
+    position: static;
+  }
+
+  footer#contact .footer-identity {
+    position: static;
+    border-bottom: 1px solid #4D4D4D !important;
+    padding-bottom: 28px !important;
+    margin-bottom: 6px !important;
+  }
+
+  footer#contact .footer-identity .footer-logo {
+    width: 120px;
+    height: auto;
+    max-height: 82px;
+    margin: 0 0 25px;
+  }
+
+  footer#contact .footer-identity p {
+    font-size: 14px;
+    color: #e1e1e1;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  footer#contact .footer-links {
+    position: static;
+    display: flex;
+    flex-direction: column;
+  }
+
+  footer#contact .footer-products,
+  footer#contact .footer-company {
+    position: static;
+    left: auto !important;
+    right: auto;
+    width: auto;
+  }
+
+  footer#contact .footer-links a {
+    margin-bottom: 18px;
+    font-size: 14px;
+    color: #aaaaaa;
+  }
+
+  footer#contact .footer-accordion {
+    width: 100%;
+    margin-bottom: 18px;
+  }
+
+  footer#contact .footer-accordion-toggle {
+    color: #aaaaaa;
+    font-size: 15px;
+  }
+
+  footer#contact .footer-mobile-legal {
+    display: block !important;
+  }
+
+  footer#contact .footer-legal {
+    display: none !important;
+  }
+
+  footer#contact .footer-rule {
+    position: static;
+    background: #5f5f5f;
+    height: 1px;
+    margin: 60px 0 32px;
+    border: none;
+    width: 100%;
+  }
+
+  footer#contact .footer-base {
+    position: static;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    display: flex;
+    height: auto;
+  }
+
+  footer#contact .footer-base > span {
+    color: #e4e4e4;
+    font-size: 14px;
+  }
+
+  footer#contact .footer-social {
+    gap: 25px;
+    display: flex;
+    align-items: center;
+  }
+
+  footer#contact .footer-social a,
+  footer#contact .footer-social-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  footer#contact .footer-social svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  footer#contact .footer-social-icon.footer-icon-desktop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  footer#contact .footer-social-icon.footer-icon-mobile {
+    display: none;
+  }
+}
+
+/* ==================================================================
+   MOBILE (<= 600px)
+   ================================================================== */
+@media (max-width: 600px) {
+  footer#contact {
+    padding: 58px 0 112px;
+    height: auto;
+  }
+
+  footer#contact .figma-footer {
+    width: calc(100% - 40px);
+    margin: 0 auto;
+    position: static;
+    padding: 11px 5px 36px;
+  }
+
+  footer#contact .footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 42px 28px;
+    display: grid;
+    position: static;
+  }
+
+  footer#contact .footer-identity {
+    grid-column: 1 / -1;
+    position: static;
+    border-bottom: 1px solid #4D4D4D !important;
+    padding-bottom: 28px !important;
+    margin-bottom: 6px !important;
+  }
+
+  footer#contact .footer-identity .footer-logo {
+    width: 104px;
+    height: auto;
+    max-height: 68px;
+    margin-bottom: 25px;
+  }
+
+  footer#contact .footer-identity p {
+    color: #e1e1e1;
+    max-width: none;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.48;
+  }
+
+  footer#contact .footer-links {
+    position: static;
+    gap: 22px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  footer#contact .footer-products,
+  footer#contact .footer-company {
+    position: static;
+    left: auto !important;
+    right: auto;
+    width: auto;
+  }
+
+  footer#contact .footer-links a {
+    color: #aaa;
+    font-size: 15px;
+  }
+
+  footer#contact .footer-products .footer-accordion {
+    width: 100%;
+    margin: 0;
+  }
+
+  footer#contact .footer-products .footer-accordion-toggle,
+  footer#contact .footer-products .footer-inspiration,
+  footer#contact .footer-company > a {
+    color: #aaa;
+    min-height: 0;
+    margin: 0 0 18px;
+    padding: 0;
+    font: 300 15px/1.32 Inter, sans-serif;
+  }
+
+  footer#contact .footer-accordion-panel {
+    padding-left: 14px;
+  }
+
+  footer#contact .footer-accordion.open .footer-accordion-panel,
+  footer#contact .footer-accordion.is-open .footer-accordion-panel {
+    max-height: 120px;
+    margin: 2px 0 8px;
+  }
+
+  footer#contact .footer-accordion-panel a {
+    margin: 0;
+    padding: 4px 0;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  footer#contact .footer-products .footer-accordion.open .footer-accordion-toggle,
+  footer#contact .footer-products .footer-accordion.is-open .footer-accordion-toggle {
+    margin-bottom: 2px;
+  }
+
+  footer#contact .footer-mobile-legal {
+    display: block !important;
+  }
+
+  footer#contact .footer-legal {
+    display: none !important;
+  }
+
+  footer#contact .footer-rule {
+    position: static;
+    background: #5f5f5f;
+    height: 1px;
+    margin: 44px 0 28px;
+    border: none;
+    width: 100%;
+  }
+
+  footer#contact .footer-base {
+    position: static;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    display: flex;
+    height: auto;
+  }
+
+  footer#contact .footer-base > span {
+    color: #e4e4e4;
+    font-size: 12px;
+  }
+
+  footer#contact .footer-social {
+    gap: 26px;
+    display: flex;
+    align-items: center;
   }
 
   footer#contact .footer-social a,
   footer#contact .footer-social svg {
-    width: 22px !important;
-    height: 22px !important;
+    width: 22px;
+    height: 22px;
   }
 
   footer#contact .footer-social-icon.footer-icon-desktop {
-    display: none !important;
+    display: none;
   }
 
   footer#contact .footer-social-icon.footer-icon-mobile {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 </style>
@@ -403,7 +620,7 @@ footer#contact .footer-social-icon.footer-icon-mobile {
         <div class="footer-main">
             <div class="footer-identity">
                 <img class="footer-logo" src="{{ asset('images/abby-logo.png') }}" alt="Abby Lighting" />
-                <p>For over three generations, Abby Lighting has been one of India's leading architectural lighting manufacturers, designing and manufacturing premium architectural and outdoor lighting entirely in-house. From concept and engineering to precision manufacturing and testing, every luminaire is built for consistency, performance and long-term reliability, making Abby Lighting the trusted partner for architects, interior designers and consultants across residential, commercial and hospitality projects.</p>
+                <p>For over three generations, Abby Lighting has been one of India's leading architectural lighting manufacturers, designing and manufacturing premium architectural, decorative and outdoor lighting entirely in-house. From concept and engineering to precision manufacturing and testing, every luminaire is built for consistency, performance and long-term reliability, making Abby Lighting the trusted partner for architects, interior designers and consultants across residential, commercial and hospitality projects.</p>
             </div>
             
             <nav class="footer-links footer-products" aria-label="Product links">
@@ -419,6 +636,7 @@ footer#contact .footer-social-icon.footer-icon-mobile {
                     </button>
                     <div class="footer-accordion-panel" id="footer-products" aria-hidden="true">
                         <a href="/products">Architectural</a>
+                        <a href="/decorative-products">Decorative</a>
                         <a href="/products">Outdoor</a>
                         <a href="/abby-smart">Smart Lighting</a>
                     </div>
@@ -548,4 +766,3 @@ document.addEventListener('DOMContentLoaded', function() {
 {{-- Include modals that are needed for footer links --}}
 @include('partials.download-catalog')
 @include('partials.product-enquiry')
-

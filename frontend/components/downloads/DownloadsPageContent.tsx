@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { getCatalogueCategories, getCatalogues, submitCatalogDownload, CatalogueDto, CatalogueCategoryDto } from "@/lib/api/catalogues";
+import { getCatalogueCategories, getCatalogues, submitCatalogDownload } from "@/lib/api/catalogues";
 import { COUNTRIES, Country } from "@/lib/countries";
 
 interface CatalogueItem {
@@ -21,13 +21,14 @@ const DEFAULT_CATEGORIES = [
 ];
 
 const SORT_OPTIONS = [
-  { id: "popular", label: "Most popular" },
-  { id: "new", label: "New products" },
+  { id: "new", label: "New Catalogue" },
   { id: "az", label: "Alphabetical A-Z" },
   { id: "za", label: "Alphabetical Z-A" },
 ];
 
-type SortMode = "popular" | "new" | "az" | "za";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
+type SortMode = "new" | "az" | "za";
 
 export default function DownloadsPageContent() {
   const [categories, setCategories] = useState<{ id: number; name: string; slug: string }[]>(DEFAULT_CATEGORIES);
@@ -38,11 +39,10 @@ export default function DownloadsPageContent() {
   const [hasMore, setHasMore] = useState(false);
 
   const [activeFilter, setActiveFilter] = useState<string>("All");
-  const [sortMode, setSortMode] = useState<SortMode>("popular");
+  const [sortMode, setSortMode] = useState<SortMode>("new");
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -93,7 +93,7 @@ export default function DownloadsPageContent() {
           const activeCats = catRes.data.filter((c) => (c.catalogues_count ?? 0) > 0);
           setCategories([
             { id: 0, name: "All", slug: "all" },
-            ...(activeCats.length > 0 ? activeCats : catRes.data).map((c) => ({
+            ...activeCats.map((c) => ({
               id: c.id,
               name: c.name,
               slug: c.slug,
@@ -134,7 +134,7 @@ export default function DownloadsPageContent() {
               categorySlug: item.category?.slug || "all",
               image: item.cover_image || "/images/figma-update/catalogue.png",
               pdfUrl: item.pdf_url,
-              downloadUrl: item.download_url || (item.id ? `http://localhost:8000/api/catalogues/${item.id}/download-pdf` : null),
+              downloadUrl: item.download_url || (item.id ? `${API_BASE_URL}/api/catalogues/${item.id}/download-pdf` : null),
               fileSize: item.file_size,
               isFeatured: item.is_featured,
             }));
@@ -148,7 +148,7 @@ export default function DownloadsPageContent() {
       } catch (err) {
         console.error("Error loading catalogue data:", err);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     }
 
@@ -179,7 +179,7 @@ export default function DownloadsPageContent() {
           categorySlug: item.category?.slug || "all",
           image: item.cover_image || "/images/figma-update/catalogue.png",
           pdfUrl: item.pdf_url,
-          downloadUrl: item.download_url || (item.id ? `http://localhost:8000/api/catalogues/${item.id}/download-pdf` : null),
+          downloadUrl: item.download_url || (item.id ? `${API_BASE_URL}/api/catalogues/${item.id}/download-pdf` : null),
           fileSize: item.file_size,
           isFeatured: item.is_featured,
         }));
@@ -358,7 +358,7 @@ export default function DownloadsPageContent() {
         const downloadUrl =
           selectedCatalogue?.downloadUrl ||
           (selectedCatalogue?.id
-            ? `http://localhost:8000/api/catalogues/${selectedCatalogue.id}/download-pdf`
+            ? `${API_BASE_URL}/api/catalogues/${selectedCatalogue.id}/download-pdf`
             : null);
         if (downloadUrl) {
           const cleanName = (selectedCatalogue?.title || "catalogue")
@@ -399,7 +399,16 @@ export default function DownloadsPageContent() {
       <section className="catalogue-section" aria-label="Product catalogues">
         {/* Toolbar */}
         <div className="catalogue-toolbar">
-          <div className="catalogue-filters" role="tablist" aria-label="Catalogue categories">
+          <div
+            className="catalogue-filters"
+            role="tablist"
+            aria-label="Catalogue categories"
+            onWheel={(e) => {
+              if (e.deltaY !== 0) {
+                e.currentTarget.scrollLeft += e.deltaY;
+              }
+            }}
+          >
             {categories.map((cat) => (
               <button
                 key={cat.id}
@@ -428,7 +437,7 @@ export default function DownloadsPageContent() {
                 }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/>
+                  <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
                 </svg>
                 <span>FILTER BY</span>
               </button>

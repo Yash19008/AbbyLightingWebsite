@@ -24,7 +24,11 @@ class HomeSliderApiController extends Controller
                 return [
                     'id'                => $slider->id,
                     'path'              => $slider->path,
+                    'mobile_path'       => $slider->mobile_path,
+                    'tablet_path'       => $slider->tablet_path,
                     'image_url'         => $slider->path ? asset('storage/' . $slider->path) : null,
+                    'mobile_image_url'  => $slider->mobile_path ? asset('storage/' . $slider->mobile_path) : null,
+                    'tablet_image_url'  => $slider->tablet_path ? asset('storage/' . $slider->tablet_path) : null,
                     'for_mobile'        => $slider->for_mobile,
                     'sort_order'        => $slider->sort_order,
                     'url'               => $slider->url,
@@ -73,7 +77,11 @@ class HomeSliderApiController extends Controller
                 'data' => [
                     'id' => $slider->id,
                     'path' => $slider->path,
+                    'mobile_path' => $slider->mobile_path,
+                    'tablet_path' => $slider->tablet_path,
                     'image_url' => $slider->path ? asset('storage/' . $slider->path) : null,
+                    'mobile_image_url' => $slider->mobile_path ? asset('storage/' . $slider->mobile_path) : null,
+                    'tablet_image_url' => $slider->tablet_path ? asset('storage/' . $slider->tablet_path) : null,
                     'for_mobile' => $slider->for_mobile,
                     'sort_order' => $slider->sort_order,
                     'url' => $slider->url,

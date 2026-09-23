@@ -23,6 +23,7 @@ interface RelatedCollectionsProps {
 export default function RelatedCollections({ collections }: RelatedCollectionsProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -30,15 +31,15 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
   const items = collections || [];
   const [totalDots, setTotalDots] = useState(items.length);
 
-  const GAP = isMobile ? 10 : 24;
+  const GAP = isMobile ? 12 : isTablet ? 20 : 24;
 
   const getCardWidth = useCallback(() => {
     const el = trackRef.current;
-    if (!el) return isMobile ? 160 : 500;
+    if (!el) return 500;
     const cardEl = el.firstElementChild as HTMLElement;
-    if (!cardEl) return isMobile ? ((el.clientWidth - 10) / 2) : 500;
-    return cardEl.getBoundingClientRect().width || (isMobile ? ((el.clientWidth - 10) / 2) : 500);
-  }, [isMobile]);
+    if (!cardEl) return (el.clientWidth - GAP) / 2;
+    return cardEl.getBoundingClientRect().width || (el.clientWidth - GAP) / 2;
+  }, [GAP]);
 
   const updateScrollState = useCallback(() => {
     const el = trackRef.current;
@@ -52,9 +53,7 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
     setCanScrollLeft(scrollLeft > 10);
     setCanScrollRight(scrollLeft < maxScroll - 10);
 
-    const numDots = isMobile
-      ? Math.max(1, Math.ceil(items.length / 2))
-      : Math.max(1, Math.round(maxScroll / itemWidth) + 1);
+    const numDots = Math.max(1, Math.round(maxScroll / itemWidth) + 1);
     setTotalDots(numDots);
 
     if (maxScroll <= 5) {
@@ -65,14 +64,18 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
       const idx = Math.round((scrollLeft / maxScroll) * (numDots - 1));
       setActiveSlide(Math.min(Math.max(0, idx), numDots - 1));
     }
-  }, [items.length, isMobile, GAP, getCardWidth]);
+  }, [items.length, GAP, getCardWidth]);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
+    const checkViewport = () => {
+      const w = window.innerWidth;
+      setIsMobile(w <= 600);
+      setIsTablet(w > 600 && w <= 1024);
+    };
+    checkViewport();
 
     const handleResize = () => {
-      checkMobile();
+      checkViewport();
       updateScrollState();
     };
     window.addEventListener('resize', handleResize);
@@ -97,33 +100,14 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
     const el = trackRef.current;
     if (!el) return;
     const cardWidth = getCardWidth();
-    const scrollDistance = isMobile ? (cardWidth * 2 + GAP * 2) : (cardWidth + GAP);
+    const scrollDistance = cardWidth + GAP;
     el.scrollBy({ left: dir * scrollDistance, behavior: 'smooth' });
   };
 
-  const showNav = items.length > (isMobile ? 2 : 2);
+  const showNav = items.length > 1;
 
-  const desktopArrow = (isEnabled: boolean): React.CSSProperties => ({
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    zIndex: 10,
-    width: 44,
-    height: 60,
-    display: !isMobile && showNav ? 'grid' : 'none',
-    placeItems: 'center',
-    background: 'transparent',
-    border: 'none',
-    cursor: isEnabled ? 'pointer' : 'default',
-    fontSize: 36,
-    fontWeight: 300,
-    color: '#111',
-    opacity: isEnabled ? 1 : 0.25,
-    pointerEvents: isEnabled ? 'auto' : 'none',
-    transition: 'opacity 0.25s ease',
-    padding: 0,
-    lineHeight: 1,
-  });
+  const cardFlex = `0 0 calc((100% - ${GAP}px) / 2)`;
+  const cardDim = `calc((100% - ${GAP}px) / 2)`;
 
   return (
     <section className="s-section s-related">
@@ -131,25 +115,23 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
         <h2>Explore other collections</h2>
       </div>
 
-      <div className="s-slider-container" style={{ position: 'relative', display: 'block', width: '100%' }}>
-        {/* Desktop Previous Arrow */}
-        {!isMobile && (
-          <button
-            onClick={() => scroll(-1)}
-            aria-label="Previous"
-            style={{ ...desktopArrow(canScrollLeft), left: -50 }}
-            disabled={!canScrollLeft}
-          >
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 18l-6-6 6-6"></path>
-            </svg>
-          </button>
-        )}
+      <div className="s-carousel">
+        <button
+          className="s-carousel-arrow s-carousel-prev"
+          type="button"
+          aria-label="Previous rooms"
+          onClick={() => scroll(-1)}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
 
         {/* Inner clipper */}
         <div style={{ overflow: 'hidden', width: '100%' }}>
           <div
             ref={trackRef}
+            className="s-scroll"
             style={{
               display: 'flex',
               gap: GAP,
@@ -173,10 +155,10 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
                   key={collection.id}
                   href={`/collections/${collection.slug}`}
                   style={{
-                    flex: isMobile ? '0 0 calc(50% - 5px)' : `0 0 calc((100% - ${GAP}px) / 2)`,
-                    minWidth: isMobile ? 'calc(50% - 5px)' : undefined,
-                    maxWidth: isMobile ? 'calc(50% - 5px)' : undefined,
-                    width: isMobile ? 'calc(50% - 5px)' : undefined,
+                    flex: cardFlex,
+                    minWidth: cardDim,
+                    maxWidth: cardDim,
+                    width: cardDim,
                     flexShrink: 0,
                     scrollSnapAlign: 'start',
                     scrollSnapStop: 'always',
@@ -185,12 +167,11 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
                     flexDirection: 'column',
                     justifyContent: 'flex-end',
                     position: 'relative',
-                    height: isMobile ? '220px' : '300px',
-                    aspectRatio: isMobile ? '4/5' : undefined,
+                    height: isMobile ? '220px' : isTablet ? '260px' : '300px',
                     color: '#fff',
                     overflow: 'hidden',
-                    borderRadius: isMobile ? 4 : 0,
-                    padding: isMobile ? '12px 10px' : '0 22px 22px',
+                    borderRadius: 0,
+                    padding: isTablet ? '0 16px 16px' : '0 22px 22px',
                     boxSizing: 'border-box',
                   }}
                 >
@@ -206,9 +187,9 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
                     background: 'linear-gradient(transparent, rgba(0,0,0,0.78))',
                     zIndex: 1,
                   }} />
-                  <h3 style={{ font: isMobile ? '600 14px Inter' : '600 22px Inter', margin: 0, position: 'relative', zIndex: 2 }}>{collection.name}</h3>
+                  <h3 style={{ font: isTablet ? '600 18px Inter' : '600 22px Inter', margin: 0, position: 'relative', zIndex: 2 }}>{collection.name}</h3>
                   {descriptionText && (
-                    <p style={{ fontSize: isMobile ? '10px' : '18px', fontWeight: 300, margin: isMobile ? '2px 0 0' : '4px 0 0', position: 'relative', zIndex: 2 }}>{descriptionText}</p>
+                    <p style={{ fontSize: isTablet ? '14px' : '18px', fontWeight: 300, margin: '4px 0 0', position: 'relative', zIndex: 2 }}>{descriptionText}</p>
                   )}
                 </Link>
               );
@@ -216,60 +197,26 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
           </div>
         </div>
 
-        {/* Desktop Next Arrow */}
-        {!isMobile && (
-          <button
-            onClick={() => scroll(1)}
-            aria-label="Next"
-            style={{ ...desktopArrow(canScrollRight), right: -50 }}
-            disabled={!canScrollRight}
-          >
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18l6-6-6-6"></path>
-            </svg>
-          </button>
-        )}
-
-        {/* Mobile Floating Circular Next Arrow Button */}
-        {isMobile && canScrollRight && (
-          <button
-            onClick={() => scroll(1)}
-            aria-label="Next"
-            style={{
-              position: 'absolute',
-              right: '-12px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 10,
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              background: 'rgba(30, 30, 30, 0.4)',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
-              color: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              padding: 0,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
-        )}
+        <button
+          className="s-carousel-arrow s-carousel-next"
+          type="button"
+          aria-label="Next rooms"
+          onClick={() => scroll(1)}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6"></path>
+          </svg>
+        </button>
       </div>
 
-      {/* Dots Indicator (Desktop only) */}
+      {/* Dots Indicator */}
       {!isMobile && showNav && totalDots > 1 && (
         <div 
           style={{
             display: 'flex',
             justifyContent: 'flex-end',
             gap: 6,
-            padding: '24px 0 0',
+            padding: '20px 0 0',
           }}
         >
           {Array.from({ length: totalDots }).map((_, i) => (

@@ -16,18 +16,22 @@
   right: 24px;
   bottom: 22px;
   left: 28px;
+  display: block;
 }
 
 .s-place .s-place-copy h3 {
   position: static;
-  margin: 0;
+  margin: 0 0 8px;
+  opacity: 1;
+  transform: translateY(21px);
+  transition: opacity var(--dur-hover) var(--ease-out), transform var(--dur-hover) var(--ease-out);
 }
 
 .s-place-copy p {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  position: relative;
+  right: auto;
+  bottom: auto;
+  left: auto;
   max-width: 300px;
   margin: 0;
   opacity: 0;
@@ -66,7 +70,7 @@
   }
 
   .s-place:hover .s-place-copy h3 {
-    transform: translateY(-58px);
+    transform: translateY(0);
   }
 
   .s-look:hover>div p {
@@ -97,7 +101,7 @@
 
 .s-place.is-active .s-place-copy h3,
 .s-place:focus-visible .s-place-copy h3 {
-  transform: translateY(-58px);
+  transform: translateY(0);
 }
 
 .s-look:focus-visible>div p,
@@ -118,19 +122,19 @@
     left: 14px;
   }
 
+  .s-place .s-place-copy h3 {
+    margin-bottom: 3px;
+    transform: translateY(12px);
+  }
+
   .s-place-copy p {
-    font-size: 9px;
+    font-size: 10px !important;
   }
 
   .s-look>div p {
     margin-bottom: 3px;
-    font-size: 10px !important;
+    font-size: 9px;
     transform: translateY(12px);
-  }
-
-  .s-place.is-active .s-place-copy h3,
-  .s-place:focus-visible .s-place-copy h3 {
-    transform: translateY(-40px);
   }
 }
 

@@ -10,6 +10,7 @@ interface WorldsSectionProps {
 export default function WorldsSection({ lightWorlds = [] }: WorldsSectionProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -20,11 +21,11 @@ export default function WorldsSection({ lightWorlds = [] }: WorldsSectionProps) 
 
   const getCardWidth = useCallback(() => {
     const el = trackRef.current;
-    if (!el) return isMobile ? 160 : 292;
+    if (!el) return isMobile ? 160 : isTablet ? 280 : 292;
     const cardEl = el.firstElementChild as HTMLElement;
-    if (!cardEl) return isMobile ? ((el.clientWidth - 10) / 2) : 292;
-    return cardEl.getBoundingClientRect().width || (isMobile ? ((el.clientWidth - 10) / 2) : 292);
-  }, [isMobile]);
+    if (!cardEl) return isMobile ? ((el.clientWidth - 10) / 2) : isTablet ? ((el.clientWidth - 2 * GAP) / 2.45) : 292;
+    return cardEl.getBoundingClientRect().width || (isMobile ? ((el.clientWidth - 10) / 2) : isTablet ? ((el.clientWidth - 2 * GAP) / 2.45) : 292);
+  }, [isMobile, isTablet, GAP]);
 
   const updateScrollState = useCallback(() => {
     const el = trackRef.current;
@@ -54,11 +55,15 @@ export default function WorldsSection({ lightWorlds = [] }: WorldsSectionProps) 
   }, [lightWorlds, isMobile, GAP, getCardWidth]);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
+    const checkViewport = () => {
+      const w = window.innerWidth;
+      setIsMobile(w <= 700);
+      setIsTablet(w > 700 && w <= 1024);
+    };
+    checkViewport();
 
     const handleResize = () => {
-      checkMobile();
+      checkViewport();
       updateScrollState();
     };
     window.addEventListener('resize', handleResize);
@@ -84,7 +89,7 @@ export default function WorldsSection({ lightWorlds = [] }: WorldsSectionProps) 
   };
 
   const count = lightWorlds?.length || 0;
-  const showNav = count > (isMobile ? 2 : 3);
+  const showNav = count > (isMobile ? 2 : 2);
 
   const desktopArrow = (isEnabled: boolean): React.CSSProperties => ({
     position: 'absolute',
@@ -112,6 +117,18 @@ export default function WorldsSection({ lightWorlds = [] }: WorldsSectionProps) 
   if (!lightWorlds || lightWorlds.length === 0) {
     return null;
   }
+
+  const cardFlex = isMobile
+    ? '0 0 calc(50% - 5px)'
+    : isTablet
+    ? `0 0 calc((100% - 2 * ${GAP}px) / 2.45)`
+    : `0 0 calc((100% - 3 * ${GAP}px) / 3.5)`;
+
+  const cardDim = isMobile
+    ? 'calc(50% - 5px)'
+    : isTablet
+    ? `calc((100% - 2 * ${GAP}px) / 2.45)`
+    : undefined;
 
   return (
     <section className="section" id="worlds">
@@ -158,10 +175,10 @@ export default function WorldsSection({ lightWorlds = [] }: WorldsSectionProps) 
                   key={world.id}
                   className="world"
                   style={{
-                    flex: isMobile ? '0 0 calc(50% - 5px)' : `0 0 calc((100% - 3 * ${GAP}px) / 3.5)`,
-                    minWidth: isMobile ? 'calc(50% - 5px)' : undefined,
-                    maxWidth: isMobile ? 'calc(50% - 5px)' : undefined,
-                    width: isMobile ? 'calc(50% - 5px)' : undefined,
+                    flex: cardFlex,
+                    minWidth: cardDim,
+                    maxWidth: cardDim,
+                    width: cardDim,
                     scrollSnapAlign: 'start',
                     scrollSnapStop: 'always',
                     margin: 0,
@@ -232,27 +249,27 @@ export default function WorldsSection({ lightWorlds = [] }: WorldsSectionProps) 
                     }}
                   >
                     <span>{world.name}</span>
-                    {!isMobile && (
-                      <svg
-                        className="world-arrow"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{
-                          display: 'inline-block',
-                          flexShrink: 0,
-                          transition: 'transform 0.2s ease',
-                        }}
-                      >
-                        <line x1="-2" y1="12" x2="20" y2="12" />
-                        <polyline points="14 6 20 12 14 18" />
-                      </svg>
-                    )}
+                    <svg
+                      className="world-arrow"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{
+                        display: 'inline-block',
+                        flexShrink: 0,
+                        transition: 'transform 0.2s ease',
+                        color: isMobile ? '#ffffff' : '#111111',
+                        stroke: isMobile ? '#ffffff' : '#111111',
+                      }}
+                    >
+                      <line x1="-2" y1="12" x2="20" y2="12" />
+                      <polyline points="14 6 20 12 14 18" />
+                    </svg>
                   </h3>
                 </a>
               ))}

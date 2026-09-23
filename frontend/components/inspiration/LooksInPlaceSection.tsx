@@ -111,8 +111,15 @@ const ROOMS = [
   { id: "workspace", label: "Workspace" },
 ];
 
+interface CompositionItem {
+  title: string;
+  kicker?: string;
+  category?: string;
+  image?: string;
+}
+
 interface Props {
-  compositions?: any[];
+  compositions?: CompositionItem[];
 }
 
 export default function LooksInPlaceSection({ compositions = [] }: Props) {
@@ -134,9 +141,9 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
   }, []);
 
   const mappedLooks: LookItem[] = compositions && compositions.length > 0
-    ? compositions.map((c: any) => ({
+    ? compositions.map((c: CompositionItem) => ({
         title: c.title,
-        kicker: c.kicker || c.category,
+        kicker: c.kicker || c.category || "",
         room: c.category ? c.category.toLowerCase() : "all",
         image: c.image || "/images/reference/project-atlas.png"
       }))

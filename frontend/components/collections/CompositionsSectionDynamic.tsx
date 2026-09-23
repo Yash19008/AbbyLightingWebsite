@@ -3,6 +3,8 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { CompositionsSection as CompositionsSectionType } from '@/types/collection';
+import LookModal, { LookItem } from '@/components/inspiration/LookModal';
+import '@/styles/inspiration.css';
 
 interface Props {
   compositionsSection: CompositionsSectionType;
@@ -11,10 +13,12 @@ interface Props {
 export default function CompositionsSectionDynamic({ compositionsSection }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [isTablet, setIsTablet] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeLook, setActiveLook] = useState<LookItem | null>(null);
 
   const items = compositionsSection.items || [];
   const [totalDots, setTotalDots] = useState(items.length);
@@ -23,11 +27,11 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
 
   const getCardWidth = useCallback(() => {
     const el = trackRef.current;
-    if (!el) return isMobile ? 160 : 358;
+    if (!el) return isMobile ? 160 : isTablet ? 280 : 358;
     const cardEl = el.firstElementChild as HTMLElement;
-    if (!cardEl) return isMobile ? ((el.clientWidth - 10) / 2) : 358;
-    return cardEl.getBoundingClientRect().width || (isMobile ? ((el.clientWidth - 10) / 2) : 358);
-  }, [isMobile]);
+    if (!cardEl) return isMobile ? ((el.clientWidth - 10) / 2) : isTablet ? ((el.clientWidth - 2 * GAP) / 2.45) : 358;
+    return cardEl.getBoundingClientRect().width || (isMobile ? ((el.clientWidth - 10) / 2) : isTablet ? ((el.clientWidth - 2 * GAP) / 2.45) : 358);
+  }, [isMobile, isTablet, GAP]);
 
   const updateScrollState = useCallback(() => {
     const el = trackRef.current;
@@ -57,11 +61,15 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
   }, [items.length, isMobile, GAP, getCardWidth]);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 700);
-    checkMobile();
+    const checkViewport = () => {
+      const w = window.innerWidth;
+      setIsMobile(w <= 700);
+      setIsTablet(w > 700 && w <= 1024);
+    };
+    checkViewport();
 
     const handleResize = () => {
-      checkMobile();
+      checkViewport();
       updateScrollState();
     };
     window.addEventListener('resize', handleResize);
@@ -86,7 +94,7 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
     el.scrollBy({ left: dir * scrollDistance, behavior: 'smooth' });
   };
 
-  const showNav = items.length > (isMobile ? 2 : 3);
+  const showNav = items.length > (isMobile ? 2 : isTablet ? 2 : 3);
 
   const desktopArrow = (isEnabled: boolean): React.CSSProperties => ({
     position: 'absolute',
@@ -109,6 +117,18 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
     padding: 0,
     lineHeight: 1,
   });
+
+  const cardFlex = isMobile
+    ? '0 0 calc(50% - 5px)'
+    : isTablet
+    ? `0 0 calc((100% - 2 * ${GAP}px) / 2.45)`
+    : `0 0 calc((100% - 3 * ${GAP}px) / 3.5)`;
+
+  const cardDim = isMobile
+    ? 'calc(50% - 5px)'
+    : isTablet
+    ? `calc((100% - 2 * ${GAP}px) / 2.45)`
+    : undefined;
 
   return (
     <section className="s-section s-inspire">
@@ -156,12 +176,21 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
                 key={comp.id}
                 className={`s-look ${activeIndex === index ? 'is-active' : ''}`}
                 tabIndex={0}
-                onClick={() => setActiveIndex(activeIndex === index ? null : index)}
+                onClick={() => {
+                  setActiveIndex(activeIndex === index ? null : index);
+                  setActiveLook({
+                    title: comp.title || 'Composition',
+                    kicker: comp.kicker || comp.category || 'Symphony Composition',
+                    room: comp.category ? comp.category.toLowerCase() : 'living',
+                    image: comp.image,
+                  });
+                }}
                 style={{
-                  flex: isMobile ? '0 0 calc(50% - 5px)' : `0 0 calc((100% - 3 * ${GAP}px) / 3.5)`,
-                  minWidth: isMobile ? 'calc(50% - 5px)' : undefined,
-                  maxWidth: isMobile ? 'calc(50% - 5px)' : undefined,
-                  width: isMobile ? 'calc(50% - 5px)' : undefined,
+                  cursor: 'pointer',
+                  flex: cardFlex,
+                  minWidth: cardDim,
+                  maxWidth: cardDim,
+                  width: cardDim,
                   scrollSnapAlign: 'start',
                   scrollSnapStop: 'always',
                   margin: 0,
@@ -203,6 +232,37 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
           >
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
+        )}
+
+        {/* Mobile Floating Circular Previous Arrow Button */}
+        {isMobile && canScrollLeft && (
+          <button
+            onClick={() => scroll(-1)}
+            aria-label="Previous"
+            style={{
+              position: 'absolute',
+              left: '-12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 10,
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              background: 'rgba(30, 30, 30, 0.4)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              padding: 0,
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
         )}
@@ -276,6 +336,12 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
           ))}
         </div>
       )}
+
+      <LookModal
+        isOpen={Boolean(activeLook)}
+        look={activeLook}
+        onClose={() => setActiveLook(null)}
+      />
     </section>
   );
 }

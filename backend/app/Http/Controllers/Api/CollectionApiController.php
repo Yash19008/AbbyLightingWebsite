@@ -136,17 +136,8 @@ class CollectionApiController extends Controller
             'compositions_section' => ($collection->compositionsSection && $collection->compositionsSection->is_active) ? [
                 'title' => $collection->compositionsSection->title,
                 'subtitle' => $collection->compositionsSection->subtitle,
-                'items' => ($collection->compositionsSection->items && $collection->compositionsSection->items->count() > 0)
-                    ? $collection->compositionsSection->items->map(function ($item) {
-                        return [
-                            'id' => $item->id,
-                            'image' => $item->image_url ?? ($item->image ? asset('storage/' . $item->image) : ''),
-                            'title' => $item->products ?? '',
-                            'category' => '',
-                            'kicker' => $item->description ?? '',
-                        ];
-                    })
-                    : $collection->compositions->map(function ($comp) {
+                'items' => ($collection->compositions && $collection->compositions->count() > 0)
+                    ? $collection->compositions->map(function ($comp) {
                         $img = $comp->image;
                         if ($img && !str_starts_with($img, 'http')) {
                             $img = str_starts_with($img, 'uploads/compositions/')
@@ -160,7 +151,16 @@ class CollectionApiController extends Controller
                             'category' => $comp->category ?? '',
                             'kicker' => $comp->kicker ?? '',
                         ];
-                    }),
+                    })
+                    : ($collection->compositionsSection->items ? $collection->compositionsSection->items->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'image' => $item->image_url ?? ($item->image ? asset('storage/' . $item->image) : ''),
+                            'title' => $item->products ?? '',
+                            'category' => '',
+                            'kicker' => $item->description ?? '',
+                        ];
+                    }) : []),
             ] : null,
             
             // Tones Section
@@ -218,6 +218,62 @@ class CollectionApiController extends Controller
                 'success' => false,
                 'message' => 'Collection not found',
             ], 404);
+        }
+    }
+
+    /**
+     * Get paginated parameter items for a collection
+     */
+    public function getParameters(Request $request, $slug)
+    {
+        try {
+            $collection = Collection::where('slug', $slug)->active()->firstOrFail();
+
+            if (!$collection->parametersSection || !$collection->parametersSection->is_active) {
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'items' => [],
+                        'has_more' => false,
+                        'total' => 0,
+                    ]
+                ]);
+            }
+
+            $page = (int) $request->query('page', 1);
+            $limit = (int) $request->query('limit', 8);
+            $offset = ($page - 1) * $limit;
+
+            $query = $collection->parametersSection->items()->where('is_active', true)->orderBy('order');
+            $total = $query->count();
+
+            $items = $query->skip($offset)->take($limit)->get()->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'small_text' => $item->small_text,
+                    'title' => $item->title,
+                    'description' => $item->description,
+                    'bg_color' => $item->bg_color,
+                    'hover_bg_color' => $item->hover_bg_color,
+                    'order' => $item->order,
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'items' => $items,
+                    'has_more' => ($offset + $items->count()) < $total,
+                    'total' => $total,
+                    'page' => $page,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('CollectionApiController::getParameters — ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch parameter items',
+            ], 500);
         }
     }
 }

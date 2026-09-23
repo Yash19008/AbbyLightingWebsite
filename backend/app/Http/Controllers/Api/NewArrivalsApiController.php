@@ -12,12 +12,14 @@ class NewArrivalsApiController extends Controller
 {
     /**
      * Get new arrival products grouped by tabs (Architectural, Decorative, Outdoor)
+     * Only returns featured products (is_featured = 1 for Decorative, show_as_new_arrival = 1 for Architectural)
      */
     public function index(Request $request)
     {
         try {
-            // 1. Fetch Decorative Products
+            // 1. Fetch Featured Decorative Products (where is_featured = 1)
             $decProducts = DecProduct::where('status', 'published')
+                ->where('is_featured', 1)
                 ->with(['category', 'variants'])
                 ->orderBy('order', 'asc')
                 ->latest()
@@ -52,7 +54,7 @@ class NewArrivalsApiController extends Controller
                     ];
                 });
 
-            // 2. Fetch Architectural Products (from ProductMaster if any)
+            // 2. Fetch Featured Architectural Products (where show_as_new_arrival = 1)
             $archProducts = ProductMaster::where('is_active', 'yes')
                 ->where('show_as_new_arrival', 1)
                 ->with(['category'])

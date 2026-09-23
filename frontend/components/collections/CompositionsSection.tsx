@@ -2,6 +2,8 @@
 
 import { useRef, useState } from 'react';
 import Image from 'next/image';
+import LookModal, { LookItem } from '@/components/inspiration/LookModal';
+import '@/styles/inspiration.css';
 
 type CompositionItem = {
   id: number;
@@ -24,6 +26,7 @@ type Props = {
 export default function CompositionsSection({ data }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeLook, setActiveLook] = useState<LookItem | null>(null);
 
   const scroll = (direction: 'prev' | 'next') => {
     if (!scrollRef.current) return;
@@ -43,8 +46,14 @@ export default function CompositionsSection({ data }: Props) {
     });
   };
 
-  const handleClick = (index: number) => {
+  const handleClick = (comp: CompositionItem, index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
+    setActiveLook({
+      title: comp.title || 'Composition',
+      kicker: comp.kicker || comp.category || 'Symphony Composition',
+      room: comp.category ? comp.category.toLowerCase() : 'living',
+      image: comp.image,
+    });
   };
 
   return (
@@ -70,7 +79,8 @@ export default function CompositionsSection({ data }: Props) {
               key={index}
               className={`s-look ${activeIndex === index ? 'is-active' : ''}`}
               tabIndex={0}
-              onClick={() => handleClick(index)}
+              onClick={() => handleClick(comp, index)}
+              style={{ cursor: 'pointer' }}
             >
               <Image
                 src={comp.image}
@@ -97,6 +107,12 @@ export default function CompositionsSection({ data }: Props) {
           </svg>
         </button>
       </div>
+
+      <LookModal
+        isOpen={Boolean(activeLook)}
+        look={activeLook}
+        onClose={() => setActiveLook(null)}
+      />
     </section>
   );
 }

@@ -18,14 +18,34 @@ const capitalizeFirstLetter = (str: string): string => {
 
 export default function TonesSectionDynamic({ tonesSection }: TonesSectionProps) {
   const gridRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
   const updateScroll = useCallback(() => {
     const container = gridRef.current;
     if (!container) return;
     const maxScroll = Math.max(0, container.scrollWidth - container.clientWidth);
+    setCanScrollLeft(container.scrollLeft > 10);
     setCanScrollRight(container.scrollLeft < maxScroll - 10);
   }, []);
+
+  const scrollPrev = () => {
+    if (!gridRef.current) return;
+    const container = gridRef.current;
+    const cards = Array.from(container.querySelectorAll('article'));
+    const current = cards.findIndex(
+      (card) => Math.abs(card.getBoundingClientRect().left - container.getBoundingClientRect().left) < card.getBoundingClientRect().width / 2
+    );
+    const prevIndex = Math.max(current - 1, 0);
+    const target = cards[prevIndex] as HTMLElement;
+    
+    if (target) {
+      container.scrollTo({
+        left: target.offsetLeft,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   const scrollNext = () => {
     if (!gridRef.current) return;
@@ -65,15 +85,15 @@ export default function TonesSectionDynamic({ tonesSection }: TonesSectionProps)
         <h2>{tonesSection.title}</h2>
         <p>{tonesSection.subtitle}</p>
       </div>
-      <div className="s-tone-carousel" style={{ position: 'relative' }}>
+      <div style={{ position: 'relative', width: '100%' }}>
         <div className="s-tone-grid" ref={gridRef}>
           {tonesSection.families.map((family) => (
             <article key={family.id}>
               <Image
                 src={family.image}
                 alt={family.title}
-                width={600}
-                height={400}
+                width={300}
+                height={250}
                 style={{ objectFit: 'cover' }}
               />
               <div>
@@ -81,12 +101,11 @@ export default function TonesSectionDynamic({ tonesSection }: TonesSectionProps)
                 <ul>
                   {family.colors.map((color) => (
                     <li key={color.id}>
-                      <i 
-                        style={{ 
-                          background: color.type === 'gradient' 
-                            ? color.css_value 
-                            : color.css_value 
-                        }} 
+                      <i
+                        style={{
+                          backgroundColor: color.css_value,
+                          border: color.css_value === '#ffffff' || color.css_value.toLowerCase() === '#fff' ? '1px solid #ccc' : 'none',
+                        }}
                       />
                       {capitalizeFirstLetter(color.name)}
                     </li>
@@ -96,6 +115,38 @@ export default function TonesSectionDynamic({ tonesSection }: TonesSectionProps)
             </article>
           ))}
         </div>
+
+        {/* Mobile Floating Circular Previous Arrow Button */}
+        {canScrollLeft && (
+          <button
+            type="button"
+            onClick={scrollPrev}
+            aria-label="Previous colour family"
+            style={{
+              position: 'absolute',
+              left: '-12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 10,
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              background: 'rgba(30, 30, 30, 0.4)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              padding: 0,
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+        )}
 
         {/* Mobile Floating Circular Next Arrow Button */}
         {canScrollRight && (

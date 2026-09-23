@@ -6,6 +6,9 @@ import BlogRelatedSection from "@/components/blogs/BlogRelatedSection";
 import { processArticleContent } from "@/lib/toc";
 import "@/styles/blogs.css";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -14,7 +17,7 @@ async function fetchBlog(slug: string) {
   try {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
     const res = await fetch(`${API_URL}/api/blogs/${slug}`, {
-      next: { revalidate: 60 },
+      cache: 'no-store',
     });
     if (!res.ok) return { blog: null, latestBlogs: [] };
     const json = await res.json();

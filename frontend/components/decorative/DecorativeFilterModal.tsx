@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export interface FilterState {
   category: string[];
@@ -64,7 +64,10 @@ export default function DecorativeFilterModal({ initialFilters, availableCategor
         <div className="decorative-filter-head">
           <h3>Filter by</h3>
           <button type="button" className="decorative-filter-close" aria-label="Close filters" onClick={onClose}>
-            ×
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
         </div>
         <div className="decorative-filter-accordions">
@@ -138,10 +141,10 @@ export default function DecorativeFilterModal({ initialFilters, availableCategor
         </div>
         <div className="decorative-filter-foot">
           <button type="button" className="decorative-filter-clear" onClick={clearAll}>
-            Clear all
+            Clear All
           </button>
-          <button type="button" className="decorative-filter-show show" onClick={applyFilters}>
-            Show results
+          <button type="button" className="decorative-filter-show" onClick={applyFilters}>
+            SHOW RESULTS
           </button>
         </div>
       </div>

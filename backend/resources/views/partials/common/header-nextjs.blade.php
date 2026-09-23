@@ -1381,15 +1381,50 @@
 /* ==================================================================
    SEARCH TOGGLE & DROPDOWN - EXACT NEXT.JS BEHAVIOR
    ================================================================== */
+#searchToggle,
+.abby-search-toggle,
 .abby-search .abby-search-toggle,
-.main-box .abby-search .abby-search-toggle {
+.main-box .abby-search .abby-search-toggle,
+.sitehead .right .abby-search-toggle {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  background: transparent !important;
+  color: #ffffff !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background: transparent !important;
-  border: none !important;
-  cursor: pointer !important;
   padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.25s ease !important;
+}
+
+#searchToggle:hover,
+.abby-search-toggle:hover,
+.main-box .abby-search .abby-search-toggle:hover {
+  border-color: #f6c177 !important;
+  color: #f6c177 !important;
+}
+
+#searchToggle svg,
+.abby-search-toggle svg,
+.abby-search svg,
+.main-box .abby-search svg {
+  width: 15px !important;
+  height: 15px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.8 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  display: block !important;
+  margin: auto !important;
+  pointer-events: none !important;
 }
 
 .abby-search:not(.is-open) #searchIcon,
@@ -1415,31 +1450,54 @@
 @media (max-width: 900px) {
   .main-box .sitehead .right {
     gap: 12px !important;
+    align-items: center !important;
   }
 
   .main-box .abby-search {
     position: relative !important;
     margin-top: 0 !important;
-    width: 38px !important;
-    height: 38px !important;
+    width: 32px !important;
+    height: 32px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    flex: 0 0 38px !important;
+    flex: 0 0 32px !important;
   }
   
+  #searchToggle,
   .main-box .abby-search-toggle {
-    width: 38px !important;
-    height: 38px !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    background: transparent !important;
+    color: #ffffff !important;
     position: static !important;
     transform: none !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .main-box .abby-search-toggle:hover {
+    border-color: #f6c177 !important;
+    color: #f6c177 !important;
+  }
+
+  .main-box .abby-search svg {
+    width: 15px !important;
+    height: 15px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    display: block !important;
   }
 
   .main-box .abby-search.is-open .abby-search-toggle {
     transform: none !important;
+    border-color: rgba(246, 193, 119, 0.6) !important;
   }
 
   .main-box .abby-search-form {
@@ -1530,6 +1588,32 @@ body:not(.home-page) .sitehead {
                                         </ul>
                                     </div>
                                     <div class="msep"></div>
+                                    <div class="mgroup m-dec">
+                                        <div class="mhead">
+                                            Decorative <span class="mnew">NEW</span>
+                                        </div>
+                                        <div class="mcols">
+                                            <div>
+                                                <div class="msub">Browse by category</div>
+                                                <ul id="bladeDecCategories">
+                                                    <li><a href="/decorative-products?category=chandelier">Chandelier</a></li>
+                                                    <li><a href="/decorative-products?category=pendant-lights">Pendant Lights</a></li>
+                                                    <li><a href="/decorative-products?category=wall-lights">Wall Lights</a></li>
+                                                    <li><a href="/decorative-products?category=floor-lamps">Floor Lamps</a></li>
+                                                    <li><a href="/decorative-products?category=table-lamps">Table Lamps</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="msep sm"></div>
+                                            <div>
+                                                <div class="msub">Browse by collection</div>
+                                                <ul id="bladeDecCollections">
+                                                    <li><a href="/collections/symphony">Symphony</a></li>
+                                                    <li><a href="/collections/quarry">Quarry</a></li>
+                                                    <li><a href="/collections/neoma">Neoma</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="msep lg"></div>
                                     <div class="m-worlds">
                                         <a class="mgroup m-out" href="/#worlds">
@@ -1594,12 +1678,13 @@ body:not(.home-page) .sitehead {
                         aria-label="Open search"
                         aria-expanded="false"
                         id="searchToggle"
+                        style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.4); display: flex; align-items: center; justify-content: center; background: transparent; padding: 0; box-sizing: border-box;"
                     >
-                        <svg viewBox="0 0 24 24" aria-hidden="true" id="searchIcon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" id="searchIcon" style="width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8;">
                             <circle cx="10.7" cy="10.7" r="6.7"></circle>
                             <path d="m16 16 4.5 4.5"></path>
                         </svg>
-                        <svg viewBox="0 0 24 24" aria-hidden="true" id="closeIcon" style="display: none;">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" id="closeIcon" style="display: none; width: 15px; height: 15px;">
                             <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                     </button>
@@ -1718,6 +1803,32 @@ body:not(.home-page) .sitehead {
                         </ul>
                     </div>
                 </div>
+                <div class="pdrop-acc" id="modalDecAccordion">
+                    <button type="button" class="pdrop-acc-toggle" id="modalDecToggle">
+                        <span>Decorative <span class="mnew" style="margin-left: 6px; font-size: 0.65rem; padding: 1px 5px; color: #fff; border-radius: 3px;">NEW</span></span>
+                        <span class="pdrop-caret">
+                            <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
+                                <polygon points="0,0 11,0 5.5,7" />
+                            </svg>
+                        </span>
+                    </button>
+                    <div class="pdrop-acc-content" id="modalDecContent" style="display: none;">
+                        <div class="pdrop-section-label">BROWSE BY CATEGORY</div>
+                        <ul class="pdrop-list" id="modalDecCatList">
+                            <li><a href="/decorative-products?category=chandelier">Chandelier</a></li>
+                            <li><a href="/decorative-products?category=pendant-lights">Pendant Lights</a></li>
+                            <li><a href="/decorative-products?category=wall-lights">Wall Lights</a></li>
+                            <li><a href="/decorative-products?category=floor-lamps">Floor Lamps</a></li>
+                            <li><a href="/decorative-products?category=table-lamps">Table Lamps</a></li>
+                        </ul>
+                        <div class="pdrop-section-label" style="margin-top: 18px;">BROWSE BY COLLECTION</div>
+                        <ul class="pdrop-list" id="modalDecColList">
+                            <li><a href="/collections/symphony">Symphony</a></li>
+                            <li><a href="/collections/quarry">Quarry</a></li>
+                            <li><a href="/collections/neoma">Neoma</a></li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="pdrop-direct-row">
                     <a href="/#worlds">Outdoor</a>
                 </div>
@@ -1809,26 +1920,51 @@ body:not(.home-page) .sitehead {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Fetch Dynamic Categories for Mega Menu & Mobile Drawer
+    // 1. Fetch Dynamic Categories & Collections for Mega Menu & Mobile Drawer
     fetch('/api/categories')
         .then(res => res.json())
         .then(data => {
             if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
                 const list = document.getElementById('bladeArchitecturalCategories');
                 const modalList = document.getElementById('modalArchList');
-                if (list) {
-                    list.innerHTML = data.data.map(cat => 
-                        `<li><a href="${cat.uri || ('/products?category=' + (cat.slug || ''))}">${cat.title || cat.name}</a></li>`
-                    ).join('');
-                }
-                if (modalList) {
-                    modalList.innerHTML = data.data.map(cat => 
-                        `<li><a href="${cat.uri || ('/products?category=' + (cat.slug || ''))}">${cat.title || cat.name}</a></li>`
-                    ).join('');
-                }
+                const html = data.data.map(cat => 
+                    `<li><a href="${cat.uri || ('/products?category=' + (cat.slug || ''))}">${cat.title || cat.name}</a></li>`
+                ).join('');
+                if (list) list.innerHTML = html;
+                if (modalList) modalList.innerHTML = html;
             }
         })
         .catch(err => console.log('Category fetch skipped', err));
+
+    fetch('/api/dec-categories')
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+                const list = document.getElementById('bladeDecCategories');
+                const modalList = document.getElementById('modalDecCatList');
+                const html = data.data.map(cat => 
+                    `<li><a href="/decorative-products?category=${encodeURIComponent(cat.slug || cat.name)}">${cat.name}</a></li>`
+                ).join('');
+                if (list) list.innerHTML = html;
+                if (modalList) modalList.innerHTML = html;
+            }
+        })
+        .catch(err => console.log('Dec Category fetch skipped', err));
+
+    fetch('/api/collections')
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+                const list = document.getElementById('bladeDecCollections');
+                const modalList = document.getElementById('modalDecColList');
+                const html = data.data.map(col => 
+                    `<li><a href="/collections/${encodeURIComponent(col.slug || col.name.toLowerCase())}">${col.name}</a></li>`
+                ).join('');
+                if (list) list.innerHTML = html;
+                if (modalList) modalList.innerHTML = html;
+            }
+        })
+        .catch(err => console.log('Collections fetch skipped', err));
 
     // 2. Mobile Dock & Drawer Navigation Logic
     const mobileDock = document.getElementById('mobileDock');
@@ -2000,6 +2136,28 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 modalArchAccordion.classList.add('is-open');
                 document.getElementById('modalArchContent').style.display = 'block';
+                if (caret) caret.innerHTML = '<svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor"><polygon points="0,7 11,7 5.5,0" /></svg>';
+                if (text) text.classList.add('pdrop-amber-text');
+            }
+        });
+    }
+
+    // Modal Decorative Accordion Toggle
+    const modalDecToggle = document.getElementById('modalDecToggle');
+    const modalDecAccordion = document.getElementById('modalDecAccordion');
+    if (modalDecToggle && modalDecAccordion) {
+        modalDecToggle.addEventListener('click', function() {
+            const isOpen = modalDecAccordion.classList.contains('is-open');
+            const caret = modalDecToggle.querySelector('.pdrop-caret');
+            const text = modalDecToggle.querySelector('span:first-child');
+            if (isOpen) {
+                modalDecAccordion.classList.remove('is-open');
+                document.getElementById('modalDecContent').style.display = 'none';
+                if (caret) caret.innerHTML = '<svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor"><polygon points="0,0 11,0 5.5,7" /></svg>';
+                if (text) text.classList.remove('pdrop-amber-text');
+            } else {
+                modalDecAccordion.classList.add('is-open');
+                document.getElementById('modalDecContent').style.display = 'block';
                 if (caret) caret.innerHTML = '<svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor"><polygon points="0,7 11,7 5.5,0" /></svg>';
                 if (text) text.classList.add('pdrop-amber-text');
             }

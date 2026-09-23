@@ -61,10 +61,16 @@ export default function WatchAndShopSection() {
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
   }, []);
 
+  const [isTablet, setIsTablet] = useState(false);
+
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
+    const checkViewport = () => {
+      const w = window.innerWidth;
+      setIsMobile(w <= 700);
+      setIsTablet(w > 700 && w <= 1024);
+    };
+    checkViewport();
+    window.addEventListener("resize", checkViewport);
 
     checkScroll();
     const track = trackRef.current;
@@ -72,12 +78,12 @@ export default function WatchAndShopSection() {
       track.addEventListener("scroll", checkScroll, { passive: true });
       window.addEventListener("resize", checkScroll);
       return () => {
-        window.removeEventListener("resize", checkMobile);
+        window.removeEventListener("resize", checkViewport);
         track.removeEventListener("scroll", checkScroll);
         window.removeEventListener("resize", checkScroll);
       };
     }
-    return () => window.removeEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkViewport);
   }, [checkScroll, reels]);
 
   const handleSlide = (direction: "left" | "right") => {
@@ -90,7 +96,7 @@ export default function WatchAndShopSection() {
     });
   };
 
-  const showNav = reels.length > (isMobile ? 1 : 4);
+  const showNav = reels.length > (isMobile ? 1 : isTablet ? 2 : 4);
 
   const desktopArrow = (isEnabled: boolean): React.CSSProperties => ({
     position: "absolute",

@@ -72,6 +72,7 @@ Route::controller(DecorativeProductApiController::class)->group(function () {
 Route::controller(CollectionApiController::class)->group(function () {
     Route::get('/collections', 'index');
     Route::get('/collections/{slug}', 'show');
+    Route::get('/collections/{slug}/parameters', 'getParameters');
 });
 
 // Color Masters

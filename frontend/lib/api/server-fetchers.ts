@@ -21,7 +21,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 export async function fetchClients(): Promise<Client[]> {
   try {
     const response = await fetch(`${API_URL}/api/clients`, {
-      next: { revalidate: 3600 }
+      cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -39,12 +39,11 @@ export async function fetchClients(): Promise<Client[]> {
 
 /**
  * Fetch home sliders
- * Revalidate: 600s (10 min) - sliders may be updated for promotions
  */
 export async function fetchSliders(): Promise<{ web: Slider[]; mobile: Slider[] }> {
   try {
     const response = await fetch(`${API_URL}/api/sliders`, {
-      next: { revalidate: 600 }
+      cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -62,13 +61,12 @@ export async function fetchSliders(): Promise<{ web: Slider[]; mobile: Slider[] 
 
 /**
  * Fetch projects
- * Revalidate: 1800s (30 min) - projects updated occasionally
  */
 export async function fetchProjects(limit: number = 6, featured: boolean = true): Promise<Project[]> {
   try {
     const url = `${API_URL}/api/projects?limit=${limit}${featured ? '&featured=1' : ''}`;
     const response = await fetch(url, {
-      next: { revalidate: 1800 }
+      cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -86,12 +84,11 @@ export async function fetchProjects(limit: number = 6, featured: boolean = true)
 
 /**
  * Fetch news items
- * Revalidate: 300s (5 min) - news is timely content
  */
 export async function fetchNewsItems(): Promise<NewsItem[]> {
   try {
     const response = await fetch(`${API_URL}/api/news-items`, {
-      next: { revalidate: 300 }
+      cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -109,12 +106,11 @@ export async function fetchNewsItems(): Promise<NewsItem[]> {
 
 /**
  * Fetch manufacturing section
- * Revalidate: 3600s (1 hour) - rarely changes
  */
 export async function fetchManufacturingSection(): Promise<ManufacturingSection | null> {
   try {
     const response = await fetch(`${API_URL}/api/manufacturing-section`, {
-      next: { revalidate: 60 }
+      cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -132,12 +128,11 @@ export async function fetchManufacturingSection(): Promise<ManufacturingSection 
 
 /**
  * Fetch new arrival categories with products
- * Revalidate: 600s (10 min) - product updates need to show relatively quickly
  */
 export async function fetchNewArrivals(): Promise<NewArrivalCategory[]> {
   try {
     const response = await fetch(`${API_URL}/api/products/new-arrivals`, {
-      next: { revalidate: 60 }
+      cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -155,12 +150,11 @@ export async function fetchNewArrivals(): Promise<NewArrivalCategory[]> {
 
 /**
  * Fetch light worlds ("Four worlds of light" homepage section)
- * Revalidate: 3600s (1 hour) — updated via admin panel only
  */
 export async function fetchLightWorlds(): Promise<LightWorld[]> {
   try {
     const response = await fetch(`${API_URL}/api/light-worlds`, {
-      next: { revalidate: 3600 }
+      cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -176,15 +170,13 @@ export async function fetchLightWorlds(): Promise<LightWorld[]> {
   }
 }
 
-
 /**
  * Fetch home catalogue section ("Find the right catalogue" homepage section)
- * Revalidate: 3600s (1 hour) — updated via admin panel only
  */
 export async function fetchHomeCatalogueSection(): Promise<HomeCatalogueSection | null> {
   try {
     const response = await fetch(`${API_URL}/api/home-catalogue-section`, {
-      next: { revalidate: 60 }
+      cache: 'no-store'
     });
 
     if (!response.ok) {

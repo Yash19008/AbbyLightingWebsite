@@ -45,7 +45,7 @@ function renderTitle(title?: string | null, highlight?: string | null) {
 
 export default function ManufacturingSection({ data }: ManufacturingSectionProps) {
   // If no dynamic manufacturing data exists or disabled in admin, hide section completely
-  if (!data || data.is_active === false || (data as any).is_active === "no") {
+  if (!data || data.is_active === false || data.is_active === "no" || data.is_active === "0") {
     return null;
   }
 

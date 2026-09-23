@@ -44,7 +44,9 @@ class DecorativeProductApiController extends Controller
         }
 
         $sort = $request->get('sort', 'new');
-        if ($sort === 'new') {
+        if ($sort === 'popular' || $sort === 'most_popular') {
+            $query->orderBy('order', 'asc')->orderBy('id', 'desc');
+        } elseif ($sort === 'new') {
             $query->orderBy('created_at', 'desc');
         } elseif ($sort === 'name_asc') {
             $query->orderBy('name', 'asc');
@@ -94,10 +96,11 @@ class DecorativeProductApiController extends Controller
      */
     public function categories()
     {
-        $categories = \App\Models\Decorative\DecCategory::where('is_featured', true)
+        // Strictly return only categories marked as is_featured = 1 for the frontend category tabs
+        $categories = \App\Models\Decorative\DecCategory::where('is_featured', 1)
             ->orderBy('name', 'asc')
             ->get();
-            
+
         return response()->json([
             'success' => true,
             'data' => $categories
@@ -119,8 +122,11 @@ class DecorativeProductApiController extends Controller
 
     private function getImagePath($filename, $directory) {
         if (!$filename) return null;
-        if (str_starts_with($filename, 'http')) return $filename;
-        if (str_contains($filename, '/')) return url('/') . '/' . ltrim($filename, '/'); // Already has a path
+        if (str_starts_with($filename, 'http://') || str_starts_with($filename, 'https://')) return $filename;
+        if (str_starts_with($filename, 'storage/')) return asset($filename);
+        if (str_starts_with($filename, 'collections/')) return asset('storage/' . $filename);
+        if (str_starts_with($filename, 'uploads/')) return asset($filename);
+        if (str_contains($filename, '/')) return asset($filename);
         return asset('storage/' . $directory . '/' . $filename);
     }
 
@@ -211,8 +217,12 @@ class DecorativeProductApiController extends Controller
             'collection' => $product->collection ? [
                 'name' => $product->collection->name,
                 'slug' => $product->collection->slug,
-                'short_description' => $product->collection->heroSection ? $product->collection->heroSection->description : $product->collection->short_description,
-                'band_image' => $product->collection->heroSection ? $this->getImagePath($product->collection->heroSection->background_image, 'collections/hero') : null
+                'short_description' => ($product->collection->heroSection && $product->collection->heroSection->description) 
+                    ? $product->collection->heroSection->description 
+                    : ($product->collection->short_description ?: $product->collection->description),
+                'band_image' => ($product->collection->heroSection && $product->collection->heroSection->background_image) 
+                    ? $this->getImagePath($product->collection->heroSection->background_image, 'collections/hero') 
+                    : null
             ] : null,
             'category' => $product->category ? [
                 'name' => $product->category->name

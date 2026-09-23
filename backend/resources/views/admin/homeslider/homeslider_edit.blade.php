@@ -21,28 +21,65 @@
                     <div class="card-body">
                         <!-- ./form sub header-->
                         <div class="form-group row">
-                            <label for="inputName" class="col-sm-3 control-label">Image Path<i class="text-danger">*</i></label>
+                            <label for="inputName" class="col-sm-3 control-label">Desktop Image <i class="text-danger">*</i></label>
                             <div class="col-sm-6">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <input type="file" name="path" id="imagefile" accept="image/*" class="file-input">
-
                                     </div>
-                                    <input type="text" class="form-control" disabled id="disabled_file_path" placeholder="Image Path" value="{{ @$slider->path }}">
+                                    <input type="text" class="form-control" disabled id="disabled_file_path" placeholder="Desktop Image Path" value="{{ @$slider->path }}">
                                     <input type="hidden" name="oldPhoto" value="{{ @$slider->path }}">
                                     <div class="input-group-append">
                                         <button class="file-input-browse btn btn-dark" type="button"><i class="glyphicon glyphicon-search"></i> Browse</button>
                                     </div>
-                                    <a href="javascript:;" data-toggle="tooltip" title="delete" style="width: unset; height: 21px; margin-top: 8px; margin-left: 10px; visibility: hidden;"><i class="ft-trash font-medium-3"></i></a>
                                 </div>
-                                <span id="fileerr" class="help-block" style="color:red;font-size:14px;"></span>
-
+                                <small class="form-text text-muted">Recommended size: 1920x1080px</small>
                             </div>
                             <div class="col-sm-1">
                                 <span data-id="{{ @$slider->id }}" data-img-type="path" title="remove image" class="btn btn-dark remove-tag-img"><i class="fa fa-times"></i></span>
                             </div>
                         </div>
                         <input type="hidden" name="remove_path" value="0">
+
+                        <div class="form-group row">
+                            <label for="mobile_path" class="col-sm-3 control-label">Mobile View Image <span class="badge badge-secondary">Optional</span></label>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <input type="file" name="mobile_path" id="mobileimagefile" accept="image/*" class="file-input">
+                                    </div>
+                                    <input type="text" class="form-control" disabled id="disabled_file_mobile_path" placeholder="Mobile Image Path" value="{{ @$slider->mobile_path }}">
+                                    <div class="input-group-append">
+                                        <button class="file-input-browse btn btn-dark" type="button"><i class="glyphicon glyphicon-search"></i> Browse</button>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">Recommended size: 600x800px</small>
+                            </div>
+                            <div class="col-sm-1">
+                                <span data-id="{{ @$slider->id }}" data-img-type="mobile_path" title="remove mobile image" class="btn btn-dark remove-tag-img"><i class="fa fa-times"></i></span>
+                            </div>
+                        </div>
+                        <input type="hidden" name="remove_mobile_path" value="0">
+
+                        <div class="form-group row">
+                            <label for="tablet_path" class="col-sm-3 control-label">Tablet View Image <span class="badge badge-secondary">Optional</span></label>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <input type="file" name="tablet_path" id="tabletimagefile" accept="image/*" class="file-input">
+                                    </div>
+                                    <input type="text" class="form-control" disabled id="disabled_file_tablet_path" placeholder="Tablet Image Path" value="{{ @$slider->tablet_path }}">
+                                    <div class="input-group-append">
+                                        <button class="file-input-browse btn btn-dark" type="button"><i class="glyphicon glyphicon-search"></i> Browse</button>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">Recommended size: 1024x768px</small>
+                            </div>
+                            <div class="col-sm-1">
+                                <span data-id="{{ @$slider->id }}" data-img-type="tablet_path" title="remove tablet image" class="btn btn-dark remove-tag-img"><i class="fa fa-times"></i></span>
+                            </div>
+                        </div>
+                        <input type="hidden" name="remove_tablet_path" value="0">
 
                         <div class="form-group row">
                             <label for="is_active" class="col-sm-3 control-label">Status</label>
@@ -56,13 +93,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="inputName" class="col-sm-3 control-label">For_Mobile<i class="text-danger">*</i></label>
-                            <div class="col-sm-6">
-                                <input type="hidden" id="for_mobile" name="for_mobile" placeholder="" value="0">
-                                <input type="checkbox" id="for_mobile" name="for_mobile" placeholder="" value="1" {{ @$slider->for_mobile == 1 ? 'Checked' : '' }}>
-                            </div>
-                        </div>
+
                         <div class="form-group row">
                             <label for="inputName" class="col-sm-3 control-label">Sort_Order<i class="text-danger">*</i></label>
                             <div class="col-sm-6">

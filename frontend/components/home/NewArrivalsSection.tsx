@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback, type CSSProperties } from "react";
 import Link from "next/link";
 import type { NewArrivalCategory, NewArrivalProduct } from "@/types/new-arrival";
 
@@ -20,6 +20,7 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
 
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
@@ -42,11 +43,11 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
 
   const getCardWidth = useCallback(() => {
     const el = trackRef.current;
-    if (!el) return isMobile ? 160 : 280;
+    if (!el) return isMobile ? 160 : isTablet ? 280 : 280;
     const cardEl = el.firstElementChild as HTMLElement;
-    if (!cardEl) return isMobile ? (el.clientWidth - GAP) / 2 : (el.clientWidth - 3 * GAP) / 4;
-    return cardEl.getBoundingClientRect().width || (isMobile ? (el.clientWidth - GAP) / 2 : (el.clientWidth - 3 * GAP) / 4);
-  }, [isMobile, GAP]);
+    if (!cardEl) return isMobile ? (el.clientWidth - GAP) / 2 : isTablet ? (el.clientWidth - 2 * GAP) / 2.45 : (el.clientWidth - 3 * GAP) / 4;
+    return cardEl.getBoundingClientRect().width || (isMobile ? (el.clientWidth - GAP) / 2 : isTablet ? (el.clientWidth - 2 * GAP) / 2.45 : (el.clientWidth - 3 * GAP) / 4);
+  }, [isMobile, isTablet, GAP]);
 
   const updateScrollState = useCallback(() => {
     const el = trackRef.current;
@@ -64,11 +65,15 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
   }, [filteredProducts.length]);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
+    const checkViewport = () => {
+      const w = window.innerWidth;
+      setIsMobile(w <= 700);
+      setIsTablet(w > 700 && w <= 1024);
+    };
+    checkViewport();
 
     const handleResize = () => {
-      checkMobile();
+      checkViewport();
       updateScrollState();
     };
     window.addEventListener("resize", handleResize);
@@ -105,7 +110,7 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
     el.scrollBy({ left: dir * scrollDistance, behavior: "smooth" });
   };
 
-  const showNav = filteredProducts.length > (isMobile ? 2 : 4);
+  const showNav = filteredProducts.length > (isMobile ? 2 : isTablet ? 2 : 4);
 
   const desktopArrow = (isEnabled: boolean): React.CSSProperties => ({
     position: "absolute",
@@ -136,14 +141,26 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
 
   const categoryTabs = availableCategories.map(c => c.name);
 
+  const cardFlex = isMobile
+    ? `0 0 calc((100% - ${GAP}px) / 2)`
+    : isTablet
+    ? `0 0 calc((100% - 2 * ${GAP}px) / 2.45)`
+    : `0 0 calc((100% - 3 * ${GAP}px) / 4)`;
+
+  const cardDim = isMobile
+    ? `calc((100% - ${GAP}px) / 2)`
+    : isTablet
+    ? `calc((100% - 2 * ${GAP}px) / 2.45)`
+    : `calc((100% - 3 * ${GAP}px) / 4)`;
+
   return (
     <section className="section" id="arrivals">
       <div className="shell" style={{ width: "100%", boxSizing: "border-box" }}>
         <div className="section-head reveal">
           <h2>New Arrivals</h2>
         </div>
-        <div className="product-toolbar" style={{ scrollbarWidth: "none", msOverflowStyle: "none", overflowY: "hidden" } as any}>
-          <div className="filter-chips" role="tablist" aria-label="New arrival categories" style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as any}>
+        <div className="product-toolbar" style={{ scrollbarWidth: "none", msOverflowStyle: "none", overflowY: "hidden" } as CSSProperties}>
+          <div className="filter-chips" role="tablist" aria-label="New arrival categories" style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as CSSProperties}>
             {categoryTabs.map((tabName) => (
               <button 
                 key={tabName}
@@ -199,18 +216,10 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
                     key={product.id}
                     className="product reveal is-visible" 
                     style={{
-                      flex: isMobile
-                        ? `0 0 calc((100% - ${GAP}px) / 2)`
-                        : `0 0 calc((100% - 3 * ${GAP}px) / 4)`,
-                      minWidth: isMobile
-                        ? `calc((100% - ${GAP}px) / 2)`
-                        : `calc((100% - 3 * ${GAP}px) / 4)`,
-                      maxWidth: isMobile
-                        ? `calc((100% - ${GAP}px) / 2)`
-                        : `calc((100% - 3 * ${GAP}px) / 4)`,
-                      width: isMobile
-                        ? `calc((100% - ${GAP}px) / 2)`
-                        : `calc((100% - 3 * ${GAP}px) / 4)`,
+                      flex: cardFlex,
+                      minWidth: cardDim,
+                      maxWidth: cardDim,
+                      width: cardDim,
                       scrollSnapAlign: "start",
                       scrollSnapStop: "always",
                       margin: 0,

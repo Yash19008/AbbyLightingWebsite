@@ -6,6 +6,9 @@ import JournalSection from "@/components/inspiration/JournalSection";
 import { getShowcaseCompositions } from "@/lib/api/compositions";
 import "@/styles/inspiration.css";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Inspiration | Ideas, Stories & Spaces | Abby Lighting",
   description: "Ideas, stories and inspiration from Abby Lighting. See light in place, watch latest reels, and read design guides.",
@@ -17,7 +20,7 @@ export default async function InspirationPage() {
   return (
     <div className="inspiration-page">
       <InspirationHero />
-      <LooksInPlaceSection compositions={compositions as any} />
+      <LooksInPlaceSection compositions={compositions} />
       <WatchAndShopSection />
       <JournalSection />
     </div>

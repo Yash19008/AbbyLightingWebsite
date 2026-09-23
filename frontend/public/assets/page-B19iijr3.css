@@ -21,7 +21,7 @@
     color: #fff;
     background: #171512 url(/images/decorative/hero.png) 50%/cover no-repeat;
     align-items: flex-end;
-    min-height: 440px;
+    min-height: 575px;
     padding: 106px 0 48px;
     display: flex;
     position: relative
@@ -52,7 +52,7 @@
     letter-spacing: -.045em;
     max-width: 780px;
     margin: 0;
-    font: 400 clamp(46px, 5vw, 68px)/1.02 Poppins, sans-serif
+    font: 400 clamp(46px, 5vw, 47.85px)/1.02 Poppins, sans-serif
 }
 
 .decorative-hero h1 em {
@@ -62,10 +62,11 @@
 }
 
 .decorative-intro {
-    color: #ffffffd1;
+    color: #ffffff;
     max-width: 725px;
     margin: 20px 0 0;
-    font: 300 15px/1.72 Inter, sans-serif
+    font: 400 18.41px/1.72 Inter, sans-serif;
+    line-height: 22.82px;
 }
 
 .decorative-catalogue {
@@ -433,13 +434,13 @@
 
 .decorative-card-copy h3 {
     margin: 0;
-    font: 600 18px/1.1 Inter, sans-serif
+    font: 600 22px/1.1 Inter, sans-serif
 }
 
 .decorative-card-copy p {
     color: var(--decorative-muted);
     margin: 2px 0 0;
-    font: 300 13.5px/1.25 Inter, sans-serif
+    font: 300 18.17px/1.25 Inter, sans-serif
 }
 
 .decorative-swatches {
@@ -729,13 +730,14 @@
     }
 
     .decorative-hero h1 {
-        font-size: 38px
+        font-size: 31.63px !important;
     }
 
     .decorative-intro {
-        margin-top: 14px;
-        font-size: 12px;
-        line-height: 1.58
+        margin-top: 14px !important;
+        font-size: 10px !important;
+        line-height: 1.58;
+        font-weight: 300 !important;
     }
 
     .decorative-catalogue {
@@ -745,7 +747,7 @@
     .decorative-toolbar {
         grid-template-columns: repeat(3, minmax(0, 1fr)) 45px;
         align-items: start;
-        gap: 7px;
+        gap: 0px;
         min-height: 52px;
         padding: 0 0 23px;
         display: grid
@@ -916,7 +918,7 @@
 
     .decorative-collection {
         margin-top: 9px;
-        font-size: 9px
+        font-size: 9px !important
     }
 
     .decorative-load-more {

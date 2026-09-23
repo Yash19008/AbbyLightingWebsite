@@ -187,6 +187,12 @@ export default function HeroSection({ sliders = [] }: HeroSectionProps) {
               <>
                 <div className="hero-media-fallback" aria-hidden="true"></div>
                 <picture className="hero-media">
+                  {slider.mobile_image_url && (
+                    <source media="(max-width: 640px)" srcSet={slider.mobile_image_url} />
+                  )}
+                  {slider.tablet_image_url && (
+                    <source media="(min-width: 641px) and (max-width: 1024px)" srcSet={slider.tablet_image_url} />
+                  )}
                   <img src={slider.image_url} alt="" loading={index === 0 ? "eager" : "lazy"} />
                 </picture>
                 <div className="hero-media-scrim" aria-hidden="true"></div>

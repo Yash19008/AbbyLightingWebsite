@@ -1,6 +1,5 @@
-"use client";
-
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 
 export interface ProductUsedItem {
   name: string;
@@ -29,6 +28,11 @@ export default function LookModal({ isOpen, look, onClose }: LookModalProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const updateScrollState = useCallback(() => {
     const el = trackRef.current;
@@ -50,6 +54,15 @@ export default function LookModal({ isOpen, look, onClose }: LookModalProps) {
   }, [isOpen, onClose]);
 
   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     const el = trackRef.current;
     if (el && isOpen) {
       updateScrollState();
@@ -60,7 +73,7 @@ export default function LookModal({ isOpen, look, onClose }: LookModalProps) {
     };
   }, [isOpen, look, updateScrollState]);
 
-  if (!isOpen || !look) return null;
+  if (!isOpen || !look || !mounted) return null;
 
   const defaultProducts: ProductUsedItem[] = look.productsUsed || [
     {
@@ -106,7 +119,7 @@ export default function LookModal({ isOpen, look, onClose }: LookModalProps) {
     el.scrollBy({ left: dir * (cardWidth + gap), behavior: "smooth" });
   };
 
-  return (
+  return createPortal(
     <div
       className="look-modal"
       role="dialog"
@@ -211,7 +224,8 @@ export default function LookModal({ isOpen, look, onClose }: LookModalProps) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

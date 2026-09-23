@@ -19,13 +19,13 @@ export default function PlacesSection() {
     const container = scrollRef.current;
     const card = container.querySelector('article');
     if (!card) return;
-    
+
     const gap = 12;
     const scrollAmount = card.getBoundingClientRect().width + gap;
-    const newScroll = direction === 'next' 
-      ? container.scrollLeft + scrollAmount 
+    const newScroll = direction === 'next'
+      ? container.scrollLeft + scrollAmount
       : container.scrollLeft - scrollAmount;
-    
+
     container.scrollTo({
       left: newScroll,
       behavior: 'smooth',
@@ -49,7 +49,7 @@ export default function PlacesSection() {
           aria-label="Previous rooms"
           onClick={() => scroll('prev')}
         >
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 18l-6-6 6-6"></path>
           </svg>
         </button>
@@ -81,7 +81,7 @@ export default function PlacesSection() {
           aria-label="Next rooms"
           onClick={() => scroll('next')}
         >
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18l6-6-6-6"></path>
           </svg>
         </button>

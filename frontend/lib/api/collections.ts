@@ -8,7 +8,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 export async function getCollections(): Promise<CollectionsApiResponse> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/collections`, {
-      next: { revalidate: 60 } // Revalidate every 60 seconds
+      cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -28,7 +28,7 @@ export async function getCollections(): Promise<CollectionsApiResponse> {
 export async function getCollection(slug: string): Promise<CollectionDetailApiResponse> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/collections/${slug}`, {
-      next: { revalidate: 60 } // Revalidate every 60 seconds
+      cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -38,6 +38,24 @@ export async function getCollection(slug: string): Promise<CollectionDetailApiRe
     return response.json();
   } catch (error) {
     console.error(`Error fetching collection ${slug}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Fetch paginated parameters for a collection
+ */
+export async function getCollectionParameters(slug: string, page: number = 1, limit: number = 8) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/collections/${slug}/parameters?page=${page}&limit=${limit}`, {
+      cache: 'no-store'
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch collection parameters: ${response.statusText}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error(`Error fetching parameters for ${slug}:`, error);
     throw error;
   }
 }

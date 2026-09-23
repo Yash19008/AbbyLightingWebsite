@@ -30,13 +30,12 @@
                 <div class="row">
                     <div class="col-sm-12">
                         @include('admin.include.notification')
-                        <table class="table data-table table-bordered" data-order='[[ 5, "asc" ]]' id="homeslider-table" style="width:100%">
+                        <table class="table data-table table-bordered" data-order='[[ 4, "asc" ]]' id="homeslider-table" style="width:100%">
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 90px;">IMAGE</th>
                                     <th>HEADING</th>
                                     <th>DESCRIPTION</th>
-                                    <th class="text-center" style="width: 100px;">MOBILE</th>
                                     <th class="text-center" style="width: 100px;">STATUS</th>
                                     <th class="text-center" style="width: 90px;">SEQUENCE</th>
                                     <th class="text-center" style="width: 100px;">ACTION</th>
@@ -67,12 +66,6 @@
                                     </td>
                                     <td class="text-center align-middle">
                                         <div class="custom-control custom-switch text-center">
-                                            <input type="checkbox" class="custom-control-input knob switch" data-col="{{ \App\Helpers\Common_function::encrypt('for_mobile') }}" id="customSwitchMobile{{ $row->id }}" {{ $row->for_mobile ? 'checked' : '' }}>
-                                            <label class="custom-control-label" for="customSwitchMobile{{ $row->id }}"></label>
-                                        </div>
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        <div class="custom-control custom-switch text-center">
                                             <input type="checkbox" class="custom-control-input knob switch" data-col="{{ \App\Helpers\Common_function::encrypt('is_active') }}" id="customSwitchActive{{ $row->id }}" {{ $row->is_active ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="customSwitchActive{{ $row->id }}"></label>
                                         </div>
@@ -90,7 +83,6 @@
                                     <th class="text-center">Image</th>
                                     <th>Heading</th>
                                     <th>Description</th>
-                                    <th class="text-center">Mobile</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Sequence</th>
                                     <th class="text-center">Action</th>
@@ -146,9 +138,9 @@ $(document).ready(function() {
         searching: true,
         pageLength: 10,
         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        order: [[5, "asc"]],
+        order: [[4, "asc"]],
         columnDefs: [
-            { targets: [0, 6], orderable: false }
+            { targets: [0, 5], orderable: false }
         ]
     });
 

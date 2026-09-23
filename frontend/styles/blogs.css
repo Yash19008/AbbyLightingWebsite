@@ -222,6 +222,7 @@ body:has(.blog-page) .sitehead {
 }
 
 .blog-page .copy {
+  font-family: 'Inter', 'Poppins', sans-serif;
   font-size: 18px;
   font-weight: 300;
   line-height: 1.65;
@@ -232,14 +233,21 @@ body:has(.blog-page) .sitehead {
 
 .blog-page .copy p {
   margin: 0 0 24px;
+  font-family: 'Inter', sans-serif;
 }
 
-.blog-page .copy h2 {
-  margin: 55px 0 22px;
+.blog-page .copy h1,
+.blog-page .copy h2,
+.blog-page .copy h3,
+.blog-page .copy h4,
+.blog-page .article-rich-body h1,
+.blog-page .article-rich-body h2,
+.blog-page .article-rich-body h3,
+.blog-page .article-rich-body h4 {
+  margin: 45px 0 22px;
   color: #111;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  font-size: 26px;
   line-height: 1.35;
 }
 
@@ -250,7 +258,7 @@ body:has(.blog-page) .sitehead {
   margin: 24px 0;
   overflow-wrap: break-word;
   word-break: break-word;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Inter', 'Poppins', sans-serif;
 }
 
 .blog-page .article-rich-body img,

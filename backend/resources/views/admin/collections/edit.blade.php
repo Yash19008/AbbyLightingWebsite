@@ -465,6 +465,7 @@
                                             <div class="form-group">
                                                 <label for="comp_subtitle">Section Description</label>
                                                 <textarea class="form-control" id="comp_subtitle" name="subtitle" rows="2">{{ old('subtitle', $collection->compositionsSection->subtitle ?? 'Scale, rhythm and volume — architectural lighting tailored to the exact demands of your space.') }}</textarea>
+                                            </div>
                                             @if(isset($allCompositions))
                                             <div class="form-group">
                                                 <label for="composition_ids">Select Compositions</label>
@@ -486,103 +487,7 @@
                                     </div>
                                 </form>
 
-                                <!-- Composition Cards Table -->
-                                <div class="card">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h5 class="card-title mb-0">
-                                            <i class="fas fa-list"></i> Composition Cards
-                                        </h5>
-                                        <div class="card-tools">
-                                            @if($collection->compositionsSection)
-                                                <a href="{{ route('admin.collections.composition-items.add', $collection->slug) }}" class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-plus"></i> Add New Card
-                                                </a>
-                                            @else
-                                                <span class="text-muted">Please save section settings first</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        @if($collection->compositionsSection && $collection->compositionsSection->items->count() > 0)
-                                            <table class="table data-table table-bordered w-100" data-order='[[ 0, "asc" ]]' id="compositions-table" style="width:100% !important;">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 70px; min-width: 60px;" class="text-center">ORDER</th>
-                                                        <th style="width: 90px; min-width: 80px;" class="text-center">IMAGE</th>
-                                                        <th style="width: 45%; min-width: 200px;">DESCRIPTION</th>
-                                                        <th style="width: 25%; min-width: 140px;">PRODUCTS</th>
-                                                        <th style="width: 90px; min-width: 80px;" class="text-center">STATUS</th>
-                                                        <th style="width: 110px; min-width: 100px;" class="text-center">ACTION</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach($collection->compositionsSection->items->sortBy('order') as $item)
-                                                        <tr>
-                                                            <td class="text-center align-middle font-weight-bold">{{ $item->order ?? 0 }}</td>
-                                                            <td class="img-td text-center align-middle">
-                                                                @if($item->image)
-                                                                    <img src="{{ $item->image_url }}" alt="Composition" 
-                                                                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #eee;">
-                                                                @else
-                                                                    <div style="width:50px;height:50px;display:flex;align-items:center;justify-content:center;background:#f8f9fa;border:1px solid #eee;border-radius:4px;margin:0 auto;color:#aaa;font-size:10px;">
-                                                                        No Img
-                                                                    </div>
-                                                                @endif
-                                                            </td>
-                                                            <td class="align-middle text-muted">{{ Str::limit($item->description, 60) }}</td>
-                                                            <td class="align-middle"><code class="font-weight-bold">{{ $item->products }}</code></td>
-                                                            <td class="text-center align-middle">
-                                                                @if($item->is_active)
-                                                                    <span class="badge badge-success" style="font-size: 11px;">Active</span>
-                                                                @else
-                                                                    <span class="badge badge-secondary" style="font-size: 11px;">Inactive</span>
-                                                                @endif
-                                                            </td>
-                                                            <td class="text-center align-middle list-action actBtn-td" style="white-space: nowrap;">
-                                                                <a href="{{ route('admin.collections.composition-items.edit', [$collection->slug, $item->id]) }}" 
-                                                                   class="mx-1 text-primary" data-toggle="tooltip" title="Edit">
-                                                                    <i class="ft-edit-2 font-medium-3"></i>
-                                                                </a>
-                                                                <form action="{{ route('admin.collections.composition-items.delete', [$collection->slug, $item->id]) }}" 
-                                                                      method="POST" style="display: inline-block;" 
-                                                                      onsubmit="return confirm('Are you sure you want to delete this card?');">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-link p-0 mx-1 text-danger" data-toggle="tooltip" title="Delete" style="border:none;background:none;">
-                                                                        <i class="icon ft-trash-2 font-medium-3"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <th class="text-center">Order</th>
-                                                        <th class="text-center">Image</th>
-                                                        <th>Description</th>
-                                                        <th>Products</th>
-                                                        <th class="text-center">Status</th>
-                                                        <th class="text-center">Action</th>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        @else
-                                            <div class="text-center py-4">
-                                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                                <p class="text-muted">No composition cards yet.</p>
-                                                @if($collection->compositionsSection)
-                                                    <a href="{{ route('admin.collections.composition-items.add', $collection->slug) }}" class="btn btn-primary">
-                                                        <i class="fas fa-plus"></i> Add Your First Card
-                                                    </a>
-                                                @else
-                                                    <p class="text-muted"><small>Save section settings above to start adding cards.</small></p>
-                                                @endif
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
->>>>>>> 8c15f62 (feat(admin): standardize admin data tables, live status switches, and optimize responsive layout)
+
                             </div>
 
 

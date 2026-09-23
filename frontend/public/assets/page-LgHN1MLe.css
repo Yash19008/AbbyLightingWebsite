@@ -187,13 +187,13 @@
     border: 0;
     width: 100%;
     padding: 15px;
-    font: 500 12px Poppins
+    font: 400 14px Poppins
 }
 
 .product-help {
     text-align: center;
     color: #777;
-    font: 400 11px Inter
+    font: 500 11px Inter
 }
 
 .product-help a {
@@ -696,7 +696,8 @@
     background: #000;
     height: 38px;
     padding: 0;
-    font-size: 14px
+    font-size: 14px;
+    font-weight: 400;
 }
 
 .product-help {

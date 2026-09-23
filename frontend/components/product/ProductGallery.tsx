@@ -14,50 +14,16 @@ export default function ProductGallery({
 }: ProductGalleryProps) {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0); 
-  const [visibleStart, setVisibleStart] = useState(0);
-  const [visibleCount, setVisibleCount] = useState(4);
 
   const trackRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
+  const firstGalleryImage = galleryImages[0];
+
   // When galleryImages changes significantly (e.g. colour variant changed), reset to first image
   useEffect(() => {
     setActiveIndex(0);
-  }, [galleryImages[0]]);
-
-  // Calculate visible count based on container width
-  useEffect(() => {
-    const updateVisible = () => {
-      if (!carouselRef.current || !trackRef.current) return;
-      const buttons = trackRef.current.querySelectorAll("button");
-      if (!buttons.length) return;
-      const gap = 10;
-      const step = buttons[0].offsetWidth + gap;
-      const usable = Math.max(step, carouselRef.current.clientWidth - 94); // 94 is approx arrow widths
-      setVisibleCount(Math.max(1, Math.floor(usable / step)));
-    };
-    
-    const timer = setTimeout(updateVisible, 100);
-    window.addEventListener("resize", updateVisible);
-    return () => {
-        clearTimeout(timer);
-        window.removeEventListener("resize", updateVisible);
-    };
-  }, [galleryImages.length]);
-
-  // Keep active index in view by adjusting visibleStart smoothly
-  useEffect(() => {
-    setVisibleStart((prev) => {
-        let newStart = prev;
-        if (activeIndex < prev) {
-            newStart = activeIndex; // slide left
-        } else if (activeIndex >= prev + visibleCount) {
-            newStart = activeIndex - visibleCount + 1; // slide right
-        }
-        // clamp
-        return Math.max(0, Math.min(newStart, Math.max(0, galleryImages.length - visibleCount)));
-    });
-  }, [activeIndex, visibleCount, galleryImages.length]);
+  }, [firstGalleryImage]);
 
   // Scroll active item into view smoothly
   useEffect(() => {

@@ -47,12 +47,16 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
 
   const handleNext = (e: React.MouseEvent) => {
     e.preventDefault();
-    setActiveImageIndex((prev) => (prev + 1) % totalImages);
+    if (activeImageIndex < totalImages - 1) {
+      setActiveImageIndex((prev) => prev + 1);
+    }
   };
 
   const handlePrev = (e: React.MouseEvent) => {
     e.preventDefault();
-    setActiveImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
+    if (activeImageIndex > 0) {
+      setActiveImageIndex((prev) => prev - 1);
+    }
   };
 
   const activeVariant = product.variants && product.variants.length > 0 
@@ -114,22 +118,30 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
 
           {totalImages > 1 && (
             <>
-              <button
-                type="button"
-                className="decorative-card-arrow decorative-card-prev"
-                aria-label={`Previous ${product.name} image`}
-                onClick={handlePrev}
-              >
-                ‹
-              </button>
-              <button
-                type="button"
-                className="decorative-card-arrow decorative-card-next"
-                aria-label={`Next ${product.name} image`}
-                onClick={handleNext}
-              >
-                ›
-              </button>
+              {activeImageIndex > 0 && (
+                <button
+                  type="button"
+                  className="decorative-card-arrow decorative-card-prev"
+                  aria-label={`Previous ${product.name} image`}
+                  onClick={handlePrev}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+              )}
+              {activeImageIndex < totalImages - 1 && (
+                <button
+                  type="button"
+                  className="decorative-card-arrow decorative-card-next"
+                  aria-label={`Next ${product.name} image`}
+                  onClick={handleNext}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              )}
               <span className="decorative-gallery-dots">
                 {/* 1 dot for variant, plus dots for galleries */}
                 {[0, ...(product.galleries || []).map((_, i) => i + 1)].map((dotIndex) => (

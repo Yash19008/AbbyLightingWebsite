@@ -10,6 +10,7 @@ interface NewsSectionProps {
 export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
@@ -19,11 +20,11 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
 
   const getCardWidth = useCallback(() => {
     const el = trackRef.current;
-    if (!el) return isMobile ? 320 : 380;
+    if (!el) return isMobile ? 320 : isTablet ? 300 : 380;
     const cardEl = el.firstElementChild as HTMLElement;
-    if (!cardEl) return isMobile ? el.clientWidth : 380;
-    return cardEl.getBoundingClientRect().width || (isMobile ? el.clientWidth : 380);
-  }, [isMobile]);
+    if (!cardEl) return isMobile ? el.clientWidth : isTablet ? ((el.clientWidth - 2 * GAP) / 2.45) : 380;
+    return cardEl.getBoundingClientRect().width || (isMobile ? el.clientWidth : isTablet ? ((el.clientWidth - 2 * GAP) / 2.45) : 380);
+  }, [isMobile, isTablet, GAP]);
 
   const updateScrollState = useCallback(() => {
     const el = trackRef.current;
@@ -37,11 +38,15 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
   }, [items.length]);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
+    const checkViewport = () => {
+      const w = window.innerWidth;
+      setIsMobile(w <= 700);
+      setIsTablet(w > 700 && w <= 1024);
+    };
+    checkViewport();
 
     const handleResize = () => {
-      checkMobile();
+      checkViewport();
       updateScrollState();
     };
     window.addEventListener("resize", handleResize);
@@ -65,7 +70,7 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
     el.scrollBy({ left: dir * (cardWidth + GAP), behavior: "smooth" });
   };
 
-  const showNav = items.length > (isMobile ? 1 : 3);
+  const showNav = items.length > (isMobile ? 1 : isTablet ? 2 : 3);
 
   const desktopArrow = (isEnabled: boolean): React.CSSProperties => ({
     position: "absolute",
@@ -93,6 +98,18 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
   if (!items || items.length === 0) {
     return null;
   }
+
+  const cardFlex = isMobile
+    ? "0 0 100%"
+    : isTablet
+    ? `0 0 calc((100% - 2 * ${GAP}px) / 2.45)`
+    : `0 0 calc((100% - 2 * ${GAP}px) / 3)`;
+
+  const cardDim = isMobile
+    ? "100%"
+    : isTablet
+    ? `calc((100% - 2 * ${GAP}px) / 2.45)`
+    : undefined;
 
   return (
     <section className="section" id="news">
@@ -143,10 +160,10 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
                   rel={item.link ? "noopener noreferrer" : undefined}
                   className="story"
                   style={{
-                    flex: isMobile ? "0 0 100%" : `0 0 calc((100% - 2 * ${GAP}px) / 3)`,
-                    minWidth: isMobile ? "100%" : undefined,
-                    maxWidth: isMobile ? "100%" : undefined,
-                    width: isMobile ? "100%" : undefined,
+                    flex: cardFlex,
+                    minWidth: cardDim,
+                    maxWidth: cardDim,
+                    width: cardDim,
                     scrollSnapAlign: "start",
                     scrollSnapStop: "always",
                     margin: 0,

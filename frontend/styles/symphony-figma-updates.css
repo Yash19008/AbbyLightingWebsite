@@ -128,7 +128,7 @@
 
   .s-parameter-grid article.is-active .s-parameter-arrow::after {
     transform: rotate(225deg);
-    top: 9px;
+    top: 5px;
   }
 
   .s-inspire,

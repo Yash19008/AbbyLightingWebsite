@@ -21,11 +21,14 @@ return [
 
     'allowed_origins' => [
         'http://localhost:3000',
+        'http://localhost:3052',
         'http://localhost',
         'http://127.0.0.1:3000',
+        'http://127.0.0.1:3052',
         'http://127.0.0.1:8000',
         'https://abby.bandmusic.in',
         'http://abby.bandmusic.in',
+        '*',
     ],
 
     'allowed_origins_patterns' => [],

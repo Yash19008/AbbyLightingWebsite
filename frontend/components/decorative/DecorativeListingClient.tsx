@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import Link from 'next/link';
 import DecorativeCard from './DecorativeCard';
 import DecorativeFilterModal, { FilterState } from './DecorativeFilterModal';
 import DecorativeToolbar from './DecorativeToolbar';
+import DecorativeStickyWidget from './DecorativeStickyWidget';
 
 import { Product } from './DecorativeCard';
 
@@ -11,10 +13,11 @@ export default function DecorativeListingClient() {
   const [products, setProducts] = useState<Product[]>([]);
   const [featuredCategories, setFeaturedCategories] = useState<string[]>(['All']);
   const [availableCollections, setAvailableCollections] = useState<string[]>([]);
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [isPaginating, setIsPaginating] = useState(false);
   const [page, setPage] = useState(1);
+
   const [hasMore, setHasMore] = useState(false);
 
   const [activeCategory, setActiveCategory] = useState('All');
@@ -39,21 +42,22 @@ export default function DecorativeListingClient() {
     const fetchFilters = async () => {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        
+
         const [categoriesRes, collectionsRes] = await Promise.all([
-          fetch(`${API_URL}/api/dec-categories`),
-          fetch(`${API_URL}/api/dec-collections`)
+          fetch(`${API_URL}/api/dec-categories`, { cache: 'no-store' }),
+          fetch(`${API_URL}/api/dec-collections`, { cache: 'no-store' })
         ]);
 
         const categoriesData = await categoriesRes.json();
         if (categoriesData.data) {
-          const categoryNames = categoriesData.data.map((c: any) => c.name);
-          setFeaturedCategories(['All', ...categoryNames]);
+          const categoryNames = categoriesData.data.map((c: { name: string }) => c.name);
+          const combined = Array.from(new Set(['All', ...categoryNames]));
+          setFeaturedCategories(combined);
         }
 
         const collectionsData = await collectionsRes.json();
         if (collectionsData.data) {
-          const collectionNames = collectionsData.data.map((c: any) => c.name);
+          const collectionNames = collectionsData.data.map((c: { name: string }) => c.name);
           setAvailableCollections(collectionNames);
         }
       } catch (error) {
@@ -68,7 +72,7 @@ export default function DecorativeListingClient() {
       try {
         if (page === 1) setIsLoading(true);
         else setIsPaginating(true);
-        
+
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
         const params = new URLSearchParams({
           page: page.toString(),
@@ -83,9 +87,9 @@ export default function DecorativeListingClient() {
           params.append('collection', activeFilters.collection.join(','));
         }
 
-        const response = await fetch(`${API_URL}/api/dec-products?${params.toString()}`);
+        const response = await fetch(`${API_URL}/api/dec-products?${params.toString()}`, { cache: 'no-store' });
         const data = await response.json();
-        
+
         if (data.data) {
           if (page === 1) {
             setProducts(data.data);
@@ -110,11 +114,29 @@ export default function DecorativeListingClient() {
 
 
 
+  const toolbarRef = React.useRef<HTMLDivElement>(null);
+
   return (
     <div className="decorative-page">
+      <DecorativeStickyWidget
+        activeCategory={activeCategory}
+        setActiveCategory={handleTabChange}
+        categories={featuredCategories}
+        activeFilters={activeFilters}
+        setIsFilterModalOpen={setIsFilterModalOpen}
+        sortBy={sortBy}
+        setSortBy={(val) => {
+          setSortBy(val);
+          setPage(1);
+        }}
+        isLightOn={isLightOn}
+        setIsLightOn={setIsLightOn}
+        targetRef={toolbarRef}
+      />
+
       <section className="decorative-hero">
         <p className="site-breadcrumb site-breadcrumb--on-dark decorative-breadcrumb">
-          <a href="/">Home</a> / <a href="/decorative-products">Decorative</a>
+          <Link href="/">Home</Link> / <Link href="/decorative-products">Decorative</Link>
         </p>
         <div className="decorative-shell">
           <h1>
@@ -130,20 +152,22 @@ export default function DecorativeListingClient() {
 
       <section className="decorative-catalogue">
         <div className="decorative-shell">
-          <DecorativeToolbar
-            activeCategory={activeCategory}
-            setActiveCategory={handleTabChange}
-            activeFilters={activeFilters}
-            setIsFilterModalOpen={setIsFilterModalOpen}
-            sortBy={sortBy}
-            setSortBy={(val) => {
-              setSortBy(val);
-              setPage(1);
-            }}
-            isLightOn={isLightOn}
-            setIsLightOn={setIsLightOn}
-            categories={featuredCategories}
-          />
+          <div ref={toolbarRef}>
+            <DecorativeToolbar
+              activeCategory={activeCategory}
+              setActiveCategory={handleTabChange}
+              activeFilters={activeFilters}
+              setIsFilterModalOpen={setIsFilterModalOpen}
+              sortBy={sortBy}
+              setSortBy={(val) => {
+                setSortBy(val);
+                setPage(1);
+              }}
+              isLightOn={isLightOn}
+              setIsLightOn={setIsLightOn}
+              categories={featuredCategories}
+            />
+          </div>
 
           <div className="decorative-grid is-settled">
             {isLoading ? (
@@ -165,12 +189,12 @@ export default function DecorativeListingClient() {
 
           {hasMore && (
             <div className="decorative-load-more">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setPage((p) => p + 1)}
                 disabled={isPaginating}
               >
-                {isPaginating ? 'Loading...' : 'Load more'}
+                {isPaginating ? 'LOADING...' : 'VIEW MORE'}
               </button>
             </div>
           )}
@@ -184,14 +208,13 @@ export default function DecorativeListingClient() {
 
       <section className="decorative-finder">
         <div className="decorative-shell">
-          <h2 className="decorative-reveal is-visible">Didn't find what you're looking for?</h2>
+          <h2 className="decorative-reveal is-visible">Didn&apos;t find what you&apos;re looking for?</h2>
           <p className="decorative-reveal is-visible">
             Our lighting advisors can help you choose the right piece, finish
-            and configuration for your space or project — and share pricing on
-            request.
+            and configuration for your space or project.
           </p>
           <a className="decorative-reveal is-visible" href="https://wa.me/919820356488">
-            Chat with us <span>→</span>
+            CHAT WITH US
           </a>
         </div>
       </section>
