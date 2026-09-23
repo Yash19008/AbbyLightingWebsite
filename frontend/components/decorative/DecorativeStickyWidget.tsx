@@ -52,6 +52,25 @@ export default function DecorativeStickyWidget({
   const hasActiveFilters =
     activeFilters.category.length > 0 || activeFilters.collection.length > 0;
 
+  const tabRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+
+  useEffect(() => {
+    const updateIndicator = () => {
+      const currentTab = tabRefs.current[activeCategory];
+      if (currentTab) {
+        setIndicatorStyle({
+          left: currentTab.offsetLeft,
+          width: currentTab.offsetWidth,
+        });
+      }
+    };
+
+    updateIndicator();
+    window.addEventListener('resize', updateIndicator);
+    return () => window.removeEventListener('resize', updateIndicator);
+  }, [activeCategory, isVisible, categories]);
+
   return (
     <div
       className={`decorative-sticky-widget ${isVisible ? 'is-visible' : ''}`}
@@ -59,12 +78,27 @@ export default function DecorativeStickyWidget({
       aria-label="Sticky product tools"
     >
       <div className="decorative-sticky-widget-inner">
-        {/* Category Tabs */}
+        {/* Left: Category Tabs */}
         {categories && categories.length > 0 && (
-          <div className="decorative-tabs decorative-sticky-tabs" role="tablist">
+          <div
+            className="decorative-tabs decorative-sticky-tabs"
+            role="tablist"
+            aria-label="Product category"
+          >
+            <span
+              className="decorative-tab-indicator"
+              aria-hidden="true"
+              style={{
+                width: indicatorStyle.width,
+                transform: `translateX(${indicatorStyle.left}px)`,
+              }}
+            />
             {categories.map((cat) => (
               <button
                 key={cat}
+                ref={(el) => {
+                  tabRefs.current[cat] = el;
+                }}
                 type="button"
                 role="tab"
                 aria-selected={activeCategory === cat}
@@ -77,12 +111,15 @@ export default function DecorativeStickyWidget({
           </div>
         )}
 
+        {/* Right: Filter + Sort + Light Toggle */}
         <div className="decorative-sticky-right-tools">
-          {/* Filter By Button */}
           <button
             type="button"
             className="decorative-sticky-btn decorative-sticky-filter"
-            onClick={() => setIsFilterModalOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsFilterModalOpen(true);
+            }}
           >
             <span className="decorative-sticky-icon" aria-hidden="true">
               ☷
@@ -91,12 +128,10 @@ export default function DecorativeStickyWidget({
             {hasActiveFilters && <span className="decorative-sticky-dot" />}
           </button>
 
-          {/* Sort By Dropdown */}
           <div className="decorative-sticky-sort-wrapper">
             <CustomSortDropdown value={sortBy} onChange={setSortBy} />
           </div>
 
-          {/* Light On / Off Toggle */}
           <label
             className={`decorative-sticky-light-toggle ${
               isLightOn ? 'is-on' : 'is-off'

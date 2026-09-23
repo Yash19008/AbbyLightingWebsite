@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { ParametersSection as ParametersSectionType } from '@/types/collection';
+import { ParametersSection as ParametersSectionType, ParameterItem } from '@/types/collection';
 import { getCollectionParameters } from '@/lib/api/collections';
 
 interface ParametersSectionProps {
@@ -56,7 +56,7 @@ export default function ParametersSectionDynamic({ parametersSection, collection
           const newItems = res.data.items || [];
           if (newItems.length > 0) {
             const existingIds = new Set(items.map((i) => i.id));
-            const uniqueNew = newItems.filter((i: any) => !existingIds.has(i.id));
+            const uniqueNew = newItems.filter((i: ParameterItem) => !existingIds.has(i.id));
 
             if (uniqueNew.length > 0) {
               setItems((prev) => [...prev, ...uniqueNew]);

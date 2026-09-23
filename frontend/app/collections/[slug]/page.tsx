@@ -9,7 +9,6 @@ import ScoreSection from '@/components/collections/ScoreSection';
 import PlacesSectionDynamic from '@/components/collections/PlacesSectionDynamic';
 import CatalogueSection from '@/components/collections/CatalogueSection';
 import RelatedCollections from '@/components/collections/RelatedCollections';
-import MobileNav from '@/components/collections/MobileNav';
 import '../../../styles/collections.css';
 
 export const dynamic = 'force-dynamic';
@@ -81,7 +80,6 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         
         <CatalogueSection />
         <RelatedCollections collections={otherCollections} />
-        <MobileNav />
       </div>
     );
   } catch (error) {

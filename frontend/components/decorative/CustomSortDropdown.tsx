@@ -20,13 +20,17 @@ export default function CustomSortDropdown({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, []);
 
   return (
@@ -36,7 +40,10 @@ export default function CustomSortDropdown({
         className={`sort-button ${isOpen ? 'is-open' : ''}`}
         aria-haspopup="menu"
         aria-expanded={isOpen}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen((prev) => !prev);
+        }}
       >
         <span>SORT BY</span>
         <svg
@@ -62,7 +69,8 @@ export default function CustomSortDropdown({
               type="button"
               role="menuitem"
               className={value === opt.value ? 'is-active' : ''}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 onChange(opt.value);
                 setIsOpen(false);
               }}

@@ -103,7 +103,7 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
     zIndex: 10,
     width: 44,
     height: 60,
-    display: !isMobile && showNav ? 'grid' : 'none',
+    display: !isMobile && !isTablet && showNav ? 'grid' : 'none',
     placeItems: 'center',
     background: 'transparent',
     border: 'none',
@@ -140,7 +140,7 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
 
       <div style={{ position: 'relative', width: '100%' }}>
         {/* Desktop Previous Arrow */}
-        {!isMobile && (
+        {!isMobile && !isTablet && (
           <button
             onClick={() => scroll(-1)}
             aria-label="Previous"
@@ -223,7 +223,7 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
         </div>
 
         {/* Desktop Next Arrow */}
-        {!isMobile && (
+        {!isMobile && !isTablet && (
           <button
             onClick={() => scroll(1)}
             aria-label="Next"
@@ -236,63 +236,67 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
           </button>
         )}
 
-        {/* Mobile Floating Circular Previous Arrow Button */}
-        {isMobile && canScrollLeft && (
+        {/* Mobile & Tablet Floating Circular Previous Arrow Button */}
+        {(isMobile || isTablet) && canScrollLeft && (
           <button
             onClick={() => scroll(-1)}
             aria-label="Previous"
             style={{
               position: 'absolute',
-              left: '-12px',
+              left: isMobile ? '-10px' : '-14px',
               top: '50%',
               transform: 'translateY(-50%)',
               zIndex: 10,
-              width: 32,
-              height: 32,
+              width: isMobile ? 32 : 38,
+              height: isMobile ? 32 : 38,
               borderRadius: '50%',
-              background: 'rgba(30, 30, 30, 0.4)',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
+              background: 'rgba(30, 30, 30, 0.65)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
               color: '#ffffff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
               padding: 0,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.4)',
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width={isMobile ? "14" : "18"} height={isMobile ? "14" : "18"} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
         )}
 
-        {/* Mobile Floating Circular Next Arrow Button */}
-        {isMobile && canScrollRight && (
+        {/* Mobile & Tablet Floating Circular Next Arrow Button */}
+        {(isMobile || isTablet) && canScrollRight && (
           <button
             onClick={() => scroll(1)}
             aria-label="Next"
             style={{
               position: 'absolute',
-              right: '-12px',
+              right: isMobile ? '-10px' : '-14px',
               top: '50%',
               transform: 'translateY(-50%)',
               zIndex: 10,
-              width: 32,
-              height: 32,
+              width: isMobile ? 32 : 38,
+              height: isMobile ? 32 : 38,
               borderRadius: '50%',
-              background: 'rgba(30, 30, 30, 0.4)',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
+              background: 'rgba(30, 30, 30, 0.65)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
               color: '#ffffff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
               padding: 0,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.4)',
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width={isMobile ? "14" : "18"} height={isMobile ? "14" : "18"} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 18l6-6-6-6" />
             </svg>
           </button>

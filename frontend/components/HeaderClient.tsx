@@ -248,7 +248,7 @@ export default function HeaderClient() {
 
   const pathname = usePathname();
 
-  const [activeTab, setActiveTab] = React.useState<TabId | null>(null);
+  const [activeTab, setActiveTab] = React.useState<TabId | null>(null); // starts as null; only set by user click
   const [activeSheet, setActiveSheet] = React.useState<"products" | "work" | "more" | null>(null);
   const [productAccordion, setProductAccordion] = React.useState<"arch" | "dec" | null>(null);
 
@@ -283,10 +283,9 @@ export default function HeaderClient() {
 
   React.useEffect(() => {
     setActiveSheet(null);
-    const routeTab = getRouteTabFromPathname(pathname);
-    setActiveTab(routeTab);
+    // Do NOT auto-set active tab from route — only user clicks should activate a tab
     scheduleDockHideTimeout(1500);
-  }, [pathname, getRouteTabFromPathname, scheduleDockHideTimeout]);
+  }, [pathname, scheduleDockHideTimeout]);
 
   const [hoveredTab, setHoveredTab] = React.useState<TabId | null>(null);
   const dockBarRef = React.useRef<HTMLDivElement>(null);
