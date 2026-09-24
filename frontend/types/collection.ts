@@ -25,12 +25,28 @@ export interface ParametersSection {
   items: ParameterItem[];
 }
 
+export interface CompositionProductVariant {
+  color: string;
+  image: string;
+}
+
+export interface CompositionProduct {
+  name: string;
+  type: string;
+  image: string | null;
+  colors?: string[];
+  variants?: CompositionProductVariant[];
+  collection?: string | null;
+  link?: string;
+}
+
 export interface CompositionItem {
   id: number;
   image: string;
   title: string;
   category: string;
   kicker: string;
+  products?: CompositionProduct[];
 }
 
 export interface CompositionsSection {

@@ -246,6 +246,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/insert', 'insert')->name('category_admin.insert');
             Route::post('/update/{any}', 'update')->name('category_admin.update');
             Route::get('/information/{any}', 'information')->name('category_admin.information');
+            Route::post('/toggleFeatured', 'toggleFeatured')->name('category_admin.toggleFeatured');
         });
 
         /********************FAMILIES********************/
@@ -310,8 +311,18 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/insert', 'insert')->name('composition_admin.insert');
             Route::get('/edit/{any}', 'edit')->name('composition_admin.edit');
             Route::post('/update/{any}', 'update')->name('composition_admin.update');
+            Route::post('/delete', 'delete')->name('composition_admin.delete');
         });
 
+        /********************COMPOSITION CATEGORIES********************/
+        Route::controller(\App\Http\Controllers\Admin\CompositionCategoryController::class)->prefix('composition-categories')->group(function () {
+            Route::get('/', 'index')->name('composition_categories_admin');
+            Route::get('/add', 'add')->name('composition_categories_admin.add');
+            Route::post('/insert', 'insert')->name('composition_categories_admin.insert');
+            Route::get('/edit/{any}', 'edit')->name('composition_categories_admin.edit');
+            Route::post('/update/{any}', 'update')->name('composition_categories_admin.update');
+            Route::post('/delete', 'delete')->name('composition_categories_admin.delete');
+        });
         /********************PROJECT********************/
         Route::controller(ProjectAdminController::class)->group(function () {
             Route::get('/project', 'index')->name('project_admin');

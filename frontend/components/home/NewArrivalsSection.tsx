@@ -144,14 +144,14 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
   const cardFlex = isMobile
     ? `0 0 calc((100% - ${GAP}px) / 2)`
     : isTablet
-    ? `0 0 calc((100% - 2 * ${GAP}px) / 2.45)`
-    : `0 0 calc((100% - 3 * ${GAP}px) / 4)`;
+      ? `0 0 calc((100% - 2 * ${GAP}px) / 2.45)`
+      : `0 0 calc((100% - 3 * ${GAP}px) / 4)`;
 
   const cardDim = isMobile
     ? `calc((100% - ${GAP}px) / 2)`
     : isTablet
-    ? `calc((100% - 2 * ${GAP}px) / 2.45)`
-    : `calc((100% - 3 * ${GAP}px) / 4)`;
+      ? `calc((100% - 2 * ${GAP}px) / 2.45)`
+      : `calc((100% - 3 * ${GAP}px) / 4)`;
 
   return (
     <section className="section" id="arrivals">
@@ -162,10 +162,10 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
         <div className="product-toolbar" style={{ scrollbarWidth: "none", msOverflowStyle: "none", overflowY: "hidden" } as CSSProperties}>
           <div className="filter-chips" role="tablist" aria-label="New arrival categories" style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as CSSProperties}>
             {categoryTabs.map((tabName) => (
-              <button 
+              <button
                 key={tabName}
-                type="button" 
-                role="tab" 
+                type="button"
+                role="tab"
                 aria-selected={activeTab.toLowerCase() === tabName.toLowerCase()}
                 className={activeTab.toLowerCase() === tabName.toLowerCase() ? 'active' : ''}
                 onClick={() => setActiveTab(tabName)}
@@ -212,9 +212,9 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
             >
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product: NewArrivalProduct, index: number) => (
-                  <Link 
+                  <Link
                     key={product.id}
-                    className="product reveal is-visible" 
+                    className="product reveal is-visible"
                     style={{
                       flex: cardFlex,
                       minWidth: cardDim,
@@ -228,9 +228,10 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
                       flexDirection: "column",
                       position: "relative",
                       boxSizing: "border-box",
-                      "--i": index,
                     } as React.CSSProperties}
-                    href={product.slug ? `/product-detail/${product.slug}` : "/#contact"}
+                    href={product.parent_category === 'Architectural' 
+                      ? `/products/${product.sub_tag_slug || product.slug}` 
+                      : (product.slug ? `/product-detail/${product.slug}` : "/#contact")}
                   >
                     <div
                       className="photo"

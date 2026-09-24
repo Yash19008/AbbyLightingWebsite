@@ -40,4 +40,9 @@ class DecProduct extends Model
                     ->withPivot('order')
                     ->orderByPivot('order');
     }
+
+    public function compositions()
+    {
+        return $this->belongsToMany(\App\Models\Composition::class, 'composition_products', 'product_id', 'composition_id');
+    }
 }

@@ -10,6 +10,15 @@ export default function ProjectsSection({ projects = [] }: ProjectsSectionProps)
     return null;
   }
 
+  // Ensure we always have exactly 6 items to maintain the CSS grid layout
+  const displayProjects = [...projects];
+  while (displayProjects.length < 6) {
+    displayProjects.push({
+      id: `empty-${displayProjects.length}`,
+      isPlaceholder: true,
+    } as unknown as Project);
+  }
+
   return (
     <section className="section projects" id="projects">
       <div className="shell">
@@ -36,24 +45,39 @@ export default function ProjectsSection({ projects = [] }: ProjectsSectionProps)
           </a>
         </div>
         <div className="project-grid">
-          {projects.map((project, index) => (
-            <a 
-              key={project.id} 
-              href={`/projects/${project.slug}`} 
-              className="project" 
-              style={{"--i": index} as React.CSSProperties}
-            >
-              {project.image_url ? (
-                <img src={project.image_url} alt={project.name} />
-              ) : (
-                <div className="project-placeholder" aria-hidden="true"><span>Project image</span></div>
-              )}
-              <figcaption>
-                <strong>{project.name}</strong>
-                <span>{project.type}{project.location && ` | ${project.location}`}</span>
-              </figcaption>
-            </a>
-          ))}
+          {displayProjects.map((project, index) => {
+            if ((project as unknown as { isPlaceholder?: boolean }).isPlaceholder) {
+              return (
+                <a 
+                  key={project.id} 
+                  className="project placeholder" 
+                  style={{"--i": index, pointerEvents: "none", visibility: "hidden"} as React.CSSProperties}
+                  aria-hidden="true"
+                >
+                  <div className="project-placeholder" aria-hidden="true"><span>Project image</span></div>
+                </a>
+              );
+            }
+
+            return (
+              <a 
+                key={project.id} 
+                href={`/projects/${project.slug}`} 
+                className="project" 
+                style={{"--i": index} as React.CSSProperties}
+              >
+                {project.image_url ? (
+                  <img src={project.image_url} alt={project.name} />
+                ) : (
+                  <div className="project-placeholder" aria-hidden="true"><span>Project image</span></div>
+                )}
+                <figcaption>
+                  <strong>{project.name}</strong>
+                  <span>{project.type}{project.location && ` | ${project.location}`}</span>
+                </figcaption>
+              </a>
+            );
+          })}
         </div>
       </div>
     </section>

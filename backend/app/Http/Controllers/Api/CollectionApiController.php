@@ -65,7 +65,10 @@ class CollectionApiController extends Controller
                 'compositionsSection.items' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
                 },
-                'compositions',
+                'compositions.category_rel',
+                'compositions.products.category',
+                'compositions.products.collection',
+                'compositions.products.variants.colorMaster',
                 'tonesSection.families' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
                 },
@@ -144,12 +147,72 @@ class CollectionApiController extends Controller
                                 ? asset('storage/' . $img)
                                 : asset('storage/uploads/compositions/' . $img);
                         }
+
+                        $productsUsed = $comp->products->map(function($product) {
+                            $firstVariant = $product->variants->first();
+                            
+                            $pImg = null;
+                            if ($firstVariant) {
+                                if ($firstVariant->lighton_image) {
+                                    $pImg = asset('storage/uploads/decorative/' . $firstVariant->lighton_image);
+                                } elseif ($firstVariant->main_image) {
+                                    $pImg = asset('storage/uploads/decorative/' . $firstVariant->main_image);
+                                }
+                            }
+                            if (!$pImg && $product->featured_image) {
+                                $pImg = asset('storage/uploads/decorative/' . $product->featured_image);
+                            }
+
+                            // Get colors and images from variants
+                            $variants = [];
+                            $seenColors = [];
+                            foreach ($product->variants as $variant) {
+                                $vImage = null;
+                                if ($variant->lighton_image) {
+                                    $vImage = asset('storage/uploads/decorative/' . $variant->lighton_image);
+                                } elseif ($variant->main_image) {
+                                    $vImage = asset('storage/uploads/decorative/' . $variant->main_image);
+                                }
+                                
+                                // Fallback to default product image if variant doesn't have one
+                                if (!$vImage) {
+                                    $vImage = $pImg; 
+                                }
+
+                                $colorHex = null;
+                                if ($variant->colorMaster && $variant->colorMaster->css_value) {
+                                    $colorHex = $variant->colorMaster->css_value;
+                                } elseif ($variant->colorMaster && $variant->colorMaster->code) {
+                                    $colorHex = $variant->colorMaster->code;
+                                }
+
+                                if ($colorHex && !in_array($colorHex, $seenColors)) {
+                                    $seenColors[] = $colorHex;
+                                    $variants[] = [
+                                        'color' => $colorHex,
+                                        'image' => $vImage
+                                    ];
+                                }
+                            }
+
+                            return [
+                                'name' => $product->name,
+                                'type' => $product->category ? $product->category->name : 'Decorative',
+                                'image' => $pImg,
+                                'colors' => $seenColors,
+                                'variants' => $variants,
+                                'collection' => $product->collection ? $product->collection->name : null,
+                                'link' => '/decorative-products/' . $product->slug,
+                            ];
+                        });
+
                         return [
                             'id' => $comp->id,
                             'image' => $img,
                             'title' => $comp->title,
-                            'category' => $comp->category ?? '',
+                            'category' => $comp->category_rel ? $comp->category_rel->name : $comp->category,
                             'kicker' => $comp->kicker ?? '',
+                            'products' => $productsUsed
                         ];
                     })
                     : ($collection->compositionsSection->items ? $collection->compositionsSection->items->map(function ($item) {

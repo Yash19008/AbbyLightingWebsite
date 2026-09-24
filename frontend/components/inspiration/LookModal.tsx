@@ -1,11 +1,19 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 
+import Link from 'next/link';
+
+export interface ProductVariantItem {
+  color: string;
+  image: string;
+}
+
 export interface ProductUsedItem {
   name: string;
   type: string;
   image: string;
   colors?: string[];
+  variants?: ProductVariantItem[];
   collection?: string;
   link?: string;
 }
@@ -22,6 +30,114 @@ interface LookModalProps {
   isOpen: boolean;
   look: LookItem | null;
   onClose: () => void;
+}
+
+function ProductCard({ p }: { p: ProductUsedItem }) {
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariantItem | null>(null);
+
+  const displayImage = selectedVariant ? selectedVariant.image : p.image;
+
+  const ImageContent = (
+    <div className="product-card-image-wrap" style={{ width: '100%', height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9f9f9', borderRadius: '4px', overflow: 'hidden' }}>
+      <img
+        src={displayImage}
+        alt={p.name}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', padding: '5px' }}
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
+        }}
+      />
+    </div>
+  );
+
+  const TitleContent = <h4 className="product-card-title">{p.name}</h4>;
+
+  return (
+    <article className="product-card" style={{ display: 'flex', flexDirection: 'column' }}>
+      {p.link ? (
+        <Link href={p.link} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+          {ImageContent}
+        </Link>
+      ) : (
+        ImageContent
+      )}
+      
+      <div className="product-card-info">
+        {p.link ? (
+          <Link href={p.link} style={{ textDecoration: 'none', color: 'inherit' }}>
+            {TitleContent}
+          </Link>
+        ) : (
+          TitleContent
+        )}
+        
+        <span className="product-card-type">{p.type}</span>
+
+        {p.variants && p.variants.length > 0 ? (
+          <div className="product-card-colors" aria-label="Available variants" style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+            {p.variants.slice(0, 5).map((v, vIdx) => (
+              <span
+                key={vIdx}
+                className={`color-dot ${selectedVariant === v ? 'is-active' : ''}`}
+                style={{ 
+                  backgroundColor: v.color, 
+                  width: '20px', 
+                  height: '20px', 
+                  borderRadius: '50%',
+                  display: 'inline-block',
+                  cursor: 'pointer',
+                  border: '1px solid rgba(0,0,0,0.1)',
+                  outline: selectedVariant === v ? '1.5px solid #111' : 'none', 
+                  outlineOffset: '2px',
+                  transition: 'outline 0.2s'
+                }}
+                title={v.color}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedVariant(v);
+                }}
+              />
+            ))}
+            {p.variants.length > 5 && (
+              <span style={{ fontSize: '0.75rem', color: '#666', marginLeft: '4px' }}>
+                +{p.variants.length - 5}
+              </span>
+            )}
+          </div>
+        ) : p.colors && p.colors.length > 0 ? (
+          <div className="product-card-colors" aria-label="Available colors" style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+            {p.colors.slice(0, 5).map((colorHex, cIdx) => (
+              <span
+                key={cIdx}
+                className="color-dot"
+                style={{ 
+                  backgroundColor: colorHex,
+                  width: '20px', 
+                  height: '20px', 
+                  borderRadius: '50%',
+                  display: 'inline-block',
+                  border: '1px solid rgba(0,0,0,0.1)'
+                }}
+                title={colorHex}
+              />
+            ))}
+            {p.colors.length > 5 && (
+              <span style={{ fontSize: '0.75rem', color: '#666', marginLeft: '4px' }}>
+                +{p.colors.length - 5}
+              </span>
+            )}
+          </div>
+        ) : null}
+
+        {p.collection && (
+          <span className="product-card-collection">
+            {p.collection}
+          </span>
+        )}
+      </div>
+    </article>
+  );
 }
 
 export default function LookModal({ isOpen, look, onClose }: LookModalProps) {
@@ -75,40 +191,7 @@ export default function LookModal({ isOpen, look, onClose }: LookModalProps) {
 
   if (!isOpen || !look || !mounted) return null;
 
-  const defaultProducts: ProductUsedItem[] = look.productsUsed || [
-    {
-      name: "Cymbal",
-      type: "Pendant Light",
-      image: "/images/decorative/cymbal-on.png",
-      colors: ["#F5F2EB", "#1C1C1C", "#A04828"],
-      collection: "Quarry Collection",
-      link: "/#arrivals",
-    },
-    {
-      name: "Dew",
-      type: "Pendant Light",
-      image: "/images/reference/product-neoma.png",
-      colors: ["#F5F2EB", "#1C1C1C", "#A04828"],
-      collection: "Quarry Collection",
-      link: "/#arrivals",
-    },
-    {
-      name: "Apex",
-      type: "Pendant Light",
-      image: "/images/decorative/apex-on.png",
-      colors: ["#F5F2EB", "#1C1C1C", "#A04828"],
-      collection: "Quarry Collection",
-      link: "/#arrivals",
-    },
-    {
-      name: "Symphony",
-      type: "Linear Light",
-      image: "/images/world-decorative-on.png",
-      colors: ["#F5F2EB", "#1C1C1C", "#A04828"],
-      collection: "Symphony Collection",
-      link: "/#arrivals",
-    },
-  ];
+  const productsToRender = look.productsUsed || [];
 
   const scroll = (dir: 1 | -1) => {
     const el = trackRef.current;
@@ -172,39 +255,9 @@ export default function LookModal({ isOpen, look, onClose }: LookModalProps) {
 
               {/* Scrollable Track */}
               <div ref={trackRef} className="products-track">
-                {defaultProducts.map((p, idx) => (
-                  <article key={idx} className="product-card">
-                    <div className="product-card-image-wrap">
-                      <img
-                        src={p.image}
-                        alt={p.name}
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
-                        }}
-                      />
-                    </div>
-                    <div className="product-card-info">
-                      <h4 className="product-card-title">{p.name}</h4>
-                      <span className="product-card-type">{p.type}</span>
-
-                      {p.colors && p.colors.length > 0 && (
-                        <div className="product-card-colors" aria-label="Available colors">
-                          {p.colors.map((colorHex, cIdx) => (
-                            <span
-                              key={cIdx}
-                              className="color-dot"
-                              style={{ backgroundColor: colorHex }}
-                            />
-                          ))}
-                        </div>
-                      )}
-
-                      {p.collection && (
-                        <span className="product-card-collection">{p.collection}</span>
-                      )}
-                    </div>
-                  </article>
-                ))}
+                {productsToRender.map((p, idx) => {
+                  return <ProductCard key={idx} p={p} />;
+                })}
               </div>
 
               {/* Right Arrow Button */}

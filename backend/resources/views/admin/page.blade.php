@@ -100,7 +100,7 @@
                             </li>
                             
                             {{-- INSPIRATION PAGE --}}
-                            <li class="has-sub {{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.watch_and_shops') || str_starts_with(Route::currentRouteName() ?? '', 'composition_admin')) ? 'open' : '' }}">
+                            <li class="has-sub {{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.watch_and_shops') || str_starts_with(Route::currentRouteName() ?? '', 'composition_admin') || str_starts_with(Route::currentRouteName() ?? '', 'composition_categories_admin')) ? 'open' : '' }}">
                                 <a href="#" class="menu-item"><i class="ft-image" style="font-size:11px;margin-right:4px;"></i> Inspiration</a>
                                 <ul class="menu-content">
                                     <li class="{{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.watch_and_shops')) ? 'active' : '' }}">

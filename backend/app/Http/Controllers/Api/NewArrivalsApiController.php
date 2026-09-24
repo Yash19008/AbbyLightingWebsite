@@ -11,96 +11,120 @@ use Illuminate\Support\Facades\Log;
 class NewArrivalsApiController extends Controller
 {
     /**
-     * Get new arrival products grouped by tabs (Architectural, Decorative, Outdoor)
-     * Only returns featured products (is_featured = 1 for Decorative, show_as_new_arrival = 1 for Architectural)
+     * Get new arrival products grouped by featured categories.
+     * Generates tabs dynamically based on featured categories from both Architectural and Decorative.
      */
     public function index(Request $request)
     {
         try {
-            // 1. Fetch Featured Decorative Products (where is_featured = 1)
-            $decProducts = DecProduct::where('status', 'published')
-                ->where('is_featured', 1)
-                ->with(['category', 'variants'])
-                ->orderBy('order', 'asc')
-                ->latest()
-                ->take(12)
-                ->get()
-                ->map(function ($p) {
-                    $imageUrl = null;
-                    if ($p->featured_image) {
-                        $imageUrl = str_starts_with($p->featured_image, 'http')
-                            ? $p->featured_image
-                            : (str_contains($p->featured_image, '/')
-                                ? asset('storage/' . $p->featured_image)
-                                : asset('storage/uploads/decorative/' . $p->featured_image));
-                    } elseif ($p->variants->isNotEmpty() && $p->variants->first()->main_image) {
-                        $vImg = $p->variants->first()->main_image;
-                        $imageUrl = str_starts_with($vImg, 'http')
-                            ? $vImg
-                            : (str_contains($vImg, '/')
-                                ? asset('storage/' . $vImg)
-                                : asset('storage/uploads/decorative/' . $vImg));
-                    }
+            $result = [];
+            $tabId = 1;
 
-                    return [
-                        'id' => $p->id,
-                        'name' => $p->name,
-                        'slug' => $p->slug,
-                        'category' => $p->category ? $p->category->name : 'Decorative',
-                        'parent_category' => 'Decorative',
-                        'image_url' => $imageUrl,
-                        'price' => null,
-                        'description' => $p->short_description ?? ($p->description ? strip_tags($p->description) : null),
+            // 1. Fetch Featured Architectural Categories
+            $featuredArchCategories = \App\Models\Category::where('is_featured', 1)
+                ->where('is_active', 'yes')
+                ->orderBy('title', 'asc')
+                ->get();
+
+            foreach ($featuredArchCategories as $cat) {
+                // Fetch products for this category
+                $products = ProductMaster::where('is_active', 'yes')
+                    ->where('category_id', $cat->id)
+                    ->latest()
+                    ->take(12)
+                    ->get()
+                    ->map(function ($p) use ($cat) {
+                        $imageUrl = $p->featured_image
+                            ? (str_starts_with($p->featured_image, 'http')
+                                ? $p->featured_image
+                                : asset('storage/uploads/products/' . $p->featured_image))
+                            : null;
+
+                        $subTagSlug = null;
+                        if (!empty($p->sub_tag_ids)) {
+                            $ids = explode(',', $p->sub_tag_ids);
+                            if (count($ids) > 0) {
+                                $subTag = \App\Models\SubTag::find($ids[0]);
+                                if ($subTag) {
+                                    $subTagSlug = $subTag->slug;
+                                }
+                            }
+                        }
+
+                        return [
+                            'id' => $p->id,
+                            'name' => $p->title,
+                            'slug' => $p->slug,
+                            'sub_tag_slug' => $subTagSlug,
+                            'category' => $cat->title,
+                            'parent_category' => 'Architectural',
+                            'image_url' => $imageUrl,
+                            'price' => null,
+                            'description' => null,
+                        ];
+                    });
+
+                if ($products->isNotEmpty()) {
+                    $result[] = [
+                        'id' => $tabId++,
+                        'name' => $cat->title,
+                        'slug' => $cat->slug,
+                        'products' => $products->all(),
                     ];
-                });
+                }
+            }
 
-            // 2. Fetch Featured Architectural Products (where show_as_new_arrival = 1)
-            $archProducts = ProductMaster::where('is_active', 'yes')
-                ->where('show_as_new_arrival', 1)
-                ->with(['category'])
-                ->latest()
-                ->take(12)
-                ->get()
-                ->map(function ($p) {
-                    $imageUrl = $p->featured_image
-                        ? (str_starts_with($p->featured_image, 'http')
-                            ? $p->featured_image
-                            : asset('storage/uploads/products/' . $p->featured_image))
-                        : null;
+            // 2. Fetch Featured Decorative Categories
+            $featuredDecCategories = \App\Models\Decorative\DecCategory::where('is_featured', 1)
+                ->orderBy('name', 'asc')
+                ->get();
 
-                    return [
-                        'id' => $p->id,
-                        'name' => $p->title,
-                        'slug' => $p->slug,
-                        'category' => $p->category ? $p->category->title : 'Architectural',
-                        'parent_category' => 'Architectural',
-                        'image_url' => $imageUrl,
-                        'price' => null,
-                        'description' => null,
+            foreach ($featuredDecCategories as $cat) {
+                $products = DecProduct::where('status', 'published')
+                    ->where('category_id', $cat->id)
+                    ->with(['variants'])
+                    ->orderBy('order', 'asc')
+                    ->latest()
+                    ->take(12)
+                    ->get()
+                    ->map(function ($p) use ($cat) {
+                        $imageUrl = null;
+                        if ($p->featured_image) {
+                            $imageUrl = str_starts_with($p->featured_image, 'http')
+                                ? $p->featured_image
+                                : (str_contains($p->featured_image, '/')
+                                    ? asset('storage/' . $p->featured_image)
+                                    : asset('storage/uploads/decorative/' . $p->featured_image));
+                        } elseif ($p->variants->isNotEmpty() && $p->variants->first()->main_image) {
+                            $vImg = $p->variants->first()->main_image;
+                            $imageUrl = str_starts_with($vImg, 'http')
+                                ? $vImg
+                                : (str_contains($vImg, '/')
+                                    ? asset('storage/' . $vImg)
+                                    : asset('storage/uploads/decorative/' . $vImg));
+                        }
+
+                        return [
+                            'id' => $p->id,
+                            'name' => $p->name,
+                            'slug' => $p->slug,
+                            'category' => $cat->name,
+                            'parent_category' => 'Decorative',
+                            'image_url' => $imageUrl,
+                            'price' => null,
+                            'description' => $p->short_description ?? ($p->description ? strip_tags($p->description) : null),
+                        ];
+                    });
+
+                if ($products->isNotEmpty()) {
+                    $result[] = [
+                        'id' => $tabId++,
+                        'name' => $cat->name,
+                        'slug' => $cat->slug,
+                        'products' => $products->all(),
                     ];
-                });
-
-            // 3. Construct categories array
-            $result = [
-                [
-                    'id' => 1,
-                    'name' => 'Architectural',
-                    'slug' => 'architectural',
-                    'products' => $archProducts->values()->all(),
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'Decorative',
-                    'slug' => 'decorative',
-                    'products' => $decProducts->values()->all(),
-                ],
-                [
-                    'id' => 3,
-                    'name' => 'Outdoor',
-                    'slug' => 'outdoor',
-                    'products' => [], // For future outdoor products
-                ]
-            ];
+                }
+            }
 
             return response()->json([
                 'success' => true,

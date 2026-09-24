@@ -50,6 +50,16 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="is_featured" class="col-sm-3 control-label">Is Featured</label>
+                            <div class="col-sm-6">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" name="is_featured" id="is_featured" {{ (@$category->is_featured == 1) ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="is_featured"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="inputName" class="col-sm-3 control-label">Sheet Value</label>
                             <div class="col-sm-6">
                                 <input class="form-control" type="text" name="sheet_title" id="sheet_title" placeholder="Enter your sheet value" value="{{ old('sheet_title',@$category->sheet_title) }}">

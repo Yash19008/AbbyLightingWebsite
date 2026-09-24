@@ -123,20 +123,25 @@ class ProjectAdminController extends Controller
             'slug' => 'required|unique:projects',
         ]);
 
+        $newSequence = $request->sequence ? (int)$request->sequence : 1;
+        $conflict = Project::where('sequence', $newSequence)->first();
+        if ($conflict) {
+            Project::where('sequence', '>=', $newSequence)->increment('sequence');
+        }
+
         $value = [
             'name' => $request->name,
             'location' => $request->location,
             'type_id' => $request->type_id ?? null, // Nullable now
             'type' => $request->type,
             'description' => $request->description,
-            'sequence' => $request->sequence ? (int)$request->sequence : 1,
+            'sequence' => $newSequence,
             'is_featured' => $request->has('is_featured') ? 1 : 0,
             'slug' => $request->slug,
             'block_column' => $request->block_column,
             'created_at' => $this->currentDateTime,
             'created_by' => Auth::guard('admin')->user()->id,
         ];
-
 
         $project = Project::create($value);
         if (isset($request->sub_tag_id) && is_array($request->sub_tag_id)) {
@@ -230,6 +235,24 @@ class ProjectAdminController extends Controller
         ];
         $oldDataArr = json_encode($oldData);
 
+        $newSequence = $request->sequence !== null ? (int)$request->sequence : $oldProject->sequence;
+        if ($newSequence !== $oldProject->sequence) {
+            $conflict = Project::where('sequence', $newSequence)->where('id', '!=', $id)->first();
+            if ($conflict) {
+                if ($oldProject->sequence > $newSequence) {
+                    Project::where('sequence', '>=', $newSequence)
+                           ->where('sequence', '<', $oldProject->sequence)
+                           ->where('id', '!=', $id)
+                           ->increment('sequence');
+                } else {
+                    Project::where('sequence', '<=', $newSequence)
+                           ->where('sequence', '>', $oldProject->sequence)
+                           ->where('id', '!=', $id)
+                           ->decrement('sequence');
+                }
+            }
+        }
+
         // UPDATE ARRAY
         $update_array = array(
             'name' => $request->name,
@@ -239,7 +262,7 @@ class ProjectAdminController extends Controller
             'block_column' => $request->block_column,
             'description' => $request->description,
             'slug' => $request->slug,
-            'sequence' => $request->sequence !== null ? (int)$request->sequence : $oldProject->sequence,
+            'sequence' => $newSequence,
             'is_featured' => $request->has('is_featured') ? 1 : 0,
             'updated_by' => Auth::guard('admin')->user()->id,
             'updated_at' => $this->currentDateTime,

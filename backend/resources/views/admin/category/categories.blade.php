@@ -35,6 +35,7 @@
                                 <tr>
                                     <th>Title</th>
                                     <th>Slug</th>
+                                    <th class="text-center">Featured</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -45,6 +46,7 @@
                                 <tr>
                                     <th>Title</th>
                                     <th>Slug</th>
+                                    <th class="text-center">Featured</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -92,6 +94,13 @@
         },
       
         {
+            data: 'featured',
+            name: 'featured',
+            class: 'text-center align-middle',
+            orderable: false,
+            searchable: false,
+        },
+        {
             data: 'status',
             name: 'status',
             class: 'text-center align-middle',
@@ -138,6 +147,27 @@
                     });
             } );
 
+        });
+        $(document).on('change', '.featured_switch', function() {
+            var id = $(this).data('id');
+            var status = $(this).prop('checked') ? 1 : 0;
+            
+            $.ajax({
+                type: "POST",
+                url: "{{ route('category_admin.toggleFeatured') }}",
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'id': id,
+                    'status': status
+                },
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success('Featured status updated successfully.');
+                    } else {
+                        toastr.error('Failed to update featured status.');
+                    }
+                }
+            });
         });
     })
    
