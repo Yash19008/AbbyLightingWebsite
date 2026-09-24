@@ -130,11 +130,11 @@
                         </div>
 
                         @if(isset($product))
-                        <!-- Variants Preview Area -->
+                        <!-- Colors Preview Area -->
                         <div class="card mt-2">
                             <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                                <h4 class="card-title">Variants</h4>
-                                <a href="#variants" class="btn btn-sm btn-outline-primary" onclick="$('#wizard-tabs a[href=\'#variants\']').trigger('click');">Manage Variants <i class="ft-arrow-right"></i></a>
+                                <h4 class="card-title">Colors Preview</h4>
+                                <a href="#colors_sizes" class="btn btn-sm btn-outline-primary" onclick="$('#wizard-tabs a[href=\'#colors_sizes\']').trigger('click');">Manage Colors & Sizes <i class="ft-arrow-right"></i></a>
                             </div>
                             <div class="card-body pt-2">
                                 <div class="table-responsive">
@@ -142,34 +142,26 @@
                                         <thead>
                                             <tr>
                                                 <th>Image</th>
-                                                <th>Name / SKU</th>
                                                 <th>Color</th>
-                                                <th>Size</th>
-                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($product->variants->count() > 0)
-                                                @foreach($product->variants as $variant)
+                                            @if($product->colors && $product->colors->count() > 0)
+                                                @foreach($product->colors as $color)
                                                 <tr>
                                                     <td width="50">
-                                                        @if($variant->main_image)
-                                                            <img src="{{ asset('storage/uploads/decorative/' . $variant->main_image) }}" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:4px;">
+                                                        @if($color->main_image)
+                                                            <img src="{{ asset('storage/uploads/decorative/' . $color->main_image) }}" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:4px;">
                                                         @else
                                                             <div style="width:40px;height:40px;background:#f4f5f7;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#b4b4b4;"><i class="ft-image"></i></div>
                                                         @endif
                                                     </td>
-                                                    <td><strong>{{ $variant->name }}</strong><br><small class="text-muted">{{ $variant->sku ?? 'No SKU' }}</small></td>
-                                                    <td>{{ $variant->colorMaster ? $variant->colorMaster->name : '-' }}</td>
-                                                    <td>{{ $variant->size ?? '-' }}</td>
-                                                    <td>
-                                                        <span class="badge badge-{{ $variant->status == 'active' ? 'success' : 'secondary' }}">{{ ucfirst($variant->status) }}</span>
-                                                    </td>
+                                                    <td>{{ $color->colorMaster ? $color->colorMaster->name : '-' }}</td>
                                                 </tr>
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="4" class="text-center text-muted py-3">No variants created yet.</td>
+                                                    <td colspan="2" class="text-center text-muted py-3">No colors assigned yet.</td>
                                                 </tr>
                                             @endif
                                         </tbody>

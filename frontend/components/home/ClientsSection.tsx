@@ -13,11 +13,11 @@ export default function ClientsSection({ clients = [] }: ClientsSectionProps) {
   return (
     <section className="section" id="clients">
       <div className="shell">
-        <div className="section-head reveal">
+        <div className="section-head reveal" suppressHydrationWarning>
           <h2>Our Clients</h2>
         </div>
 
-        <div className="marquee reveal">
+        <div className="marquee reveal" suppressHydrationWarning>
           <div className="mtrack">
             {clients.map((client, index) => (
               <div key={`client-${client.id}`} className="client-logo" aria-hidden="false">

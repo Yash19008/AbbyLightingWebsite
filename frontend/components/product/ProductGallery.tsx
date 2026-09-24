@@ -47,7 +47,7 @@ export default function ProductGallery({
   const currentStageImage = galleryImages[activeIndex] || "";
 
   return (
-    <div className="product-gallery product-reveal">
+    <div className="product-gallery product-reveal" suppressHydrationWarning>
       <div className="thumb-carousel" ref={carouselRef}>
         <button
           className="gallery-arrow gallery-prev"

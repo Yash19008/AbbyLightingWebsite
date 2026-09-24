@@ -114,7 +114,7 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
   return (
     <section className="section" id="news">
       <div className="shell" style={{ width: "100%", boxSizing: "border-box" }}>
-        <div className="section-head reveal">
+        <div className="section-head reveal" suppressHydrationWarning>
           <h2>In the news</h2>
         </div>
 

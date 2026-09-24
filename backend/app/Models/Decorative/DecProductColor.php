@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DecProductVariant extends Model
+class DecProductColor extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'dec_product_variants';
+    protected $table = 'dec_product_colors';
     protected $guarded = ['id'];
 
     public function product()
@@ -22,10 +22,5 @@ class DecProductVariant extends Model
     public function colorMaster()
     {
         return $this->belongsTo(ColorMaster::class, 'color_master_id');
-    }
-
-    public function specRows()
-    {
-        return $this->hasMany(DecProductSpecRow::class, 'variant_id')->orderBy('order');
     }
 }

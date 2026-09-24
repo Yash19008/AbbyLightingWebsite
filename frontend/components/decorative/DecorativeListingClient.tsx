@@ -9,9 +9,14 @@ import DecorativeStickyWidget from './DecorativeStickyWidget';
 
 import { Product } from './DecorativeCard';
 
-export default function DecorativeListingClient() {
+interface DecorativeListingClientProps {
+  initialCategory?: string;
+}
+
+export default function DecorativeListingClient({ initialCategory }: DecorativeListingClientProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [featuredCategories, setFeaturedCategories] = useState<string[]>(['All']);
+  const [rawCategories, setRawCategories] = useState<any[]>([]);
   const [availableCollections, setAvailableCollections] = useState<string[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -20,12 +25,12 @@ export default function DecorativeListingClient() {
 
   const [hasMore, setHasMore] = useState(false);
 
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategory] = useState(initialCategory || 'All');
   const [isLightOn, setIsLightOn] = useState(true);
   const [sortBy, setSortBy] = useState('new');
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<FilterState>({
-    category: [],
+    category: initialCategory ? [initialCategory] : [],
     collection: [],
   });
 
@@ -39,6 +44,27 @@ export default function DecorativeListingClient() {
   };
 
   useEffect(() => {
+    if (initialCategory) {
+      let resolvedName = initialCategory;
+      if (rawCategories.length > 0) {
+        const matched = rawCategories.find((c: any) => c.slug === initialCategory || c.name === initialCategory);
+        if (matched) {
+          resolvedName = matched.name;
+        }
+      }
+      if (activeCategory !== resolvedName) {
+        setActiveCategory(resolvedName);
+        setActiveFilters((prev) => ({ ...prev, category: [resolvedName] }));
+        setPage(1);
+      }
+    } else if (activeCategory !== 'All' && !initialCategory) {
+      setActiveCategory('All');
+      setActiveFilters((prev) => ({ ...prev, category: [] }));
+      setPage(1);
+    }
+  }, [initialCategory, rawCategories]);
+
+  useEffect(() => {
     const fetchFilters = async () => {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -50,6 +76,7 @@ export default function DecorativeListingClient() {
 
         const categoriesData = await categoriesRes.json();
         if (categoriesData.data) {
+          setRawCategories(categoriesData.data);
           const categoryNames = categoriesData.data.map((c: { name: string }) => c.name);
           const combined = Array.from(new Set(['All', ...categoryNames]));
           setFeaturedCategories(combined);
@@ -208,12 +235,12 @@ export default function DecorativeListingClient() {
 
       <section className="decorative-finder">
         <div className="decorative-shell">
-          <h2 className="decorative-reveal is-visible">Didn&apos;t find what you&apos;re looking for?</h2>
-          <p className="decorative-reveal is-visible">
+          <h2 className="decorative-reveal is-visible" suppressHydrationWarning>Didn&apos;t find what you&apos;re looking for?</h2>
+          <p className="decorative-reveal is-visible" suppressHydrationWarning>
             Our lighting advisors can help you choose the right piece, finish
             and configuration for your space or project.
           </p>
-          <a className="decorative-reveal is-visible" href="https://wa.me/919820356488">
+          <a className="decorative-reveal is-visible" href="https://wa.me/919820356488" suppressHydrationWarning>
             CHAT WITH US
           </a>
         </div>

@@ -42,28 +42,18 @@ class DecorativeRelatedController extends Controller
         $term = $request->q;
         $excludeId = $request->exclude_id;
 
-        $products = DecProduct::with(['variants' => function($q) {
-                // Only fetch first variant for SKU display — avoid loading all variant data
-                $q->select(['id', 'product_id', 'sku', 'order'])->orderBy('order')->limit(1);
-            }])
-            ->where('id', '!=', $excludeId)
-            ->where(function($q) use ($term) {
-                $q->where('name', 'LIKE', "%{$term}%")
-                  ->orWhereHas('variants', function($q2) use ($term) {
-                      $q2->where('sku', 'LIKE', "%{$term}%");
-                  });
-            })
+        $products = DecProduct::where('id', '!=', $excludeId)
+            ->where('name', 'LIKE', "%{$term}%")
             ->select(['id', 'name', 'featured_image'])
             ->limit(10)
             ->get();
 
         $results = $products->map(function($p) {
             $mainImage = $p->featured_image ? asset('storage/uploads/decorative/'.$p->featured_image) : null;
-            $sku = $p->variants->first()?->sku ?? '';
             return [
                 'id'    => $p->id,
                 'name'  => $p->name,
-                'sku'   => $sku,
+                'sku'   => '', // No SKU on decorative products colors
                 'image' => $mainImage
             ];
         });

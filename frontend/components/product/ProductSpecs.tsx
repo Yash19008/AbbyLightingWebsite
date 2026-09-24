@@ -1,19 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { DecSpecItem, DecVariant } from "@/types/decorative";
+import { DecSpecItem, DecSize } from "@/types/decorative";
 
 interface ProductSpecsProps {
   specRows: {
     basic_specifications: DecSpecItem[];
     dimensions: DecSpecItem[];
   };
-  allVariants?: DecVariant[];
+  allSizes?: DecSize[];
   installationGuide: string | null;
   careInstructions: string | null;
 }
 
-export default function ProductSpecs({ specRows, allVariants, installationGuide, careInstructions }: ProductSpecsProps) {
+export default function ProductSpecs({ specRows, allSizes, installationGuide, careInstructions }: ProductSpecsProps) {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     basic_specifications: true,
     downloads: true,
@@ -59,13 +59,13 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
     );
   };
 
-  const renderComparisonTable = (variants: DecVariant[]) => {
-    if (!variants || variants.length === 0) return null;
+  const renderComparisonTable = (sizes: DecSize[]) => {
+    if (!sizes || sizes.length === 0) return null;
 
-    // Collect all unique dimension labels across all variants
+    // Collect all unique dimension labels across all sizes
     const dimensionLabels = new Set<string>();
-    variants.forEach((v) => {
-      v.spec_rows?.dimensions?.forEach((d: DecSpecItem) => dimensionLabels.add(d.label));
+    sizes.forEach((s) => {
+      s.spec_rows?.dimensions?.forEach((d: DecSpecItem) => dimensionLabels.add(d.label));
     });
 
     if (dimensionLabels.size === 0) return null;
@@ -77,19 +77,19 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
           <tbody>
             <tr>
               <td className="spec-label">Size</td>
-              {variants.map((v) => (
-                <td key={v.id} className="spec-value">
-                  <strong>{v.size || v.name}</strong>
+              {sizes.map((s) => (
+                <td key={s.id} className="spec-value">
+                  <strong>{s.label}</strong>
                 </td>
               ))}
             </tr>
             {labelsArray.map((label) => (
               <tr key={label}>
                 <td className="spec-label">{label}</td>
-                {variants.map((v) => {
-                  const spec = v.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
+                {sizes.map((s) => {
+                  const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
                   return (
-                    <td key={v.id} className="spec-value">
+                    <td key={s.id} className="spec-value">
                       {spec ? <div dangerouslySetInnerHTML={{ __html: spec.value }} /> : "-"}
                     </td>
                   );
@@ -104,11 +104,11 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
 
   return (
     <section className="product-specs">
-      <h2 className="product-reveal">About this product</h2>
-      <div className="spec-grid product-reveal product-delay-1">
+      <h2 className="product-reveal" suppressHydrationWarning>About this product</h2>
+      <div className="spec-grid product-reveal product-delay-1" suppressHydrationWarning>
         
         {/* Basic Specifications (and Dimensions appended) */}
-        {(specRows.basic_specifications.length > 0 || (allVariants && allVariants.length > 0)) && (
+        {(specRows.basic_specifications.length > 0 || (allSizes && allSizes.length > 0)) && (
           <section className={`spec-accordion ${openSections['basic_specifications'] ? "open" : ""}`}>
             <button
               type="button"
@@ -121,7 +121,7 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
             <div className="spec-body">
               <div className="spec-body-inner">
                 {renderSpecItems(specRows.basic_specifications)}
-                {allVariants && allVariants.length > 0 && renderComparisonTable(allVariants)}
+                {allSizes && allSizes.length > 0 && renderComparisonTable(allSizes)}
               </div>
             </div>
           </section>

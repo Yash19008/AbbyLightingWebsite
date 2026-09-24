@@ -82,7 +82,7 @@ class NewArrivalsApiController extends Controller
             foreach ($featuredDecCategories as $cat) {
                 $products = DecProduct::where('status', 'published')
                     ->where('category_id', $cat->id)
-                    ->with(['variants'])
+                    ->with(['colors'])
                     ->orderBy('order', 'asc')
                     ->latest()
                     ->take(12)
@@ -95,8 +95,8 @@ class NewArrivalsApiController extends Controller
                                 : (str_contains($p->featured_image, '/')
                                     ? asset('storage/' . $p->featured_image)
                                     : asset('storage/uploads/decorative/' . $p->featured_image));
-                        } elseif ($p->variants->isNotEmpty() && $p->variants->first()->main_image) {
-                            $vImg = $p->variants->first()->main_image;
+                        } elseif ($p->colors->isNotEmpty() && $p->colors->first()->main_image) {
+                            $vImg = $p->colors->first()->main_image;
                             $imageUrl = str_starts_with($vImg, 'http')
                                 ? $vImg
                                 : (str_contains($vImg, '/')

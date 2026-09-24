@@ -103,7 +103,7 @@ export default function TonesSectionDynamic({ tonesSection }: TonesSectionProps)
                     <li key={color.id}>
                       <i
                         style={{
-                          backgroundColor: color.css_value,
+                          background: color.css_value,
                           border: color.css_value === '#ffffff' || color.css_value.toLowerCase() === '#fff' ? '1px solid #ccc' : 'none',
                         }}
                       />

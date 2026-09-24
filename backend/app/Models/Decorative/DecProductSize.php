@@ -5,11 +5,11 @@ namespace App\Models\Decorative;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DecProductSpecRow extends Model
+class DecProductSize extends Model
 {
     use HasFactory;
 
-    protected $table = 'dec_product_spec_rows';
+    protected $table = 'dec_product_sizes';
     protected $guarded = ['id'];
 
     public function product()
@@ -17,13 +17,8 @@ class DecProductSpecRow extends Model
         return $this->belongsTo(DecProduct::class, 'product_id');
     }
 
-    public function size()
+    public function specRows()
     {
-        return $this->belongsTo(DecProductSize::class, 'size_id');
-    }
-
-    public function attribute()
-    {
-        return $this->belongsTo(DecSpecAttribute::class, 'dec_spec_attribute_id');
+        return $this->hasMany(DecProductSpecRow::class, 'size_id')->orderBy('order');
     }
 }

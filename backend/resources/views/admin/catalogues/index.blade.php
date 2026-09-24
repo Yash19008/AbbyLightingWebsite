@@ -35,16 +35,6 @@
                 <div class="row">
                     <div class="col-sm-12">
                         @include('admin.include.notification')
-                        @if(session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-                        @if(session('error'))
-                            <div class="alert alert-danger">
-                                {{ session('error') }}
-                            </div>
-                        @endif
                         <table class="table data-table table-bordered" data-order='[[ 7, "asc" ]]' id="catalogues-table" style="width:100%">
                             <thead>
                                 <tr>
@@ -121,6 +111,7 @@
                                         <a href="{{ asset('uploads/catalogues/pdfs/' . $cat->pdf_file) }}" target="_blank" class="mx-1 text-info" data-toggle="tooltip" title="View PDF"><i class="ft-eye font-medium-3"></i></a>
                                         @endif
                                         <a href="{{ route('admin.catalogues.edit', $cat->id) }}" class="mx-1 text-primary" data-toggle="tooltip" title="Edit"><i class="ft-edit-2 font-medium-3"></i></a>
+                                        <a href="{{ route('admin.catalogues.duplicate', $cat->id) }}" class="mx-1 text-success" data-toggle="tooltip" title="Duplicate" onclick="return confirm('Are you sure you want to duplicate this catalogue?');"><i class="ft-copy font-medium-3"></i></a>
                                         <a href="javascript:;" class="delete-catalogue-btn mx-1 text-danger" data-id="{{ $cat->id }}" data-toggle="tooltip" title="Delete"><i class="icon ft-trash-2 font-medium-3"></i></a>
                                         <form id="delete-form-{{ $cat->id }}" action="{{ route('admin.catalogues.destroy', $cat->id) }}" method="POST" style="display: none;">
                                             @csrf

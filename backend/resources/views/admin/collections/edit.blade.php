@@ -466,20 +466,6 @@
                                                 <label for="comp_subtitle">Section Description</label>
                                                 <textarea class="form-control" id="comp_subtitle" name="subtitle" rows="2">{{ old('subtitle', $collection->compositionsSection->subtitle ?? 'Scale, rhythm and volume — architectural lighting tailored to the exact demands of your space.') }}</textarea>
                                             </div>
-                                            @if(isset($allCompositions))
-                                            <div class="form-group">
-                                                <label for="composition_ids">Select Compositions</label>
-                                                <select class="form-control select2" id="composition_ids" name="composition_ids[]" multiple="multiple" style="width: 100%;">
-                                                    @foreach($allCompositions as $composition)
-                                                        <option value="{{ $composition->id }}" 
-                                                            {{ isset($collection->compositions) && $collection->compositions->contains($composition->id) ? 'selected' : '' }}>
-                                                            {{ $composition->title }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <small class="text-muted">Select the master compositions to display in this collection.</small>
-                                            </div>
-                                            @endif
                                             <button type="submit" class="btn btn-info">
                                                 <i class="fas fa-save mr-1"></i> Save Section Settings
                                             </button>

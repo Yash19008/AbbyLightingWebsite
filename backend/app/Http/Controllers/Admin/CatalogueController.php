@@ -200,6 +200,33 @@ class CatalogueController extends Controller
         return redirect()->route('admin.catalogues.index')->with('success', 'Catalogue updated successfully.');
     }
 
+    public function duplicate($id)
+    {
+        $catalogue = Catalogue::findOrFail($id);
+
+        $newCatalogue = $catalogue->replicate();
+        
+        $newCatalogue->title = $catalogue->title . ' (Copy)';
+        
+        $slug = Str::slug($newCatalogue->title);
+        $originalSlug = $slug;
+        $count = 1;
+        while (Catalogue::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+        $newCatalogue->slug = $slug;
+
+        // Clear images and PDFs per user request
+        $newCatalogue->cover_image = null;
+        $newCatalogue->pdf_file = null;
+        $newCatalogue->file_size = null;
+
+        $newCatalogue->status = 'inactive';
+        $newCatalogue->save();
+
+        return redirect()->route('admin.catalogues.edit', $newCatalogue->id)->with('success', 'Catalogue duplicated successfully as Inactive.');
+    }
+
     public function destroy($id)
     {
         $catalogue = Catalogue::findOrFail($id);

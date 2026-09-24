@@ -1,70 +1,65 @@
                 <div id="pane-images" class="wizard-pane">
                     @if (isset($product))
                         <div class="row">
-                            <!-- Variant Specific Images -->
+                            <!-- Color Specific Images -->
                             <div class="col-md-5 mb-3">
                                 <div class="card shadow-sm border-0">
                                     <div class="card-header bg-white pb-0 border-bottom">
-                                        <h5 class="card-title m-0 pb-2"><i class="ft-image text-primary"></i> Variant
-                                            Images</h5>
+                                        <h5 class="card-title m-0 pb-2"><i class="ft-image text-primary"></i> Color Images</h5>
                                     </div>
                                     <div class="card-body pt-3">
                                         <div class="form-group mb-3">
-                                            <label class="font-weight-bold" style="font-size:13px;">Select
-                                                Variant</label>
-                                            <select id="image-variant-select" class="form-control select2">
-                                                <option value="">-- Choose Variant --</option>
-                                                @foreach ($product->variants as $variant)
-                                                    <option value="{{ $variant->id }}"
-                                                        data-main="{{ $variant->main_image ? asset('storage/uploads/decorative/' . $variant->main_image) : '' }}"
-                                                        data-lighton="{{ $variant->lighton_image ? asset('storage/uploads/decorative/' . $variant->lighton_image) : '' }}">
-                                                        {{ $variant->name }} {!! $variant->sku ? '(<small>' . $variant->sku . '</small>)' : '' !!}
+                                            <label class="font-weight-bold" style="font-size:13px;">Select Color</label>
+                                            <select id="image-color-select" class="form-control select2">
+                                                <option value="">-- Choose Color --</option>
+                                                @foreach ($product->colors as $color)
+                                                    <option value="{{ $color->id }}"
+                                                        data-main="{{ $color->main_image ? asset('storage/uploads/decorative/' . $color->main_image) : '' }}"
+                                                        data-lighton="{{ $color->lighton_image ? asset('storage/uploads/decorative/' . $color->lighton_image) : '' }}">
+                                                        {{ $color->colorMaster ? $color->colorMaster->name : 'No Color Profile' }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div id="variant-image-fields"
+                                        <div id="color-image-fields"
                                             style="display:none; padding:15px; background:#f9fafb; border-radius:6px; border:1px solid #eee;">
-                                            <form id="form-variant-images" enctype="multipart/form-data">
+                                            <form id="form-color-images" enctype="multipart/form-data">
                                                 @csrf
-                                                <input type="hidden" id="variant_image_id" name="variant_id">
+                                                <input type="hidden" id="color_image_id" name="color_id">
                                                 <div class="form-group mb-3">
-                                                    <label class="font-weight-bold" style="font-size:13px;">Main
-                                                        Image</label>
+                                                    <label class="font-weight-bold" style="font-size:13px;">Main Image</label>
                                                     <input type="file" name="main_image"
                                                         class="form-control-file form-control-sm" accept="image/*"
                                                         onchange="previewPickerImage(this)">
                                                     <div class="mt-2 text-center bg-white border rounded p-1"
                                                         style="min-height:80px; display:flex; align-items:center; justify-content:center;">
-                                                        <img id="variant-main-preview" src=""
+                                                        <img id="color-main-preview" src=""
                                                             style="max-height:80px; max-width:100%; display:none;">
-                                                        <span id="variant-main-placeholder" class="text-muted"
+                                                        <span id="color-main-placeholder" class="text-muted"
                                                             style="font-size:12px;">No image uploaded</span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-3">
-                                                    <label class="font-weight-bold" style="font-size:13px;">Light-On
-                                                        Image</label>
+                                                    <label class="font-weight-bold" style="font-size:13px;">Light-On Image</label>
                                                     <input type="file" name="lighton_image"
                                                         class="form-control-file form-control-sm" accept="image/*"
                                                         onchange="previewPickerImage(this)">
                                                     <div class="mt-2 text-center bg-white border rounded p-1"
                                                         style="min-height:80px; display:flex; align-items:center; justify-content:center;">
-                                                        <img id="variant-lighton-preview" src=""
+                                                        <img id="color-lighton-preview" src=""
                                                             style="max-height:80px; max-width:100%; display:none;">
-                                                        <span id="variant-lighton-placeholder" class="text-muted"
+                                                        <span id="color-lighton-placeholder" class="text-muted"
                                                             style="font-size:12px;">No image uploaded</span>
                                                     </div>
                                                 </div>
                                                 <button type="button" class="btn btn-primary btn-sm w-100"
-                                                    id="btn-save-variant-images"><i class="ft-upload"></i> Upload &
-                                                    Save</button>
+                                                    id="btn-save-color-images"><i class="ft-upload"></i> Upload & Save</button>
                                             </form>
                                         </div>
-                                        @if ($product->variants->count() == 0)
+                                        @if ($product->colors->count() == 0)
                                             <div class="alert alert-secondary text-center p-2 mb-0"
                                                 style="font-size:13px;">
-                                                No variants found. Add variants first.
+                                                No colors found. Add colors first.
                                             </div>
                                         @endif
                                     </div>

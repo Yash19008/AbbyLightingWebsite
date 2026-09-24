@@ -11,6 +11,7 @@ use App\Models\CompositionCategory;
 use App\Models\Decorative\DecProduct;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Collection;
 
 class CompositionAdminController extends Controller
 {
@@ -36,6 +37,7 @@ class CompositionAdminController extends Controller
         $data = array('title' => "Add Composition", 'main_module' => $this->main_module, 'method' => 'Add', 'action' => url('admin/compositions/insert'), 'frn_id' => 'frm_composition');
         $data['categories'] = CompositionCategory::orderBy('name', 'asc')->get();
         $data['products'] = DecProduct::where('status', 'published')->orderBy('name', 'asc')->get();
+        $data['collections'] = Collection::orderBy('name', 'asc')->get();
         return view('admin.composition_edit', $data);
     }
 
@@ -72,15 +74,20 @@ class CompositionAdminController extends Controller
             $composition->products()->sync($request->product_ids);
         }
 
+        if ($request->has('collection_ids')) {
+            $composition->collections()->sync($request->collection_ids);
+        }
+
         return redirect()->route('composition_admin')->with('success', 'Composition Created Successfully.');
     }
 
     public function edit($id)
     {
         $data = array('title' => "Edit Composition", 'main_module' => $this->main_module, 'method' => 'Edit', 'action' => url('admin/compositions/update/' . $id), 'frn_id' => 'frm_composition');
-        $data['result'] = Composition::with('products')->find($id);
+        $data['result'] = Composition::with('products', 'collections')->find($id);
         $data['categories'] = CompositionCategory::orderBy('name', 'asc')->get();
         $data['products'] = DecProduct::where('status', 'published')->orderBy('name', 'asc')->get();
+        $data['collections'] = Collection::orderBy('name', 'asc')->get();
         return view('admin.composition_edit', $data);
     }
 
@@ -116,6 +123,12 @@ class CompositionAdminController extends Controller
             $composition->products()->sync($request->product_ids);
         } else {
             $composition->products()->sync([]);
+        }
+
+        if ($request->has('collection_ids')) {
+            $composition->collections()->sync($request->collection_ids);
+        } else {
+            $composition->collections()->sync([]);
         }
 
         return redirect()->route('composition_admin')->with('success', 'Composition Updated Successfully.');

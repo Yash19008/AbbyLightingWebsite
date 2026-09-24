@@ -2,27 +2,33 @@
 
 import React, { useState } from "react";
 import EnquireModal from "./EnquireModal";
-import { DecProductDetail, DecVariant } from "@/types/decorative";
+import { DecProductDetail, DecVariant, DecSize } from "@/types/decorative";
 
 interface ProductInfoProps {
   product: DecProductDetail;
   activeVariant: DecVariant | undefined;
+  activeSize: DecSize | undefined;
   activeColourIndex: number;
+  activeSizeIndex: number;
   onColourChange: (index: number) => void;
+  onSizeChange: (index: number) => void;
 }
 
 export default function ProductInfo({
   product,
   activeVariant,
+  activeSize,
   activeColourIndex,
+  activeSizeIndex,
   onColourChange,
+  onSizeChange,
 }: ProductInfoProps) {
   const [isEnquireOpen, setIsEnquireOpen] = useState(false);
 
   const displayColourLabel = activeVariant?.name || "";
 
   return (
-    <div className="product-info product-reveal product-delay-1">
+    <div className="product-info product-reveal product-delay-1" suppressHydrationWarning>
       <p className="product-tag">
         {product.collection?.name || "Product"} &middot; {product.category?.name || "Category"}
       </p>
@@ -71,11 +77,19 @@ export default function ProductInfo({
       )}
 
       {/* Size option */}
-      {activeVariant?.size && (
+      {product.sizes && product.sizes.length > 0 && (
         <div className="product-option">
             <strong>Size</strong>
             <div className="size-options">
-            <button className="active">{activeVariant.size}</button>
+            {product.sizes.map((size, idx) => (
+                <button 
+                  key={size.id} 
+                  className={activeSizeIndex === idx ? "active" : ""}
+                  onClick={() => onSizeChange(idx)}
+                >
+                  {size.label}
+                </button>
+            ))}
             </div>
         </div>
       )}
@@ -122,7 +136,7 @@ export default function ProductInfo({
         isOpen={isEnquireOpen}
         onClose={() => setIsEnquireOpen(false)}
         productName={product.name}
-        selectedVariant={displayColourLabel}
+        selectedVariant={`${displayColourLabel}${activeSize ? ` - ${activeSize.label}` : ''}`}
       />
     </div>
   );

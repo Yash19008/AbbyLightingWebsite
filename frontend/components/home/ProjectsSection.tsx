@@ -22,7 +22,7 @@ export default function ProjectsSection({ projects = [] }: ProjectsSectionProps)
   return (
     <section className="section projects" id="projects">
       <div className="shell">
-        <div className="section-head reveal">
+        <div className="section-head reveal" suppressHydrationWarning>
           <h2>Latest projects</h2>
           <a className="project-all-link" href="https://abbylighting.com/projects">
             <span className="lbl-d">View all projects</span>

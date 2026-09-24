@@ -61,6 +61,25 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="collections" class="col-sm-3 control-label">Tagged Collections</label>
+                            <div class="col-sm-6">
+                                @php
+                                    $selectedCollections = [];
+                                    if(isset($result) && $result->collections) {
+                                        $selectedCollections = $result->collections->pluck('id')->toArray();
+                                    }
+                                @endphp
+                                <select name="collection_ids[]" id="collection_ids" class="form-control select2" multiple="multiple" style="width: 100%;" data-placeholder="Select collections to tag...">
+                                    @foreach($collections as $collection)
+                                        <option value="{{ $collection->id }}" {{ in_array($collection->id, $selectedCollections) ? 'selected' : '' }}>
+                                            {{ $collection->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label for="inputName" class="col-sm-3 control-label">Showcase in Inspiration Page?</label>
                             <div class="col-sm-6">
                                 <div class="custom-control custom-switch mt-1">

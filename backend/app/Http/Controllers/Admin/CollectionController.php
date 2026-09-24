@@ -71,9 +71,8 @@ class CollectionController extends Controller
      */
     public function edit(Collection $collection)
     {
-        $collection->load('heroSection', 'parametersSection.items', 'compositionsSection.items', 'tonesSection.families.colors', 'placesSection.items', 'spreadDropSection', 'compositions');
-        $allCompositions = \App\Models\Composition::orderBy('title')->get();
-        return view('admin.collections.edit', compact('collection', 'allCompositions'));
+        $collection->load('heroSection', 'parametersSection.items', 'compositionsSection.items', 'tonesSection.families.colors', 'placesSection.items', 'spreadDropSection');
+        return view('admin.collections.edit', compact('collection'));
     }
 
     /**
@@ -319,8 +318,6 @@ class CollectionController extends Controller
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string',
             'is_active' => 'boolean',
-            'composition_ids' => 'nullable|array',
-            'composition_ids.*' => 'exists:compositions,id',
         ]);
 
         // Create or update compositions section
@@ -332,9 +329,6 @@ class CollectionController extends Controller
                 'is_active' => $request->has('is_active'),
             ]
         );
-
-        // Sync many-to-many compositions
-        $collection->compositions()->sync($request->input('composition_ids', []));
 
         if ($request->ajax()) {
             return response()->json(['success' => true, 'message' => 'Compositions section saved successfully!']);

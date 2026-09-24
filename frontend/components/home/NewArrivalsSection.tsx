@@ -156,7 +156,7 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
   return (
     <section className="section" id="arrivals">
       <div className="shell" style={{ width: "100%", boxSizing: "border-box" }}>
-        <div className="section-head reveal">
+        <div className="section-head reveal" suppressHydrationWarning>
           <h2>New Arrivals</h2>
         </div>
         <div className="product-toolbar" style={{ scrollbarWidth: "none", msOverflowStyle: "none", overflowY: "hidden" } as CSSProperties}>
@@ -215,6 +215,7 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
                   <Link
                     key={product.id}
                     className="product reveal is-visible"
+                    suppressHydrationWarning
                     style={{
                       flex: cardFlex,
                       minWidth: cardDim,

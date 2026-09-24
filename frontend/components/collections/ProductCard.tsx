@@ -52,6 +52,7 @@ export default function ProductCard({ roman, index, product }: ProductCardProps)
       <article
         ref={cardRef}
         className={`decorative-card ${revealed ? 'is-revealed' : ''}`}
+        suppressHydrationWarning
         style={{
           '--card-order': index % 3,
           '--light-delay': `${index * 50}ms`,

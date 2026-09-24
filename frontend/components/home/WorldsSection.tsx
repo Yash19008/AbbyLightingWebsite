@@ -133,7 +133,7 @@ export default function WorldsSection({ lightWorlds = [] }: WorldsSectionProps) 
   return (
     <section className="section" id="worlds">
       <div className="shell" style={{ width: '100%', boxSizing: 'border-box' }}>
-        <div className="section-head reveal">
+        <div className="section-head reveal" suppressHydrationWarning>
           <h2>Four worlds of light</h2>
         </div>
 

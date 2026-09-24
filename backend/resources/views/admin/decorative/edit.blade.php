@@ -200,9 +200,9 @@
                 <ul id="wizard-tabs">
                     @php
                         $isBasicDone = isset($product);
-                        $isVariantsDone = $isBasicDone && $product->variants->count() > 0;
-                        $isImagesDone = $isVariantsDone && $product->variants->every(function($v) { return $v->main_image && $v->lighton_image; });
-                        $isSpecsDone = $isVariantsDone && $product->variants->sum(function($v) { return $v->specRows->count(); }) > 0;
+                        $isVariantsDone = $isBasicDone && ($product->colors->count() > 0 || $product->sizes->count() > 0);
+                        $isImagesDone = $isBasicDone && $product->colors->count() > 0 && $product->colors->every(function($v) { return $v->main_image && $v->lighton_image; });
+                        $isSpecsDone = $isBasicDone && \App\Models\Decorative\DecProductSpecRow::where('product_id', $product->id)->count() > 0;
                         $isDownloadsDone = $isBasicDone && ($product->installation_guide || $product->care_instructions);
                         
                         // Just checking if any related products exist
@@ -212,7 +212,7 @@
                     @endphp
                     
                     <li><a href="#basic" class="active {{ $isBasicDone ? 'completed' : '' }}"><i class="step-icon ft-check"></i> Basic Information</a></li>
-                    <li><a href="#variants" class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isVariantsDone ? 'completed' : '' }}"><i class="step-icon ft-check"></i> Variants</a></li>
+                    <li><a href="#variants" class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isVariantsDone ? 'completed' : '' }}"><i class="step-icon ft-check"></i> Colors & Sizes</a></li>
                     <li><a href="#images" class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isImagesDone ? 'completed' : '' }}"><i class="step-icon ft-check"></i> Images</a></li>
                     <li><a href="#specifications" class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isSpecsDone ? 'completed' : '' }}"><i class="step-icon ft-check"></i> Specifications</a></li>
                     <li><a href="#downloads" class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isDownloadsDone ? 'completed' : '' }}"><i class="step-icon ft-check"></i> Downloads</a></li>
@@ -303,6 +303,70 @@
     </div>
 </div>
 
+{{-- Modal: Edit Dimension Specs --}}
+<div class="modal fade" id="dim-spec-edit-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="border-radius:12px; overflow:hidden; border:0;">
+            <div class="modal-header" style="background:#6366f1; color:#fff; padding:16px 20px;">
+                <h5 class="modal-title m-0" style="font-size:15px; font-weight:600;">
+                    <i class="ft-edit-2 mr-1"></i> Edit Dimension Specification
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" style="color:#fff; opacity:.9;">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding:24px;">
+                <input type="hidden" id="dim-spec-edit-id">
+
+                <div class="form-group mb-3">
+                    <label class="font-weight-bold" style="font-size:13px;">Attribute <span class="text-danger">*</span></label>
+                    <select id="dim-spec-edit-label" class="form-control select2" style="width: 100%;">
+                        <option value="">-- Select Attribute --</option>
+                        @foreach($spec_attributes as $attr)
+                            <option value="{{ $attr->id }}">{{ $attr->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="font-weight-bold" style="font-size:13px;">Value Type</label>
+                    <div class="d-flex" style="gap:10px;">
+                        <label class="dim-spec-type-option" data-val="text" style="flex:1; padding:10px 14px; border:2px solid #6366f1; border-radius:8px; cursor:pointer; text-align:center; background:#f5f3ff; font-size:13px; font-weight:500;">
+                            <i class="ft-type d-block mb-1" style="font-size:18px;"></i> Plain Text
+                        </label>
+                        <label class="dim-spec-type-option" data-val="richtext" style="flex:1; padding:10px 14px; border:2px solid #e5e7eb; border-radius:8px; cursor:pointer; text-align:center; background:#fff; font-size:13px; font-weight:500;">
+                            <i class="ft-bold d-block mb-1" style="font-size:18px;"></i> Rich Text
+                        </label>
+                    </div>
+                    <input type="hidden" id="dim-spec-edit-value-type" value="text">
+                </div>
+
+                <div id="dim-spec-inputs-container">
+                    @if($product->sizes && $product->sizes->count() > 0)
+                        @foreach($product->sizes as $size)
+                            <div class="form-group mb-3">
+                                <label class="font-weight-bold" style="font-size:13px;">Value for {{ $size->label }}</label>
+                                <textarea class="form-control dim-spec-value-plain" data-size-id="{{ $size->id }}" rows="2" placeholder="Enter value..." style="font-size:13px; resize:vertical;"></textarea>
+                                <div class="dim-spec-richtext-wrap" style="display:none;">
+                                    <textarea class="dim-spec-value-rich" id="dim-spec-rich-{{ $size->id }}" data-size-id="{{ $size->id }}"></textarea>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="alert alert-info">No sizes configured. Go to Colors & Sizes tab to add sizes.</div>
+                    @endif
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:12px 20px; background:#f9fafb; border-top:1px solid #f3f4f6;">
+                <button type="button" class="btn btn-light" data-dismiss="modal" style="font-size:13px;">Cancel</button>
+                <button type="button" id="btn-dim-spec-modal-save" class="btn btn-primary" style="font-size:13px; font-weight:600; background:#6366f1; border-color:#6366f1;">
+                    <i class="ft-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- Modal: Copy Specs --}}
 <div class="modal fade" id="spec-copy-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -312,14 +376,16 @@
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
             <div class="modal-body" style="padding:24px;">
-                <div class="alert alert-warning mb-3" style="font-size:12px; padding:10px;"><i class="ft-alert-triangle"></i> This will <strong>overwrite</strong> all current specifications for this variant.</div>
+                <div class="alert alert-warning mb-3" style="font-size:12px; padding:10px;"><i class="ft-alert-triangle"></i> This will <strong>overwrite</strong> all current specifications for this product.</div>
                 <div class="form-group mb-0">
-                    <label class="font-weight-bold" style="font-size:13px;">Source Variant</label>
-                    <select id="spec-copy-source" class="form-control" style="font-size:13px;">
-                        <option value="">-- Select variant to copy from --</option>
-                        @foreach($product->variants as $v)
-                            <option value="{{ $v->id }}">{{ $v->name }} {{ $v->sku ? '('.$v->sku.')' : '' }}</option>
-                        @endforeach
+                    <label class="font-weight-bold" style="font-size:13px;">Source Product</label>
+                    <select id="spec-copy-source" class="form-control select2" style="font-size:13px; width: 100%;">
+                        <option value="">-- Select Product --</option>
+                        @if(isset($all_products))
+                            @foreach($all_products as $prod)
+                                <option value="{{ $prod->id }}">{{ $prod->name }}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
             </div>
@@ -340,7 +406,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
             <div class="modal-body" style="padding:24px;">
-                <p class="text-muted" style="font-size:12px;">Save the current specification structure (labels & values) as a reusable template for other variants or products.</p>
+                <p class="text-muted" style="font-size:12px;">Save the current specification structure (labels & values) as a reusable template for other products.</p>
                 <div class="form-group mb-0">
                     <label class="font-weight-bold" style="font-size:13px;">Template Name <span class="text-danger">*</span></label>
                     <input type="text" id="spec-template-name" class="form-control" placeholder="e.g. Standard Pendant Specs" style="font-size:13px;">
@@ -363,7 +429,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
             <div class="modal-body" style="padding:24px;">
-                <div class="alert alert-warning mb-3" style="font-size:12px; padding:10px;"><i class="ft-alert-triangle"></i> This will <strong>overwrite</strong> all current specifications for this variant.</div>
+                <div class="alert alert-warning mb-3" style="font-size:12px; padding:10px;"><i class="ft-alert-triangle"></i> This will <strong>overwrite</strong> all current specifications for this product.</div>
                 <div class="form-group mb-0">
                     <label class="font-weight-bold" style="font-size:13px;">Select Template</label>
                     <select id="spec-template-select" class="form-control" style="font-size:13px;">
@@ -423,7 +489,7 @@ $(document).ready(function() {
     // ================================================================
 
     // Move modals to body to fix backdrop/z-index issues
-    $('#spec-edit-modal, #spec-copy-modal, #spec-save-template-modal, #spec-apply-template-modal').appendTo('body');
+    $('#spec-edit-modal, #dim-spec-edit-modal, #spec-copy-modal, #spec-save-template-modal, #spec-apply-template-modal').appendTo('body');
 
     // Select2
     if ($.fn.select2) {
@@ -537,7 +603,7 @@ $(document).ready(function() {
     $('#btn-delete-product').on('click', function() {
         Swal.fire({
             title: 'Delete Product?',
-            text: 'All variants, images, and specifications will be permanently deleted.',
+            text: 'All colors, sizes, images, and specifications will be permanently deleted.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -564,19 +630,36 @@ $(document).ready(function() {
 @if(isset($product))
 
     // ================================================================
-    // VARIANTS SORTABLE
+    // COLORS & SIZES SORTABLE
     // ================================================================
 
-    var variantList = document.getElementById('variants-list');
-    if (variantList) {
-        new Sortable(variantList, {
+    var colorList = document.getElementById('colors-list');
+    if (colorList) {
+        new Sortable(colorList, {
             handle: '.handle',
             animation: 150,
             onEnd: function() {
                 var order = {};
-                $('#variants-list tr[data-id]').each(function(i) { order[$(this).data('id')] = i + 1; });
+                $('#colors-list tr[data-id]').each(function(i) { order[$(this).data('id')] = i + 1; });
                 $.ajax({
-                    url: '{{ route('decorative_product_admin.variants.reorder', $product->id) }}',
+                    url: '{{ route('decorative_product_admin.colors.reorder', $product->id) }}',
+                    method: 'POST',
+                    data: { _token: '{{ csrf_token() }}', orders: order }
+                });
+            }
+        });
+    }
+
+    var sizeList = document.getElementById('sizes-list');
+    if (sizeList) {
+        new Sortable(sizeList, {
+            handle: '.handle',
+            animation: 150,
+            onEnd: function() {
+                var order = {};
+                $('#sizes-list tr[data-id]').each(function(i) { order[$(this).data('id')] = i + 1; });
+                $.ajax({
+                    url: '{{ route('decorative_product_admin.sizes.reorder', $product->id) }}',
                     method: 'POST',
                     data: { _token: '{{ csrf_token() }}', orders: order }
                 });
@@ -594,53 +677,53 @@ $(document).ready(function() {
     }
 
     // ================================================================
-    // VARIANT IMAGES TAB
+    // COLOR IMAGES TAB
     // ================================================================
 
-    $('#image-variant-select').on('change', function() {
+    $('#image-color-select').on('change', function() {
         var val = $(this).val();
         if (val) {
             var mainImg  = $(this).find('option:selected').data('main');
             var lightImg = $(this).find('option:selected').data('lighton');
-            $('#variant_image_id').val(val);
-            $('#form-variant-images')[0].reset();
+            $('#color_image_id').val(val);
+            $('#form-color-images')[0].reset();
 
-            if (mainImg)  { $('#variant-main-preview').attr('src', mainImg).show();   $('#variant-main-placeholder').hide(); }
-            else          { $('#variant-main-preview').hide();  $('#variant-main-placeholder').show(); }
+            if (mainImg)  { $('#color-main-preview').attr('src', mainImg).show();   $('#color-main-placeholder').hide(); }
+            else          { $('#color-main-preview').hide();  $('#color-main-placeholder').show(); }
 
-            if (lightImg) { $('#variant-lighton-preview').attr('src', lightImg).show(); $('#variant-lighton-placeholder').hide(); }
-            else          { $('#variant-lighton-preview').hide(); $('#variant-lighton-placeholder').show(); }
+            if (lightImg) { $('#color-lighton-preview').attr('src', lightImg).show(); $('#color-lighton-placeholder').hide(); }
+            else          { $('#color-lighton-preview').hide(); $('#color-lighton-placeholder').show(); }
 
-            $('#variant-image-fields').fadeIn(200);
+            $('#color-image-fields').fadeIn(200);
         } else {
-            $('#variant-image-fields').hide();
+            $('#color-image-fields').hide();
         }
     });
 
-    $('#btn-save-variant-images').on('click', function() {
-        var id = $('#variant_image_id').val();
+    $('#btn-save-color-images').on('click', function() {
+        var id = $('#color_image_id').val();
         if (!id) return;
-        var formData = new FormData($('#form-variant-images')[0]);
+        var formData = new FormData($('#form-color-images')[0]);
         $.ajax({
-            url: '{{ url('admin/decorative-products/variants') }}/' + id + '/images',
+            url: '{{ url('admin/decorative-products/colors') }}/' + id + '/images',
             method: 'POST',
             data: formData,
             processData: false,
             contentType: false,
-            beforeSend: function() { $('#btn-save-variant-images').attr('disabled', true).html('<i class="ft-loader spinner"></i> Uploading...'); },
+            beforeSend: function() { $('#btn-save-color-images').attr('disabled', true).html('<i class="ft-loader spinner"></i> Uploading...'); },
             success: function(res) {
-                $('#btn-save-variant-images').attr('disabled', false).html('<i class="ft-upload"></i> Upload & Save');
+                $('#btn-save-color-images').attr('disabled', false).html('<i class="ft-upload"></i> Upload & Save');
                 if (res.success) {
                     toastr.success(res.message);
-                    var mainUrl  = res.variant.main_image   ? '{{ asset('storage/uploads/decorative') }}/' + res.variant.main_image   : '';
-                    var lightUrl = res.variant.lighton_image ? '{{ asset('storage/uploads/decorative') }}/' + res.variant.lighton_image : '';
-                    $('#image-variant-select option[value="' + id + '"]').data('main', mainUrl).data('lighton', lightUrl);
-                    if (mainUrl)  { $('#variant-main-preview').attr('src', mainUrl).show();   $('#variant-main-placeholder').hide(); }
-                    if (lightUrl) { $('#variant-lighton-preview').attr('src', lightUrl).show(); $('#variant-lighton-placeholder').hide(); }
+                    var mainUrl  = res.color.main_image   ? '{{ asset('storage/uploads/decorative') }}/' + res.color.main_image   : '';
+                    var lightUrl = res.color.lighton_image ? '{{ asset('storage/uploads/decorative') }}/' + res.color.lighton_image : '';
+                    $('#image-color-select option[value="' + id + '"]').data('main', mainUrl).data('lighton', lightUrl);
+                    if (mainUrl)  { $('#color-main-preview').attr('src', mainUrl).show();   $('#color-main-placeholder').hide(); }
+                    if (lightUrl) { $('#color-lighton-preview').attr('src', lightUrl).show(); $('#color-lighton-placeholder').hide(); }
                 }
             },
             error: function() {
-                $('#btn-save-variant-images').attr('disabled', false).html('<i class="ft-upload"></i> Upload & Save');
+                $('#btn-save-color-images').attr('disabled', false).html('<i class="ft-upload"></i> Upload & Save');
                 toastr.error('Error uploading images');
             }
         });
@@ -746,73 +829,126 @@ $(document).ready(function() {
     });
 
     // ================================================================
-    // VARIANT FORM (ADD / EDIT)
+    // COLOR FORM (ADD / EDIT)
     // ================================================================
 
-    $('#btn-add-variant, #btn-cancel-variant').on('click', function() {
-        $('#form-variant')[0].reset();
-        $('#form-variant .select2').trigger('change');
-        $('#variant_id').val('');
-        $('#variant-form-title').text('Add Variant');
-        $('#btn-cancel-variant').hide();
+    $('#btn-add-color, #btn-cancel-color').on('click', function() {
+        if ($(this).attr('id') === 'btn-cancel-color') {
+            $('#color-form-container').hide();
+            return;
+        }
+        $('#form-color')[0].reset();
+        $('#form-color .select2').trigger('change');
+        $('#color_id').val('');
+        $('#color-form-title').html('<i class="ft-plus-circle text-primary"></i> Add Color');
+        $('#color-form-container').show();
+        $('html, body').animate({ scrollTop: $('#color-form-container').offset().top - 100 }, 400);
     });
 
-    $('#btn-save-variant').on('click', function() {
-        var id     = $('#variant_id').val();
-        var url    = id ? '{{ url('admin/decorative-products/variants') }}/' + id : '{{ route('decorative_product_admin.variants.store', $product->id) }}';
+    $('#btn-save-color').on('click', function() {
+        if (!$('#color_color_master_id').val()) { toastr.error('Select a color'); return; }
+        
+        var id     = $('#color_id').val();
+        var url    = id ? '{{ url('admin/decorative-products/colors') }}/' + id : '{{ route('decorative_product_admin.colors.store', $product->id) }}';
         var method = id ? 'PUT' : 'POST';
         $.ajax({
             url: url, method: method,
-            data: $('#form-variant').serialize() + '&_token={{ csrf_token() }}',
-            beforeSend: function() { $('#btn-save-variant').attr('disabled', true).html('<i class="ft-loader spinner"></i> Saving...'); },
+            data: $('#form-color').serialize() + '&_token={{ csrf_token() }}',
+            beforeSend: function() { $('#btn-save-color').attr('disabled', true).html('<i class="ft-loader spinner"></i>'); },
             success: function(res) {
-                $('#btn-save-variant').attr('disabled', false).html('Save Variant');
+                $('#btn-save-color').attr('disabled', false).html('<i class="ft-check"></i> Save Color');
                 if (res.success) { toastr.success(res.message); window.location.reload(); }
             },
             error: function(err) {
-                $('#btn-save-variant').attr('disabled', false).html('Save Variant');
-                if (err.responseJSON && err.responseJSON.errors) {
-                    toastr.error(Object.values(err.responseJSON.errors)[0][0]);
-                } else { toastr.error('Server error occurred.'); }
+                $('#btn-save-color').attr('disabled', false).html('<i class="ft-check"></i> Save Color');
+                toastr.error('Server error occurred.');
             }
         });
     });
 
-    $(document).on('click', '.btn-edit-variant', function() {
+    $(document).on('click', '.btn-edit-color', function() {
         var id = $(this).data('id');
-        $.get('{{ url('admin/decorative-products/variants') }}/' + id, function(res) {
-            if (res.success) {
-                $('#variant_id').val(res.variant.id);
-                $('#variant_name').val(res.variant.name);
-                $('#variant_sku').val(res.variant.sku);
-                $('#variant_size').val(res.variant.size);
-                $('#variant_color_master_id').val(res.variant.color_master_id).trigger('change');
-                $('#variant_status').val(res.variant.status).trigger('change');
-                $('#variant-form-title').text('Edit Variant');
-                $('#btn-cancel-variant').show();
-                $('html, body').animate({ scrollTop: $('#variant-form-title').offset().top - 100 }, 400);
-            }
-        });
+        var colorId = $(this).data('color-id');
+        $('#color_id').val(id);
+        $('#color_color_master_id').val(colorId).trigger('change');
+        $('#color-form-title').html('<i class="ft-edit-2 text-primary"></i> Edit Color');
+        $('#color-form-container').show();
+        $('html, body').animate({ scrollTop: $('#color-form-container').offset().top - 100 }, 400);
     });
 
-    $(document).on('click', '.btn-delete-variant', function() {
+    $(document).on('click', '.btn-delete-color', function() {
         var id = $(this).data('id');
         Swal.fire({
-            title: 'Delete Variant?',
-            text: 'All images and specs related to this variant will be lost.',
-            icon: 'warning', showCancelButton: true,
-            confirmButtonColor: '#d33', cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, delete!'
+            title: 'Delete Color?', text: 'All images related to this color will be lost.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, delete!'
         }).then(function(result) {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '{{ url('admin/decorative-products/variants') }}/' + id,
-                    method: 'DELETE', data: { _token: '{{ csrf_token() }}' },
+                    url: '{{ url('admin/decorative-products/colors') }}/' + id, method: 'DELETE', data: { _token: '{{ csrf_token() }}' },
                     success: function(res) {
-                        if (res.success) {
-                            toastr.success(res.message);
-                            $('tr[data-id="' + id + '"]').fadeOut(function() { $(this).remove(); });
-                        }
+                        if (res.success) { toastr.success(res.message); $('tr[data-id="' + id + '"]').fadeOut(function() { $(this).remove(); }); }
+                    }
+                });
+            }
+        });
+    });
+
+    // ================================================================
+    // SIZE FORM (ADD / EDIT)
+    // ================================================================
+
+    $('#btn-add-size, #btn-cancel-size').on('click', function() {
+        if ($(this).attr('id') === 'btn-cancel-size') {
+            $('#size-form-container').hide();
+            return;
+        }
+        $('#form-size')[0].reset();
+        $('#size_id').val('');
+        $('#size-form-title').html('<i class="ft-plus-circle text-primary"></i> Add Size');
+        $('#size-form-container').show();
+        $('html, body').animate({ scrollTop: $('#size-form-container').offset().top - 100 }, 400);
+    });
+
+    $('#btn-save-size').on('click', function() {
+        if (!$('#size_label').val()) { toastr.error('Label is required'); return; }
+        
+        var id     = $('#size_id').val();
+        var url    = id ? '{{ url('admin/decorative-products/sizes') }}/' + id : '{{ route('decorative_product_admin.sizes.store', $product->id) }}';
+        var method = id ? 'PUT' : 'POST';
+        $.ajax({
+            url: url, method: method,
+            data: $('#form-size').serialize() + '&_token={{ csrf_token() }}',
+            beforeSend: function() { $('#btn-save-size').attr('disabled', true).html('<i class="ft-loader spinner"></i>'); },
+            success: function(res) {
+                $('#btn-save-size').attr('disabled', false).html('<i class="ft-check"></i> Save Size');
+                if (res.success) { toastr.success(res.message); window.location.reload(); }
+            },
+            error: function(err) {
+                $('#btn-save-size').attr('disabled', false).html('<i class="ft-check"></i> Save Size');
+                toastr.error('Server error occurred.');
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-edit-size', function() {
+        var id = $(this).data('id');
+        var label = $(this).data('label');
+        $('#size_id').val(id);
+        $('#size_label').val(label);
+        $('#size-form-title').html('<i class="ft-edit-2 text-primary"></i> Edit Size');
+        $('#size-form-container').show();
+        $('html, body').animate({ scrollTop: $('#size-form-container').offset().top - 100 }, 400);
+    });
+
+    $(document).on('click', '.btn-delete-size', function() {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: 'Delete Size?', text: 'All dimension specs related to this size will be lost.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, delete!'
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ url('admin/decorative-products/sizes') }}/' + id, method: 'DELETE', data: { _token: '{{ csrf_token() }}' },
+                    success: function(res) {
+                        if (res.success) { toastr.success(res.message); $('tr[data-id="' + id + '"]').fadeOut(function() { $(this).remove(); }); }
                     }
                 });
             }
@@ -822,28 +958,6 @@ $(document).ready(function() {
     // ================================================================
     // SPECIFICATIONS TAB
     // ================================================================
-
-    // Variant card selection
-    var currentSpecVariantId = null;
-
-    $(document).on('click', '.spec-variant-card', function() {
-        $('.spec-variant-card').css({ 'border-color': '#e5e7eb', 'background': '#fff', 'box-shadow': 'none' });
-        $(this).css({ 'border-color': '#6366f1', 'background': '#f5f3ff', 'box-shadow': '0 0 0 3px rgba(99,102,241,.15)' });
-        currentSpecVariantId = $(this).data('id');
-        var variantName = $(this).find('div > div').first().text().trim();
-        var status = $(this).data('status');
-        
-        $('#spec-variant-name').text(variantName);
-        
-        var $badge = $('#spec-variant-status-badge');
-        if (status === 'active') {
-            $badge.text('Active').removeClass('badge-secondary').addClass('badge-success');
-        } else {
-            $badge.text('Inactive').removeClass('badge-success').addClass('badge-secondary');
-        }
-        
-        loadVariantSpecs(currentSpecVariantId);
-    });
 
     function renderSpecRow(row) {
         var isRich = row.value_type === 'richtext';
@@ -872,6 +986,54 @@ $(document).ready(function() {
             '</tr>';
     }
 
+    function renderDimSpecRow(row) {
+        var safeLabel = row.label ? row.label.replace(/"/g, '&quot;') : '';
+        
+        var sizesCols = '';
+        @if($product->sizes && $product->sizes->count() > 0)
+            @foreach($product->sizes as $size)
+                var sizeValData = (row.values && row.values[{{ $size->id }}]) ? row.values[{{ $size->id }}] : null;
+                var rawVal = sizeValData ? (sizeValData.value || '') : '';
+                var isRich = sizeValData ? (sizeValData.value_type === 'richtext') : false;
+                var valDisplay = isRich ? '<span class="badge badge-light" style="font-size:10px; color:#6366f1;">Rich Text</span> ' : '';
+                var displayVal = rawVal;
+                if (rawVal) {
+                    var strippedVal = rawVal.replace(/<[^>]*>?/gm, ''); 
+                    displayVal = '<div style="max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + strippedVal.replace(/"/g, '&quot;') + '">' + strippedVal + '</div>';
+                } else {
+                    displayVal = '<span class="text-muted" style="font-size:12px;">— empty —</span>';
+                }
+                sizesCols += '<td style="padding:10px 12px; vertical-align:middle; color:#4b5563;">' + valDisplay + displayVal + '</td>';
+            @endforeach
+        @else
+            var sizeValData = (row.values && Object.values(row.values)[0]) ? Object.values(row.values)[0] : null;
+            var rawVal = sizeValData ? (sizeValData.value || '') : '';
+            var isRich = sizeValData ? (sizeValData.value_type === 'richtext') : false;
+            var valDisplay = isRich ? '<span class="badge badge-light" style="font-size:10px; color:#6366f1;">Rich Text</span> ' : '';
+            var displayVal = rawVal;
+            if (rawVal) {
+                var strippedVal = rawVal.replace(/<[^>]*>?/gm, ''); 
+                displayVal = '<div style="max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + strippedVal.replace(/"/g, '&quot;') + '">' + strippedVal + '</div>';
+            } else {
+                displayVal = '<span class="text-muted" style="font-size:12px;">— empty —</span>';
+            }
+            sizesCols += '<td style="padding:10px 12px; vertical-align:middle; color:#4b5563;">' + valDisplay + displayVal + '</td>';
+        @endif
+
+        // encode values JSON to store in data attribute for editing
+        var valuesJson = encodeURIComponent(JSON.stringify(row.values || {}));
+
+        return '<tr data-id="' + row.id + '" data-label="' + safeLabel + '" data-values="' + valuesJson + '" class="spec-row dimension-row" style="border-bottom:1px solid #f3f4f6;">' +
+            '<td style="padding:10px 8px; vertical-align:middle; width:28px;"><i class="ft-menu handle text-muted" style="cursor:move; font-size:14px;"></i></td>' +
+            '<td style="padding:10px 12px; vertical-align:middle; font-weight:500; color:#374151;">' + (row.label || '') + '</td>' +
+            sizesCols +
+            '<td style="padding:10px 8px; vertical-align:middle; text-align:right; white-space:nowrap;">' +
+                '<button type="button" class="btn btn-sm btn-edit-dim-spec p-1 mr-1" data-id="' + row.id + '" style="color:#6366f1; background:none; border:none; font-size:14px;"><i class="ft-edit-2"></i></button>' +
+                '<button type="button" class="btn btn-sm btn-delete-dim-spec p-1" data-id="' + row.id + '" style="color:#ef4444; background:none; border:none; font-size:14px;"><i class="ft-trash-2"></i></button>' +
+            '</td>' +
+            '</tr>';
+    }
+
     function initSpecSortables() {
         $('.spec-tbody').each(function() {
             if (this._sortable) this._sortable.destroy();
@@ -882,7 +1044,7 @@ $(document).ready(function() {
                     var orders    = {};
                     tbody.find('tr').each(function(i) { orders[$(this).data('id')] = i + 1; });
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/variants') }}/' + currentSpecVariantId + '/specs/reorder',
+                        url: '{{ url('admin/decorative-products/'.$product->id.'/specs/reorder') }}',
                         method: 'POST', data: { _token: '{{ csrf_token() }}', orders: orders }
                     });
                 }
@@ -890,61 +1052,74 @@ $(document).ready(function() {
         });
     }
 
-    function loadVariantSpecs(variantId) {
-        if (!variantId) {
-            $('#spec-content-area').hide();
-            $('#spec-placeholder').show();
-            return;
-        }
-        $('#spec-placeholder').hide();
-        $('#spec-content-area').show();
+    function loadProductSpecs() {
         $('.spec-tbody').empty();
 
-        $.get('{{ url('admin/decorative-products/variants') }}/' + variantId + '/specs', function(res) {
+        $.get('{{ url('admin/decorative-products/'.$product->id.'/specs') }}', function(res) {
             if (!res.success) return;
-            ['basic_specifications', 'dimensions'].forEach(function(section) {
-                var tbody       = $('.spec-tbody[data-section="' + section + '"]');
-                var noMsgId    = section === 'basic_specifications' ? '#no-specs-basic' : '#no-specs-dimensions';
-                var sectionRows = res.rows[section];
-                if (sectionRows && sectionRows.length > 0) {
-                    $(noMsgId).hide();
-                    sectionRows.forEach(function(row) {
-                        var $tr = $(renderSpecRow(row));
-                        $tr.data('value', row.value || '');
-                        tbody.append($tr);
-                    });
-                } else {
-                    $(noMsgId).show();
-                }
-            });
+            
+            // Basic Specs
+            var basicTbody = $('#spec-tbody-basic');
+            if (res.rows.basic_specifications && res.rows.basic_specifications.length > 0) {
+                $('#no-specs-basic').hide();
+                res.rows.basic_specifications.forEach(function(row) {
+                    var $tr = $(renderSpecRow(row));
+                    $tr.data('value', row.value || '');
+                    basicTbody.append($tr);
+                });
+            } else {
+                $('#no-specs-basic').show();
+            }
+
+            // Dimensions
+            var dimTbody = $('#spec-tbody-dimensions');
+            if (res.rows.dimensions && res.rows.dimensions.length > 0) {
+                $('#no-specs-dimensions').hide();
+                res.rows.dimensions.forEach(function(row) {
+                    var $tr = $(renderDimSpecRow(row));
+                    dimTbody.append($tr);
+                });
+            } else {
+                $('#no-specs-dimensions').show();
+            }
+
             initSpecSortables();
         });
     }
 
+    // Load specs when the tab is shown or page loads
+    $('a[href="#specifications"]').on('shown.bs.tab', function (e) {
+        loadProductSpecs();
+    });
+    // Load once initially just in case
+    loadProductSpecs();
+
     // Add spec row
     $(document).on('click', '.btn-add-spec', function() {
-        var section   = $(this).data('section');
-        if (!currentSpecVariantId) { toastr.error('Select a variant first'); return; }
+        var section = $(this).data('section');
         var $btn = $(this);
         $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i>');
         
-        // Grab first attribute as default
         var defaultAttrId = $('#spec-edit-label option:nth-child(2)').val() || 1;
 
         $.ajax({
-            url: '{{ url('admin/decorative-products/variants') }}/' + currentSpecVariantId + '/specs',
+            url: '{{ url('admin/decorative-products/'.$product->id.'/specs') }}',
             method: 'POST',
             data: { _token: '{{ csrf_token() }}', section: section, dec_spec_attribute_id: defaultAttrId },
             success: function(res) {
                 $btn.attr('disabled', false).html('<i class="ft-plus"></i> Add Row');
                 if (res.success) {
-                    var tbody    = $('.spec-tbody[data-section="' + section + '"]');
-                    var noMsgId = section === 'basic_specifications' ? '#no-specs-basic' : '#no-specs-dimensions';
-                    $(noMsgId).hide();
-                    tbody.append(renderSpecRow(res.row));
-                    initSpecSortables();
-                    // immediately open edit for the new row
-                    openSpecEdit(res.row);
+                    if (section === 'dimensions') {
+                        $('#no-specs-dimensions').hide();
+                        $('#spec-tbody-dimensions').append(renderDimSpecRow(res.row));
+                        initSpecSortables();
+                        openDimSpecEdit(res.row);
+                    } else {
+                        $('#no-specs-basic').hide();
+                        $('#spec-tbody-basic').append(renderSpecRow(res.row));
+                        initSpecSortables();
+                        openSpecEdit(res.row);
+                    }
                 }
             }
         });
@@ -954,8 +1129,6 @@ $(document).ready(function() {
     function openSpecEdit(row) {
         $('#spec-edit-id').val(row.id);
         
-        // Find the option in the select dropdown that matches the row's label text, or set by id if we had it
-        // We can just find the option by text since we have the label
         var matchingOption = $('#spec-edit-label option').filter(function() { return $(this).text() === row.label; });
         if (matchingOption.length) {
             $('#spec-edit-label').val(matchingOption.val()).trigger('change');
@@ -967,7 +1140,6 @@ $(document).ready(function() {
 
         $('#spec-edit-value-type').val(row.value_type || 'text');
 
-        // Set active type option button
         $('.spec-type-option').css({ 'border-color': '#e5e7eb', 'background': '#fff' });
         $('.spec-type-option[data-val="' + (row.value_type || 'text') + '"]').css({ 'border-color': '#6366f1', 'background': '#f5f3ff' });
 
@@ -996,6 +1168,72 @@ $(document).ready(function() {
         }
 
         $('#spec-edit-modal').modal('show');
+    }
+
+    // Open edit modal for dimension spec row
+    function openDimSpecEdit(row) {
+        $('#dim-spec-edit-id').val(row.id); // id here is dec_spec_attribute_id
+
+        var matchingOption = $('#dim-spec-edit-label option').filter(function() { return $(this).text() === row.label; });
+        if (matchingOption.length) {
+            $('#dim-spec-edit-label').val(matchingOption.val()).trigger('change');
+        } else if (row.dec_spec_attribute_id) {
+            $('#dim-spec-edit-label').val(row.dec_spec_attribute_id).trigger('change');
+        } else {
+            $('#dim-spec-edit-label').val($('#dim-spec-edit-label option:nth-child(2)').val()).trigger('change');
+        }
+
+        // Determine value_type from the first available value, or default to text
+        var vType = 'text';
+        if (row.values && Object.values(row.values).length > 0) {
+            vType = Object.values(row.values)[0].value_type || 'text';
+        }
+        $('#dim-spec-edit-value-type').val(vType);
+
+        $('.dim-spec-type-option').css({ 'border-color': '#e5e7eb', 'background': '#fff' });
+        $('.dim-spec-type-option[data-val="' + vType + '"]').css({ 'border-color': '#6366f1', 'background': '#f5f3ff' });
+
+        $('.dim-spec-value-plain').each(function() {
+            var sizeId = $(this).data('size-id');
+            var val = '';
+            if (row.values && row.values[sizeId]) val = row.values[sizeId].value || '';
+            $(this).val(val);
+        });
+
+        if (vType === 'richtext') {
+            $('.dim-spec-value-plain').hide();
+            $('.dim-spec-richtext-wrap').show();
+            
+            $('.dim-spec-value-rich').each(function() {
+                var sizeId = $(this).data('size-id');
+                var val = '';
+                if (row.values && row.values[sizeId]) val = row.values[sizeId].value || '';
+                
+                if (tinymce.get($(this).attr('id'))) {
+                    tinymce.get($(this).attr('id')).setContent(val);
+                } else {
+                    tinymce.init({
+                        selector: '#' + $(this).attr('id'),
+                        height: 180,
+                        plugins: 'lists link charmap textcolor colorpicker',
+                        toolbar: 'bold italic underline forecolor backcolor | fontsize | bullist numlist | link | removeformat',
+                        menubar: false,
+                        statusbar: false,
+                        content_style: 'body { font-family:Inter,sans-serif; font-size:13px; }',
+                        setup: function(ed) { ed.on('change', function() { tinymce.triggerSave(); }); },
+                        init_instance_callback: function(ed) { ed.setContent(val); }
+                    });
+                }
+            });
+        } else {
+            $('.dim-spec-value-plain').show();
+            $('.dim-spec-richtext-wrap').hide();
+            $('.dim-spec-value-rich').each(function() {
+                if (tinymce.get($(this).attr('id'))) tinymce.get($(this).attr('id')).remove();
+            });
+        }
+
+        $('#dim-spec-edit-modal').modal('show');
     }
 
     // Reinit tinymce when value type changes in modal
@@ -1027,6 +1265,57 @@ $(document).ready(function() {
         }
     });
 
+    // Reinit tinymce when value type changes in DIMENSIONS modal
+    $('#dim-spec-edit-value-type').on('change', function() {
+        var type = $(this).val();
+        if (type === 'richtext') {
+            $('.dim-spec-value-plain').hide();
+            $('.dim-spec-richtext-wrap').show();
+            
+            $('.dim-spec-value-plain').each(function() {
+                var sizeId = $(this).data('size-id');
+                var plainVal = $(this).val();
+                var richId = 'dim-spec-rich-' + sizeId;
+                if (!tinymce.get(richId)) {
+                    tinymce.init({
+                        selector: '#' + richId,
+                        height: 180,
+                        plugins: 'lists link charmap textcolor colorpicker',
+                        toolbar: 'bold italic underline forecolor backcolor | fontsize | bullist numlist | link | removeformat',
+                        menubar: false, statusbar: false,
+                        content_style: 'body { font-family:Inter,sans-serif; font-size:13px; }',
+                        setup: function(ed) { ed.on('change', function() { tinymce.triggerSave(); }); },
+                        init_instance_callback: function(ed) { ed.setContent(plainVal); }
+                    });
+                }
+            });
+        } else {
+            $('.dim-spec-richtext-wrap').hide();
+            $('.dim-spec-value-plain').show();
+            $('.dim-spec-value-rich').each(function() {
+                var richId = $(this).attr('id');
+                var sizeId = $(this).data('size-id');
+                if (tinymce.get(richId)) {
+                    $('.dim-spec-value-plain[data-size-id="' + sizeId + '"]').val(tinymce.get(richId).getContent({ format: 'text' }));
+                    tinymce.get(richId).remove();
+                }
+            });
+        }
+    });
+
+    // Value type selectors
+    $('.spec-type-option').on('click', function() {
+        $('.spec-type-option').css({ 'border-color': '#e5e7eb', 'background': '#fff' });
+        $(this).css({ 'border-color': '#6366f1', 'background': '#f5f3ff' });
+        $('#spec-edit-value-type').val($(this).data('val')).trigger('change');
+    });
+
+    $('.dim-spec-type-option').on('click', function() {
+        $('.dim-spec-type-option').css({ 'border-color': '#e5e7eb', 'background': '#fff' });
+        $(this).css({ 'border-color': '#6366f1', 'background': '#f5f3ff' });
+        $('#dim-spec-edit-value-type').val($(this).data('val')).trigger('change');
+    });
+
     // Click edit button on row
     $(document).on('click', '.btn-edit-spec', function() {
         var tr = $(this).closest('tr');
@@ -1039,7 +1328,22 @@ $(document).ready(function() {
         });
     });
 
-    // Save from modal
+    // Click edit button on DIMENSION row
+    $(document).on('click', '.btn-edit-dim-spec', function() {
+        var tr = $(this).closest('tr');
+        var id = tr.data('id');
+        var valuesJson = tr.attr('data-values');
+        var values = valuesJson ? JSON.parse(decodeURIComponent(valuesJson)) : {};
+        
+        openDimSpecEdit({
+            id: id,
+            dec_spec_attribute_id: id,
+            label: tr.attr('data-label') || tr.find('td:nth-child(2)').text().trim(),
+            values: values
+        });
+    });
+
+    // Save from modal (Basic)
     $('#btn-spec-modal-save').on('click', function() {
         var id     = $('#spec-edit-id').val();
         var type   = $('#spec-edit-value-type').val();
@@ -1054,54 +1358,79 @@ $(document).ready(function() {
         $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Saving...');
 
         $.ajax({
-            url: '{{ url('admin/decorative-products/specs') }}/' + id,
+            url: '{{ url('admin/decorative-products/'.$product->id.'/specs') }}/' + id,
             method: 'PUT',
-            data: { _token: '{{ csrf_token() }}', dec_spec_attribute_id: attrId, value: value, value_type: type },
+            data: { _token: '{{ csrf_token() }}', dec_spec_attribute_id: attrId, value_type: type, value: value, section: 'basic_specifications' },
             success: function(res) {
                 $btn.attr('disabled', false).html('<i class="ft-save"></i> Save');
                 if (res.success) {
-                    // Update the row display
-                    var tr = $('.spec-tbody tr[data-id="' + id + '"]');
-                    tr.data('value-type', type).data('value', value).attr('data-label', label);
-                    var isRich = type === 'richtext';
-                    var badge  = isRich ? '<span class="badge badge-light" style="font-size:10px; color:#6366f1;">Rich Text</span> ' : '';
-                    
-                    var displayVal = value;
-                    if (value) {
-                        var strippedVal = value.replace(/<[^>]*>?/gm, '');
-                        displayVal = '<div style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + strippedVal.replace(/"/g, '&quot;') + '">' + strippedVal + '</div>';
-                    } else {
-                        displayVal = '<span class="text-muted" style="font-size:12px;">— empty —</span>';
-                    }
-                    
-                    tr.find('td:nth-child(2)').text(label);
-                    tr.find('td:nth-child(3)').html(badge + displayVal);
                     $('#spec-edit-modal').modal('hide');
-                    toastr.success('Saved');
+                    var tr = $('tr.spec-row[data-id="' + id + '"]');
+                    var newTr = $(renderSpecRow(res.row));
+                    newTr.data('value', res.row.value || '');
+                    tr.replaceWith(newTr);
+                    initSpecSortables();
+                    toastr.success('Specification updated');
                 }
             },
             error: function() {
                 $btn.attr('disabled', false).html('<i class="ft-save"></i> Save');
-                toastr.error('Error saving');
             }
         });
     });
 
-    // Type option toggle in spec modal
-    $(document).on('click', '.spec-type-option', function() {
-        var val = $(this).data('val');
-        $('#spec-edit-value-type').val(val).trigger('change');
-        $('.spec-type-option').css({ 'border-color': '#e5e7eb', 'background': '#fff' });
-        $(this).css({ 'border-color': '#6366f1', 'background': '#f5f3ff' });
+    // Save from modal (Dimensions)
+    $('#btn-dim-spec-modal-save').on('click', function() {
+        var id     = $('#dim-spec-edit-id').val();
+        var type   = $('#dim-spec-edit-value-type').val();
+        var attrId = $('#dim-spec-edit-label').val();
+        var label  = $('#dim-spec-edit-label option:selected').text();
+        
+        var values = {};
+        if (type === 'richtext') {
+            $('.dim-spec-value-rich').each(function() {
+                var sizeId = $(this).data('size-id');
+                values[sizeId] = tinymce.get($(this).attr('id')) ? tinymce.get($(this).attr('id')).getContent() : '';
+            });
+        } else {
+            $('.dim-spec-value-plain').each(function() {
+                var sizeId = $(this).data('size-id');
+                values[sizeId] = $(this).val();
+            });
+        }
+
+        var $btn = $(this);
+        $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Saving...');
+
+        $.ajax({
+            url: '{{ url('admin/decorative-products/'.$product->id.'/specs') }}/' + id,
+            method: 'PUT',
+            data: { _token: '{{ csrf_token() }}', dec_spec_attribute_id: attrId, value_type: type, values: values, section: 'dimensions' },
+            success: function(res) {
+                $btn.attr('disabled', false).html('<i class="ft-save"></i> Save');
+                if (res.success) {
+                    $('#dim-spec-edit-modal').modal('hide');
+                    var tr = $('tr.dimension-row[data-id="' + id + '"]');
+                    var newTr = $(renderDimSpecRow(res.row));
+                    tr.replaceWith(newTr);
+                    initSpecSortables();
+                    toastr.success('Dimension specification updated');
+                }
+            },
+            error: function() {
+                $btn.attr('disabled', false).html('<i class="ft-save"></i> Save');
+            }
+        });
     });
 
-    // Reset modal tinymce on close
-    $('#spec-edit-modal').on('hidden.bs.modal', function() {
+    $('#spec-edit-modal, #dim-spec-edit-modal').on('hidden.bs.modal', function() {
         if (tinymce.get('spec-edit-value-rich')) tinymce.get('spec-edit-value-rich').remove();
+        $('.dim-spec-value-rich').each(function() {
+            if (tinymce.get($(this).attr('id'))) tinymce.get($(this).attr('id')).remove();
+        });
     });
 
-    // Explicitly hide modal on cancel/close since it was moved to body
-    $(document).on('click', '#spec-edit-modal .close, #spec-edit-modal [data-dismiss="modal"], #spec-copy-modal .close, #spec-copy-modal [data-dismiss="modal"], #spec-save-template-modal .close, #spec-save-template-modal [data-dismiss="modal"], #spec-apply-template-modal .close, #spec-apply-template-modal [data-dismiss="modal"]', function() {
+    $(document).on('click', '#spec-edit-modal .close, #spec-edit-modal [data-dismiss="modal"], #dim-spec-edit-modal .close, #dim-spec-edit-modal [data-dismiss="modal"], #spec-copy-modal .close, #spec-copy-modal [data-dismiss="modal"], #spec-save-template-modal .close, #spec-save-template-modal [data-dismiss="modal"], #spec-apply-template-modal .close, #spec-apply-template-modal [data-dismiss="modal"]', function() {
         var modal = $(this).closest('.modal');
         if (modal.length) {
             modal.modal('hide');
@@ -1115,59 +1444,67 @@ $(document).ready(function() {
         var tr    = $(this).closest('tr');
         var tbody = tr.closest('tbody');
         $.ajax({
-            url: '{{ url('admin/decorative-products/specs') }}/' + id,
-            method: 'DELETE', data: { _token: '{{ csrf_token() }}' },
+            url: '{{ url('admin/decorative-products/'.$product->id.'/specs') }}/' + id,
+            method: 'DELETE', data: { _token: '{{ csrf_token() }}', section: 'basic_specifications' },
             success: function(res) {
                 if (res.success) {
                     tr.fadeOut(function() {
                         $(this).remove();
                         if (tbody.find('tr').length === 0) {
-                            var section = tbody.data('section');
-                            var noMsgId = section === 'basic_specifications' ? '#no-specs-basic' : '#no-specs-dimensions';
-                            $(noMsgId).show();
+                            $('#no-specs-basic').show();
                         }
                     });
-                    if (res.message) toastr.success(res.message);
-                } else {
-                    if (res.message) toastr.error(res.message);
+                    toastr.success(res.message);
                 }
-            },
-            error: function() {
-                toastr.error('Error deleting specification.');
             }
         });
     });
 
-    // ================================================================
-    // SPECIFICATIONS - COPY & TEMPLATES
-    // ================================================================
+    // Delete dimension spec row
+    $(document).on('click', '.btn-delete-dim-spec', function() {
+        if (!confirm('Are you sure you want to delete this dimension specification for all sizes?')) return;
+        var id    = $(this).data('id');
+        var tr    = $(this).closest('tr');
+        var tbody = tr.closest('tbody');
+        $.ajax({
+            url: '{{ url('admin/decorative-products/'.$product->id.'/specs') }}/' + id,
+            method: 'DELETE', data: { _token: '{{ csrf_token() }}', section: 'dimensions' },
+            success: function(res) {
+                if (res.success) {
+                    tr.fadeOut(function() {
+                        $(this).remove();
+                        if (tbody.find('tr').length === 0) {
+                            $('#no-specs-dimensions').show();
+                        }
+                    });
+                    toastr.success(res.message);
+                }
+            }
+        });
+    });
 
     // Copy Specs
     $('#btn-open-copy-spec').on('click', function() {
-        if (!currentSpecVariantId) { toastr.error('Select a variant first'); return; }
-        $('#spec-copy-source option').prop('disabled', false).show();
-        $('#spec-copy-source option[value="' + currentSpecVariantId + '"]').prop('disabled', true).hide();
-        $('#spec-copy-source').val('');
         $('#spec-copy-modal').modal('show');
     });
 
     $('#btn-spec-copy-confirm').on('click', function() {
         var sourceId = $('#spec-copy-source').val();
-        if (!sourceId) { toastr.error('Select a source variant'); return; }
+        if (!sourceId) { toastr.error('Select a source product'); return; }
         
         var $btn = $(this);
         $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Copying...');
         
         $.ajax({
-            url: '{{ url('admin/decorative-products/variants') }}/' + currentSpecVariantId + '/specs/copy',
+            url: '{{ url('admin/decorative-products/'.$product->id.'/specs/copy') }}',
             method: 'POST',
-            data: { _token: '{{ csrf_token() }}', source_variant_id: sourceId },
+            data: { _token: '{{ csrf_token() }}', source_product_id: sourceId },
             success: function(res) {
                 $btn.attr('disabled', false).html('<i class="ft-check"></i> Copy');
                 if (res.success) {
                     $('#spec-copy-modal').modal('hide');
                     toastr.success(res.message);
-                    loadVariantSpecs(currentSpecVariantId); // reload rows
+                    loadProductSpecs();
                 } else {
                     toastr.error(res.message);
                 }
@@ -1181,7 +1518,6 @@ $(document).ready(function() {
 
     // Save Template
     $('#btn-open-save-template').on('click', function() {
-        if (!currentSpecVariantId) { toastr.error('Select a variant first'); return; }
         $('#spec-template-name').val('');
         $('#spec-save-template-modal').modal('show');
     });
@@ -1194,7 +1530,7 @@ $(document).ready(function() {
         $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Saving...');
         
         $.ajax({
-            url: '{{ url('admin/decorative-products/variants') }}/' + currentSpecVariantId + '/specs/templates',
+            url: '{{ url('admin/decorative-products/'.$product->id.'/specs/templates') }}',
             method: 'POST',
             data: { _token: '{{ csrf_token() }}', name: name },
             success: function(res) {
@@ -1215,8 +1551,6 @@ $(document).ready(function() {
 
     // Apply Template
     $('#btn-open-apply-template').on('click', function() {
-        if (!currentSpecVariantId) { toastr.error('Select a variant first'); return; }
-        
         $('#spec-template-select').html('<option value="">Loading templates...</option>');
         $('#spec-apply-template-modal').modal('show');
         
@@ -1239,7 +1573,7 @@ $(document).ready(function() {
         $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Applying...');
         
         $.ajax({
-            url: '{{ url('admin/decorative-products/variants') }}/' + currentSpecVariantId + '/specs/templates/apply',
+            url: '{{ url('admin/decorative-products/'.$product->id.'/specs/templates/apply') }}',
             method: 'POST',
             data: { _token: '{{ csrf_token() }}', template_id: templateId },
             success: function(res) {
@@ -1247,7 +1581,7 @@ $(document).ready(function() {
                 if (res.success) {
                     $('#spec-apply-template-modal').modal('hide');
                     toastr.success(res.message);
-                    loadVariantSpecs(currentSpecVariantId); // reload rows
+                    loadProductSpecs();
                 } else {
                     toastr.error(res.message);
                 }
@@ -1574,7 +1908,7 @@ $(document).ready(function() {
     });
 
     $('#btn-duplicate-product').on('click', function() {
-        if(confirm('Are you sure you want to duplicate this product? This will clone the product, variants, and specifications.')) {
+        if(confirm('Are you sure you want to duplicate this product? This will clone the product, colors, sizes, and specifications.')) {
             var $btn = $(this);
             var originalBtn = $btn.html();
             $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Duplicating...');

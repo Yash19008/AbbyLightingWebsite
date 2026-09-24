@@ -14,55 +14,55 @@ class CompositionApiController extends Controller
     public function showcase()
     {
         $compositions = Composition::where('is_showcase', 1)
-            ->with(['category_rel', 'products.category', 'products.collection', 'products.variants.colorMaster'])
+            ->with(['category_rel', 'products.category', 'products.collection', 'products.colors.colorMaster'])
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($comp) {
                 
                 $productsUsed = $comp->products->map(function($product) {
-                    $firstVariant = $product->variants->first();
+                    $firstColor = $product->colors->first();
                     
                     // Image priority: lighton_image -> main_image
                     $image = null;
-                    if ($firstVariant) {
-                        if ($firstVariant->lighton_image) {
-                            $image = asset('storage/uploads/decorative/' . $firstVariant->lighton_image);
-                        } elseif ($firstVariant->main_image) {
-                            $image = asset('storage/uploads/decorative/' . $firstVariant->main_image);
+                    if ($firstColor) {
+                        if ($firstColor->lighton_image) {
+                            $image = asset('storage/uploads/decorative/' . $firstColor->lighton_image);
+                        } elseif ($firstColor->main_image) {
+                            $image = asset('storage/uploads/decorative/' . $firstColor->main_image);
                         }
                     }
                     if (!$image && $product->featured_image) {
                         $image = asset('storage/uploads/decorative/' . $product->featured_image);
                     }
 
-                    // Get colors and images from variants
+                    // Get colors and images from colors
                     $variants = [];
                     $seenColors = [];
-                    foreach ($product->variants as $variant) {
-                        $vImage = null;
-                        if ($variant->lighton_image) {
-                            $vImage = asset('storage/uploads/decorative/' . $variant->lighton_image);
-                        } elseif ($variant->main_image) {
-                            $vImage = asset('storage/uploads/decorative/' . $variant->main_image);
+                    foreach ($product->colors as $color) {
+                        $cImage = null;
+                        if ($color->lighton_image) {
+                            $cImage = asset('storage/uploads/decorative/' . $color->lighton_image);
+                        } elseif ($color->main_image) {
+                            $cImage = asset('storage/uploads/decorative/' . $color->main_image);
                         }
                         
-                        // Fallback to default product image if variant doesn't have one
-                        if (!$vImage) {
-                            $vImage = $image; 
+                        // Fallback to default product image if color doesn't have one
+                        if (!$cImage) {
+                            $cImage = $image; 
                         }
 
                         $colorHex = null;
-                        if ($variant->colorMaster && $variant->colorMaster->css_value) {
-                            $colorHex = $variant->colorMaster->css_value;
-                        } elseif ($variant->colorMaster && $variant->colorMaster->code) {
-                            $colorHex = $variant->colorMaster->code;
+                        if ($color->colorMaster && $color->colorMaster->css_value) {
+                            $colorHex = $color->colorMaster->css_value;
+                        } elseif ($color->colorMaster && $color->colorMaster->code) {
+                            $colorHex = $color->colorMaster->code;
                         }
 
                         if ($colorHex && !in_array($colorHex, $seenColors)) {
                             $seenColors[] = $colorHex;
                             $variants[] = [
                                 'color' => $colorHex,
-                                'image' => $vImage
+                                'image' => $cImage
                             ];
                         }
                     }
@@ -74,7 +74,7 @@ class CompositionApiController extends Controller
                         'colors' => $seenColors, // legacy, can keep
                         'variants' => $variants,
                         'collection' => $product->collection ? $product->collection->name : null,
-                        'link' => '/decorative-products/' . $product->slug,
+                        'link' => '/product-detail/' . $product->slug,
                     ];
                 });
 

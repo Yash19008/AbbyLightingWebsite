@@ -58,7 +58,7 @@ export default function CatalogueSection({ data }: CatalogueSectionProps) {
           alt={data.title || "Abby Lighting Catalogue"}
         />
       )}
-      <div className="copy reveal">
+      <div className="copy reveal" suppressHydrationWarning>
         <h2>
           {renderTitle(data.title, data.title_highlight)}
         </h2>

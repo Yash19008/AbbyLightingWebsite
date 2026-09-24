@@ -24,14 +24,24 @@ class DecProduct extends Model
         return $this->belongsTo(DecCategory::class, 'category_id');
     }
 
-    public function variants()
+    public function colors()
     {
-        return $this->hasMany(DecProductVariant::class, 'product_id')->orderBy('order', 'asc');
+        return $this->hasMany(DecProductColor::class, 'product_id')->orderBy('order', 'asc');
+    }
+
+    public function sizes()
+    {
+        return $this->hasMany(DecProductSize::class, 'product_id')->orderBy('order', 'asc');
     }
 
     public function galleries()
     {
         return $this->hasMany(DecProductGallery::class, 'product_id')->orderBy('order', 'asc');
+    }
+
+    public function specRows()
+    {
+        return $this->hasMany(DecProductSpecRow::class, 'product_id')->whereNull('size_id')->orderBy('order', 'asc');
     }
 
     public function relatedProducts()

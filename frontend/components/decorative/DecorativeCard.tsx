@@ -70,6 +70,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
     >
       <article
         className="decorative-card decorative-reveal is-visible"
+        suppressHydrationWarning
         style={{ '--card-order': order, '--light-delay': `${order * 50}ms` } as React.CSSProperties}
       >
         <div className={`decorative-card-image ${isGlobalLightOn ? 'is-lit' : 'is-unlit'}`}>

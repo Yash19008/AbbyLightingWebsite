@@ -80,7 +80,7 @@ function ProductCard({ p }: { p: ProductUsedItem }) {
                 key={vIdx}
                 className={`color-dot ${selectedVariant === v ? 'is-active' : ''}`}
                 style={{ 
-                  backgroundColor: v.color, 
+                  background: v.color, 
                   width: '20px', 
                   height: '20px', 
                   borderRadius: '50%',
@@ -112,7 +112,7 @@ function ProductCard({ p }: { p: ProductUsedItem }) {
                 key={cIdx}
                 className="color-dot"
                 style={{ 
-                  backgroundColor: colorHex,
+                  background: colorHex,
                   width: '20px', 
                   height: '20px', 
                   borderRadius: '50%',

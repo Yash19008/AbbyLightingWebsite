@@ -72,19 +72,22 @@ class DecorativeProductController extends Controller
     public function edit($id)
     {
         $product = DecProduct::with([
-            'variants' => function($q) {
+            'colors' => function($q) {
                 $q->orderBy('order', 'asc');
             },
-            'variants.colorMaster',
-            'variants.specRows',  // Eager-load spec rows to avoid N+1 in blade
+            'colors.colorMaster',
+            'sizes' => function($q) {
+                $q->orderBy('order', 'asc');
+            }
         ])->findOrFail($id);
 
         $collections  = Collection::orderBy('order', 'asc')->get();
         $categories   = DecCategory::orderBy('name', 'asc')->get();
         $color_masters = ColorMaster::orderBy('name', 'asc')->get();
         $spec_attributes = \App\Models\Decorative\DecSpecAttribute::orderBy('name', 'asc')->get();
+        $all_products = DecProduct::where('id', '!=', $id)->orderBy('name', 'asc')->get();
 
-        return view('admin.decorative.edit', compact('product', 'collections', 'categories', 'color_masters', 'spec_attributes'));
+        return view('admin.decorative.edit', compact('product', 'collections', 'categories', 'color_masters', 'spec_attributes', 'all_products'));
     }
 
     public function update(Request $request, $id)
@@ -157,7 +160,7 @@ class DecorativeProductController extends Controller
 
     public function duplicate($id)
     {
-        $original = DecProduct::with(['variants', 'variants.specRows'])->findOrFail($id);
+        $original = DecProduct::with(['colors', 'sizes'])->findOrFail($id);
 
         $newProduct = $original->replicate();
         $newProduct->name = $original->name . ' (Copy)';
@@ -168,18 +171,30 @@ class DecorativeProductController extends Controller
         $newProduct->featured_image = null;
         $newProduct->save();
 
-        foreach ($original->variants as $variant) {
-            $newVariant = $variant->replicate();
-            $newVariant->product_id = $newProduct->id;
-            $newVariant->main_image = null;
-            $newVariant->lighton_image = null;
-            $newVariant->save();
+        foreach ($original->colors as $color) {
+            $newColor = $color->replicate();
+            $newColor->product_id = $newProduct->id;
+            $newColor->main_image = null;
+            $newColor->lighton_image = null;
+            $newColor->save();
+        }
 
-            foreach ($variant->specRows as $spec) {
-                $newSpec = $spec->replicate();
-                $newSpec->variant_id = $newVariant->id;
-                $newSpec->save();
+        $sizeMap = [];
+        foreach ($original->sizes as $size) {
+            $newSize = $size->replicate();
+            $newSize->product_id = $newProduct->id;
+            $newSize->save();
+            $sizeMap[$size->id] = $newSize->id;
+        }
+
+        $originalSpecs = \App\Models\Decorative\DecProductSpecRow::where('product_id', $original->id)->get();
+        foreach ($originalSpecs as $spec) {
+            $newSpec = $spec->replicate();
+            $newSpec->product_id = $newProduct->id;
+            if ($spec->size_id && isset($sizeMap[$spec->size_id])) {
+                $newSpec->size_id = $sizeMap[$spec->size_id];
             }
+            $newSpec->save();
         }
 
         return response()->json([
