@@ -3274,7 +3274,7 @@ a {
 .footer-accordion.open .footer-accordion-panel {
   opacity: 1;
   max-height: 110px;
-  margin: 3px 0 8px
+  margin: -10px 0 8px
 }
 
 .footer-accordion-panel a {
@@ -4331,7 +4331,7 @@ a {
 
   .footer-accordion.open .footer-accordion-panel {
     max-height: 120px;
-    margin: 2px 0 8px
+    margin: -10px 0 8px
   }
 
   .footer-accordion-panel a {

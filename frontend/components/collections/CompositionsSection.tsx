@@ -49,8 +49,8 @@ export default function CompositionsSection({ data }: Props) {
   const handleClick = (comp: CompositionItem, index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
     setActiveLook({
-      title: comp.title || 'Composition',
-      kicker: comp.kicker || comp.category || 'Symphony Composition',
+      title: comp.kicker || comp.title || 'Composition',
+      kicker: [comp.title, comp.category].filter(Boolean).join(' · ') || 'Symphony Composition',
       room: comp.category ? comp.category.toLowerCase() : 'living',
       image: comp.image,
     });
