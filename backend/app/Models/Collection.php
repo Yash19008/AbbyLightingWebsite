@@ -17,11 +17,13 @@ class Collection extends Model
         'meta_title',
         'meta_description',
         'is_active',
+        'show_in_menu',
         'order',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'show_in_menu' => 'boolean',
     ];
 
     /**
@@ -89,13 +91,19 @@ class Collection extends Model
     }
 
     /**
+     * Relationship: A collection has one products section
+     */
+    public function productsSection()
+    {
+        return $this->hasOne(CollectionProductsSection::class);
+    }
+
+    /**
      * Relationship: A collection belongs to many products
      */
     public function products()
     {
-        return $this->belongsToMany(ProductMaster::class, 'collection_products', 'collection_id', 'product_id')
-            ->select('product_masters.*')
-            ->withTimestamps();
+        return $this->hasMany(\App\Models\Decorative\DecProduct::class, 'collection_id');
     }
 
 

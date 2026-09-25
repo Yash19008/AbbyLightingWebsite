@@ -23,7 +23,12 @@ export default function ProductGallery({
   // When galleryImages changes significantly (e.g. colour variant changed), reset to first image
   useEffect(() => {
     setActiveIndex(0);
-  }, [firstGalleryImage]);
+    // Set the drawing image for the datasheet generator (fallback to first image if no second image)
+    const drawingImg = galleryImages.length > 1 ? galleryImages[1] : galleryImages[0];
+    if (drawingImg) {
+      document.documentElement.dataset.datasheetDrawing = `/api/proxy-image?url=${encodeURIComponent(drawingImg)}`;
+    }
+  }, [firstGalleryImage, galleryImages]);
 
   // Scroll active item into view smoothly
   useEffect(() => {
@@ -99,6 +104,8 @@ export default function ProductGallery({
             priority
             sizes="(max-width: 960px) 100vw, 50vw"
             className="gallery-stage-image"
+            data-datasheet-primary={`/api/proxy-image?url=${encodeURIComponent(currentStageImage)}`}
+            data-datasheet-drawing={galleryImages.length > 1 ? `/api/proxy-image?url=${encodeURIComponent(galleryImages[1])}` : ''}
           />
           <span className="zoom-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

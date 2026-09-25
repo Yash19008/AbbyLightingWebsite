@@ -101,6 +101,13 @@ export interface CatalogueSection {
   is_active: boolean;
 }
 
+export interface ProductsSection {
+  heading: string | null;
+  subtitle: string | null;
+  view_more_text: string;
+  is_active: boolean;
+}
+
 export interface Product {
   id: number;
   title: string;
@@ -119,6 +126,7 @@ export interface CollectionDetail {
   hero_section: CollectionHeroSection | null;
   parameters_section: ParametersSection | null;
   compositions_section: CompositionsSection | null;
+  products_section: ProductsSection | null;
   tones_section: TonesSection | null;
   places_section: PlacesSection | null;
   catalogue_section: CatalogueSection | null;

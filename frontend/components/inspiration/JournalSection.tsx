@@ -21,8 +21,7 @@ interface StoryItem {
 }
 
 const SORT_OPTIONS = [
-  { id: "popular", label: "Most popular" },
-  { id: "new", label: "New products" },
+  { id: "new", label: "Recent blogs" },
   { id: "az", label: "Alphabetical A-Z" },
   { id: "za", label: "Alphabetical Z-A" },
 ];
@@ -39,7 +38,7 @@ export default function JournalSection() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [activeCategory, setActiveCategory] = useState("all");
-  const [activeSort, setActiveSort] = useState("popular");
+  const [activeSort, setActiveSort] = useState("new");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);

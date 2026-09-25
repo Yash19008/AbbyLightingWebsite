@@ -90,6 +90,16 @@
                                     @endif
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ $activeTab === 'products' ? 'active' : '' }}" id="products-tab" data-toggle="tab" href="#products-section" role="tab" aria-controls="products-section" aria-selected="{{ $activeTab === 'products' ? 'true' : 'false' }}">
+                                    <i class="fas fa-box"></i> Products
+                                    @if($collection->productsSection)
+                                        <span class="badge badge-success ml-1">✓</span>
+                                    @else
+                                        <span class="badge badge-secondary ml-1">+</span>
+                                    @endif
+                                </a>
+                            </li>
 
                             <li class="nav-item">
                                 <a class="nav-link {{ $activeTab === 'tones' ? 'active' : '' }}" id="tones-tab" data-toggle="tab" href="#tones-section" role="tab" aria-controls="tones-section" aria-selected="{{ $activeTab === 'tones' ? 'true' : 'false' }}">
@@ -212,6 +222,14 @@
                                                             <input type="checkbox" class="custom-control-input" id="is_active" 
                                                                    name="is_active" value="1" {{ old('is_active', $collection->is_active) ? 'checked' : '' }}>
                                                             <label class="custom-control-label font-weight-bold text-success" for="is_active">Active (Visible on Frontend)</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="show_in_menu" 
+                                                                   name="show_in_menu" value="1" {{ old('show_in_menu', $collection->show_in_menu) ? 'checked' : '' }}>
+                                                            <label class="custom-control-label font-weight-bold text-primary" for="show_in_menu">Show in Menu</label>
                                                         </div>
                                                     </div>
 
@@ -486,7 +504,56 @@
 
                             </div>
 
-
+                            <!-- Products Section Tab -->
+                            <div class="tab-pane fade {{ $activeTab === 'products' ? 'show active' : '' }} p-4" id="products-section" role="tabpanel" aria-labelledby="products-tab">
+                                <form action="{{ route('admin.collections.store-products', $collection->slug) }}" method="POST">
+                                    @csrf
+                                    <div class="card inner-section-card shadow-sm">
+                                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                            <h5 class="card-title mb-0">
+                                                <i class="fas fa-box mr-1 text-primary"></i> Products Section Configuration
+                                            </h5>
+                                            <span class="badge badge-info py-2 px-3">
+                                                <i class="fas fa-info-circle mr-1"></i> {{ $collection->products()->count() }} products tagged
+                                            </span>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="prod_heading">Heading</label>
+                                                    <input type="text" class="form-control" id="prod_heading" name="heading" 
+                                                           value="{{ old('heading', $collection->productsSection->heading ?? '') }}" 
+                                                           placeholder="{{ $collection->name }} Products">
+                                                    <small class="text-muted">Defaults to "{Collection Name} Products" if left blank.</small>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="prod_view_more_text">View More Button Text</label>
+                                                    <input type="text" class="form-control" id="prod_view_more_text" name="view_more_text" 
+                                                           value="{{ old('view_more_text', $collection->productsSection->view_more_text ?? 'View all') }}">
+                                                </div>
+                                                <div class="col-md-12 mb-3">
+                                                    <label for="prod_subtitle">Subtitle</label>
+                                                    <textarea class="form-control" id="prod_subtitle" name="subtitle" rows="2" 
+                                                              placeholder="Explore our range of architectural silhouettes designed for the {{ $collection->name }} collection.">{{ old('subtitle', $collection->productsSection->subtitle ?? '') }}</textarea>
+                                                </div>
+                                            </div>
+                                            
+                                            <hr class="my-4">
+                                            
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="custom-control custom-switch">
+                                                    <input type="checkbox" class="custom-control-input" id="prod_is_active" name="is_active" value="1" 
+                                                           {{ old('is_active', $collection->productsSection->is_active ?? true) ? 'checked' : '' }}>
+                                                    <label class="custom-control-label" for="prod_is_active">Display on Frontend</label>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary px-4">
+                                                    <i class="fas fa-save mr-1"></i> Save Products Section
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
 
                             <!-- Tones Section Tab -->
                             <div class="tab-pane fade {{ $activeTab === 'tones' ? 'show active' : '' }} p-4" id="tones-section" role="tabpanel" aria-labelledby="tones-tab">

@@ -12,13 +12,18 @@ class CollectionApiController extends Controller
     /**
      * Get all active collections (list view)
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $collections = Collection::with('heroSection')
+            $query = Collection::with('heroSection')
                 ->active()
-                ->ordered()
-                ->get()
+                ->ordered();
+
+            if ($request->query('menu_only') == '1') {
+                $query->where('show_in_menu', true);
+            }
+
+            $collections = $query->get()
                 ->map(function ($collection) {
                     return [
                         'id'                => $collection->id,
@@ -80,7 +85,12 @@ class CollectionApiController extends Controller
                 },
                 'catalogueSection',
                 'spreadDropSection',
-                'products'
+                'products' => function ($q) {
+                    $q->where('status', 'published');
+                },
+                'products.colors.colorMaster',
+                'products.galleries',
+                'products.category'
             ])
             ->active()
             ->firstOrFail();
@@ -94,18 +104,49 @@ class CollectionApiController extends Controller
             'meta_title' => $collection->meta_title,
             'meta_description' => $collection->meta_description,
             
-            // Combined Products (Standard) linked to this collection
-            'products' => $collection->products->map(function ($product) {
+            // Decorative Products linked to this collection
+            'products' => $collection->products->map(function ($product) use ($collection) {
+                $variants = $product->colors->map(function ($color) {
+                    return [
+                        'id' => $color->id,
+                        'name' => $color->colorMaster ? $color->colorMaster->name : '',
+                        'color' => $color->colorMaster ? $color->colorMaster->css_value : '#e0e0e0',
+                        'imageOff' => $color->main_image ? asset('storage/uploads/decorative/' . $color->main_image) : null,
+                        'imageOn' => $color->lighton_image ? asset('storage/uploads/decorative/' . $color->lighton_image) : null
+                    ];
+                });
+
+                $galleries = $product->galleries->map(function ($gallery) {
+                    return [
+                        'id' => $gallery->id,
+                        'image' => $gallery->image ? asset('storage/uploads/decorative_gallery/' . $gallery->image) : null
+                    ];
+                });
+
                 return [
                     'id' => $product->id,
-                    'title' => $product->title,
                     'slug' => $product->slug,
-                    'featured_image' => $product->featured_image 
-                        ? asset('storage/uploads/products/' . $product->featured_image) 
-                        : null,
-                    'is_decorative' => false,
+                    'name' => $product->name,
+                    'category' => $product->category ? $product->category->name : 'Uncategorized',
+                    'collection' => $collection->name,
+                    'isNew' => $product->created_at ? $product->created_at->diffInDays(now()) <= 30 : false,
+                    'variants' => $variants,
+                    'galleries' => $galleries
                 ];
-            }),
+            })->values(),
+
+            // Products Section settings
+            'products_section' => $collection->productsSection ? [
+                'heading' => $collection->productsSection->heading,
+                'subtitle' => $collection->productsSection->subtitle,
+                'view_more_text' => $collection->productsSection->view_more_text,
+                'is_active' => $collection->productsSection->is_active,
+            ] : [
+                'heading' => null,
+                'subtitle' => null,
+                'view_more_text' => 'View all',
+                'is_active' => true,
+            ],
             
             // Hero Section
             'hero_section' => $collection->heroSection && $collection->heroSection->is_active ? [

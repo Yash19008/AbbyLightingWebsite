@@ -18,6 +18,22 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
     basic_specifications: true,
     downloads: true,
   });
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
+  const handleDownloadDatasheet = async () => {
+    try {
+      setIsGeneratingPdf(true);
+      const module = await import('@/lib/symphony-datasheet-vector.js');
+      if (module.generateProductDatasheet) {
+        await module.generateProductDatasheet();
+      }
+    } catch (error) {
+      console.error('Failed to generate PDF:', error);
+      alert('Could not prepare PDF — try again');
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
 
   const toggleSection = (id: string) => {
     setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -30,15 +46,15 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
         <table className="spec-table">
           <tbody>
             {items.map((item, idx) => (
-              <tr key={idx}>
-                <td className="spec-label">{item.label}</td>
+              <tr key={idx} className="figma-spec-row">
+                <td className="spec-label"><b>{item.label}</b></td>
                 <td className="spec-value">
                   {item.label === "Size" ? (
-                    <div className="spec-size-value">
+                    <span className="spec-size-value">
                       <i className="spec-code">OS</i> <span dangerouslySetInnerHTML={{ __html: item.value }} />
-                    </div>
+                    </span>
                   ) : (
-                    <div dangerouslySetInnerHTML={{ __html: item.value }} />
+                    <span dangerouslySetInnerHTML={{ __html: item.value }} />
                   )}
                   {item.note && (
                     <small className="figma-spec-note">
@@ -75,8 +91,15 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
       <div className="spec-comparison-table">
         <table className="spec-table comparison-table">
           <tbody>
-            <tr>
-              <td className="spec-label">Size</td>
+            <tr className="figma-spec-row">
+              <td className="spec-label">
+                <b>Size</b>
+                <span style={{ display: 'none' }} data-values={sizes.map(s => s.label).join('|')}>
+                  {sizes.map((s, idx) => (
+                    <span key={idx}>{s.label}</span>
+                  ))}
+                </span>
+              </td>
               {sizes.map((s) => (
                 <td key={s.id} className="spec-value">
                   <strong>{s.label}</strong>
@@ -84,8 +107,19 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
               ))}
             </tr>
             {labelsArray.map((label) => (
-              <tr key={label}>
-                <td className="spec-label">{label}</td>
+              <tr key={label} className="figma-spec-row">
+                <td className="spec-label">
+                  <b>{label}</b>
+                  <span style={{ display: 'none' }} data-values={sizes.map(s => {
+                     const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
+                     return spec ? spec.value.replace(/<[^>]*>?/gm, '') : "-";
+                  }).join('|')}>
+                    {sizes.map((s, idx) => {
+                       const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
+                       return <span key={idx} dangerouslySetInnerHTML={{ __html: spec ? spec.value : "-" }} />;
+                    })}
+                  </span>
+                </td>
                 {sizes.map((s) => {
                   const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
                   return (
@@ -128,23 +162,28 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
         )}
 
         {/* Downloads */}
-        {(installationGuide || careInstructions) && (
-            <details open={openSections['downloads']} onToggle={(e) => setOpenSections(prev => ({ ...prev, downloads: (e.target as HTMLDetailsElement).open }))}>
-            <summary>Downloads</summary>
-            <div className="download-row">
-                {installationGuide && (
-                    <button onClick={() => window.open(installationGuide, '_blank')}>
-                        Installation guide
-                    </button>
-                )}
-                {careInstructions && (
-                    <button onClick={() => window.open(careInstructions, '_blank')}>
-                        Care Instructions
-                    </button>
-                )}
-            </div>
-            </details>
-        )}
+        <details open={openSections['downloads']} onToggle={(e) => setOpenSections(prev => ({ ...prev, downloads: (e.target as HTMLDetailsElement).open }))}>
+          <summary>Downloads</summary>
+          <div className="download-row">
+              <button 
+                id="download-tds-btn"
+                onClick={handleDownloadDatasheet} 
+                disabled={isGeneratingPdf}
+              >
+                  {isGeneratingPdf ? 'Preparing PDF…' : 'Datasheet (PDF)'}
+              </button>
+              {installationGuide && (
+                  <button onClick={() => window.open(installationGuide, '_blank')}>
+                      Installation guide
+                  </button>
+              )}
+              {careInstructions && (
+                  <button onClick={() => window.open(careInstructions, '_blank')}>
+                      Care Instructions
+                  </button>
+              )}
+          </div>
+        </details>
       </div>
     </section>
   );

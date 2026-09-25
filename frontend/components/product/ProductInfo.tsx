@@ -30,7 +30,7 @@ export default function ProductInfo({
   return (
     <div className="product-info product-reveal product-delay-1" suppressHydrationWarning>
       <p className="product-tag">
-        {product.collection?.name || "Product"} &middot; {product.category?.name || "Category"}
+        {product.collection?.name || "Product"} Collection &middot; {product.category?.name || "Category"}
       </p>
       <h1>{product.name}</h1>
       <p className="mobile-category">{product.category?.name}</p>

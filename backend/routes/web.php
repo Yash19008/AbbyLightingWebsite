@@ -566,6 +566,9 @@ Route::group(['prefix' => 'admin'], function () {
 
             // Compositions Section
             Route::post('/{collection}/compositions-section', 'storeCompositionsSection')->name('admin.collections.store-compositions');
+
+            // Products Section
+            Route::post('/{collection}/products-section', 'storeProductsSection')->name('admin.collections.store-products');
             
             // Composition Items CRUD
             Route::get('/{collection}/composition-items/add', 'addCompositionItem')->name('admin.collections.composition-items.add');

@@ -91,18 +91,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="collection_ids" class="col-sm-2 control-label">Collection</label>
-                        <div class="col-sm-5">
-                            <div class="input-group">
-                                <select id="collection_ids" name="collection_ids[]" class="form-control select2" multiple="multiple" data-placeholder="Select Collections" style="width: 100%;">
-                                    @foreach($collections as $col)
-                                    <option value="{{ $col->id }}" {{ in_array($col->id, $selected_collections) ? "selected" : "" }}> {{ $col->name }} </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="form-group row">
                         <label for="ingredients" class="col-sm-2 control-label">Icons<i class="text-danger">*</i></label>
                         <div class="col-sm-5">

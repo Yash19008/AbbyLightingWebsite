@@ -101,6 +101,14 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="show_in_menu" 
+                                               name="show_in_menu" value="1" {{ old('show_in_menu', true) ? 'checked' : '' }}>
+                                        <label class="custom-control-label" for="show_in_menu">Show in Menu</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
                                     <label for="order">Display Order</label>
                                     <input type="number" class="form-control" id="order" 
                                            name="order" value="{{ old('order', 0) }}" min="0">

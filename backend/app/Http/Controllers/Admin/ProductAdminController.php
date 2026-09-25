@@ -146,8 +146,6 @@ class ProductAdminController extends Controller
         $data['project'] = Project::where('is_active', 'yes')->get();
         $data['icons'] = Icon::where('is_active', 'yes')->get();
         $data['productImages'] = [];
-        $data['collections'] = \App\Models\Collection::where('is_active', true)->orderBy('order', 'asc')->get();
-        $data['selected_collections'] = [];
         return view('admin.product_edit', $data);
     }
     public function insert(Request $request)
@@ -184,10 +182,6 @@ class ProductAdminController extends Controller
         }
 
         $product = ProductMaster::create($productVal);
-
-        if ($request->has('collection_ids')) {
-            $product->collections()->sync($request->collection_ids);
-        }
 
         if ($request->has('productImages') && $request->productImages !== null && $request->productImages !== 'null') {
             $productImages = $request->productImages;
@@ -261,8 +255,6 @@ class ProductAdminController extends Controller
        // dd($data['outerjoin']);
         $data['tags'] = SubTag::where('is_active', 'yes')->get();
         $data['productImages'] = ProductImage::where('product_id', $id)->where('is_active', 'yes')->get();
-        $data['collections'] = \App\Models\Collection::where('is_active', true)->orderBy('order', 'asc')->get();
-        $data['selected_collections'] = $data['product']->collections->pluck('id')->toArray();
         return view('admin.product_edit', $data);
     }
     public function update(Request $request, $id)
