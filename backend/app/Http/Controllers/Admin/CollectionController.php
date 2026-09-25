@@ -71,7 +71,7 @@ class CollectionController extends Controller
      */
     public function edit(Collection $collection)
     {
-        $collection->load('heroSection', 'parametersSection.items', 'compositionsSection.items', 'tonesSection.families.colors', 'placesSection.items', 'spreadDropSection');
+        $collection->load('heroSection', 'parametersSection.items', 'compositionsSection.items', 'tonesSection.families.colors', 'placesSection.items', 'catalogueSection', 'spreadDropSection');
         return view('admin.collections.edit', compact('collection'));
     }
 
@@ -715,6 +715,46 @@ class CollectionController extends Controller
         return redirect()
             ->to(route('admin.collections.edit', $collection->slug) . '?tab=places')
             ->with('success', 'Places section saved successfully!');
+    }
+
+    /**
+     * Store catalogue section data.
+     */
+    public function storeCatalogueSection(Request $request, Collection $collection)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'title_highlight' => 'nullable|string|max:100',
+            'button_text' => 'nullable|string|max:100',
+            'button_link' => 'nullable|string|max:255',
+            'is_active' => 'boolean',
+            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+        ]);
+
+        $data = [
+            'title' => $validated['title'],
+            'title_highlight' => $validated['title_highlight'] ?? null,
+            'button_text' => $validated['button_text'] ?? null,
+            'button_link' => $validated['button_link'] ?? null,
+            'is_active' => $request->has('is_active'),
+        ];
+
+        if ($request->hasFile('background_image')) {
+            $data['background_image'] = $request->file('background_image')->store('collections/catalogue', 'public');
+        }
+
+        $collection->catalogueSection()->updateOrCreate(
+            ['collection_id' => $collection->id],
+            $data
+        );
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Catalogue section saved successfully!']);
+        }
+
+        return redirect()
+            ->to(route('admin.collections.edit', $collection->slug) . '?tab=catalogue')
+            ->with('success', 'Catalogue section saved successfully!');
     }
 
     /**

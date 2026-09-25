@@ -586,6 +586,7 @@ Route::group(['prefix' => 'admin'], function () {
 
             // Places Section
             Route::post('/{collection}/places-section', 'storePlacesSection')->name('admin.collections.store-places');
+            Route::post('/{collection}/catalogue-section', 'storeCatalogueSection')->name('admin.collections.store-catalogue');
             
             // Place Items CRUD
             Route::get('/{collection}/place-items/add', 'addPlaceItem')->name('admin.collections.place-items.add');

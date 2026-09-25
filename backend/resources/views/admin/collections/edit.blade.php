@@ -112,6 +112,16 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link {{ $activeTab === 'catalogue' ? 'active' : '' }}" id="catalogue-tab" data-toggle="tab" href="#catalogue-section" role="tab" aria-controls="catalogue-section" aria-selected="{{ $activeTab === 'catalogue' ? 'true' : 'false' }}">
+                                    <i class="fas fa-book-open"></i> Catalogue
+                                    @if($collection->catalogueSection)
+                                        <span class="badge badge-success ml-1">✓</span>
+                                    @else
+                                        <span class="badge badge-secondary ml-1">+</span>
+                                    @endif
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link {{ $activeTab === 'spread-drop' ? 'active' : '' }}" id="spread-drop-tab" data-toggle="tab" href="#spread-drop-section" role="tab" aria-controls="spread-drop-section" aria-selected="{{ $activeTab === 'spread-drop' ? 'true' : 'false' }}">
                                     <i class="fas fa-lightbulb"></i> Spread & Drop
                                     @if($collection->spreadDropSection)
@@ -768,6 +778,91 @@
                                     </div>
                                 </div>
 
+                            </div>
+
+                            <!-- Catalogue Section Tab -->
+                            <div class="tab-pane fade {{ $activeTab === 'catalogue' ? 'show active' : '' }} p-4" id="catalogue-section" role="tabpanel" aria-labelledby="catalogue-tab">
+                                <form action="{{ route('admin.collections.store-catalogue', $collection->slug) }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="card inner-section-card shadow-sm">
+                                        <div class="card-header bg-light">
+                                            <h5 class="card-title mb-0">
+                                                <i class="fas fa-book-open mr-1 text-primary"></i> Catalogue Section Configuration
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        <div class="col-md-12 mb-3">
+                                                            <label for="cat_title">Title <span class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" id="cat_title" name="title" 
+                                                                   value="{{ old('title', $collection->catalogueSection->title ?? 'See the whole') }}" 
+                                                                   required placeholder="e.g. See the whole">
+                                                            <small class="text-muted">The regular text part of the heading.</small>
+                                                        </div>
+                                                        <div class="col-md-12 mb-3">
+                                                            <label for="cat_title_highlight">Title Highlight (Italic)</label>
+                                                            <input type="text" class="form-control" id="cat_title_highlight" name="title_highlight" 
+                                                                   value="{{ old('title_highlight', $collection->catalogueSection->title_highlight ?? 'collection.') }}" 
+                                                                   placeholder="e.g. collection.">
+                                                            <small class="text-muted">The emphasized text part of the heading.</small>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="cat_btn_text">Button Text</label>
+                                                            <input type="text" class="form-control" id="cat_btn_text" name="button_text" 
+                                                                   value="{{ old('button_text', $collection->catalogueSection->button_text ?? 'Download catalogue') }}" 
+                                                                   placeholder="e.g. Download catalogue">
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="cat_btn_link">Button Link</label>
+                                                            <input type="text" class="form-control" id="cat_btn_link" name="button_link" 
+                                                                   value="{{ old('button_link', $collection->catalogueSection->button_link ?? '/catalogues') }}" 
+                                                                   placeholder="e.g. /catalogues">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group border-left pl-4 h-100">
+                                                        <label>Background Image</label>
+                                                        <div class="mt-2 mb-3 text-center">
+                                                            @if(isset($collection->catalogueSection) && $collection->catalogueSection->background_image)
+                                                                <img src="{{ asset('storage/' . $collection->catalogueSection->background_image) }}" 
+                                                                     alt="Current Image" class="img-thumbnail" style="max-height: 150px; object-fit: cover;">
+                                                            @else
+                                                                <div class="bg-light border rounded d-flex align-items-center justify-content-center text-muted" 
+                                                                     style="height: 150px;">
+                                                                    <div class="text-center">
+                                                                        <i class="fas fa-image fa-2x mb-2"></i><br>
+                                                                        <small>No image uploaded</small>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="custom-file mb-2">
+                                                            <input type="file" class="custom-file-input" id="cat_bg_image" name="background_image" accept="image/*">
+                                                            <label class="custom-file-label" for="cat_bg_image">Choose file</label>
+                                                        </div>
+                                                        <small class="text-muted d-block">Recommended size: 1920x800px. Max size: 2MB</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <hr class="my-4">
+                                            
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="custom-control custom-switch">
+                                                    <input type="checkbox" class="custom-control-input" id="cat_is_active" name="is_active" value="1" 
+                                                           {{ old('is_active', $collection->catalogueSection->is_active ?? true) ? 'checked' : '' }}>
+                                                    <label class="custom-control-label" for="cat_is_active">Display on Frontend</label>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary px-4">
+                                                    <i class="fas fa-save mr-1"></i> Save Catalogue Section
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
 
                             <!-- Spread & Drop Section Tab -->

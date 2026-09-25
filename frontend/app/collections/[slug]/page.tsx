@@ -78,7 +78,9 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           <PlacesSectionDynamic placesSection={collection.places_section} />
         )}
         
-        <CatalogueSection />
+        {collection.catalogue_section?.is_active && (
+          <CatalogueSection catalogueSection={collection.catalogue_section} />
+        )}
         <RelatedCollections collections={otherCollections} />
       </div>
     );

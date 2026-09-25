@@ -78,6 +78,7 @@ class CollectionApiController extends Controller
                 'placesSection.items' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
                 },
+                'catalogueSection',
                 'spreadDropSection',
                 'products'
             ])
@@ -248,6 +249,25 @@ class CollectionApiController extends Controller
                     ];
                 })
             ] : null,
+
+            // Catalogue Section
+            'catalogue_section' => $collection->catalogueSection ? [
+                'background_image' => $collection->catalogueSection->background_image 
+                    ? asset('storage/' . $collection->catalogueSection->background_image) 
+                    : null,
+                'title' => $collection->catalogueSection->title,
+                'title_highlight' => $collection->catalogueSection->title_highlight,
+                'button_text' => $collection->catalogueSection->button_text,
+                'button_link' => $collection->catalogueSection->button_link,
+                'is_active' => $collection->catalogueSection->is_active,
+            ] : [
+                'background_image' => null,
+                'title' => 'See the whole',
+                'title_highlight' => 'collection.',
+                'button_text' => 'Download catalogue',
+                'button_link' => '/catalogues',
+                'is_active' => true, // default to active for backwards compatibility
+            ],
             
             // Places Section
             'places_section' => $collection->placesSection && $collection->placesSection->is_active ? [

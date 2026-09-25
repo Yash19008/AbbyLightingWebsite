@@ -81,6 +81,14 @@ class Collection extends Model
     }
 
     /**
+     * Relationship: A collection has one catalogue section
+     */
+    public function catalogueSection()
+    {
+        return $this->hasOne(CollectionCatalogueSection::class);
+    }
+
+    /**
      * Relationship: A collection belongs to many products
      */
     public function products()

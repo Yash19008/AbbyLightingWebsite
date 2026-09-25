@@ -92,6 +92,15 @@ export interface PlacesSection {
   items: PlaceItem[];
 }
 
+export interface CatalogueSection {
+  background_image: string | null;
+  title: string;
+  title_highlight: string | null;
+  button_text: string | null;
+  button_link: string | null;
+  is_active: boolean;
+}
+
 export interface Product {
   id: number;
   title: string;
@@ -112,6 +121,7 @@ export interface CollectionDetail {
   compositions_section: CompositionsSection | null;
   tones_section: TonesSection | null;
   places_section: PlacesSection | null;
+  catalogue_section: CatalogueSection | null;
   spread_drop_section?: { is_active: boolean } | null;
   products?: Product[];
 }
