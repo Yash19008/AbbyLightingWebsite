@@ -1135,12 +1135,14 @@ body {
     background: #f6c177;
     color: #111111 !important;
     font-family: 'Poppins', 'Inter', sans-serif;
-    font-size: 11px;
+    font-size: 8.58px;
     font-weight: 600;
     letter-spacing: 0.08em;
+    width: 81.13px;
     text-transform: uppercase;
     padding: 7px 16px;
     border-radius: 3px;
+    height: 32.43px;
     text-decoration: none;
     line-height: 1;
     display: inline-flex;
@@ -1150,6 +1152,7 @@ body {
 
   .pdrop-body {
     padding-top: 10px;
+    padding-right: 6px;
   }
 
   .pdrop-title-row {
@@ -1899,7 +1902,7 @@ footer#contact {
 }
 
 .footer-links a {
-  color: #f7f7f7 !important;
+  color: #B6B6B6 !important;
   margin: 0 0 14px !important;
   font: 300 14px/1.4 Inter, sans-serif !important;
   display: block !important;
@@ -1922,7 +1925,7 @@ footer#contact {
   outline: none !important;
   padding: 0 !important;
   margin: 0 0 14px 0 !important;
-  color: #f7f7f7 !important;
+  color: #B6B6B6 !important;
   font: 300 14px/1.4 Inter, sans-serif !important;
   display: flex !important;
   align-items: center !important;
@@ -1957,7 +1960,7 @@ footer#contact {
 
 .footer-accordion-panel {
   display: none !important;
-  padding-left: 12px !important;
+  padding-left: 0px !important;
   margin-bottom: 14px !important;
   flex-direction: column !important;
 
@@ -1966,6 +1969,7 @@ footer#contact {
 .footer-accordion.is-open .footer-accordion-panel,
 .footer-accordion.open .footer-accordion-panel {
   display: flex !important;
+  gap: 4px;
 }
 
 .footer-accordion-panel a {
@@ -2050,7 +2054,7 @@ footer#contact {
     min-width: 95px !important;
   }
 
-  .footer-links a,
+
   .footer-accordion-toggle {
     font-size: 13px !important;
     margin-bottom: 12px !important;
@@ -2093,11 +2097,15 @@ footer#contact {
     margin-top: 20px !important;
   }
 
-  .footer-links a,
+
   .footer-accordion-toggle {
     font-size: 13.5px !important;
     margin-bottom: 14px !important;
     padding-left: 0 !important;
+  }
+
+  .footer-accordion-panel .footer-links a {
+    margin-bottom: 0px !important;
   }
 
   .footer-company .footer-mobile-legal {

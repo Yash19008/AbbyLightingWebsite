@@ -179,8 +179,8 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
                 onClick={() => {
                   setActiveIndex(activeIndex === index ? null : index);
                   setActiveLook({
-                    title: comp.title || 'Composition',
-                    kicker: comp.kicker || comp.category || 'Symphony Composition',
+                    title: comp.kicker || comp.title || 'Composition',
+                    kicker: [comp.title, comp.category].filter(Boolean).join(' · ') || 'Symphony Composition',
                     room: comp.category ? comp.category.toLowerCase() : 'living',
                     image: comp.image,
                   });
