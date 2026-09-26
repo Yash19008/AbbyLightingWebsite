@@ -24,9 +24,14 @@ class DecProduct extends Model
         return $this->belongsTo(DecCategory::class, 'category_id');
     }
 
-    public function variants()
+    public function colors()
     {
-        return $this->hasMany(DecProductVariant::class, 'product_id')->orderBy('order', 'asc');
+        return $this->hasMany(DecProductColor::class, 'product_id')->orderBy('order', 'asc');
+    }
+
+    public function sizes()
+    {
+        return $this->hasMany(DecProductSize::class, 'product_id')->orderBy('order', 'asc');
     }
 
     public function galleries()
@@ -34,10 +39,20 @@ class DecProduct extends Model
         return $this->hasMany(DecProductGallery::class, 'product_id')->orderBy('order', 'asc');
     }
 
+    public function specRows()
+    {
+        return $this->hasMany(DecProductSpecRow::class, 'product_id')->whereNull('size_id')->orderBy('order', 'asc');
+    }
+
     public function relatedProducts()
     {
         return $this->belongsToMany(DecProduct::class, 'dec_product_related', 'product_id', 'related_product_id')
                     ->withPivot('order')
                     ->orderByPivot('order');
+    }
+
+    public function compositions()
+    {
+        return $this->belongsToMany(\App\Models\Composition::class, 'composition_products', 'product_id', 'composition_id');
     }
 }

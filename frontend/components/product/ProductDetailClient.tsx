@@ -23,20 +23,26 @@ interface ProductDetailClientProps {
 
 export default function ProductDetailClient({ product }: ProductDetailClientProps) {
   const [activeColourIndex, setActiveColourIndex] = useState(0);
+  const [activeSizeIndex, setActiveSizeIndex] = useState(0);
 
   const handleColourChange = useCallback((index: number) => {
     setActiveColourIndex(index);
   }, []);
 
+  const handleSizeChange = useCallback((index: number) => {
+    setActiveSizeIndex(index);
+  }, []);
+
   const activeVariant = product.variants[activeColourIndex] ?? product.variants[0];
+  const activeSize = product.sizes?.[activeSizeIndex] ?? product.sizes?.[0];
 
   // Derive the main stage image based on fallback rules
   const stageImage = useMemo(() => {
-    if (activeVariant?.main_image) return getImageUrl(activeVariant.main_image);
+    if (activeVariant?.lighton_image) return getImageUrl(activeVariant.lighton_image);
     
     // Fallback 1: First variant that has an image
-    const firstVariantWithImage = product.variants.find(v => v.main_image);
-    if (firstVariantWithImage) return getImageUrl(firstVariantWithImage.main_image);
+    const firstVariantWithImage = product.variants.find(v => v.lighton_image);
+    if (firstVariantWithImage) return getImageUrl(firstVariantWithImage.lighton_image);
     
     // Fallback 2: Product featured image
     return getImageUrl(product.featured_image);
@@ -59,7 +65,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   return (
     <main className="product-page">
       <div className="product-shell">
-        <nav className="site-breadcrumb site-breadcrumb--on-light product-breadcrumb product-reveal" aria-label="Breadcrumb">
+        <nav className="site-breadcrumb site-breadcrumb--on-light product-breadcrumb product-reveal" aria-label="Breadcrumb" suppressHydrationWarning>
           <Link href="/">Home</Link> / {product.category?.name || "Decorative"} / {product.collection?.name || "Product"} / {product.name}
         </nav>
         <section className="product-top">
@@ -70,8 +76,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           <ProductInfo
             product={product}
             activeVariant={activeVariant}
+            activeSize={activeSize}
             activeColourIndex={activeColourIndex}
+            activeSizeIndex={activeSizeIndex}
             onColourChange={handleColourChange}
+            onSizeChange={handleSizeChange}
           />
         </section>
       </div>
@@ -80,10 +89,10 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         <CollectionBand collection={product.collection} />
       )}
 
-      {activeVariant?.spec_rows && (
+      {activeSize?.spec_rows && (
         <ProductSpecs 
-            specRows={activeVariant.spec_rows} 
-            allVariants={product.variants}
+            specRows={activeSize.spec_rows} 
+            allSizes={product.sizes}
             installationGuide={product.installation_guide ? getImageUrl(product.installation_guide) : null}
             careInstructions={product.care_instructions ? getImageUrl(product.care_instructions) : null}
         />
@@ -91,7 +100,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
       {product.related_products && product.related_products.length > 0 && (
         <RelatedFamily 
-            products={product.related_products} 
+            products={product.related_products}
+            productSlug={product.slug}
         />
       )}
     </main>

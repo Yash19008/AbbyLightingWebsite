@@ -25,12 +25,28 @@ export interface ParametersSection {
   items: ParameterItem[];
 }
 
+export interface CompositionProductVariant {
+  color: string;
+  image: string;
+}
+
+export interface CompositionProduct {
+  name: string;
+  type: string;
+  image: string | null;
+  colors?: string[];
+  variants?: CompositionProductVariant[];
+  collection?: string | null;
+  link?: string;
+}
+
 export interface CompositionItem {
   id: number;
   image: string;
   title: string;
   category: string;
   kicker: string;
+  products?: CompositionProduct[];
 }
 
 export interface CompositionsSection {
@@ -76,6 +92,22 @@ export interface PlacesSection {
   items: PlaceItem[];
 }
 
+export interface CatalogueSection {
+  background_image: string | null;
+  title: string;
+  title_highlight: string | null;
+  button_text: string | null;
+  button_link: string | null;
+  is_active: boolean;
+}
+
+export interface ProductsSection {
+  heading: string | null;
+  subtitle: string | null;
+  view_more_text: string;
+  is_active: boolean;
+}
+
 export interface Product {
   id: number;
   title: string;
@@ -94,8 +126,10 @@ export interface CollectionDetail {
   hero_section: CollectionHeroSection | null;
   parameters_section: ParametersSection | null;
   compositions_section: CompositionsSection | null;
+  products_section: ProductsSection | null;
   tones_section: TonesSection | null;
   places_section: PlacesSection | null;
+  catalogue_section: CatalogueSection | null;
   spread_drop_section?: { is_active: boolean } | null;
   products?: Product[];
 }

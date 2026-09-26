@@ -10,6 +10,8 @@ export const metadata = {
   description: 'Sculptural pendants, wall lights, floor and table lamps across our decorative collections.',
 };
 
-export default function DecorativeProductsPage() {
-  return <DecorativeListingClient />;
+export default async function DecorativeProductsPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const resolvedSearchParams = await searchParams;
+  const category = typeof resolvedSearchParams.category === 'string' ? resolvedSearchParams.category : undefined;
+  return <DecorativeListingClient initialCategory={category} />;
 }

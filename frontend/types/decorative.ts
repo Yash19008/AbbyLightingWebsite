@@ -16,10 +16,14 @@ export interface DecVariant {
   id: number;
   name: string;
   sku: string | null;
-  size: string | null;
   main_image: string | null;
   lighton_image: string | null;
   color_master: DecColorMaster | null;
+}
+
+export interface DecSize {
+  id: number;
+  label: string;
   spec_rows: {
     basic_specifications: DecSpecItem[];
     dimensions: DecSpecItem[];
@@ -75,6 +79,7 @@ export interface DecProductDetail {
     name: string;
   } | null;
   variants: DecVariant[];
+  sizes: DecSize[];
   galleries: DecGallery[];
   related_products: DecRelatedProduct[];
 }

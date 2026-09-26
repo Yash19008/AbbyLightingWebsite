@@ -193,6 +193,31 @@ class BlogAdminController extends Controller
         return redirect()->route('admin.blogs.index')->with('success', 'Blog article updated successfully.');
     }
 
+    public function duplicate($id)
+    {
+        $blog = Blog::findOrFail($id);
+
+        $newBlog = $blog->replicate();
+        
+        $newBlog->title = $blog->title . ' (Copy)';
+        
+        $slug = Str::slug($newBlog->title);
+        $originalSlug = $slug;
+        $count = 1;
+        while (Blog::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+        $newBlog->slug = $slug;
+
+        $newBlog->featured_image = null;
+        $newBlog->secondary_image = null;
+
+        $newBlog->status = 'draft';
+        $newBlog->save();
+
+        return redirect()->route('admin.blogs.edit', $newBlog->id)->with('success', 'Blog article duplicated successfully as Draft.');
+    }
+
     public function destroy($id)
     {
         $blog = Blog::findOrFail($id);

@@ -63,8 +63,14 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           <CompositionsSectionDynamic compositionsSection={collection.compositions_section} />
         )}
 
-        {/* Products Section */}
-        <ProductsSection products={collection.products || []} collectionName={collection.name} />
+        {/* Products Section - Dynamic if data exists */}
+        {collection.products_section?.is_active && (
+          <ProductsSection 
+            products={collection.products || []} 
+            collectionName={collection.name} 
+            sectionData={collection.products_section} 
+          />
+        )}
         
         {/* Tones Section - Dynamic if data exists */}
         {collection.tones_section && (
@@ -78,7 +84,9 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           <PlacesSectionDynamic placesSection={collection.places_section} />
         )}
         
-        <CatalogueSection />
+        {collection.catalogue_section?.is_active && (
+          <CatalogueSection catalogueSection={collection.catalogue_section} />
+        )}
         <RelatedCollections collections={otherCollections} />
       </div>
     );

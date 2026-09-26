@@ -53,7 +53,7 @@ export default function CollectionBand({
           className="collection-band-image"
         />
       )}
-      <div className="product-reveal is-visible">
+      <div className="product-reveal is-visible" suppressHydrationWarning>
         <h2>
           Part of <em>{displayName} Collection</em>
         </h2>

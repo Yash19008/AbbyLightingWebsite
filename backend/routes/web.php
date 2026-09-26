@@ -31,7 +31,8 @@ use App\Http\Controllers\Admin\EventAdminController;
 use App\Http\Controllers\Admin\IconAdminController;
 use App\Http\Controllers\Admin\DecorativeProductController;
 use App\Http\Controllers\Admin\DecorativeCategoryController;
-use App\Http\Controllers\Admin\DecorativeVariantController;
+use App\Http\Controllers\Admin\DecorativeColorController;
+use App\Http\Controllers\Admin\DecorativeSizeController;
 use App\Http\Controllers\Admin\JobAdminController;
 use App\Http\Controllers\Admin\ClientAdminController;
 use App\Http\Controllers\Admin\HomeSliderController as AdminHomeSliderController;
@@ -182,13 +183,20 @@ Route::group(['prefix' => 'admin'], function () {
             Route::delete('/related/{id}', [\App\Http\Controllers\Admin\DecorativeRelatedController::class, 'detach'])->name('decorative_product_admin.related.detach');
             Route::post('/{product_id}/related/reorder', [\App\Http\Controllers\Admin\DecorativeRelatedController::class, 'reorder'])->name('decorative_product_admin.related.reorder');
 
-            // Variants
-            Route::post('/{product_id}/variants', [DecorativeVariantController::class, 'store'])->name('decorative_product_admin.variants.store');
-            Route::get('/variants/{id}', [DecorativeVariantController::class, 'show'])->name('decorative_product_admin.variants.show');
-            Route::put('/variants/{id}', [DecorativeVariantController::class, 'update'])->name('decorative_product_admin.variants.update');
-            Route::post('/variants/{id}/images', [DecorativeVariantController::class, 'updateImages'])->name('decorative_product_admin.variants.updateImages');
-            Route::delete('/variants/{id}', [DecorativeVariantController::class, 'destroy'])->name('decorative_product_admin.variants.destroy');
-            Route::post('/{product_id}/variants/reorder', [DecorativeVariantController::class, 'reorder'])->name('decorative_product_admin.variants.reorder');
+            // Colors
+            Route::post('/{product_id}/colors', [DecorativeColorController::class, 'store'])->name('decorative_product_admin.colors.store');
+            Route::get('/colors/{id}', [DecorativeColorController::class, 'show'])->name('decorative_product_admin.colors.show');
+            Route::put('/colors/{id}', [DecorativeColorController::class, 'update'])->name('decorative_product_admin.colors.update');
+            Route::post('/colors/{id}/images', [DecorativeColorController::class, 'updateImages'])->name('decorative_product_admin.colors.updateImages');
+            Route::delete('/colors/{id}', [DecorativeColorController::class, 'destroy'])->name('decorative_product_admin.colors.destroy');
+            Route::post('/{product_id}/colors/reorder', [DecorativeColorController::class, 'reorder'])->name('decorative_product_admin.colors.reorder');
+
+            // Sizes
+            Route::post('/{product_id}/sizes', [DecorativeSizeController::class, 'store'])->name('decorative_product_admin.sizes.store');
+            Route::get('/sizes/{id}', [DecorativeSizeController::class, 'show'])->name('decorative_product_admin.sizes.show');
+            Route::put('/sizes/{id}', [DecorativeSizeController::class, 'update'])->name('decorative_product_admin.sizes.update');
+            Route::delete('/sizes/{id}', [DecorativeSizeController::class, 'destroy'])->name('decorative_product_admin.sizes.destroy');
+            Route::post('/{product_id}/sizes/reorder', [DecorativeSizeController::class, 'reorder'])->name('decorative_product_admin.sizes.reorder');
 
             // Decorative Product Gallery
             Route::post('/{product_id}/gallery', [\App\Http\Controllers\Admin\DecorativeGalleryController::class, 'store'])->name('decorative_product_admin.gallery.store');
@@ -197,17 +205,17 @@ Route::group(['prefix' => 'admin'], function () {
             Route::delete('/gallery/{id}', [\App\Http\Controllers\Admin\DecorativeGalleryController::class, 'destroy'])->name('decorative_product_admin.gallery.destroy');
 
             // Decorative Specifications
-            Route::get('/variants/{variant_id}/specs', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'getRows'])->name('decorative_product_admin.specs.get');
-            Route::post('/variants/{variant_id}/specs', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'store'])->name('decorative_product_admin.specs.store');
-            Route::put('/specs/{id}', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'update'])->name('decorative_product_admin.specs.update');
-            Route::delete('/specs/{id}', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'destroy'])->name('decorative_product_admin.specs.destroy');
-            Route::post('/variants/{variant_id}/specs/reorder', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'reorder'])->name('decorative_product_admin.specs.reorder');
+            Route::get('/{product_id}/specs', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'getRows'])->name('decorative_product_admin.specs.get');
+            Route::post('/{product_id}/specs', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'store'])->name('decorative_product_admin.specs.store');
+            Route::put('/{product_id}/specs/{id}', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'update'])->name('decorative_product_admin.specs.update');
+            Route::delete('/{product_id}/specs/{id}', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'destroy'])->name('decorative_product_admin.specs.destroy');
+            Route::post('/{product_id}/specs/reorder', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'reorder'])->name('decorative_product_admin.specs.reorder');
             
             // Phase 6 - Copy & Templates
-            Route::post('/variants/{variant_id}/specs/copy', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'copyFromVariant'])->name('decorative_product_admin.specs.copy');
+            Route::post('/{product_id}/specs/copy', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'copyFromProduct'])->name('decorative_product_admin.specs.copy');
             Route::get('/specs/templates', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'getTemplates'])->name('decorative_product_admin.specs.templates.get');
-            Route::post('/variants/{variant_id}/specs/templates', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'saveTemplate'])->name('decorative_product_admin.specs.templates.save');
-            Route::post('/variants/{variant_id}/specs/templates/apply', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'applyTemplate'])->name('decorative_product_admin.specs.templates.apply');
+            Route::post('/{product_id}/specs/templates', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'saveTemplate'])->name('decorative_product_admin.specs.templates.save');
+            Route::post('/{product_id}/specs/templates/apply', [\App\Http\Controllers\Admin\DecorativeSpecController::class, 'applyTemplate'])->name('decorative_product_admin.specs.templates.apply');
         });
 
         Route::group(['prefix' => 'decorative-categories'], function () {
@@ -246,6 +254,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/insert', 'insert')->name('category_admin.insert');
             Route::post('/update/{any}', 'update')->name('category_admin.update');
             Route::get('/information/{any}', 'information')->name('category_admin.information');
+            Route::post('/toggleFeatured', 'toggleFeatured')->name('category_admin.toggleFeatured');
         });
 
         /********************FAMILIES********************/
@@ -310,8 +319,18 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/insert', 'insert')->name('composition_admin.insert');
             Route::get('/edit/{any}', 'edit')->name('composition_admin.edit');
             Route::post('/update/{any}', 'update')->name('composition_admin.update');
+            Route::post('/delete', 'delete')->name('composition_admin.delete');
         });
 
+        /********************COMPOSITION CATEGORIES********************/
+        Route::controller(\App\Http\Controllers\Admin\CompositionCategoryController::class)->prefix('composition-categories')->group(function () {
+            Route::get('/', 'index')->name('composition_categories_admin');
+            Route::get('/add', 'add')->name('composition_categories_admin.add');
+            Route::post('/insert', 'insert')->name('composition_categories_admin.insert');
+            Route::get('/edit/{any}', 'edit')->name('composition_categories_admin.edit');
+            Route::post('/update/{any}', 'update')->name('composition_categories_admin.update');
+            Route::post('/delete', 'delete')->name('composition_categories_admin.delete');
+        });
         /********************PROJECT********************/
         Route::controller(ProjectAdminController::class)->group(function () {
             Route::get('/project', 'index')->name('project_admin');
@@ -478,6 +497,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/store', 'store')->name('admin.blogs.store');
             Route::get('/edit/{id}', 'edit')->name('admin.blogs.edit');
             Route::put('/update/{id}', 'update')->name('admin.blogs.update');
+            Route::get('/duplicate/{id}', 'duplicate')->name('admin.blogs.duplicate');
             Route::delete('/delete/{id}', 'destroy')->name('admin.blogs.destroy');
             Route::post('/upload-image', 'uploadImage')->name('admin.blogs.upload_image');
         });
@@ -508,6 +528,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/store', 'store')->name('admin.catalogues.store');
             Route::get('/edit/{id}', 'edit')->name('admin.catalogues.edit');
             Route::put('/update/{id}', 'update')->name('admin.catalogues.update');
+            Route::get('/duplicate/{id}', 'duplicate')->name('admin.catalogues.duplicate');
             Route::delete('/delete/{id}', 'destroy')->name('admin.catalogues.destroy');
         });
 
@@ -545,6 +566,9 @@ Route::group(['prefix' => 'admin'], function () {
 
             // Compositions Section
             Route::post('/{collection}/compositions-section', 'storeCompositionsSection')->name('admin.collections.store-compositions');
+
+            // Products Section
+            Route::post('/{collection}/products-section', 'storeProductsSection')->name('admin.collections.store-products');
             
             // Composition Items CRUD
             Route::get('/{collection}/composition-items/add', 'addCompositionItem')->name('admin.collections.composition-items.add');
@@ -565,6 +589,7 @@ Route::group(['prefix' => 'admin'], function () {
 
             // Places Section
             Route::post('/{collection}/places-section', 'storePlacesSection')->name('admin.collections.store-places');
+            Route::post('/{collection}/catalogue-section', 'storeCatalogueSection')->name('admin.collections.store-catalogue');
             
             // Place Items CRUD
             Route::get('/{collection}/place-items/add', 'addPlaceItem')->name('admin.collections.place-items.add');

@@ -117,7 +117,7 @@ export default function HeaderClient() {
         const [archRes, decRes, colRes] = await Promise.all([
           fetch(`${API_URL}/api/categories`, { cache: 'no-store' }),
           fetch(`${API_URL}/api/dec-categories`, { cache: 'no-store' }),
-          fetch(`${API_URL}/api/collections`, { cache: 'no-store' })
+          fetch(`${API_URL}/api/collections?menu_only=1`, { cache: 'no-store' })
         ]);
 
         if (archRes.ok) {

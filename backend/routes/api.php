@@ -65,6 +65,7 @@ Route::controller(DecorativeProductApiController::class)->group(function () {
     Route::get('/dec-categories', 'categories');
     Route::get('/dec-collections', 'collections');
     Route::get('/dec-products', 'index');
+    Route::get('/dec-products/{slug}/related', 'relatedProducts');
     Route::get('/dec-products/{slug}', 'show');
 });
 

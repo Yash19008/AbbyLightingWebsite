@@ -1,102 +1,130 @@
                 <div id="pane-variants" class="wizard-pane">
                     @if(isset($product))
                     <div class="row">
-                        <div class="col-md-8">
-                            <div class="card">
+                        <!-- Colors Section -->
+                        <div class="col-md-6">
+                            <div class="card mb-4">
                                 <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                                    <h4 class="card-title">Product Variants</h4>
-                                    <button type="button" class="btn btn-sm btn-primary" id="btn-add-variant"><i class="ft-plus"></i> Add Variant</button>
+                                    <h4 class="card-title">Colors</h4>
+                                    <button type="button" class="btn btn-sm btn-primary" id="btn-add-color"><i class="ft-plus"></i> Add Color</button>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered table-striped" id="variants-table">
+                                        <table class="table table-bordered table-striped" id="colors-table">
                                             <thead>
                                                 <tr>
                                                     <th width="40"><i class="ft-move"></i></th>
-                                                    <th>Name &amp; SKU</th>
-                                                    <th>Color</th>
-                                                    <th>Size</th>
-                                                    <th>Status</th>
+                                                    <th>Color Profile</th>
                                                     <th width="100">Actions</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="variants-list">
-                                                @foreach($product->variants as $variant)
-                                                <tr data-id="{{ $variant->id }}">
+                                            <tbody id="colors-list">
+                                                @foreach($product->colors as $color)
+                                                <tr data-id="{{ $color->id }}">
                                                     <td class="handle" style="cursor: move;"><i class="ft-menu text-muted"></i></td>
-                                                    <td><strong>{{ $variant->name }}</strong><br><small class="text-muted">SKU: {{ $variant->sku ?? 'N/A' }}</small></td>
                                                     <td>
-                                                        @if($variant->colorMaster)
-                                                            <span class="color-indicator" style="display:inline-block;width:15px;height:15px;border-radius:50%;background:{{ $variant->colorMaster->css_value ?? '#ccc' }};border:1px solid #ddd;vertical-align:middle;margin-right:5px;"></span>
-                                                            {{ $variant->colorMaster->name }}
+                                                        @if($color->colorMaster)
+                                                            <span class="color-indicator" style="display:inline-block;width:15px;height:15px;border-radius:50%;background:{{ $color->colorMaster->css_value ?? '#ccc' }};border:1px solid #ddd;vertical-align:middle;margin-right:5px;"></span>
+                                                            {{ $color->colorMaster->name }}
                                                         @else
                                                             -
                                                         @endif
                                                     </td>
-                                                    <td>{{ $variant->size ?? '-' }}</td>
-                                                    <td><span class="badge badge-{{ $variant->status == 'active' ? 'success' : 'secondary' }}">{{ ucfirst($variant->status) }}</span></td>
                                                     <td>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary btn-edit-variant" data-id="{{ $variant->id }}"><i class="ft-edit"></i></button>
-                                                        <button type="button" class="btn btn-sm btn-outline-danger btn-delete-variant" data-id="{{ $variant->id }}"><i class="ft-trash-2"></i></button>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary btn-edit-color" data-id="{{ $color->id }}" data-color-id="{{ $color->color_master_id }}"><i class="ft-edit"></i></button>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger btn-delete-color" data-id="{{ $color->id }}"><i class="ft-trash-2"></i></button>
                                                     </td>
                                                 </tr>
                                                 @endforeach
-                                                @if($product->variants->count() == 0)
-                                                <tr id="no-variants-row">
-                                                    <td colspan="6" class="text-center py-4 text-muted">No variants added yet.</td>
+                                                @if($product->colors->count() == 0)
+                                                <tr id="no-colors-row">
+                                                    <td colspan="3" class="text-center py-4 text-muted">No colors added yet.</td>
                                                 </tr>
                                                 @endif
                                             </tbody>
                                         </table>
                                     </div>
+
+                                    <!-- Color Form -->
+                                    <div id="color-form-container" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:15px;">
+                                        <h5 id="color-form-title"><i class="ft-plus-circle text-primary"></i> Add Color</h5>
+                                        <form id="form-color">
+                                            <input type="hidden" id="color_id" name="color_id" value="">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" style="font-size:13px;">Select Color <span class="text-danger">*</span></label>
+                                                <select id="color_color_master_id" name="color_master_id" class="form-control select2" required>
+                                                    <option value="">-- Choose Color --</option>
+                                                    @if(isset($color_masters))
+                                                        @foreach($color_masters as $cm)
+                                                            <option value="{{ $cm->id }}">{{ $cm->name }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                            <div class="d-flex" style="gap:10px;">
+                                                <button type="button" class="btn btn-primary btn-sm flex-grow-1" id="btn-save-color"><i class="ft-check"></i> Save Color</button>
+                                                <button type="button" class="btn btn-light btn-sm text-muted" id="btn-cancel-color">Cancel</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="card variant-form-card">
-                                <div class="card-header pb-2 pt-2">
-                                    <h4 class="card-title m-0" id="variant-form-title" style="font-size:16px;"><i class="ft-plus-circle text-primary"></i> Add Variant</h4>
+                        <!-- Sizes Section -->
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header pb-0 d-flex justify-content-between align-items-center">
+                                    <h4 class="card-title">Sizes</h4>
+                                    <button type="button" class="btn btn-sm btn-primary" id="btn-add-size"><i class="ft-plus"></i> Add Size</button>
                                 </div>
-                                <div class="card-body pt-3">
-                                    <form id="form-variant">
-                                        <input type="hidden" id="variant_id" name="variant_id" value="">
-                                        <div class="form-group">
-                                            <label class="font-weight-bold" style="font-size:13px;">Variant Name <span class="text-danger">*</span></label>
-                                            <input type="text" id="variant_name" name="name" class="form-control form-control-sm" required placeholder="e.g. Polished Brass">
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 form-group">
-                                                <label class="font-weight-bold" style="font-size:13px;">SKU</label>
-                                                <input type="text" id="variant_sku" name="sku" class="form-control form-control-sm" placeholder="Optional">
-                                            </div>
-                                            <div class="col-md-6 form-group">
-                                                <label class="font-weight-bold" style="font-size:13px;">Size</label>
-                                                <input type="text" id="variant_size" name="size" class="form-control form-control-sm" placeholder="e.g. 10x10">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="font-weight-bold" style="font-size:13px;">Color Profile</label>
-                                            <select id="variant_color_master_id" name="color_master_id" class="form-control select2">
-                                                <option value="">-- No Color --</option>
-                                                @if(isset($color_masters))
-                                                    @foreach($color_masters as $color)
-                                                        <option value="{{ $color->id }}">{{ $color->name }}</option>
-                                                    @endforeach
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped" id="sizes-table">
+                                            <thead>
+                                                <tr>
+                                                    <th width="40"><i class="ft-move"></i></th>
+                                                    <th>Label</th>
+                                                    <th width="100">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="sizes-list">
+                                                @foreach($product->sizes as $size)
+                                                <tr data-id="{{ $size->id }}">
+                                                    <td class="handle" style="cursor: move;"><i class="ft-menu text-muted"></i></td>
+                                                    <td><strong>{{ $size->label }}</strong></td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary btn-edit-size" data-id="{{ $size->id }}" data-label="{{ $size->label }}"><i class="ft-edit"></i></button>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger btn-delete-size" data-id="{{ $size->id }}"><i class="ft-trash-2"></i></button>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                                @if($product->sizes->count() == 0)
+                                                <tr id="no-sizes-row">
+                                                    <td colspan="3" class="text-center py-4 text-muted">No sizes added yet.</td>
+                                                </tr>
                                                 @endif
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="font-weight-bold" style="font-size:13px;">Status</label>
-                                            <select id="variant_status" name="status" class="form-control select2">
-                                                <option value="active">Active</option>
-                                                <option value="inactive">Inactive</option>
-                                            </select>
-                                        </div>
-                                        <hr class="mt-2 mb-2">
-                                        <button type="button" class="btn btn-primary w-100" id="btn-save-variant"><i class="ft-check"></i> Save Variant</button>
-                                        <button type="button" class="btn btn-light w-100 mt-1 text-muted" id="btn-cancel-variant" style="display:none;">Cancel Edit</button>
-                                    </form>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Size Form -->
+                                    <div id="size-form-container" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:15px;">
+                                        <h5 id="size-form-title"><i class="ft-plus-circle text-primary"></i> Add Size</h5>
+                                        <form id="form-size">
+                                            <input type="hidden" id="size_id" name="size_id" value="">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" style="font-size:13px;">Size Label <span class="text-danger">*</span></label>
+                                                <input type="text" id="size_label" name="label" class="form-control form-control-sm" required placeholder="e.g. Small / 10x10">
+                                            </div>
+                                            <div class="d-flex" style="gap:10px;">
+                                                <button type="button" class="btn btn-primary btn-sm flex-grow-1" id="btn-save-size"><i class="ft-check"></i> Save Size</button>
+                                                <button type="button" class="btn btn-light btn-sm text-muted" id="btn-cancel-size">Cancel</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -104,7 +132,7 @@
                     @else
                     <div class="alert alert-warning text-center">
                         <i class="ft-info font-large-1 d-block mb-1"></i>
-                        You must save the basic information first before managing variants.
+                        You must save the basic information first before managing colors and sizes.
                     </div>
                     @endif
                 </div>

@@ -12,9 +12,14 @@ class DecProductSpecRow extends Model
     protected $table = 'dec_product_spec_rows';
     protected $guarded = ['id'];
 
-    public function variant()
+    public function product()
     {
-        return $this->belongsTo(DecProductVariant::class, 'variant_id');
+        return $this->belongsTo(DecProduct::class, 'product_id');
+    }
+
+    public function size()
+    {
+        return $this->belongsTo(DecProductSize::class, 'size_id');
     }
 
     public function attribute()

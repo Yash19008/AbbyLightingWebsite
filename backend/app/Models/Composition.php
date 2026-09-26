@@ -12,10 +12,20 @@ class Composition extends Model
     protected $fillable = [
         'title',
         'kicker',
-        'category',
         'image',
         'is_showcase',
+        'category_id', // Added category_id
     ];
+
+    public function category_rel()
+    {
+        return $this->belongsTo(CompositionCategory::class, 'category_id');
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(\App\Models\Decorative\DecProduct::class, 'composition_products', 'composition_id', 'product_id');
+    }
 
     public function collections()
     {

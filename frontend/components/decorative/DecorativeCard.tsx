@@ -33,9 +33,10 @@ interface DecorativeCardProps {
   order: number;
   filterDelay: number;
   isGlobalLightOn: boolean;
+  hideNewBadge?: boolean;
 }
 
-export default function DecorativeCard({ product, order, filterDelay, isGlobalLightOn }: DecorativeCardProps) {
+export default function DecorativeCard({ product, order, filterDelay, isGlobalLightOn, hideNewBadge }: DecorativeCardProps) {
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
@@ -70,6 +71,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
     >
       <article
         className="decorative-card decorative-reveal is-visible"
+        suppressHydrationWarning
         style={{ '--card-order': order, '--light-delay': `${order * 50}ms` } as React.CSSProperties}
       >
         <div className={`decorative-card-image ${isGlobalLightOn ? 'is-lit' : 'is-unlit'}`}>
@@ -88,6 +90,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                     fill
                     sizes="(max-width: 600px) 100vw, 33vw"
                     aria-hidden="true"
+                    style={{ objectFit: 'cover' }}
                   />
                 )}
                 {activeVariant?.imageOn && (
@@ -97,6 +100,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                     alt={`${product.name} in ${activeVariant?.name || 'default'}, light on`}
                     fill
                     sizes="(max-width: 600px) 100vw, 33vw"
+                    style={{ objectFit: 'cover' }}
                   />
                 )}
               </>
@@ -114,7 +118,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
             )}
           </Link>
 
-          {product.isNew && <span className="decorative-badge">New</span>}
+          {!hideNewBadge && product.isNew && <span className="decorative-badge">New</span>}
 
           {totalImages > 1 && (
             <>

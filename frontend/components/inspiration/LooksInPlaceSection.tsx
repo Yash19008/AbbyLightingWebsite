@@ -1,121 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import LookModal, { LookItem } from "./LookModal";
 
 
-const INITIAL_LOOKS: LookItem[] = [
-  {
-    title: "Stone & light in a hotel arrival",
-    kicker: "Lookbook · Hospitality",
-    room: "living",
-    image: "/images/figma-update/hero-decorative.png",
-  },
-  {
-    title: "The corner cafe",
-    kicker: "Dining · Quarry",
-    room: "dining",
-    image: "/images/reference/news-elle.png",
-  },
-  {
-    title: "Pastel calm",
-    kicker: "Living · Symphony",
-    room: "living",
-    image: "/images/reference/news-architectural.png",
-  },
-  {
-    title: "Geometry & glow",
-    kicker: "Workspace · Quarry",
-    room: "workspace",
-    image: "/images/figma-update/manufacturing.png",
-  },
-  {
-    title: "Earthen warmth",
-    kicker: "Bedroom · Symphony",
-    room: "bedroom",
-    image: "/images/reference/news-business.png",
-  },
-  {
-    title: "A working kitchen",
-    kicker: "Dining · Quarry",
-    room: "dining",
-    image: "/images/figma-update/catalogue.png",
-  },
-  {
-    title: "Vivid accents",
-    kicker: "Living · Symphony",
-    room: "living",
-    image: "/images/reference/product-neoma.png",
-  },
-  {
-    title: "Calm office",
-    kicker: "Workspace · Quarry",
-    room: "workspace",
-    image: "/images/figma-update/hero-architecture-desktop.png",
-  },
-  {
-    title: "A quiet arrival",
-    kicker: "Hospitality",
-    room: "living",
-    image: "/images/reference/project-atlas.png",
-  },
-  {
-    title: "Warm conversations",
-    kicker: "Dining",
-    room: "dining",
-    image: "/images/reference/news-elle.png",
-  },
-  {
-    title: "Focused light",
-    kicker: "Workspace",
-    room: "workspace",
-    image: "/images/reference/news-business.png",
-  },
-  {
-    title: "Layered living",
-    kicker: "Living",
-    room: "living",
-    image: "/images/figma-update/catalogue.png",
-  },
-  {
-    title: "A softer bedroom",
-    kicker: "Bedroom",
-    room: "bedroom",
-    image: "/images/world-decorative-on.png",
-  },
-  {
-    title: "Evening dining",
-    kicker: "Dining",
-    room: "dining",
-    image: "/images/figma-update/hero-decorative.png",
-  },
-  {
-    title: "Sculptural accents",
-    kicker: "Living",
-    room: "living",
-    image: "/images/reference/product-neoma.png",
-  },
-  {
-    title: "Light for focus",
-    kicker: "Workspace",
-    room: "workspace",
-    image: "/images/figma-update/hero-architecture-desktop.png",
-  },
-];
-
-const ROOMS = [
-  { id: "all", label: "All" },
-  { id: "living", label: "Living" },
-  { id: "dining", label: "Dining" },
-  { id: "bedroom", label: "Bedroom" },
-  { id: "workspace", label: "Workspace" },
-];
 
 interface CompositionItem {
   title: string;
   kicker?: string;
   category?: string;
   image?: string;
+  products?: any[];
 }
 
 interface Props {
@@ -140,14 +35,33 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const categories = useMemo(() => {
+    const catsMap = new Map<string, string>();
+    catsMap.set("all", "All");
+
+    if (compositions && compositions.length > 0) {
+      compositions.forEach(c => {
+        if (c.category) {
+          const id = c.category.toLowerCase();
+          if (!catsMap.has(id)) {
+            catsMap.set(id, c.category);
+          }
+        }
+      });
+    }
+
+    return Array.from(catsMap.entries()).map(([id, label]) => ({ id, label }));
+  }, [compositions]);
+
   const mappedLooks: LookItem[] = compositions && compositions.length > 0
     ? compositions.map((c: CompositionItem) => ({
-        title: c.title,
-        kicker: c.kicker || c.category || "",
-        room: c.category ? c.category.toLowerCase() : "all",
-        image: c.image || "/images/reference/project-atlas.png"
-      }))
-    : INITIAL_LOOKS;
+      title: c.title,
+      kicker: c.kicker || c.category || "",
+      room: c.category ? c.category.toLowerCase() : "all",
+      image: c.image || "/images/reference/project-atlas.png",
+      productsUsed: c.products || []
+    }))
+    : [];
 
   const filteredLooks = mappedLooks.filter(
     (item) => selectedRoom === "all" || item.room === selectedRoom
@@ -189,7 +103,7 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
             </button>
             {isFilterOpen && (
               <div className="filter-menu">
-                {ROOMS.map((room) => (
+                {categories.map((room) => (
                   <button
                     key={room.id}
                     type="button"

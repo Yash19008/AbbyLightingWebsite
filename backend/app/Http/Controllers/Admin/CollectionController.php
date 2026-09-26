@@ -50,6 +50,7 @@ class CollectionController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'is_active' => 'boolean',
+            'show_in_menu' => 'boolean',
             'order' => 'nullable|integer',
         ]);
 
@@ -59,6 +60,7 @@ class CollectionController extends Controller
         }
 
         $validated['is_active'] = $request->has('is_active');
+        $validated['show_in_menu'] = $request->has('show_in_menu');
         $collection = Collection::create($validated);
 
         return redirect()
@@ -71,9 +73,8 @@ class CollectionController extends Controller
      */
     public function edit(Collection $collection)
     {
-        $collection->load('heroSection', 'parametersSection.items', 'compositionsSection.items', 'tonesSection.families.colors', 'placesSection.items', 'spreadDropSection', 'compositions');
-        $allCompositions = \App\Models\Composition::orderBy('title')->get();
-        return view('admin.collections.edit', compact('collection', 'allCompositions'));
+        $collection->load('heroSection', 'parametersSection.items', 'compositionsSection.items', 'productsSection', 'tonesSection.families.colors', 'placesSection.items', 'catalogueSection', 'spreadDropSection');
+        return view('admin.collections.edit', compact('collection'));
     }
 
     /**
@@ -89,10 +90,12 @@ class CollectionController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'is_active' => 'boolean',
+            'show_in_menu' => 'boolean',
             'order' => 'nullable|integer',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
+        $validated['show_in_menu'] = $request->has('show_in_menu');
         $collection->update($validated);
 
         $redirectUrl = route('admin.collections.edit', $collection->slug) . '?tab=general';
@@ -319,8 +322,6 @@ class CollectionController extends Controller
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string',
             'is_active' => 'boolean',
-            'composition_ids' => 'nullable|array',
-            'composition_ids.*' => 'exists:compositions,id',
         ]);
 
         // Create or update compositions section
@@ -332,9 +333,6 @@ class CollectionController extends Controller
                 'is_active' => $request->has('is_active'),
             ]
         );
-
-        // Sync many-to-many compositions
-        $collection->compositions()->sync($request->input('composition_ids', []));
 
         if ($request->ajax()) {
             return response()->json(['success' => true, 'message' => 'Compositions section saved successfully!']);
@@ -457,6 +455,37 @@ class CollectionController extends Controller
         }
 
         return redirect($redirectUrl)->with('success', 'Composition card deleted successfully!');
+    }
+
+    /**
+     * Store products section data.
+     */
+    public function storeProductsSection(Request $request, Collection $collection)
+    {
+        $validated = $request->validate([
+            'heading' => 'nullable|string|max:255',
+            'subtitle' => 'nullable|string',
+            'view_more_text' => 'nullable|string|max:100',
+            'is_active' => 'boolean',
+        ]);
+
+        $collection->productsSection()->updateOrCreate(
+            ['collection_id' => $collection->id],
+            [
+                'heading' => $validated['heading'] ?? null,
+                'subtitle' => $validated['subtitle'] ?? null,
+                'view_more_text' => $validated['view_more_text'] ?? 'View all',
+                'is_active' => $request->has('is_active'),
+            ]
+        );
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Products section saved successfully!']);
+        }
+
+        return redirect()
+            ->to(route('admin.collections.edit', $collection->slug) . '?tab=products')
+            ->with('success', 'Products section saved successfully!');
     }
 
     /**
@@ -721,6 +750,46 @@ class CollectionController extends Controller
         return redirect()
             ->to(route('admin.collections.edit', $collection->slug) . '?tab=places')
             ->with('success', 'Places section saved successfully!');
+    }
+
+    /**
+     * Store catalogue section data.
+     */
+    public function storeCatalogueSection(Request $request, Collection $collection)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'title_highlight' => 'nullable|string|max:100',
+            'button_text' => 'nullable|string|max:100',
+            'button_link' => 'nullable|string|max:255',
+            'is_active' => 'boolean',
+            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+        ]);
+
+        $data = [
+            'title' => $validated['title'],
+            'title_highlight' => $validated['title_highlight'] ?? null,
+            'button_text' => $validated['button_text'] ?? null,
+            'button_link' => $validated['button_link'] ?? null,
+            'is_active' => $request->has('is_active'),
+        ];
+
+        if ($request->hasFile('background_image')) {
+            $data['background_image'] = $request->file('background_image')->store('collections/catalogue', 'public');
+        }
+
+        $collection->catalogueSection()->updateOrCreate(
+            ['collection_id' => $collection->id],
+            $data
+        );
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Catalogue section saved successfully!']);
+        }
+
+        return redirect()
+            ->to(route('admin.collections.edit', $collection->slug) . '?tab=catalogue')
+            ->with('success', 'Catalogue section saved successfully!');
     }
 
     /**

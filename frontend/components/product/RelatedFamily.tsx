@@ -6,15 +6,22 @@ import DecorativeCard from "@/components/decorative/DecorativeCard";
 
 interface RelatedFamilyProps {
   products: DecRelatedProduct[];
+  productSlug: string;
 }
 
 export default function RelatedFamily({
-  products,
+  products: initialProducts,
+  productSlug,
 }: RelatedFamilyProps) {
+  const [products, setProducts] = useState<DecRelatedProduct[]>(initialProducts);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(initialProducts.length === 10);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const [inView, setInView] = useState(false);
   const [isSettled, setIsSettled] = useState(false);
-  const [familyIndex, setFamilyIndex] = useState(0);
-  const [perView, setPerView] = useState(3);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -38,31 +45,79 @@ export default function RelatedFamily({
     };
   }, []);
 
+  const updateScrollState = () => {
+    if (!trackRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
+    
+    // Check if we need to load more (when within 500px of the end)
+    if (scrollWidth - (scrollLeft + clientWidth) < 500 && hasMore && !isLoading) {
+      loadMoreProducts();
+    }
+    
+    setCanScrollLeft(scrollLeft > 5);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+  };
+
+  const loadMoreProducts = async () => {
+    if (isLoading || !hasMore) return;
+    setIsLoading(true);
+    try {
+      const nextPage = page + 1;
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/dec-products/${productSlug}/related?page=${nextPage}`);
+      if (!res.ok) throw new Error("Failed to fetch related products");
+      const data = await res.json();
+      
+      const newProducts = data.data || [];
+      if (newProducts.length > 0) {
+        // filter out duplicates just in case
+        setProducts(prev => {
+          const existingIds = new Set(prev.map(p => p.id));
+          const uniqueNew = newProducts.filter((p: DecRelatedProduct) => !existingIds.has(p.id));
+          return [...prev, ...uniqueNew];
+        });
+        setPage(nextPage);
+      }
+      
+      if (!data.next_page_url) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const handleResize = () => {
-      setPerView(window.innerWidth <= 600 ? 2 : 3);
+    updateScrollState();
+    window.addEventListener("resize", updateScrollState);
+    const el = trackRef.current;
+    if (el) {
+      el.addEventListener("scroll", updateScrollState, { passive: true });
+    }
+    return () => {
+      window.removeEventListener("resize", updateScrollState);
+      if (el) el.removeEventListener("scroll", updateScrollState);
     };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [products]);
 
   const handleNext = () => {
-    setFamilyIndex((prev) => Math.min(prev + 1, products.length - perView));
+    const el = trackRef.current;
+    if (!el) return;
+    const cards = el.querySelectorAll(".related-card-wrapper");
+    if (!cards.length) return;
+    const step = cards[0].getBoundingClientRect().width + 22; // width + gap
+    el.scrollBy({ left: step, behavior: "smooth" });
   };
 
   const handlePrev = () => {
-    setFamilyIndex((prev) => Math.max(prev - 1, 0));
-  };
-
-  useEffect(() => {
-    if (!trackRef.current) return;
-    const cards = trackRef.current.querySelectorAll(".related-card-wrapper");
+    const el = trackRef.current;
+    if (!el) return;
+    const cards = el.querySelectorAll(".related-card-wrapper");
     if (!cards.length) return;
-    const gap = 22; // From CSS
-    const step = cards[0].getBoundingClientRect().width + gap;
-    trackRef.current.style.transform = `translate3d(${-familyIndex * step}px, 0, 0)`;
-  }, [familyIndex, products.length]);
+    const step = cards[0].getBoundingClientRect().width + 22; // width + gap
+    el.scrollBy({ left: -step, behavior: "smooth" });
+  };
 
   if (!products || products.length === 0) return null;
 
@@ -73,26 +128,41 @@ export default function RelatedFamily({
       }`}
       ref={sectionRef}
     >
-      <h2 className="product-reveal">Related Products</h2>
+      <h2 className="product-reveal" suppressHydrationWarning>Related Products</h2>
       <div className="related-carousel">
         <button
           className="related-arrow related-prev"
           aria-label="Previous related products"
           onClick={handlePrev}
-          style={{ opacity: familyIndex === 0 ? 0.35 : 1 }}
-          disabled={familyIndex === 0}
+          style={{ opacity: !canScrollLeft ? 0.35 : 1 }}
+          disabled={!canScrollLeft}
         >
           ‹
         </button>
-        <div className="related-track" ref={trackRef}>
+        <div 
+          className="related-track" 
+          ref={trackRef}
+          style={{
+            display: "flex",
+            gap: "22px",
+            overflowX: "auto",
+            scrollSnapType: "x mandatory",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            transition: "none",
+            transform: "none"
+          }}
+        >
           {products.map((product, i) => (
             <div 
               key={product.id}
               className="product-reveal related-card-wrapper"
+              suppressHydrationWarning
               style={{ 
                 transitionDelay: isSettled ? "0ms" : `${i * 60}ms`,
-                width: 'calc(33.333% - 14.66px)',
-                flexShrink: 0
+                flex: "0 0 calc(33.333% - 14.66px)",
+                scrollSnapAlign: "start",
+                scrollSnapStop: "always",
               }}
             >
               <DecorativeCard 
@@ -108,8 +178,8 @@ export default function RelatedFamily({
           className="related-arrow related-next"
           aria-label="Next related products"
           onClick={handleNext}
-          style={{ opacity: familyIndex >= products.length - perView ? 0.35 : 1 }}
-          disabled={familyIndex >= products.length - perView}
+          style={{ opacity: !canScrollRight ? 0.35 : 1 }}
+          disabled={!canScrollRight}
         >
           ›
         </button>

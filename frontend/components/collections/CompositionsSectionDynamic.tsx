@@ -183,6 +183,7 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
                     kicker: [comp.title, comp.category].filter(Boolean).join(' · ') || 'Symphony Composition',
                     room: comp.category ? comp.category.toLowerCase() : 'living',
                     image: comp.image,
+                    productsUsed: comp.products || []
                   });
                 }}
                 style={{

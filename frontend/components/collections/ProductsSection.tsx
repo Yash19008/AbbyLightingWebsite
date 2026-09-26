@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import ProductCard from './ProductCard';
-import { Product } from '@/types/collection';
+import DecorativeCard, { Product } from '../decorative/DecorativeCard';
+import { ProductsSection as ProductsSectionType } from '@/types/collection';
 
 interface ProductsSectionProps {
   products?: Product[];
   collectionName: string;
+  sectionData?: ProductsSectionType | null;
 }
 
-export default function ProductsSection({ products = [], collectionName }: ProductsSectionProps) {
+export default function ProductsSection({ products = [], collectionName, sectionData }: ProductsSectionProps) {
   const [expanded, setExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -31,11 +32,20 @@ export default function ProductsSection({ products = [], collectionName }: Produ
   const itemsCount = products.length;
   const visibleCount = expanded ? itemsCount : (isMobile ? 4 : 8);
 
-  const displayTitle = `${collectionName} Products`;
-  const displaySubtitle = `Explore our range of architectural silhouettes designed for the ${collectionName} collection.`;
+  const displayTitle = sectionData?.heading || `${collectionName} Products`;
+  const displaySubtitle = sectionData?.subtitle || `Explore our range of architectural silhouettes designed for the ${collectionName} collection.`;
+  const viewMoreText = sectionData?.view_more_text || 'View all';
 
   return (
-    <section className={`s-section s-products ${expanded ? 'is-expanded' : ''}`}>
+    <section 
+      className={`s-section s-products ${expanded ? 'is-expanded' : ''}`} 
+      style={{ 
+        '--decorative-graphite': '#1a1c1d',
+        '--decorative-amber': '#f6c177',
+        '--decorative-muted': '#6f6f6f',
+        '--decorative-hair': '#e4e2de'
+      } as React.CSSProperties}
+    >
       <div className="s-head">
         <h2>{displayTitle}</h2>
         <p>{displaySubtitle}</p>
@@ -43,7 +53,14 @@ export default function ProductsSection({ products = [], collectionName }: Produ
       <div className="s-products-carousel">
         <div className="decorative-grid is-settled">
           {products.slice(0, visibleCount).map((product, index) => (
-            <ProductCard key={product.id} index={index} product={product} />
+            <DecorativeCard 
+              key={product.id} 
+              product={product} 
+              order={index % 4} 
+              filterDelay={(index % 4) * 50}
+              isGlobalLightOn={true}
+              hideNewBadge={true}
+            />
           ))}
         </div>
       </div>
@@ -53,8 +70,8 @@ export default function ProductsSection({ products = [], collectionName }: Produ
           type="button"
           onClick={() => setExpanded(true)}
         >
-          <span className="s-view-desktop">View all</span>
-          <span className="s-view-mobile">View more</span>
+          <span className="s-view-desktop">{viewMoreText}</span>
+          <span className="s-view-mobile">{viewMoreText}</span>
         </button>
       )}
     </section>

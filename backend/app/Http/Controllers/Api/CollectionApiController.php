@@ -12,13 +12,18 @@ class CollectionApiController extends Controller
     /**
      * Get all active collections (list view)
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $collections = Collection::with('heroSection')
+            $query = Collection::with('heroSection')
                 ->active()
-                ->ordered()
-                ->get()
+                ->ordered();
+
+            if ($request->query('menu_only') == '1') {
+                $query->where('show_in_menu', true);
+            }
+
+            $collections = $query->get()
                 ->map(function ($collection) {
                     return [
                         'id'                => $collection->id,
@@ -65,7 +70,10 @@ class CollectionApiController extends Controller
                 'compositionsSection.items' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
                 },
-                'compositions',
+                'compositions.category_rel',
+                'compositions.products.category',
+                'compositions.products.collection',
+                'compositions.products.colors.colorMaster',
                 'tonesSection.families' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
                 },
@@ -75,8 +83,14 @@ class CollectionApiController extends Controller
                 'placesSection.items' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
                 },
+                'catalogueSection',
                 'spreadDropSection',
-                'products'
+                'products' => function ($q) {
+                    $q->where('status', 'published');
+                },
+                'products.colors.colorMaster',
+                'products.galleries',
+                'products.category'
             ])
             ->active()
             ->firstOrFail();
@@ -90,18 +104,49 @@ class CollectionApiController extends Controller
             'meta_title' => $collection->meta_title,
             'meta_description' => $collection->meta_description,
             
-            // Combined Products (Standard) linked to this collection
-            'products' => $collection->products->map(function ($product) {
+            // Decorative Products linked to this collection
+            'products' => $collection->products->map(function ($product) use ($collection) {
+                $variants = $product->colors->map(function ($color) {
+                    return [
+                        'id' => $color->id,
+                        'name' => $color->colorMaster ? $color->colorMaster->name : '',
+                        'color' => $color->colorMaster ? $color->colorMaster->css_value : '#e0e0e0',
+                        'imageOff' => $color->main_image ? asset('storage/uploads/decorative/' . $color->main_image) : null,
+                        'imageOn' => $color->lighton_image ? asset('storage/uploads/decorative/' . $color->lighton_image) : null
+                    ];
+                });
+
+                $galleries = $product->galleries->map(function ($gallery) {
+                    return [
+                        'id' => $gallery->id,
+                        'image' => $gallery->image ? asset('storage/uploads/decorative_gallery/' . $gallery->image) : null
+                    ];
+                });
+
                 return [
                     'id' => $product->id,
-                    'title' => $product->title,
                     'slug' => $product->slug,
-                    'featured_image' => $product->featured_image 
-                        ? asset('storage/uploads/products/' . $product->featured_image) 
-                        : null,
-                    'is_decorative' => false,
+                    'name' => $product->name,
+                    'category' => $product->category ? $product->category->name : 'Uncategorized',
+                    'collection' => $collection->name,
+                    'isNew' => $product->created_at ? $product->created_at->diffInDays(now()) <= 30 : false,
+                    'variants' => $variants,
+                    'galleries' => $galleries
                 ];
-            }),
+            })->values(),
+
+            // Products Section settings
+            'products_section' => $collection->productsSection ? [
+                'heading' => $collection->productsSection->heading,
+                'subtitle' => $collection->productsSection->subtitle,
+                'view_more_text' => $collection->productsSection->view_more_text,
+                'is_active' => $collection->productsSection->is_active,
+            ] : [
+                'heading' => null,
+                'subtitle' => null,
+                'view_more_text' => 'View all',
+                'is_active' => true,
+            ],
             
             // Hero Section
             'hero_section' => $collection->heroSection && $collection->heroSection->is_active ? [
@@ -144,12 +189,72 @@ class CollectionApiController extends Controller
                                 ? asset('storage/' . $img)
                                 : asset('storage/uploads/compositions/' . $img);
                         }
+
+                        $productsUsed = $comp->products->map(function($product) {
+                            $firstColor = $product->colors->first();
+                            
+                            $pImg = null;
+                            if ($firstColor) {
+                                if ($firstColor->lighton_image) {
+                                    $pImg = asset('storage/uploads/decorative/' . $firstColor->lighton_image);
+                                } elseif ($firstColor->main_image) {
+                                    $pImg = asset('storage/uploads/decorative/' . $firstColor->main_image);
+                                }
+                            }
+                            if (!$pImg && $product->featured_image) {
+                                $pImg = asset('storage/uploads/decorative/' . $product->featured_image);
+                            }
+
+                            // Get colors and images from colors
+                            $variants = [];
+                            $seenColors = [];
+                            foreach ($product->colors as $color) {
+                                $cImage = null;
+                                if ($color->lighton_image) {
+                                    $cImage = asset('storage/uploads/decorative/' . $color->lighton_image);
+                                } elseif ($color->main_image) {
+                                    $cImage = asset('storage/uploads/decorative/' . $color->main_image);
+                                }
+                                
+                                // Fallback to default product image if color doesn't have one
+                                if (!$cImage) {
+                                    $cImage = $pImg; 
+                                }
+
+                                $colorHex = null;
+                                if ($color->colorMaster && $color->colorMaster->css_value) {
+                                    $colorHex = $color->colorMaster->css_value;
+                                } elseif ($color->colorMaster && $color->colorMaster->code) {
+                                    $colorHex = $color->colorMaster->code;
+                                }
+
+                                if ($colorHex && !in_array($colorHex, $seenColors)) {
+                                    $seenColors[] = $colorHex;
+                                    $variants[] = [
+                                        'color' => $colorHex,
+                                        'image' => $cImage
+                                    ];
+                                }
+                            }
+
+                            return [
+                                'name' => $product->name,
+                                'type' => $product->category ? $product->category->name : 'Decorative',
+                                'image' => $pImg,
+                                'colors' => $seenColors,
+                                'variants' => $variants,
+                                'collection' => $product->collection ? $product->collection->name : null,
+                                'link' => '/product-detail/' . $product->slug,
+                            ];
+                        });
+
                         return [
                             'id' => $comp->id,
                             'image' => $img,
                             'title' => $comp->title,
-                            'category' => $comp->category ?? '',
+                            'category' => $comp->category_rel ? $comp->category_rel->name : $comp->category,
                             'kicker' => $comp->kicker ?? '',
+                            'products' => $productsUsed
                         ];
                     })
                     : ($collection->compositionsSection->items ? $collection->compositionsSection->items->map(function ($item) {
@@ -185,6 +290,25 @@ class CollectionApiController extends Controller
                     ];
                 })
             ] : null,
+
+            // Catalogue Section
+            'catalogue_section' => $collection->catalogueSection ? [
+                'background_image' => $collection->catalogueSection->background_image 
+                    ? asset('storage/' . $collection->catalogueSection->background_image) 
+                    : null,
+                'title' => $collection->catalogueSection->title,
+                'title_highlight' => $collection->catalogueSection->title_highlight,
+                'button_text' => $collection->catalogueSection->button_text,
+                'button_link' => $collection->catalogueSection->button_link,
+                'is_active' => $collection->catalogueSection->is_active,
+            ] : [
+                'background_image' => null,
+                'title' => 'See the whole',
+                'title_highlight' => 'collection.',
+                'button_text' => 'Download catalogue',
+                'button_link' => '/catalogues',
+                'is_active' => true, // default to active for backwards compatibility
+            ],
             
             // Places Section
             'places_section' => $collection->placesSection && $collection->placesSection->is_active ? [

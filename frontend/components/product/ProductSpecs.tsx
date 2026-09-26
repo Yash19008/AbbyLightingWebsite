@@ -1,23 +1,39 @@
 "use client";
 
 import React, { useState } from "react";
-import { DecSpecItem, DecVariant } from "@/types/decorative";
+import { DecSpecItem, DecSize } from "@/types/decorative";
 
 interface ProductSpecsProps {
   specRows: {
     basic_specifications: DecSpecItem[];
     dimensions: DecSpecItem[];
   };
-  allVariants?: DecVariant[];
+  allSizes?: DecSize[];
   installationGuide: string | null;
   careInstructions: string | null;
 }
 
-export default function ProductSpecs({ specRows, allVariants, installationGuide, careInstructions }: ProductSpecsProps) {
+export default function ProductSpecs({ specRows, allSizes, installationGuide, careInstructions }: ProductSpecsProps) {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     basic_specifications: true,
     downloads: true,
   });
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
+  const handleDownloadDatasheet = async () => {
+    try {
+      setIsGeneratingPdf(true);
+      const module = await import('@/lib/symphony-datasheet-vector.js');
+      if (module.generateProductDatasheet) {
+        await module.generateProductDatasheet();
+      }
+    } catch (error) {
+      console.error('Failed to generate PDF:', error);
+      alert('Could not prepare PDF — try again');
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
 
   const toggleSection = (id: string) => {
     setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -30,15 +46,15 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
         <table className="spec-table">
           <tbody>
             {items.map((item, idx) => (
-              <tr key={idx}>
-                <td className="spec-label">{item.label}</td>
+              <tr key={idx} className="figma-spec-row">
+                <td className="spec-label"><b>{item.label}</b></td>
                 <td className="spec-value">
                   {item.label === "Size" ? (
-                    <div className="spec-size-value">
+                    <span className="spec-size-value">
                       <i className="spec-code">OS</i> <span dangerouslySetInnerHTML={{ __html: item.value }} />
-                    </div>
+                    </span>
                   ) : (
-                    <div dangerouslySetInnerHTML={{ __html: item.value }} />
+                    <span dangerouslySetInnerHTML={{ __html: item.value }} />
                   )}
                   {item.note && (
                     <small className="figma-spec-note">
@@ -59,13 +75,13 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
     );
   };
 
-  const renderComparisonTable = (variants: DecVariant[]) => {
-    if (!variants || variants.length === 0) return null;
+  const renderComparisonTable = (sizes: DecSize[]) => {
+    if (!sizes || sizes.length === 0) return null;
 
-    // Collect all unique dimension labels across all variants
+    // Collect all unique dimension labels across all sizes
     const dimensionLabels = new Set<string>();
-    variants.forEach((v) => {
-      v.spec_rows?.dimensions?.forEach((d: DecSpecItem) => dimensionLabels.add(d.label));
+    sizes.forEach((s) => {
+      s.spec_rows?.dimensions?.forEach((d: DecSpecItem) => dimensionLabels.add(d.label));
     });
 
     if (dimensionLabels.size === 0) return null;
@@ -75,21 +91,39 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
       <div className="spec-comparison-table">
         <table className="spec-table comparison-table">
           <tbody>
-            <tr>
-              <td className="spec-label">Size</td>
-              {variants.map((v) => (
-                <td key={v.id} className="spec-value">
-                  <strong>{v.size || v.name}</strong>
+            <tr className="figma-spec-row">
+              <td className="spec-label">
+                <b>Size</b>
+                <span style={{ display: 'none' }} data-values={sizes.map(s => s.label).join('|')}>
+                  {sizes.map((s, idx) => (
+                    <span key={idx}>{s.label}</span>
+                  ))}
+                </span>
+              </td>
+              {sizes.map((s) => (
+                <td key={s.id} className="spec-value">
+                  <strong>{s.label}</strong>
                 </td>
               ))}
             </tr>
             {labelsArray.map((label) => (
-              <tr key={label}>
-                <td className="spec-label">{label}</td>
-                {variants.map((v) => {
-                  const spec = v.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
+              <tr key={label} className="figma-spec-row">
+                <td className="spec-label">
+                  <b>{label}</b>
+                  <span style={{ display: 'none' }} data-values={sizes.map(s => {
+                     const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
+                     return spec ? spec.value.replace(/<[^>]*>?/gm, '') : "-";
+                  }).join('|')}>
+                    {sizes.map((s, idx) => {
+                       const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
+                       return <span key={idx} dangerouslySetInnerHTML={{ __html: spec ? spec.value : "-" }} />;
+                    })}
+                  </span>
+                </td>
+                {sizes.map((s) => {
+                  const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
                   return (
-                    <td key={v.id} className="spec-value">
+                    <td key={s.id} className="spec-value">
                       {spec ? <div dangerouslySetInnerHTML={{ __html: spec.value }} /> : "-"}
                     </td>
                   );
@@ -104,11 +138,11 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
 
   return (
     <section className="product-specs">
-      <h2 className="product-reveal">About this product</h2>
-      <div className="spec-grid product-reveal product-delay-1">
+      <h2 className="product-reveal" suppressHydrationWarning>About this product</h2>
+      <div className="spec-grid product-reveal product-delay-1" suppressHydrationWarning>
         
         {/* Basic Specifications (and Dimensions appended) */}
-        {(specRows.basic_specifications.length > 0 || (allVariants && allVariants.length > 0)) && (
+        {(specRows.basic_specifications.length > 0 || (allSizes && allSizes.length > 0)) && (
           <section className={`spec-accordion ${openSections['basic_specifications'] ? "open" : ""}`}>
             <button
               type="button"
@@ -121,30 +155,35 @@ export default function ProductSpecs({ specRows, allVariants, installationGuide,
             <div className="spec-body">
               <div className="spec-body-inner">
                 {renderSpecItems(specRows.basic_specifications)}
-                {allVariants && allVariants.length > 0 && renderComparisonTable(allVariants)}
+                {allSizes && allSizes.length > 0 && renderComparisonTable(allSizes)}
               </div>
             </div>
           </section>
         )}
 
         {/* Downloads */}
-        {(installationGuide || careInstructions) && (
-            <details open={openSections['downloads']} onToggle={(e) => setOpenSections(prev => ({ ...prev, downloads: (e.target as HTMLDetailsElement).open }))}>
-            <summary>Downloads</summary>
-            <div className="download-row">
-                {installationGuide && (
-                    <button onClick={() => window.open(installationGuide, '_blank')}>
-                        Installation guide
-                    </button>
-                )}
-                {careInstructions && (
-                    <button onClick={() => window.open(careInstructions, '_blank')}>
-                        Care Instructions
-                    </button>
-                )}
-            </div>
-            </details>
-        )}
+        <details open={openSections['downloads']} onToggle={(e) => setOpenSections(prev => ({ ...prev, downloads: (e.target as HTMLDetailsElement).open }))}>
+          <summary>Downloads</summary>
+          <div className="download-row">
+              <button 
+                id="download-tds-btn"
+                onClick={handleDownloadDatasheet} 
+                disabled={isGeneratingPdf}
+              >
+                  {isGeneratingPdf ? 'Preparing PDF…' : 'Datasheet (PDF)'}
+              </button>
+              {installationGuide && (
+                  <button onClick={() => window.open(installationGuide, '_blank')}>
+                      Installation guide
+                  </button>
+              )}
+              {careInstructions && (
+                  <button onClick={() => window.open(careInstructions, '_blank')}>
+                      Care Instructions
+                  </button>
+              )}
+          </div>
+        </details>
       </div>
     </section>
   );
