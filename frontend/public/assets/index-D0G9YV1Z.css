@@ -1323,7 +1323,7 @@ body.spot-on #spotlight {
   display: none
 }
 
-@media (width<=900px) {
+@media (width<=1150px) {
   header.sitehead nav ul {
     display: none
   }
@@ -4700,7 +4700,7 @@ footer#contact {
     width: 127px;
     height: 37px;
     min-height: 37px;
-    margin-top: 34px;
+
     padding: 0;
     font: 400 14px/37px Poppins, sans-serif
   }

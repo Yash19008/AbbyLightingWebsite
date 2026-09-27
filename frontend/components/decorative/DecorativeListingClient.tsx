@@ -13,10 +13,17 @@ interface DecorativeListingClientProps {
   initialCategory?: string;
 }
 
+interface CategoryItem {
+  id?: number | string;
+  name: string;
+  slug?: string;
+  [key: string]: unknown;
+}
+
 export default function DecorativeListingClient({ initialCategory }: DecorativeListingClientProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [featuredCategories, setFeaturedCategories] = useState<string[]>(['All']);
-  const [rawCategories, setRawCategories] = useState<any[]>([]);
+  const [rawCategories, setRawCategories] = useState<CategoryItem[]>([]);
   const [availableCollections, setAvailableCollections] = useState<string[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -47,7 +54,7 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
     if (initialCategory) {
       let resolvedName = initialCategory;
       if (rawCategories.length > 0) {
-        const matched = rawCategories.find((c: any) => c.slug === initialCategory || c.name === initialCategory);
+        const matched = rawCategories.find((c: CategoryItem) => c.slug === initialCategory || c.name === initialCategory);
         if (matched) {
           resolvedName = matched.name;
         }

@@ -13,7 +13,7 @@
 .s-crumb {
   position: absolute;
   top: 118px;
-  left: 6.85vw;
+  left: 6.45vw;
   z-index: 6;
   color: #fff;
   font-family: 'Poppins', 'Inter', sans-serif;
@@ -93,7 +93,7 @@
 
   .s-crumb {
     top: 101px;
-    left: 55px;
+    left: 6.45vw;
     font-size: 12px;
   }
 

@@ -4,6 +4,7 @@ import LooksInPlaceSection from "@/components/inspiration/LooksInPlaceSection";
 import WatchAndShopSection from "@/components/inspiration/WatchAndShopSection";
 import JournalSection from "@/components/inspiration/JournalSection";
 import { getShowcaseCompositions } from "@/lib/api/compositions";
+import { getInspirationHero } from "@/lib/api/inspiration";
 import "@/styles/inspiration.css";
 
 export const dynamic = 'force-dynamic';
@@ -15,11 +16,17 @@ export const metadata: Metadata = {
 };
 
 export default async function InspirationPage() {
-  const { data: compositions } = await getShowcaseCompositions();
+  const [compositionsRes, heroRes] = await Promise.all([
+    getShowcaseCompositions(),
+    getInspirationHero(),
+  ]);
+
+  const compositions = compositionsRes.data || [];
+  const heroSection = heroRes.data || null;
 
   return (
     <div className="inspiration-page">
-      <InspirationHero />
+      <InspirationHero heroSection={heroSection} />
       <LooksInPlaceSection compositions={compositions} />
       <WatchAndShopSection />
       <JournalSection />

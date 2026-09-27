@@ -74,7 +74,7 @@
                          SECTION: PAGES
                          Manage content per frontend page
                          ══════════════════════════════════════ --}}
-                    <li class="nav-item has-sub {{ (Route::currentRouteName() && (str_starts_with(Route::currentRouteName(), 'homeslider_admin') || str_starts_with(Route::currentRouteName(), 'light_worlds_admin') || Route::currentRouteName() == 'admin.manufacturing.edit' || str_starts_with(Route::currentRouteName() ?? '', 'admin.home_catalogue') || str_starts_with(Route::currentRouteName() ?? '', 'admin.news-items') || str_starts_with(Route::currentRouteName() ?? '', 'admin.watch_and_shops'))) ? 'open' : '' }}">
+                    <li class="nav-item has-sub {{ (Route::currentRouteName() && (str_starts_with(Route::currentRouteName(), 'homeslider_admin') || str_starts_with(Route::currentRouteName(), 'light_worlds_admin') || Route::currentRouteName() == 'admin.manufacturing.edit' || str_starts_with(Route::currentRouteName() ?? '', 'admin.home_catalogue') || str_starts_with(Route::currentRouteName() ?? '', 'admin.news-items') || str_starts_with(Route::currentRouteName() ?? '', 'admin.inspiration_hero') || str_starts_with(Route::currentRouteName() ?? '', 'admin.watch_and_shops'))) ? 'open' : '' }}">
                         <a href="#"><i class="ft-layout"></i><span class="menu-title">Pages</span></a>
                         <ul class="menu-content">
                             {{-- HOME PAGE --}}
@@ -100,9 +100,12 @@
                             </li>
                             
                             {{-- INSPIRATION PAGE --}}
-                            <li class="has-sub {{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.watch_and_shops') || str_starts_with(Route::currentRouteName() ?? '', 'composition_admin') || str_starts_with(Route::currentRouteName() ?? '', 'composition_categories_admin')) ? 'open' : '' }}">
+                            <li class="has-sub {{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.inspiration_hero') || str_starts_with(Route::currentRouteName() ?? '', 'admin.watch_and_shops') || str_starts_with(Route::currentRouteName() ?? '', 'composition_admin') || str_starts_with(Route::currentRouteName() ?? '', 'composition_categories_admin')) ? 'open' : '' }}">
                                 <a href="#" class="menu-item"><i class="ft-image" style="font-size:11px;margin-right:4px;"></i> Inspiration</a>
                                 <ul class="menu-content">
+                                    <li class="{{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.inspiration_hero')) ? 'active' : '' }}">
+                                        <a class="menu-item" href="{{ route('admin.inspiration_hero.index') }}"> Hero Banner</a>
+                                    </li>
                                     <li class="{{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.watch_and_shops')) ? 'active' : '' }}">
                                         <a class="menu-item" href="{{ route('admin.watch_and_shops.index') }}"> Watch &amp; Shop</a>
                                     </li>

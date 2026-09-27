@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 interface Variant {
-  id: string;
+  id: string | number;
   name: string;
   color: string;
   imageOff: string;
@@ -13,12 +13,12 @@ interface Variant {
 }
 
 interface Gallery {
-  id: string;
+  id: string | number;
   image: string;
 }
 
 export interface Product {
-  id: string;
+  id: string | number;
   slug: string;
   name: string;
   category: string;

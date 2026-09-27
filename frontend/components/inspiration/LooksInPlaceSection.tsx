@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import LookModal, { LookItem } from "./LookModal";
+import LookModal, { LookItem, ProductUsedItem } from "./LookModal";
 
 
 
@@ -10,7 +10,7 @@ interface CompositionItem {
   kicker?: string;
   category?: string;
   image?: string;
-  products?: any[];
+  products?: ProductUsedItem[];
 }
 
 interface Props {
@@ -21,7 +21,7 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
   const [selectedRoom, setSelectedRoom] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(8);
-  const [activeLook, setActiveLook] = useState<LookItem | null>(null);
+  const [activeLookIndex, setActiveLookIndex] = useState<number | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
 
   // Close filter dropdown on outside click
@@ -125,7 +125,7 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
                 key={`${item.title}-${index}`}
                 type="button"
                 className="look-card"
-                onClick={() => setActiveLook(item)}
+                onClick={() => setActiveLookIndex(index)}
                 aria-label={`View details for ${item.title}`}
               >
                 <img
@@ -160,9 +160,21 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
       </div>
 
       <LookModal
-        isOpen={Boolean(activeLook)}
-        look={activeLook}
-        onClose={() => setActiveLook(null)}
+        isOpen={activeLookIndex !== null}
+        look={activeLookIndex !== null ? displayedLooks[activeLookIndex] : null}
+        onClose={() => setActiveLookIndex(null)}
+        hasPrev={activeLookIndex !== null && activeLookIndex > 0}
+        hasNext={activeLookIndex !== null && activeLookIndex < displayedLooks.length - 1}
+        onPrev={() => {
+          if (activeLookIndex !== null && activeLookIndex > 0) {
+            setActiveLookIndex(activeLookIndex - 1);
+          }
+        }}
+        onNext={() => {
+          if (activeLookIndex !== null && activeLookIndex < displayedLooks.length - 1) {
+            setActiveLookIndex(activeLookIndex + 1);
+          }
+        }}
       />
     </section>
   );

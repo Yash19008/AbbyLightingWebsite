@@ -44,8 +44,9 @@ export default function CustomSortDropdown({
           e.stopPropagation();
           setIsOpen((prev) => !prev);
         }}
+        style={{ cursor: 'pointer', width: '100%' }}
       >
-        <span>SORT BY</span>
+        <span style={{ pointerEvents: 'none' }}>SORT BY</span>
         <svg
           width="12"
           height="12"
@@ -56,6 +57,7 @@ export default function CustomSortDropdown({
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
+          style={{ pointerEvents: 'none' }}
         >
           <polyline points={isOpen ? "18 15 12 9 6 15" : "6 9 12 15 18 9"} />
         </svg>

@@ -31,7 +31,11 @@
   height: 575px;
   position: relative;
   color: #fff;
-  background: #222 url('/images/ins.png') center 38% / cover no-repeat;
+  background-color: #222;
+  background-image: url('/images/ins.png');
+  background-position: center 38%;
+  background-size: cover;
+  background-repeat: no-repeat;
   margin-top: 0;
 }
 
@@ -666,7 +670,7 @@
   grid-column: 2;
   grid-row: 1;
   min-width: 0;
-  padding: 42px 28px 24px 30px;
+  padding: 42px 37px 24px 30px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -715,7 +719,7 @@
 
 .look-modal .products-track {
   display: flex;
-  gap: 14px;
+  gap: 1px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
@@ -807,39 +811,48 @@
   letter-spacing: 0.02em;
 }
 
-/* Slider Arrow Buttons */
+/* Slider Arrow Buttons (Products Used) */
 .look-modal .products-nav-btn {
   position: absolute;
   top: 34%;
   transform: translateY(-50%);
   z-index: 10;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 28px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #111;
-  transition: all 0.2s ease;
+  color: #111111;
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), color 0.2s ease, opacity 0.2s ease;
   padding: 0;
 }
 
 .look-modal .products-nav-btn:hover {
-  background: #ffffff;
-  transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  color: #f6c177;
+  transform: translateY(-50%) scale(1.2);
+}
+
+.look-modal .products-nav-btn:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 .look-modal .products-nav-btn.prev {
-  left: -12px;
+  left: -26px;
 }
 
 .look-modal .products-nav-btn.next {
-  right: -12px;
+  right: -26px;
+}
+
+.look-modal .products-nav-btn.is-disabled,
+.look-modal .modal-nav-arrow.is-disabled {
+  opacity: 0.25;
+  cursor: default;
+  pointer-events: none;
 }
 
 .look-modal .modal-close {
@@ -1013,17 +1026,17 @@
 
 
 /* Responsive adjustments */
-@media (max-width: 1024px) {
+@media (max-width: 1150px) {
   .inspiration-page .insp-shell {
-    padding: 0 4vw;
+    padding: 0 6.45vw;
   }
 
   .inspiration-page .insp-hero-copy {
-    left: 4vw;
+    left: 6.45vw;
   }
 
   .inspiration-page .insp-hero-breadcrumb {
-    left: 4vw;
+    left: 6.45vw;
   }
 
   .inspiration-page .looks-grid {
@@ -1042,7 +1055,7 @@
   }
 
   .insp-shell {
-    padding: 40px 20px !important;
+    padding: 40px 6.45vw !important;
     padding-bottom: 0px !important;
   }
 
@@ -1181,6 +1194,12 @@
     padding: 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
     transition: background 0.2s ease, transform 0.15s ease;
+  }
+
+  .look-modal .modal-close {
+
+    top: 4px;
+
   }
 
   .inspiration-page .insp-section {

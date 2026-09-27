@@ -345,7 +345,40 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
       <LookModal
         isOpen={Boolean(activeLook)}
         look={activeLook}
-        onClose={() => setActiveLook(null)}
+        onClose={() => {
+          setActiveLook(null);
+          setActiveIndex(null);
+        }}
+        hasPrev={activeIndex !== null && activeIndex > 0}
+        hasNext={activeIndex !== null && activeIndex < items.length - 1}
+        onPrev={() => {
+          if (activeIndex !== null && activeIndex > 0) {
+            const prevIdx = activeIndex - 1;
+            setActiveIndex(prevIdx);
+            const comp = items[prevIdx];
+            setActiveLook({
+              title: comp.kicker || comp.title || 'Composition',
+              kicker: [comp.title, comp.category].filter(Boolean).join(' · ') || 'Symphony Composition',
+              room: comp.category ? comp.category.toLowerCase() : 'living',
+              image: comp.image,
+              productsUsed: comp.products || []
+            });
+          }
+        }}
+        onNext={() => {
+          if (activeIndex !== null && activeIndex < items.length - 1) {
+            const nextIdx = activeIndex + 1;
+            setActiveIndex(nextIdx);
+            const comp = items[nextIdx];
+            setActiveLook({
+              title: comp.kicker || comp.title || 'Composition',
+              kicker: [comp.title, comp.category].filter(Boolean).join(' · ') || 'Symphony Composition',
+              room: comp.category ? comp.category.toLowerCase() : 'living',
+              image: comp.image,
+              productsUsed: comp.products || []
+            });
+          }
+        }}
       />
     </section>
   );

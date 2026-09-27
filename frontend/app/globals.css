@@ -546,7 +546,7 @@ body {
   overflow: hidden;
   display: flex;
   align-items: flex-end;
-  padding: clamp(48px, 6vw, 90px) clamp(24px, 6.5vw, 96px);
+
 }
 
 .manufacturing-media {
@@ -769,7 +769,13 @@ body {
   display: none;
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 1150px) {
+  .sitehead .nav-cta {
+    margin-top: 32px !important;
+  }
+}
+
+@media (max-width: 1150px) {
   .halo-nav-wrap {
     display: block !important;
   }
@@ -1090,7 +1096,7 @@ body {
   .pdrop-container {
     width: 100%;
     min-height: 100%;
-    padding: 24px 26px 100px;
+    padding: 30px 6.45vw 100px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -1433,7 +1439,7 @@ body {
 }
 
 .s-hero-copy {
-  padding: 130px 7vw 40px !important;
+  padding: 130px 6.45vw 40px !important;
 }
 
 .s-catalogue>div {
@@ -1455,7 +1461,7 @@ body {
 
 @media (max-width: 768px) {
   .s-section {
-    padding: 40px 20px !important
+    padding: 40px 6.45vw !important
   }
 
 
@@ -1465,7 +1471,7 @@ body {
   }
 
   .s-hero-copy {
-    padding: 100px 20px 24px !important;
+    padding: 100px 6.45vw !important;
   }
 
   .s-catalogue>div {
@@ -1522,7 +1528,7 @@ body {
 
   .manufacturing {
     min-height: 335.35px !important;
-    padding: 67px 24px 13px 24px !important;
+
     box-sizing: border-box !important;
   }
 
@@ -1816,8 +1822,8 @@ header.sitehead .wrap,
 
   header.sitehead .wrap,
   .sitehead .wrap {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+    padding: 0px 6.45vw !important;
+
   }
 }
 
@@ -2069,7 +2075,7 @@ footer#contact {
   }
 
   .figma-footer {
-    padding: 0 20px !important;
+    padding: 0 25px !important;
   }
 
   .footer-main {
@@ -2121,7 +2127,7 @@ footer#contact {
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 20px !important;
+    gap: 31px !important;
   }
 
   .footer-base>span {
@@ -2269,14 +2275,14 @@ footer#contact {
     justify-content: center !important;
     margin: 0 auto 24px !important;
     width: 100% !important;
-    max-width: 540px !important;
+
   }
 
   .product-page .product-stage,
   .product-page .symphony-stage,
   .product-page .gallery-stage-wrapper {
     width: 100% !important;
-    max-width: 540px !important;
+    max-width: 100% !important;
     height: auto !important;
     aspect-ratio: 1 / 1 !important;
     margin: 0 auto !important;
@@ -2302,7 +2308,7 @@ footer#contact {
   /* Product Details Info Section MUST be Left Aligned */
   .product-page .product-info {
     width: 100% !important;
-    max-width: 540px !important;
+
     margin: 0 auto !important;
     align-self: flex-start !important;
     text-align: left !important;

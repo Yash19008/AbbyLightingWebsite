@@ -1,0 +1,89 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\InspirationHeroSection;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
+class InspirationHeroSectionController extends Controller
+{
+    /**
+     * Display the inspiration hero section editing page
+     */
+    public function index()
+    {
+        return redirect()->route('admin.inspiration_hero.edit', 1);
+    }
+
+    /**
+     * Display the form for editing the inspiration hero section
+     */
+    public function edit($id = 1)
+    {
+        $section = InspirationHeroSection::first();
+
+        // If no record exists, create default one
+        if (!$section) {
+            $section = InspirationHeroSection::create([
+                'title' => 'Ideas, stories & inspiration',
+                'title_highlight' => 'Insights',
+                'breadcrumb_parent_text' => 'Home',
+                'breadcrumb_parent_link' => '/',
+                'breadcrumb_current_text' => 'Inspiration',
+                'is_active' => true,
+            ]);
+        }
+
+        $main_module = 'Inspiration';
+
+        return view('admin.inspiration_hero.edit', compact('section', 'main_module'));
+    }
+
+    /**
+     * Update the inspiration hero section
+     */
+    public function update(Request $request)
+    {
+        $section = InspirationHeroSection::first();
+
+        if (!$section) {
+            $section = new InspirationHeroSection();
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'title_highlight' => 'nullable|string|max:255',
+            'breadcrumb_parent_text' => 'nullable|string|max:100',
+            'breadcrumb_parent_link' => 'nullable|string|max:255',
+            'breadcrumb_current_text' => 'nullable|string|max:100',
+            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
+        ]);
+
+        // Handle background image upload
+        if ($request->hasFile('background_image')) {
+            // Delete old image if exists
+            if ($section->background_image && Storage::disk('public')->exists($section->background_image)) {
+                Storage::disk('public')->delete($section->background_image);
+            }
+
+            // Store new image
+            $imagePath = $request->file('background_image')->store('uploads/inspiration', 'public');
+            $section->background_image = $imagePath;
+        }
+
+        // Update fields
+        $section->title = $validated['title'];
+        $section->title_highlight = $validated['title_highlight'] ?? null;
+        $section->breadcrumb_parent_text = $validated['breadcrumb_parent_text'] ?? 'Home';
+        $section->breadcrumb_parent_link = $validated['breadcrumb_parent_link'] ?? '/';
+        $section->breadcrumb_current_text = $validated['breadcrumb_current_text'] ?? 'Inspiration';
+        $section->is_active = $request->has('is_active');
+        $section->updated_by = Auth::id();
+        $section->save();
+
+        return redirect()->route('admin.inspiration_hero.edit', 1)->with('success', 'Inspiration Hero Banner updated successfully');
+    }
+}
