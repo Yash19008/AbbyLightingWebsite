@@ -375,6 +375,7 @@ body:has(.downloads-page) .sitehead {
   transition: opacity 180ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+.downloads-page .catalogue-selected .catalogue-download-content,
 .downloads-page .catalogue-selected button {
   display: flex;
   flex-direction: column;
@@ -413,6 +414,7 @@ body:has(.downloads-page) .sitehead {
   transition: transform 200ms ease;
 }
 
+.downloads-page .catalogue-card:hover .catalogue-download-svg,
 .downloads-page .catalogue-selected button:hover .catalogue-download-svg {
   transform: translateY(2px);
 }

@@ -269,15 +269,16 @@ export default function LookModal({
 
             <div className="products-slider-wrapper">
               {/* Products Slider Left Prev Button */}
-              <button
-                type="button"
-                className={`products-nav-btn prev ${!canScrollLeft ? 'is-disabled' : ''}`}
-                onClick={() => scroll(-1)}
-                disabled={!canScrollLeft}
-                aria-label="Previous product"
-              >
-                <ChevronLeftIcon />
-              </button>
+              {canScrollLeft && (
+                <button
+                  type="button"
+                  className="products-nav-btn prev"
+                  onClick={() => scroll(-1)}
+                  aria-label="Previous product"
+                >
+                  <ChevronLeftIcon />
+                </button>
+              )}
 
               {/* Scrollable Track */}
               <div ref={trackRef} className="products-track">
@@ -287,15 +288,16 @@ export default function LookModal({
               </div>
 
               {/* Products Slider Right Next Button */}
-              <button
-                type="button"
-                className={`products-nav-btn next ${!canScrollRight ? 'is-disabled' : ''}`}
-                onClick={() => scroll(1)}
-                disabled={!canScrollRight}
-                aria-label="Next product"
-              >
-                <ChevronRightIcon />
-              </button>
+              {canScrollRight && (
+                <button
+                  type="button"
+                  className="products-nav-btn next"
+                  onClick={() => scroll(1)}
+                  aria-label="Next product"
+                >
+                  <ChevronRightIcon />
+                </button>
+              )}
             </div>
           </div>
         </div>

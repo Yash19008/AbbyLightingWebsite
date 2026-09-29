@@ -92,3 +92,8 @@ For end-to-end integration, the following frontend files consume the dynamic API
 2. **Hero Component**: [`frontend/components/inspiration/InspirationHero.tsx`](file:///d:/all_project/abby-lighting/abby-lighting-latest/AbbyLightingWebsite/frontend/components/inspiration/InspirationHero.tsx) *(Modified)* — Renders dynamic heading, italic highlight, breadcrumbs, dynamic background image, and respects `is_active` toggle.
 3. **Inspiration Page**: [`frontend/app/inspiration/page.tsx`](file:///d:/all_project/abby-lighting/abby-lighting-latest/AbbyLightingWebsite/frontend/app/inspiration/page.tsx) *(Modified)* — Server-side data fetching of the banner settings alongside compositions.
 4. **CSS Styles**: [`frontend/styles/inspiration.css`](file:///d:/all_project/abby-lighting/abby-lighting-latest/AbbyLightingWebsite/frontend/styles/inspiration.css) *(Modified)* — Added explicit cover, center position, and repeat rules for dynamic background images.
+
+
+
+frontend/styles/product-details.css
+

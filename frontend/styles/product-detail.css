@@ -38,7 +38,7 @@
 
 .product-page .product-top {
   display: grid;
-  grid-template-columns: minmax(0, 668px) minmax(360px, 570px);
+  grid-template-columns: 1fr 1fr;
   gap: 71px;
   align-items: start;
   padding-bottom: 90px !important
@@ -422,10 +422,9 @@
 .product-page .collection-band>div {
   position: absolute !important;
   z-index: 2;
-  left: max(48px, calc((100vw - 1269px)/2));
+  left: 6.45vw;
   right: auto;
-  top: 212px;
-  bottom: auto;
+  bottom: 6.45vw;
   width: 466px !important;
   height: auto !important;
   max-width: calc(100% - 96px);
@@ -500,13 +499,15 @@
   margin-bottom: 30px
 }
 
+.product-page .shell {
+  padding-top: 0px !important;
+}
+
 .product-page .spec-grid {
   border-top: 1px solid #111
 }
 
-.product-page .spec-accordion {
-  border-bottom: 1px solid #e0e0e0
-}
+
 
 .product-page .spec-accordion button {
   width: 100%;
@@ -549,6 +550,7 @@
   padding: 12px 32px;
   box-sizing: border-box;
   margin-bottom: 24px;
+  margin-top: 20px;
 }
 
 .product-page .spec-table {
@@ -618,7 +620,7 @@
 
 .product-page .comparison-table .spec-label {
   padding-left: 0;
-  width: 220px;
+  width: 278px;
 }
 
 .product-page .comparison-table td {
@@ -1027,10 +1029,9 @@
   }
 
   .product-page .collection-band>div {
-    left: 24px;
+    left: 6.45vw;
     right: auto;
-    top: 210px;
-    bottom: auto;
+    bottom: 6.45vw;
     max-width: 360px
   }
 
@@ -1155,6 +1156,11 @@
     height: 56px !important
   }
 
+  .product-page .product-desc {
+    line-height: 17px !important;
+
+  }
+
   .product-page .thumb-edge-preview {
     width: 45px;
     height: 56px
@@ -1275,10 +1281,9 @@
 
   .product-page .collection-band>div {
     position: absolute !important;
-    left: 22px !important;
+    left: 6.45vw !important;
     right: auto !important;
-    top: 195px !important;
-    bottom: auto !important;
+    bottom: 6.45vw !important;
     width: 290px !important;
     height: auto !important;
     max-width: calc(100% - 44px) !important;
@@ -1531,9 +1536,7 @@
     border-top: 1.5px solid #1a1c1d !important;
   }
 
-  .product-page .spec-accordion {
-    border-bottom: 1px solid #e5e5e5 !important;
-  }
+
 
   .product-page .spec-accordion button {
     font-size: 17px !important;
@@ -1959,7 +1962,7 @@
   .product-page .collection-band>div {
     left: 6.45vw !important;
     right: auto !important;
-    top: 50% !important;
+
     transform: translateY(-50%) !important;
     width: 440px !important;
     max-width: calc(100% - 72px) !important;
@@ -2019,6 +2022,10 @@
   .product-page .spec-table .spec-label {
     width: 240px !important;
     font-size: 14px !important;
+  }
+
+  .product-page .comparison-table .spec-label {
+    width: 207px !important;
   }
 
   .product-page .spec-table .spec-value {

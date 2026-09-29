@@ -55,8 +55,8 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
 
   const mappedLooks: LookItem[] = compositions && compositions.length > 0
     ? compositions.map((c: CompositionItem) => ({
-      title: c.title,
-      kicker: c.kicker || c.category || "",
+      title: c.kicker || c.title || "",
+      kicker: [c.title, c.category].filter(Boolean).join(' · ') || c.kicker || c.category || "",
       room: c.category ? c.category.toLowerCase() : "all",
       image: c.image || "/images/reference/project-atlas.png",
       productsUsed: c.products || []
@@ -136,8 +136,8 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
                   }}
                 />
                 <span className="look-copy">
-                  <strong>{item.title}</strong>
-                  <span>{item.kicker}</span>
+                  <span>{item.title}</span>
+                  <strong>{item.kicker}</strong>
                 </span>
               </button>
             ))
