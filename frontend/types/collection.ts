@@ -108,12 +108,8 @@ export interface ProductsSection {
   is_active: boolean;
 }
 
-export interface Product {
-  id: number;
-  title: string;
-  slug: string;
-  featured_image: string | null;
-}
+import type { Product } from '@/components/decorative/DecorativeCard';
+export type { Product };
 
 export interface CollectionDetail {
   id: number;

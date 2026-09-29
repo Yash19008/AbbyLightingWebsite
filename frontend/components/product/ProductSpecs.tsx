@@ -23,9 +23,9 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
   const handleDownloadDatasheet = async () => {
     try {
       setIsGeneratingPdf(true);
-      const module = await import('@/lib/symphony-datasheet-vector.js');
-      if (module.generateProductDatasheet) {
-        await module.generateProductDatasheet();
+      const datasheetModule = await import('@/lib/symphony-datasheet-vector.js');
+      if (datasheetModule.generateProductDatasheet) {
+        await datasheetModule.generateProductDatasheet();
       }
     } catch (error) {
       console.error('Failed to generate PDF:', error);

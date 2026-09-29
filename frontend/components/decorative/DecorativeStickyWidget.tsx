@@ -115,17 +115,29 @@ export default function DecorativeStickyWidget({
         <div className="decorative-sticky-right-tools">
           <button
             type="button"
-            className="decorative-sticky-btn decorative-sticky-filter"
+            className="abby-desktop-action-btn decorative-filter-button decorative-sticky-btn decorative-sticky-filter"
             onClick={(e) => {
               e.stopPropagation();
               setIsFilterModalOpen(true);
             }}
+            style={{ whiteSpace: 'nowrap' }}
           >
-            <span className="decorative-sticky-icon" aria-hidden="true">
+            <span className="decorative-filter-icon decorative-sticky-icon" style={{ fontSize: '14px', lineHeight: 1 }} aria-hidden="true">
               ☷
             </span>
-            <span>FILTER BY</span>
-            {hasActiveFilters && <span className="decorative-sticky-dot" />}
+            FILTER BY
+            {hasActiveFilters && (
+              <span
+                className="decorative-sticky-dot"
+                style={{
+                  background: '#f6c177',
+                  borderRadius: '50%',
+                  width: '6px',
+                  height: '6px',
+                  display: 'inline-block',
+                }}
+              />
+            )}
           </button>
 
           <div className="decorative-sticky-sort-wrapper">

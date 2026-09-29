@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 interface Variant {
-  id: string;
+  id: string | number;
   name: string;
   color: string;
   imageOff: string;
@@ -13,12 +13,12 @@ interface Variant {
 }
 
 interface Gallery {
-  id: string;
+  id: string | number;
   image: string;
 }
 
 export interface Product {
-  id: string;
+  id: string | number;
   slug: string;
   name: string;
   category: string;
@@ -40,6 +40,10 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+  const isSwipingRef = useRef<boolean>(false);
+
   const totalImages = 1 + (product.galleries?.length || 0);
 
   useEffect(() => {
@@ -48,6 +52,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
 
   const handleNext = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (activeImageIndex < totalImages - 1) {
       setActiveImageIndex((prev) => prev + 1);
     }
@@ -55,8 +60,56 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
 
   const handlePrev = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (activeImageIndex > 0) {
       setActiveImageIndex((prev) => prev - 1);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    touchStartXRef.current = clientX;
+    touchStartYRef.current = clientY;
+    isSwipingRef.current = false;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent | React.MouseEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+
+    const clientX = 'changedTouches' in e ? e.changedTouches[0].clientX : e.clientX;
+    const clientY = 'changedTouches' in e ? e.changedTouches[0].clientY : e.clientY;
+
+    const diffX = touchStartXRef.current - clientX;
+    const diffY = touchStartYRef.current - clientY;
+
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+
+    // Ignore if vertical scrolling is dominant
+    if (Math.abs(diffY) > Math.abs(diffX)) return;
+
+    // Horizontal swipe threshold (30px)
+    if (Math.abs(diffX) > 30) {
+      isSwipingRef.current = true;
+      if (diffX > 30) {
+        // Swiped Left -> Next image
+        if (activeImageIndex < totalImages - 1) {
+          setActiveImageIndex((prev) => prev + 1);
+        }
+      } else if (diffX < -30) {
+        // Swiped Right -> Previous image
+        if (activeImageIndex > 0) {
+          setActiveImageIndex((prev) => prev - 1);
+        }
+      }
+    }
+  };
+
+  const handleLinkClick = (e: React.MouseEvent) => {
+    if (isSwipingRef.current) {
+      e.preventDefault();
+      isSwipingRef.current = false;
     }
   };
 
@@ -74,11 +127,19 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
         suppressHydrationWarning
         style={{ '--card-order': order, '--light-delay': `${order * 50}ms` } as React.CSSProperties}
       >
-        <div className={`decorative-card-image ${isGlobalLightOn ? 'is-lit' : 'is-unlit'}`}>
+        <div 
+          className={`decorative-card-image ${isGlobalLightOn ? 'is-lit' : 'is-unlit'}`}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleTouchStart}
+          onMouseUp={handleTouchEnd}
+          style={{ touchAction: 'pan-y', userSelect: 'none' }}
+        >
           <Link
             className="decorative-card-main-link"
             href={`/product-detail/${product.slug}`}
             aria-label={`View ${product.name}`}
+            onClick={handleLinkClick}
           >
             {activeImageIndex === 0 ? (
               <>
@@ -91,6 +152,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                     sizes="(max-width: 600px) 100vw, 33vw"
                     aria-hidden="true"
                     style={{ objectFit: 'cover' }}
+                    draggable={false}
                   />
                 )}
                 {activeVariant?.imageOn && (
@@ -101,6 +163,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                     fill
                     sizes="(max-width: 600px) 100vw, 33vw"
                     style={{ objectFit: 'cover' }}
+                    draggable={false}
                   />
                 )}
               </>
@@ -113,6 +176,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                   fill
                   sizes="(max-width: 600px) 100vw, 33vw"
                   style={{ objectFit: 'cover' }}
+                  draggable={false}
                 />
               )
             )}
@@ -147,7 +211,6 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                 </button>
               )}
               <span className="decorative-gallery-dots">
-                {/* 1 dot for variant, plus dots for galleries */}
                 {[0, ...(product.galleries || []).map((_, i) => i + 1)].map((dotIndex) => (
                   <button
                     key={dotIndex}
@@ -156,6 +219,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                     aria-label={`Show ${product.name} view ${dotIndex + 1}`}
                     onClick={(e) => {
                       e.preventDefault();
+                      e.stopPropagation();
                       setActiveImageIndex(dotIndex);
                     }}
                   />
@@ -179,8 +243,9 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                 title={variant.name}
                 onClick={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
                   setActiveVariantIndex(index);
-                  setActiveImageIndex(0); // Snap back to main image
+                  setActiveImageIndex(0);
                 }}
               />
             ))}

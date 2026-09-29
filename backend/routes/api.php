@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\BlogApiController;
 use App\Http\Controllers\Api\WatchAndShopApiController;
 use App\Http\Controllers\Api\CompositionApiController;
 use App\Http\Controllers\Api\CatalogueApiController;
+use App\Http\Controllers\Api\InspirationHeroSectionApiController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -98,6 +99,9 @@ Route::controller(BlogApiController::class)->group(function () {
 
 // Watch & Shop
 Route::get('/watch-and-shops', [WatchAndShopApiController::class, 'index']);
+
+// Inspiration Hero Banner
+Route::get('/inspiration-hero-section', [InspirationHeroSectionApiController::class, 'index']);
 
 // Compositions
 Route::get('/compositions/showcase', [CompositionApiController::class, 'showcase']);

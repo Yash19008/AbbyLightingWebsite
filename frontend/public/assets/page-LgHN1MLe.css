@@ -1051,7 +1051,7 @@
 
     .collection-band {
         height: 520px;
-        min-height: 520px
+        min-height: 417px
     }
 
     .collection-band>div {
@@ -1213,9 +1213,7 @@
     height: 25px
 }
 
-.spec-grid>.spec-accordion {
-    border-bottom: 1px solid #e0e0e0
-}
+
 
 .spec-accordion>button {
     color: #000;

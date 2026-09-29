@@ -21,7 +21,9 @@
 }
 
 .product-page .product-shell {
-  max-width: 1250px;
+  max-width: 100% !important;
+  min-width: 100% !important;
+  padding: 0px 6.45vw !important;
   padding-top: 0
 }
 
@@ -36,7 +38,7 @@
 
 .product-page .product-top {
   display: grid;
-  grid-template-columns: minmax(0, 668px) minmax(360px, 500px);
+  grid-template-columns: 1fr 1fr;
   gap: 71px;
   align-items: start;
   padding-bottom: 90px !important
@@ -420,10 +422,9 @@
 .product-page .collection-band>div {
   position: absolute !important;
   z-index: 2;
-  left: max(48px, calc((100vw - 1250px)/2));
+  left: 6.45vw;
   right: auto;
-  top: 212px;
-  bottom: auto;
+  bottom: 6.45vw;
   width: 466px !important;
   height: auto !important;
   max-width: calc(100% - 96px);
@@ -485,9 +486,10 @@
 
 /* Product Specs */
 .product-page .product-specs {
-  max-width: 1210px;
+  max-width: 100%;
   margin-top: 6px;
-  padding: 62px 0 70px
+  padding: 62px 6.45vw;
+  width: 100% !important;
 }
 
 .product-page .product-specs>h2,
@@ -497,13 +499,15 @@
   margin-bottom: 30px
 }
 
+.product-page .shell {
+  padding-top: 0px !important;
+}
+
 .product-page .spec-grid {
   border-top: 1px solid #111
 }
 
-.product-page .spec-accordion {
-  border-bottom: 1px solid #e0e0e0
-}
+
 
 .product-page .spec-accordion button {
   width: 100%;
@@ -546,6 +550,7 @@
   padding: 12px 32px;
   box-sizing: border-box;
   margin-bottom: 24px;
+  margin-top: 20px;
 }
 
 .product-page .spec-table {
@@ -615,7 +620,7 @@
 
 .product-page .comparison-table .spec-label {
   padding-left: 0;
-  width: 220px;
+  width: 278px;
 }
 
 .product-page .comparison-table td {
@@ -988,13 +993,13 @@
     justify-content: center !important;
     margin: 0 auto !important;
     width: 100% !important;
-    max-width: 540px !important;
+
   }
 
   .product-page .product-stage {
     order: 0;
     width: 100% !important;
-    max-width: 540px !important;
+
     height: auto !important;
     aspect-ratio: 1 / 1 !important;
     margin: 0 auto !important;
@@ -1024,10 +1029,9 @@
   }
 
   .product-page .collection-band>div {
-    left: 24px;
+    left: 6.45vw;
     right: auto;
-    top: 210px;
-    bottom: auto;
+    bottom: 6.45vw;
     max-width: 360px
   }
 
@@ -1112,7 +1116,7 @@
     width: auto !important;
     max-width: none !important;
     margin: 0 !important;
-    padding: 0 29px 0 23px !important
+    padding: 0 6.45vw !important
   }
 
   .product-page .product-breadcrumb {
@@ -1152,6 +1156,11 @@
     height: 56px !important
   }
 
+  .product-page .product-desc {
+    line-height: 17px !important;
+
+  }
+
   .product-page .thumb-edge-preview {
     width: 45px;
     height: 56px
@@ -1166,9 +1175,7 @@
     transform: translateX(-11px)
   }
 
-  .product-page .product-info {
-    padding: 0 6px !important
-  }
+
 
   .product-page .product-tag {
     font-size: 11px;
@@ -1274,10 +1281,9 @@
 
   .product-page .collection-band>div {
     position: absolute !important;
-    left: 22px !important;
+    left: 6.45vw !important;
     right: auto !important;
-    top: 195px !important;
-    bottom: auto !important;
+    bottom: 6.45vw !important;
     width: 290px !important;
     height: auto !important;
     max-width: calc(100% - 44px) !important;
@@ -1515,7 +1521,7 @@
     width: auto !important;
     max-width: none !important;
     margin: 0 !important;
-    padding: 48px 20px 40px !important;
+    padding: 48px 6.45vw 40px !important;
   }
 
   .product-page .product-specs>h2 {
@@ -1530,9 +1536,7 @@
     border-top: 1.5px solid #1a1c1d !important;
   }
 
-  .product-page .spec-accordion {
-    border-bottom: 1px solid #e5e5e5 !important;
-  }
+
 
   .product-page .spec-accordion button {
     font-size: 17px !important;
@@ -1807,10 +1811,10 @@
 /* ==========================================================================
    Product Detail Tablet Responsiveness (601px - 1024px)
    ========================================================================== */
-@media (min-width: 601px) and (max-width: 1024px) {
+@media (min-width: 601px) and (max-width: 1150px) {
   .product-page .product-shell {
     max-width: 100% !important;
-    padding: 0 36px !important;
+    padding: 0 6.45vw !important;
     box-sizing: border-box !important;
   }
 
@@ -1833,11 +1837,12 @@
 
   .product-page .product-gallery {
     width: 100% !important;
-    max-width: 640px !important;
+
     margin: 0 auto !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+
   }
 
   .product-page .product-stage {
@@ -1869,7 +1874,7 @@
 
   .product-page .product-info {
     width: 100% !important;
-    max-width: 640px !important;
+
     margin: 0 auto !important;
     padding-top: 0 !important;
     text-align: left !important;
@@ -1909,7 +1914,7 @@
     margin: 14px 0 !important;
   }
 
-  .product-page .product-option > strong {
+  .product-page .product-option>strong {
     text-align: left !important;
   }
 
@@ -1922,7 +1927,7 @@
     min-width: 44px !important;
   }
 
-  .product-page .combination-swatches button:not(.more-colours) > i {
+  .product-page .combination-swatches button:not(.more-colours)>i {
     width: 34px !important;
     height: 34px !important;
   }
@@ -1955,9 +1960,9 @@
   }
 
   .product-page .collection-band>div {
-    left: 36px !important;
+    left: 6.45vw !important;
     right: auto !important;
-    top: 50% !important;
+
     transform: translateY(-50%) !important;
     width: 440px !important;
     max-width: calc(100% - 72px) !important;
@@ -1990,7 +1995,7 @@
   /* Product Specs */
   .product-page .product-specs {
     max-width: 100% !important;
-    padding: 54px 36px 60px !important;
+    padding: 54px 6.45vw 60px !important;
     box-sizing: border-box !important;
   }
 
@@ -2017,6 +2022,10 @@
   .product-page .spec-table .spec-label {
     width: 240px !important;
     font-size: 14px !important;
+  }
+
+  .product-page .comparison-table .spec-label {
+    width: 207px !important;
   }
 
   .product-page .spec-table .spec-value {

@@ -102,6 +102,7 @@ const TABS: TabItem[] = [
 
 export default function HeaderClient() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   const searchRef = React.useRef<HTMLDivElement>(null);
@@ -149,18 +150,20 @@ export default function HeaderClient() {
   }, []);
 
   React.useEffect(() => {
-    const isHome = window.location.pathname === '/';
+    const isHome = pathname === '/';
     if (!isHome) {
       setIsScrolled(true);
       return;
     }
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 500);
     };
-    window.addEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [pathname]);
 
   // Global Reveal Observer for animations
   React.useEffect(() => {
@@ -245,8 +248,6 @@ export default function HeaderClient() {
       document.removeEventListener('keydown', handleEscape);
     };
   }, [isSearchOpen]);
-
-  const pathname = usePathname();
 
   const [activeTab, setActiveTab] = React.useState<TabId | null>(null); // starts as null; only set by user click
   const [activeSheet, setActiveSheet] = React.useState<"products" | "work" | "more" | null>(null);

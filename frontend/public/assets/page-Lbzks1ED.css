@@ -19,7 +19,7 @@
     transition: width .38s cubic-bezier(.2, .75, .25, 1), opacity .18s;
     display: flex;
     position: absolute;
-    top: 0;
+
     right: 0;
     overflow: hidden;
     box-shadow: 0 16px 36px #0000003d
@@ -165,11 +165,11 @@
     font: 400 11px/1.4 Poppins, sans-serif
 }
 
-@media (width<=900px) {
+@media (width<=1350px) {
     .abby-search {
-        flex-basis: 32px;
-        width: 35px;
-        height: 32px
+        flex-basis: 32px !important;
+        width: 35px !important;
+        height: 32px !important;
     }
 
     .abby-search-toggle {
@@ -184,7 +184,7 @@
         height: 50px;
         transition: opacity .22s, transform .34s cubic-bezier(.2, .75, .25, 1);
         position: fixed;
-        top: 86px;
+        top: 91px;
         left: 16px;
         right: 16px;
         transform: translateY(-10px)scale(.985);
@@ -245,7 +245,7 @@
 
     .abby-search-form {
         height: 40px;
-        top: 50%;
+
         transform: translateY(-50%)
     }
 

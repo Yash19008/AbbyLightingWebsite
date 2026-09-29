@@ -502,6 +502,13 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/upload-image', 'uploadImage')->name('admin.blogs.upload_image');
         });
 
+        /********************INSPIRATION BANNER / HERO SECTION********************/
+        Route::controller(App\Http\Controllers\Admin\InspirationHeroSectionController::class)->prefix('inspiration-hero')->group(function () {
+            Route::get('/', 'index')->name('admin.inspiration_hero.index');
+            Route::get('/edit/{id?}', 'edit')->name('admin.inspiration_hero.edit');
+            Route::put('/update', 'update')->name('admin.inspiration_hero.update');
+        });
+
         /********************WATCH & SHOP (REELS)********************/
         Route::controller(App\Http\Controllers\Admin\WatchAndShopController::class)->prefix('watch-and-shops')->group(function () {
             Route::get('/', 'index')->name('admin.watch_and_shops.index');

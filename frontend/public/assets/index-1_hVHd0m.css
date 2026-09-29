@@ -1365,7 +1365,7 @@ body.spot-on #spotlight {
     display: none
 }
 
-@media (width<=900px) {
+@media (width<=1150px) {
     header.sitehead nav ul {
         display: none
     }
@@ -1875,7 +1875,7 @@ body.spot-on #spotlight {
     .hero-copy {
         width: calc(100% - 64px);
         bottom: 58px;
-        left: 32px
+        left: 6.45vw;
     }
 
     .projects .shell {

@@ -191,7 +191,7 @@
         height: 50px;
         transition: opacity .22s, transform .34s cubic-bezier(.2, .75, .25, 1);
         position: fixed;
-        top: 86px;
+        top: 91px;
         left: 16px;
         right: 16px;
         transform: translateY(-10px)scale(.985)

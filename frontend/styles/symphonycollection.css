@@ -678,7 +678,8 @@
 /* ==========================================================================
    Tablet Responsiveness (701px - 1024px)
    ========================================================================== */
-@media (min-width: 701px) and (max-width: 1024px) {
+@media (min-width: 701px) and (max-width: 1150px) {
+
     /* Hero Section */
     .s-hero {
         height: 480px;
@@ -706,7 +707,7 @@
         line-height: 1.2;
     }
 
-    .s-hero-copy > p:last-child {
+    .s-hero-copy>p:last-child {
         font-size: 15px;
         line-height: 1.4;
         max-width: 560px;
@@ -739,7 +740,7 @@
 
     /* Parameters Grid */
     .s-parameter-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 16px;
     }
 
@@ -787,7 +788,7 @@
         min-height: 320px !important;
     }
 
-    .s-look > div {
+    .s-look>div {
         left: 18px;
         right: 16px;
         bottom: 18px;
@@ -812,7 +813,7 @@
 
     /* Products Section */
     .s-products .decorative-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 32px 20px;
     }
 
@@ -840,7 +841,7 @@
         min-height: 210px;
     }
 
-    .s-tone-grid article > div {
+    .s-tone-grid article>div {
         padding: 22px;
     }
 
@@ -883,7 +884,7 @@
         padding: 36px 12px 0 0;
     }
 
-    .score-item + .score-item {
+    .score-item+.score-item {
         padding-left: 18px;
     }
 
@@ -912,7 +913,7 @@
         height: 380px;
     }
 
-    .s-catalogue > div {
+    .s-catalogue>div {
         left: 5vw;
         top: 90px;
         right: 5vw;
@@ -934,7 +935,7 @@
     }
 
     /* Related Collections */
-    .s-related > div:last-child {
+    .s-related>div:last-child {
         grid-template-columns: 1fr 1fr;
         gap: 20px;
     }
@@ -954,9 +955,9 @@
 }
 
 /* Tablet Narrow (701px - 850px) extra adjustment for product grid */
-@media (min-width: 701px) and (max-width: 850px) {
+@media (min-width: 701px) and (max-width: 1150px) {
     .s-products .decorative-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 28px 16px;
     }
 }

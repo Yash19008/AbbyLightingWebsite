@@ -535,31 +535,26 @@ export default function DownloadsPageContent() {
         ) : catalogues.length > 0 ? (
           <div className="catalogue-grid">
             {catalogues.map((item) => {
-              const isSelected = selectedCardId === item.id;
               return (
                 <article
                   key={item.id}
-                  className={`catalogue-card ${isSelected ? "selected" : ""}`}
+                  className="catalogue-card"
                   data-category={item.category}
                   data-title={item.title}
                   tabIndex={0}
-                  aria-label={`Select ${item.title} catalogue`}
-                  onClick={() => setSelectedCardId((prev) => (prev === item.id ? null : item.id))}
+                  aria-label={`Open download form for ${item.title} catalogue`}
+                  onClick={(e) => openDownloadModal(item, e)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      setSelectedCardId((prev) => (prev === item.id ? null : item.id));
+                      openDownloadModal(item);
                     }
                   }}
                 >
                   <div className="catalogue-cover">
                     <img src={item.image} alt={`${item.title} catalogue cover`} />
                     <div className="catalogue-selected">
-                      <button
-                        type="button"
-                        aria-label={`Download ${item.title} catalogue`}
-                        onClick={(e) => openDownloadModal(item, e)}
-                      >
+                      <div className="catalogue-download-content">
                         <svg
                           className="catalogue-download-svg"
                           width="32"
@@ -577,7 +572,7 @@ export default function DownloadsPageContent() {
                           <line x1="12" y1="15" x2="12" y2="-4" />
                         </svg>
                         <strong>Download PDF</strong>
-                      </button>
+                      </div>
                       <small>{item.title}</small>
                     </div>
                   </div>

@@ -13,8 +13,9 @@
 }
 
 .decorative-shell {
-    width: min(1273px, 100% - 64px);
-    margin: 0 auto
+
+
+    padding: 0px 6.45vw;
 }
 
 .decorative-hero {
@@ -41,10 +42,10 @@
 
 .decorative-breadcrumb {
     z-index: 2;
-    width: min(1247px, 100% - 96px);
+
     position: absolute;
     top: 121px;
-    left: 50%;
+    left: 12.45vw;
     transform: translate(-50%)
 }
 
@@ -119,7 +120,7 @@
 
 .decorative-tools {
     align-items: center;
-    gap: 23px;
+    gap: 14px;
     padding-bottom: 12px;
     display: flex
 }
@@ -353,8 +354,8 @@
     border: 0;
     border-radius: 2px;
     place-items: center;
-    width: 34px;
-    height: 34px;
+    width: 18px !important;
+    height: 18px !important;
     padding: 0;
     font: 300 26px/1 Inter, sans-serif;
     transition: opacity .2s, transform .3s cubic-bezier(.2, .75, .25, 1), background .2s;
@@ -686,7 +687,7 @@
 
 @media (width<=960px) {
     .decorative-toolbar {
-        flex-direction: column;
+        flex-direction: row;
         align-items: flex-start;
         padding: 0 0 18px
     }
@@ -710,7 +711,8 @@
 
 @media (width<=600px) {
     .decorative-shell {
-        width: calc(100% - 64px)
+        width: calc(100%);
+        padding: 0px 6.45vw;
     }
 
     .decorative-hero {
