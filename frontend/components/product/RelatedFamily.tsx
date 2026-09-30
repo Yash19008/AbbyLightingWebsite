@@ -51,7 +51,7 @@ export default function RelatedFamily({
 
   const getCardWidth = useCallback(() => {
     const el = trackRef.current;
-    if (!el) return isMobile ? 160 : isTablet ? 300 : 380;
+    if (!el) return isMobile ? 160 : isTablet ? 250 : 280;
     const cardEl = el.firstElementChild as HTMLElement;
     if (cardEl) {
       const w = cardEl.getBoundingClientRect().width;
@@ -60,8 +60,8 @@ export default function RelatedFamily({
     return isMobile
       ? (el.clientWidth - GAP) / 2
       : isTablet
-        ? (el.clientWidth - 2 * GAP) / 2.45
-        : (el.clientWidth - 2 * GAP) / 3;
+        ? (el.clientWidth - 2 * GAP) / 3
+        : (el.clientWidth - 3 * GAP) / 4;
   }, [isMobile, isTablet, GAP]);
 
   const loadMoreProducts = useCallback(async () => {
@@ -171,14 +171,14 @@ export default function RelatedFamily({
   const cardFlex = isMobile
     ? `0 0 calc((100% - ${GAP}px) / 2)`
     : isTablet
-      ? `0 0 calc((100% - 2 * ${GAP}px) / 2.45)`
-      : `0 0 calc((100% - 2 * ${GAP}px) / 3)`;
+      ? `0 0 calc((100% - 2 * ${GAP}px) / 3)`
+      : `0 0 calc((100% - 3 * ${GAP}px) / 4)`;
 
   const cardDim = isMobile
     ? `calc((100% - ${GAP}px) / 2)`
     : isTablet
-      ? `calc((100% - 2 * ${GAP}px) / 2.45)`
-      : undefined;
+      ? `calc((100% - 2 * ${GAP}px) / 3)`
+      : `calc((100% - 3 * ${GAP}px) / 4)`;
 
   return (
     <section className="section" id="related-products" ref={sectionRef}>

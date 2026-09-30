@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import '@/styles/decorative-products.css';
 
 interface Variant {
   id: string | number;
@@ -39,12 +40,23 @@ interface DecorativeCardProps {
 export default function DecorativeCard({ product, order, filterDelay, isGlobalLightOn, hideNewBadge }: DecorativeCardProps) {
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [maxSwatches, setMaxSwatches] = useState(6);
+
+  useEffect(() => {
+    const updateMaxSwatches = () => {
+      setMaxSwatches(window.innerWidth <= 600 ? 4 : 6);
+    };
+    updateMaxSwatches();
+    window.addEventListener('resize', updateMaxSwatches);
+    return () => window.removeEventListener('resize', updateMaxSwatches);
+  }, []);
 
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
   const isSwipingRef = useRef<boolean>(false);
 
-  const totalImages = 1 + (product.galleries?.length || 0);
+  const displayGalleries = (product.galleries || []).slice(0, 4);
+  const totalImages = 1 + displayGalleries.length;
 
   useEffect(() => {
     setActiveImageIndex(0);
@@ -117,6 +129,13 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
     ? product.variants[activeVariantIndex] 
     : null;
 
+  const firstVariant = product.variants && product.variants.length > 0 
+    ? product.variants[0] 
+    : null;
+
+  const displayImageOff = activeVariant?.imageOff || firstVariant?.imageOff;
+  const displayImageOn = activeVariant?.imageOn || firstVariant?.imageOn;
+
   return (
     <div
       className="decorative-grid-item-motion"
@@ -143,10 +162,10 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
           >
             {activeImageIndex === 0 ? (
               <>
-                {activeVariant?.imageOff && (
+                {displayImageOff && (
                   <Image
                     className="decorative-product-image is-current is-light-off"
-                    src={activeVariant.imageOff}
+                    src={displayImageOff}
                     alt=""
                     fill
                     sizes="(max-width: 600px) 100vw, 33vw"
@@ -155,10 +174,10 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                     draggable={false}
                   />
                 )}
-                {activeVariant?.imageOn && (
+                {displayImageOn && (
                   <Image
                     className="decorative-product-image is-current is-light-on"
-                    src={activeVariant.imageOn}
+                    src={displayImageOn}
                     alt={`${product.name} in ${activeVariant?.name || 'default'}, light on`}
                     fill
                     sizes="(max-width: 600px) 100vw, 33vw"
@@ -168,10 +187,10 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                 )}
               </>
             ) : (
-              product.galleries?.[activeImageIndex - 1]?.image && (
+              displayGalleries[activeImageIndex - 1]?.image && (
                 <Image
                   className="decorative-product-image is-current is-light-off is-light-on"
-                  src={product.galleries[activeImageIndex - 1].image}
+                  src={displayGalleries[activeImageIndex - 1].image}
                   alt={`${product.name} gallery image`}
                   fill
                   sizes="(max-width: 600px) 100vw, 33vw"
@@ -211,7 +230,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                 </button>
               )}
               <span className="decorative-gallery-dots">
-                {[0, ...(product.galleries || []).map((_, i) => i + 1)].map((dotIndex) => (
+                {[0, ...displayGalleries.map((_, i) => i + 1)].map((dotIndex) => (
                   <button
                     key={dotIndex}
                     type="button"
@@ -233,7 +252,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
           <h3>{product.name}</h3>
           <p>{product.category}</p>
           <div className="decorative-swatches" aria-label={`${product.name} finishes`}>
-            {product.variants.slice(0, 8).map((variant, index) => (
+            {product.variants.slice(0, maxSwatches).map((variant, index) => (
               <button
                 key={variant.id}
                 type="button"
@@ -249,12 +268,12 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
                 }}
               />
             ))}
-            {product.variants.length > 8 && (
+            {product.variants.length > maxSwatches && (
               <span 
                 className="decorative-swatch-more" 
                 style={{ fontSize: '11px', color: 'var(--decorative-muted)', display: 'flex', alignItems: 'center', marginLeft: '2px' }}
               >
-                +{product.variants.length - 8}
+                +{product.variants.length - maxSwatches}
               </span>
             )}
           </div>

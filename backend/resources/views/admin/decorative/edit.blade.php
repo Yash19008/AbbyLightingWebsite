@@ -932,8 +932,10 @@ $(document).ready(function() {
     $(document).on('click', '.btn-edit-size', function() {
         var id = $(this).data('id');
         var label = $(this).data('label');
+        var code = $(this).data('code') || '';
         $('#size_id').val(id);
         $('#size_label').val(label);
+        $('#size_code').val(code);
         $('#size-form-title').html('<i class="ft-edit-2 text-primary"></i> Edit Size');
         $('#size-form-container').show();
         $('html, body').animate({ scrollTop: $('#size-form-container').offset().top - 100 }, 400);
@@ -1153,7 +1155,7 @@ $(document).ready(function() {
                     selector: '#spec-edit-value-rich',
                     height: 220,
                     plugins: 'lists link charmap textcolor colorpicker',
-                    toolbar: 'bold italic underline forecolor backcolor | fontsize | bullist numlist | link | removeformat',
+                    toolbar: 'bold italic underline superscript subscript forecolor backcolor | fontsize | bullist numlist | link | removeformat',
                     menubar: false,
                     statusbar: false,
                     content_style: 'body { font-family:Inter,sans-serif; font-size:13px; }',
@@ -1216,7 +1218,7 @@ $(document).ready(function() {
                         selector: '#' + $(this).attr('id'),
                         height: 180,
                         plugins: 'lists link charmap textcolor colorpicker',
-                        toolbar: 'bold italic underline forecolor backcolor | fontsize | bullist numlist | link | removeformat',
+                        toolbar: 'bold italic underline superscript subscript forecolor backcolor | fontsize | bullist numlist | link | removeformat',
                         menubar: false,
                         statusbar: false,
                         content_style: 'body { font-family:Inter,sans-serif; font-size:13px; }',
@@ -1248,7 +1250,7 @@ $(document).ready(function() {
                     selector: '#spec-edit-value-rich',
                     height: 220,
                     plugins: 'lists link charmap textcolor colorpicker',
-                    toolbar: 'bold italic underline forecolor backcolor | fontsize | bullist numlist | link | removeformat',
+                    toolbar: 'bold italic underline superscript subscript forecolor backcolor | fontsize | bullist numlist | link | removeformat',
                     menubar: false, statusbar: false,
                     content_style: 'body { font-family:Inter,sans-serif; font-size:13px; }',
                     setup: function(ed) { ed.on('change', function() { tinymce.triggerSave(); }); },
@@ -1281,7 +1283,7 @@ $(document).ready(function() {
                         selector: '#' + richId,
                         height: 180,
                         plugins: 'lists link charmap textcolor colorpicker',
-                        toolbar: 'bold italic underline forecolor backcolor | fontsize | bullist numlist | link | removeformat',
+                        toolbar: 'bold italic underline superscript subscript forecolor backcolor | fontsize | bullist numlist | link | removeformat',
                         menubar: false, statusbar: false,
                         content_style: 'body { font-family:Inter,sans-serif; font-size:13px; }',
                         setup: function(ed) { ed.on('change', function() { tinymce.triggerSave(); }); },

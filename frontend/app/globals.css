@@ -221,6 +221,9 @@ body {
   overflow: hidden;
   opacity: 0;
   transition: max-height 0.3s ease, opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .footer-accordion.is-open .footer-accordion-panel {
@@ -702,7 +705,7 @@ body {
   gap: 122px;
   width: max-content;
   padding: 16px 0;
-  animation: 35s linear infinite marq;
+  animation: 42s linear infinite marq;
 }
 
 .client-logo,
@@ -743,7 +746,7 @@ body {
   .mtrack {
     gap: 14px !important;
     padding: 10px 0 !important;
-    animation: 22s linear infinite marq !important;
+    animation: 42s linear infinite marq !important;
   }
 
   .mtrack .client-logo {
@@ -1981,7 +1984,7 @@ footer#contact {
 .footer-accordion.is-open .footer-accordion-panel,
 .footer-accordion.open .footer-accordion-panel {
   display: flex !important;
-  gap: 4px;
+  gap: 8px;
 }
 
 .footer-accordion-panel a {

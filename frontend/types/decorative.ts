@@ -24,6 +24,7 @@ export interface DecVariant {
 export interface DecSize {
   id: number;
   label: string;
+  code?: string;
   spec_rows: {
     basic_specifications: DecSpecItem[];
     dimensions: DecSpecItem[];

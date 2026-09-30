@@ -102,7 +102,10 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
               </td>
               {sizes.map((s) => (
                 <td key={s.id} className="spec-value">
-                  <strong>{s.label}</strong>
+                  <strong>
+                    {s.label}
+                    {s.code && <sup style={{ color: '#C0C0C0', marginLeft: '2px' }}>{s.code}</sup>}
+                  </strong>
                 </td>
               ))}
             </tr>

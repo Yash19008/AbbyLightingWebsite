@@ -12,6 +12,7 @@ class DecorativeSizeController extends Controller
     {
         $request->validate([
             'label' => 'required|string|max:255',
+            'code'  => 'nullable|string|max:255',
         ]);
 
         $maxOrder = DecProductSize::where('product_id', $productId)->max('order') ?? 0;
@@ -19,6 +20,7 @@ class DecorativeSizeController extends Controller
         $size = DecProductSize::create([
             'product_id' => $productId,
             'label'      => $request->label,
+            'code'       => $request->code,
             'order'      => $maxOrder + 1,
         ]);
 
@@ -44,10 +46,12 @@ class DecorativeSizeController extends Controller
 
         $request->validate([
             'label' => 'required|string|max:255',
+            'code'  => 'nullable|string|max:255',
         ]);
 
         $size->update([
             'label' => $request->label,
+            'code'  => $request->code,
         ]);
 
         return response()->json([

@@ -215,6 +215,7 @@ class DecorativeProductApiController extends Controller
                 return [
                     'id' => $size->id,
                     'label' => $size->label,
+                    'code' => $size->code,
                     'spec_rows' => [
                         'basic_specifications' => $globalBasicSpecs,
                         'dimensions' => $dimensions
@@ -296,14 +297,7 @@ class DecorativeProductApiController extends Controller
             }),
             'related_products' => $relatedProducts->map(function ($related) {
                 $variants = $related->colors->map(function ($color) {
-                    $cssColor = '#e0e0e0';
-                    if ($color->colorMaster) {
-                        if ($color->colorMaster->type === 'gradient') {
-                            $cssColor = 'linear-gradient(135deg, ' . $color->colorMaster->gradient_start . ', ' . $color->colorMaster->gradient_end . ')';
-                        } else {
-                            $cssColor = $color->colorMaster->hex_code ?: '#e0e0e0';
-                        }
-                    }
+                    $cssColor = $color->colorMaster ? $color->colorMaster->css_value : '#e0e0e0';
                     return [
                         'id' => $color->id,
                         'name' => $color->colorMaster ? $color->colorMaster->name : '',
@@ -374,14 +368,7 @@ class DecorativeProductApiController extends Controller
 
         $paginator->getCollection()->transform(function ($related) {
             $variants = $related->colors->map(function ($color) {
-                $cssColor = '#e0e0e0';
-                if ($color->colorMaster) {
-                    if ($color->colorMaster->type === 'gradient') {
-                        $cssColor = 'linear-gradient(135deg, ' . $color->colorMaster->gradient_start . ', ' . $color->colorMaster->gradient_end . ')';
-                    } else {
-                        $cssColor = $color->colorMaster->hex_code ?: '#e0e0e0';
-                    }
-                }
+                $cssColor = $color->colorMaster ? $color->colorMaster->css_value : '#e0e0e0';
                 return [
                     'id' => $color->id,
                     'name' => $color->colorMaster ? $color->colorMaster->name : '',

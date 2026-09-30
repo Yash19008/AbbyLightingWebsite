@@ -93,9 +93,12 @@
                                                 @foreach($product->sizes as $size)
                                                 <tr data-id="{{ $size->id }}">
                                                     <td class="handle" style="cursor: move;"><i class="ft-menu text-muted"></i></td>
-                                                    <td><strong>{{ $size->label }}</strong></td>
                                                     <td>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary btn-edit-size" data-id="{{ $size->id }}" data-label="{{ $size->label }}"><i class="ft-edit"></i></button>
+                                                        <strong>{{ $size->label }}</strong>
+                                                        @if($size->code) <sup>{{ $size->code }}</sup> @endif
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-outline-primary btn-edit-size" data-id="{{ $size->id }}" data-label="{{ $size->label }}" data-code="{{ $size->code }}"><i class="ft-edit"></i></button>
                                                         <button type="button" class="btn btn-sm btn-outline-danger btn-delete-size" data-id="{{ $size->id }}"><i class="ft-trash-2"></i></button>
                                                     </td>
                                                 </tr>
@@ -117,6 +120,10 @@
                                             <div class="form-group">
                                                 <label class="font-weight-bold" style="font-size:13px;">Size Label <span class="text-danger">*</span></label>
                                                 <input type="text" id="size_label" name="label" class="form-control form-control-sm" required placeholder="e.g. Small / 10x10">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" style="font-size:13px;">Superscript Code <small class="text-muted">(Optional)</small></label>
+                                                <input type="text" id="size_code" name="code" class="form-control form-control-sm" placeholder="e.g. 60">
                                             </div>
                                             <div class="d-flex" style="gap:10px;">
                                                 <button type="button" class="btn btn-primary btn-sm flex-grow-1" id="btn-save-size"><i class="ft-check"></i> Save Size</button>

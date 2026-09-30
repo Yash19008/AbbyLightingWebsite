@@ -106,7 +106,6 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
 
   const showNav = items.length > 1;
 
-  const cardFlex = `0 0 calc((100% - ${GAP}px) / 2)`;
   const cardDim = `calc((100% - ${GAP}px) / 2)`;
 
   return (
@@ -155,11 +154,12 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
                   key={collection.id}
                   href={`/collections/${collection.slug}`}
                   style={{
-                    flex: cardFlex,
+                    flexGrow: 0,
+                    flexShrink: 0,
+                    flexBasis: cardDim,
                     minWidth: cardDim,
                     maxWidth: cardDim,
                     width: cardDim,
-                    flexShrink: 0,
                     scrollSnapAlign: 'start',
                     scrollSnapStop: 'always',
                     textDecoration: 'none',

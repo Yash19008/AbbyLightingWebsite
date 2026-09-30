@@ -38,6 +38,7 @@ const readProductData = () => {
     const clone = valueNode.cloneNode(true);
     clone.querySelectorAll('small').forEach(note => note.remove());
     clone.querySelectorAll('.spec-code').forEach(code => code.remove());
+    clone.querySelectorAll('sup').forEach(sup => sup.remove());
     clone.innerHTML = clone.innerHTML
       .replace(/<br\s*\/?>/gi, '\n')
       .replace(/<\/?(p|div)>/gi, '\n')
@@ -46,18 +47,23 @@ const readProductData = () => {
       .replace(/<ul>|<\/ul>/gi, '\n');
     let rawText = clone.textContent;
     const value = rawText
-       .replace(/[ \t\r]+/g, ' ')
-       .replace(/\n\s+/g, '\n')
-       .replace(/\s+\n/g, '\n')
-       .replace(/\n+/g, '\n')
-       .trim();
+      .replace(/[ \t\r]+/g, ' ')
+      .replace(/\n\s+/g, '\n')
+      .replace(/\s+\n/g, '\n')
+      .replace(/\n+/g, '\n')
+      .trim();
     const noteClone = valueNode.querySelector('small')?.cloneNode(true);
     let note = '';
     if (noteClone) {
-        noteClone.innerHTML = noteClone.innerHTML.replace(/<br\s*\/?>/gi, '\n');
-        note = noteClone.textContent.replace(/[ \t\r]+/g, ' ').replace(/\n\s+/g, '\n').replace(/\s+\n/g, '\n').replace(/\n+/g, '\n').trim();
+      noteClone.innerHTML = noteClone.innerHTML.replace(/<br\s*\/?>/gi, '\n');
+      note = noteClone.textContent.replace(/[ \t\r]+/g, ' ').replace(/\n\s+/g, '\n').replace(/\s+\n/g, '\n').replace(/\n+/g, '\n').trim();
     }
-    const displayValue = value;
+    const displayValue = clone.innerHTML
+      .replace(/[ \t\r]+/g, ' ')
+      .replace(/\n\s+/g, '\n')
+      .replace(/\s+\n/g, '\n')
+      .replace(/\n+/g, '\n')
+      .trim();
     const normalKey = normaliseKey(key);
     if (value && !specs[normalKey]) {
       specs[normalKey] = value;
@@ -84,7 +90,7 @@ const readProductData = () => {
   };
   const product = document.querySelector('.product-info h1')?.textContent?.trim() || 'Product';
   const collection = document.querySelector('.product-tag')?.textContent?.split(/\s+COLLECTION/i)[0]?.trim() || '';
-  const pdfTitle = collection && !product.toUpperCase().includes(collection.toUpperCase()) ? `${collection} ${product}` : product;
+  const pdfTitle = product;
   const sizeButtons = [...document.querySelectorAll('.size-options button')];
   const selectedSizeButton = sizeButtons.find(button => button.classList.contains('active')) || sizeButtons[0];
   const selectedSizeIndex = Math.max(0, sizeButtons.indexOf(selectedSizeButton));
@@ -168,11 +174,11 @@ class PageCanvas {
     if (align === 'right') tx -= estimatedWidth;
     this.push(`${colour[0]} ${colour[1]} ${colour[2]} rg BT /${font} ${size} Tf 1 0 0 1 ${tx.toFixed(2)} ${(PAGE_H - y).toFixed(2)} Tm (${safe}) Tj ET`);
   }
-  wrapped(value, x, y, width, size = 7, font = 'F1', colour = [0.45, 0.45, 0.45], lineHeight = size * 1.25) {
+  wrapped(value, x, y, width, size = 7, font = 'F1', colour = [0.45, 0.45, 0.45], lineHeight = size * 1.25, align = 'left') {
     const rawLines = String(value || '').split(/\n/);
     const lines = [];
     const maxChars = Math.max(8, Math.floor(width / (size * 0.49)));
-    
+
     rawLines.forEach(rawLine => {
       const words = rawLine.split(/\s+/);
       let line = '';
@@ -183,9 +189,87 @@ class PageCanvas {
       });
       if (line) lines.push(line);
     });
-    
-    lines.forEach((entry, index) => this.text(entry, x, y + index * lineHeight, size, font, colour));
+
+    lines.forEach((entry, index) => this.text(entry, x, y + index * lineHeight, size, font, colour, align));
     return lines.length * lineHeight;
+  }
+  richWrapped(htmlString, x, y, width, size = 7, defaultFont = 'F1', defaultColour = [0.45, 0.45, 0.45], lineHeight = size * 1.25) {
+    const div = document.createElement('div');
+    div.innerHTML = htmlString;
+
+    let lines = [];
+    let currentLine = [];
+    let currentLineWidth = 0;
+
+    const parseColor = color => {
+      if (!color) return defaultColour;
+      const hex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+      if (hex) return [parseInt(hex[1], 16) / 255, parseInt(hex[2], 16) / 255, parseInt(hex[3], 16) / 255];
+      const rgb = color.match(/\d+/g);
+      if (rgb && rgb.length >= 3) return [parseInt(rgb[0]) / 255, parseInt(rgb[1]) / 255, parseInt(rgb[2]) / 255];
+      return defaultColour;
+    };
+
+    const walk = (node, currentFont, currentColour) => {
+      let nextFont = currentFont; let nextColour = currentColour;
+      if (node.nodeType === 1) {
+        const tag = node.tagName.toLowerCase();
+        if (tag === 'em' || tag === 'i') nextFont = 'F3';
+        if (tag === 'strong' || tag === 'b') nextFont = 'F2';
+        if (node.style.color) nextColour = parseColor(node.style.color);
+        node.childNodes.forEach(child => walk(child, nextFont, nextColour));
+      } else if (node.nodeType === 3) {
+        const tokens = node.textContent.split(/(\n|[ \t]+)/);
+        tokens.forEach(word => {
+          if (!word) return;
+          if (word === '\n') {
+            lines.push(currentLine);
+            currentLine = [];
+            currentLineWidth = 0;
+            return;
+          }
+          if (word.trim() === '') {
+            if (currentLineWidth > 0 && currentLine.length > 0) {
+              currentLine[currentLine.length - 1].text += ' ';
+              currentLineWidth += size * (currentLine[currentLine.length - 1].font === 'F2' ? 0.54 : 0.49);
+            }
+            return;
+          }
+
+          const charMultiplier = nextFont === 'F2' ? 0.54 : 0.49;
+          const wordWidth = word.length * size * charMultiplier;
+
+          if (currentLineWidth + wordWidth > width && currentLineWidth > 0) {
+            lines.push(currentLine);
+            currentLine = [];
+            currentLineWidth = 0;
+          }
+
+          if (currentLine.length > 0 && currentLine[currentLine.length - 1].font === nextFont && currentLine[currentLine.length - 1].color === nextColour) {
+            currentLine[currentLine.length - 1].text += word;
+          } else {
+            currentLine.push({ text: word, font: nextFont, color: nextColour });
+          }
+          currentLineWidth += wordWidth;
+        });
+      }
+    };
+
+    walk(div, defaultFont, defaultColour);
+    if (currentLine.length > 0) lines.push(currentLine);
+
+    let ty = y;
+    lines.forEach(line => {
+      if (line.length === 0) { ty += lineHeight; return; }
+      let tx = x;
+      line.forEach(chunk => {
+        this.text(chunk.text, tx, ty, size, chunk.font, chunk.color);
+        tx += chunk.text.length * size * (chunk.font === 'F2' ? 0.54 : 0.49);
+      });
+      ty += lineHeight;
+    });
+
+    return ty - y;
   }
   image(name, x, y, width, height) { this.push(`q ${width} 0 0 ${height} ${x} ${PAGE_H - y - height} cm /${name} Do Q`); }
   stream() { return latinBytes(`${this.ops.join('\n')}\n`); }
@@ -220,13 +304,26 @@ const textWithCode = (canvas, value, code, x, y, size = 6.3) => {
   }
 };
 
-export const buildPageOne = data => {
+export const buildPageOne = (data, product, drawing) => {
   const canvas = new PageCanvas();
   pageFrame(canvas);
   canvas.text((data.pdfTitle || data.product).toUpperCase(), 50, 106, 15, 'F2');
   canvas.stroke(0, 0, 0); canvas.lineWidth(.4); canvas.line(50, 118, 556, 118);
-  canvas.image('Product', 46, 138, 176, 127);
-  canvas.image('Drawing', 274, 138, 264, 127);
+  
+  if (product) {
+    let pWidth = 176;
+    let pHeight = 176 / (product.width / product.height);
+    if (pHeight > 127) { pHeight = 127; pWidth = 127 * (product.width / product.height); }
+    canvas.image('Product', 46 + (176 - pWidth) / 2, 138 + (127 - pHeight) / 2, pWidth, pHeight);
+  }
+  
+  if (drawing) {
+    let dWidth = 264;
+    let dHeight = 264 / (drawing.width / drawing.height);
+    if (dHeight > 127) { dHeight = 127; dWidth = 127 * (drawing.width / drawing.height); }
+    canvas.image('Drawing', 274 + (264 - dWidth) / 2, 138 + (127 - dHeight) / 2, dWidth, dHeight);
+  }
+  
   canvas.text('Specifications', 46, 286, 7.1, 'F2');
   let y = 307;
   let inBox = false;
@@ -236,15 +333,20 @@ export const buildPageOne = data => {
   const flushBox = () => {
     if (boxRows.length) {
       const rowHeight = 22;
-      const boxHeight = boxRows.length * rowHeight + 8;
-      canvas.stroke(.35, .35, .35); canvas.lineWidth(.25); canvas.rect(46, boxTop, 502, boxHeight, 'S');
+      const boxHeight = boxRows.length * rowHeight;
+      canvas.stroke(.7, .7, .7); canvas.lineWidth(.25); canvas.rect(46, boxTop, 502, boxHeight, 'S');
       boxRows.forEach((row, index) => {
-        const rowY = boxTop + 8 + index * rowHeight;
+        const rowY = boxTop + index * rowHeight + (rowHeight / 2) - 2.9;
         const options = data.specOptions[row.normalKey] || [row.value];
         const codes = data.specOptionCodes[row.normalKey] || [];
-        canvas.text(row.key, 70, rowY, 5.8, 'F1', [.45, .45, .45]);
-        options.slice(0, 5).forEach((value, optionIndex) => textWithCode(canvas, value, codes[optionIndex], 176 + optionIndex * 82, rowY, 5.8));
-        if (index < boxRows.length - 1) { canvas.stroke(.86, .86, .86); canvas.lineWidth(.3); canvas.line(57, rowY + 9, 537, rowY + 9); }
+        canvas.text(row.key, 54, rowY, 5.8, 'F1', [.45, .45, .45]);
+        options.slice(0, 5).forEach((value, optionIndex) => textWithCode(canvas, value, codes[optionIndex], 166 + optionIndex * 78, rowY, 5.8));
+        if (index < boxRows.length - 1) { 
+          canvas.stroke(.88, .88, .88); 
+          canvas.lineWidth(.3); 
+          const lineY = boxTop + (index + 1) * rowHeight;
+          canvas.line(54, lineY, 540, lineY); 
+        }
       });
       y = boxTop + boxHeight + 14;
       boxRows = [];
@@ -252,9 +354,13 @@ export const buildPageOne = data => {
     }
   };
 
+  let shouldBoxRemaining = false;
+
   data.specRows.forEach(row => {
+    if (row.normalKey === 'size') shouldBoxRemaining = true;
+
     const options = data.specOptions[row.normalKey];
-    const isComparison = options && options.length > 1;
+    const isComparison = shouldBoxRemaining || (options && options.length > 1);
 
     if (isComparison) {
       if (!inBox) {
@@ -266,23 +372,23 @@ export const buildPageOne = data => {
       flushBox();
 
       canvas.text(row.key, 46, y, 5.8, 'F1', [.45, .45, .45]);
-      
-      const valueHeight = canvas.wrapped(row.displayValue, 166, y, 382, 5.8, 'F1', [0, 0, 0], 7.2);
+
+      const valueHeight = canvas.richWrapped(row.displayValue, 166, y, 382, 5.8, 'F1', [0, 0, 0], 7.2);
       const lastValueBaseline = valueHeight - 7.2;
-      
+
       let noteHeight = 0;
       if (row.note) {
-          noteHeight = canvas.wrapped(row.note, 166, y + valueHeight + 2, 382, 4.6, 'F3', [.35, .35, .35], 5.8);
+        noteHeight = canvas.wrapped(row.note, 166, y + valueHeight + 2, 382, 4.6, 'F3', [.35, .35, .35], 5.8);
       }
       const lastNoteBaseline = noteHeight ? noteHeight - 5.8 : 0;
-      
-      const lastBaselineOffset = noteHeight > 0 
-          ? valueHeight + 2 + lastNoteBaseline 
-          : lastValueBaseline;
-          
+
+      const lastBaselineOffset = noteHeight > 0
+        ? valueHeight + 2 + lastNoteBaseline
+        : lastValueBaseline;
+
       const height = Math.max(20, lastBaselineOffset + 20);
       const dividerY = y + lastBaselineOffset + 10;
-      
+
       canvas.stroke(.86, .86, .86); canvas.lineWidth(.3); canvas.line(46, dividerY, 548, dividerY);
       y += height;
     }
@@ -300,33 +406,81 @@ export const buildPageTwo = data => {
   canvas.text('Project Details', 37, 108, 7.2, 'F2');
   label('Project Name', 37, 128); box(37, 132, 521, 20);
   label('Architect', 37, 162); box(37, 166, 258, 20);
-  label('Quantity', 302, 162); box(302, 166, 256, 20);
-  label('Location', 37, 196); box(37, 200, 258, 20); box(302, 200, 256, 20);
-  label('Additional Comments', 37, 230); box(37, 234, 521, 43);
+  label('Location', 302, 162); box(302, 166, 256, 20);
+  label('Additional Comments', 37, 196); box(37, 200, 521, 43);
 
-  canvas.text('Ordering Details', 37, 311, 7.2, 'F2');
-  canvas.stroke(0, 0, 0); canvas.lineWidth(.45); canvas.line(37, 322, 558, 322);
-  const cols = ['PRODUCT', 'SIZE', 'WATTAGE', 'CCT', 'P. FINISH', 'S. FINISH', 'CONTROL'];
+  canvas.text('Ordering Details', 37, 277, 7.2, 'F2');
+  canvas.stroke(0, 0, 0); canvas.lineWidth(.45); canvas.line(37, 288, 558, 288);
+  const cols = ['PRODUCT', 'SIZE', 'WATTAGE', 'CCT', 'PRIMARY FINISH', 'SECONDARY FINISH', 'CONTROL'];
   const values = [data.order.product, data.order.size, data.order.wattage, data.order.cct, data.order.primaryFinish, data.order.secondaryFinish, data.order.control];
   const x0 = 85;
   const colW = 67.55;
-  canvas.text('Code', 37, 353, 6.4, 'F1'); canvas.text('Example', 37, 361, 6.4, 'F1');
-  cols.forEach((column, index) => canvas.text(column, x0 + index * colW + colW / 2, 347, 5.8, 'F1', [.3, .3, .3], 'center'));
-  cols.forEach((_, index) => box(x0 + index * colW, 352, colW - 7, 26));
+  canvas.text('Code', 37, 319, 6.4, 'F1'); canvas.text('Example', 37, 327, 6.4, 'F1');
+  cols.forEach((column, index) => canvas.text(column, x0 + index * colW + (colW - 7) / 2, 313, 5.8, 'F1', [.3, .3, .3], 'center'));
+  cols.forEach((_, index) => box(x0 + index * colW, 318, colW - 7, 26));
 
-  canvas.fill(.97, .97, .97); canvas.rect(37, 405, 521, 119, 'f');
-  canvas.text('Example', 53, 433, 6.3, 'F2');
-  canvas.text('Code', 53, 460, 5.8, 'F1'); canvas.text('Example', 53, 468, 5.8, 'F1');
-  cols.forEach((column, index) => canvas.text(column === 'P. FINISH' ? 'PRIMARY FINISH' : column === 'S. FINISH' ? 'SECONDARY FINISH' : column, x0 + index * colW + colW / 2, 450, 5.1, 'F1', [.3, .3, .3], 'center'));
-  values.forEach((value, index) => {
-    const x = x0 + index * colW;
-    box(x, 456, colW - 7, 25);
-    if (value) canvas.text(value, x + (colW - 7) / 2, 471, value.length > 13 ? 4.2 : 5.1, 'F2', [0, 0, 0], 'center');
-    else canvas.text('X', x + (colW - 7) / 2, 475, 18, 'F1', [0, 0, 0], 'center');
+  const getLines = (value, width, size) => {
+    const safeValue = String(value || '').replace(/\//g, '/ ').replace(/,/g, ', ').replace(/\s+/g, ' ');
+    const rawLines = safeValue.split(/\n/);
+    const lines = [];
+    const maxChars = Math.max(5, Math.floor(width / (size * 0.54)));
+    rawLines.forEach(rawLine => {
+      const words = [];
+      rawLine.split(/\s+/).forEach(w => {
+        if (w.length > maxChars) {
+          for (let i = 0; i < w.length; i += maxChars) words.push(w.substring(i, i + maxChars));
+        } else {
+          words.push(w);
+        }
+      });
+
+      let line = '';
+      words.forEach(word => {
+        const candidate = line ? `${line} ${word}` : word;
+        if (candidate.length > maxChars && line) { lines.push(line); line = word; }
+        else line = candidate;
+      });
+      if (line) lines.push(line);
+    });
+    return lines;
+  };
+
+  const textWidth = colW - 9;
+  const cellData = values.map(value => {
+    if (!value) return { value, lines: [], size: 4.5, lh: 5.4 };
+    const safeValue = String(value).replace(/\//g, '/ ').replace(/,/g, ', ').replace(/\s+/g, ' ');
+    const longestWord = safeValue.split(/\s+/).reduce((max, w) => Math.max(max, w.length), 0);
+    const size = longestWord > 14 ? 3.8 : 4.5;
+    const lh = size * 1.25;
+    return { value, lines: getLines(value, textWidth, size), size, lh };
   });
+
+  const maxContentHeight = Math.max(...cellData.map(c => c.lines.length * c.lh));
+  const boxHeight = Math.max(25, maxContentHeight + 8);
+  const extraHeight = boxHeight - 25;
+
+  canvas.fill(.97, .97, .97); canvas.rect(37, 371, 521, 119 + extraHeight, 'f');
+  canvas.text('Example', 53, 399, 6.3, 'F2');
+  canvas.text('Code', 53, 426, 5.8, 'F1'); canvas.text('Example', 53, 434, 5.8, 'F1');
+  cols.forEach((column, index) => canvas.text(column === 'P. FINISH' ? 'PRIMARY FINISH' : column === 'S. FINISH' ? 'SECONDARY FINISH' : column, x0 + index * colW + (colW - 7) / 2, 416, 5.1, 'F1', [.3, .3, .3], 'center'));
+
+  cellData.forEach((c, index) => {
+    const x = x0 + index * colW;
+    box(x, 422, colW - 7, boxHeight);
+    if (c.value) {
+      const totalH = c.lines.length * c.lh;
+      const startY = 422 + (boxHeight - totalH) / 2 + c.size * 0.75;
+      c.lines.forEach((line, i) => {
+        canvas.text(line, x + (colW - 7) / 2, startY + i * c.lh, c.size, 'F2', [0, 0, 0], 'center');
+      });
+    } else {
+      canvas.text('X', x + (colW - 7) / 2, 422 + boxHeight / 2 + 6, 18, 'F1', [0, 0, 0], 'center');
+    }
+  });
+
   const finalCode = values.filter(Boolean).join(' ');
-  canvas.text('Final Code', 53, 505, 5.8, 'F1');
-  canvas.text(finalCode, 96, 505, finalCode.length > 58 ? 4.7 : 5.5, 'F2');
+  canvas.text('Final Code', 53, 471 + extraHeight, 5.8, 'F1');
+  canvas.text(finalCode, 96, 471 + extraHeight, finalCode.length > 58 ? 4.7 : 5.5, 'F2');
   return canvas.stream();
 };
 
@@ -377,9 +531,9 @@ export async function generateProductDatasheet() {
   const [logo, product, drawing] = await Promise.all([
     loadJpeg('/images/abby-logo.png', { background: '#000000', maxWidth: 500, quality: .9 }),
     loadJpeg(data.stageImage, { background: '#ffffff', maxWidth: 1000, quality: .82 }),
-    loadJpeg(data.drawingImage, { background: '#ffffff', maxWidth: 500, quality: .9 }),
+    loadJpeg(data.drawingImage, { background: '#ffffff', maxWidth: 1920, quality: 1.0 }),
   ]);
-  const blob = buildPdf({ pageOne: buildPageOne(data), pageTwo: buildPageTwo(data), logo, product, drawing });
+  const blob = buildPdf({ pageOne: buildPageOne(data, product, drawing), pageTwo: buildPageTwo(data), logo, product, drawing });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;

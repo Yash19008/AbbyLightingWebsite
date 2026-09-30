@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EnquireModal from "./EnquireModal";
 import { DecProductDetail, DecVariant, DecSize } from "@/types/decorative";
 
@@ -24,6 +24,17 @@ export default function ProductInfo({
   onSizeChange,
 }: ProductInfoProps) {
   const [isEnquireOpen, setIsEnquireOpen] = useState(false);
+  const [showAllSwatches, setShowAllSwatches] = useState(false);
+  const [maxSwatches, setMaxSwatches] = useState(6);
+
+  useEffect(() => {
+    const updateMaxSwatches = () => {
+      setMaxSwatches(4);
+    };
+    updateMaxSwatches();
+    window.addEventListener('resize', updateMaxSwatches);
+    return () => window.removeEventListener('resize', updateMaxSwatches);
+  }, []);
 
   const displayColourLabel = activeVariant?.name || "";
 
@@ -43,62 +54,115 @@ export default function ProductInfo({
       {/* Colour option */}
       {product.variants.length > 0 && (
         <div className="product-option symphony-colour-option">
-            <strong data-figma-label="true">
+          <strong data-figma-label="true">
             <span className="finish-label-desktop">COLOUR</span>
             <span className="finish-label-mobile">FINISH</span>
-            </strong>
-            <div className="swatches combination-swatches">
+          </strong>
+          <div className="swatches combination-swatches">
             {product.variants.map((variant, idx) => {
-                const color = variant.color_master;
-                let style: React.CSSProperties = {};
-                
-                if (color) {
-                    if (color.type === 'gradient') {
-                        style = { '--finish-a': color.gradient_start, '--finish-b': color.gradient_end } as React.CSSProperties;
-                    } else {
-                        style = { '--finish-a': color.hex_code, '--finish-b': color.hex_code } as React.CSSProperties;
-                    }
-                }
+              if (idx >= maxSwatches) {
+                return null;
+              }
 
-                return (
+              const color = variant.color_master;
+              let style: React.CSSProperties = {};
+
+              if (color) {
+                if (color.type === 'gradient') {
+                  style = { '--finish-a': color.gradient_start, '--finish-b': color.gradient_end } as React.CSSProperties;
+                } else {
+                  style = { '--finish-a': color.hex_code, '--finish-b': color.hex_code } as React.CSSProperties;
+                }
+              }
+
+              return (
                 <button
-                    key={variant.id}
-                    className={activeColourIndex === idx ? "active" : ""}
-                    onClick={() => onColourChange(idx)}
-                    title={variant.name}
+                  key={variant.id}
+                  className={activeColourIndex === idx ? "active" : ""}
+                  onClick={() => onColourChange(idx)}
+                  title={variant.name}
                 >
-                    <i style={style} />
-                    <span>{variant.name}</span>
+                  <i style={style} />
+                  <span>{variant.name}</span>
                 </button>
-                );
+              );
             })}
+
+            {product.variants.length > maxSwatches && (
+              <button
+                className={`more-colours ${showAllSwatches ? 'active' : ''}`}
+                onClick={() => setShowAllSwatches(!showAllSwatches)}
+                title={showAllSwatches ? "Close" : "View more finishes"}
+              >
+                <i>+</i>
+                <span>{showAllSwatches ? "Close" : `+${product.variants.length - maxSwatches}`}</span>
+              </button>
+            )}
+          </div>
+
+          {/* Extended Colours Popup */}
+          <div className={`inline-colour-panel-wrap ${showAllSwatches ? 'open' : ''}`}>
+            <div className="inline-colour-panel">
+              <div className="colour-library">
+                {product.variants.map((variant, idx) => {
+                  if (idx < maxSwatches) {
+                    return null;
+                  }
+
+                  const color = variant.color_master;
+                  let popupStyle: React.CSSProperties = {};
+
+                  if (color) {
+                    if (color.type === 'gradient') {
+                      popupStyle = { background: `linear-gradient(135deg, ${color.gradient_start}, ${color.gradient_end})` } as React.CSSProperties;
+                    } else {
+                      popupStyle = { background: color.hex_code } as React.CSSProperties;
+                    }
+                  }
+
+                  return (
+                    <div
+                      key={`popup-${variant.id}`}
+                      className={activeColourIndex === idx ? 'selected' : ''}
+                      onClick={() => {
+                        onColourChange(idx);
+                      }}
+                      title={variant.name}
+                    >
+                      <i style={popupStyle} />
+                    </div>
+                  );
+                })}
+              </div>
+              <p>{displayColourLabel}</p>
             </div>
+          </div>
         </div>
       )}
 
       {/* Size option */}
       {product.sizes && product.sizes.length > 0 && (
         <div className="product-option">
-            <strong>Size</strong>
-            <div className="size-options">
+          <strong>Size</strong>
+          <div className="size-options">
             {product.sizes.map((size, idx) => (
-                <button 
-                  key={size.id} 
-                  className={activeSizeIndex === idx ? "active" : ""}
-                  onClick={() => onSizeChange(idx)}
-                >
-                  {size.label}
-                </button>
+              <button
+                key={size.id}
+                className={activeSizeIndex === idx ? "active" : ""}
+                onClick={() => onSizeChange(idx)}
+              >
+                {size.label}
+              </button>
             ))}
-            </div>
+          </div>
         </div>
       )}
 
       {/* SKU */}
       {activeVariant?.sku && (
         <div className="product-sku">
-            <span>SKU</span>
-            <b>{activeVariant.sku}</b>
+          <span>SKU</span>
+          <b>{activeVariant.sku}</b>
         </div>
       )}
 
