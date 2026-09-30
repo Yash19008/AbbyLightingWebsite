@@ -30,9 +30,6 @@ class InspirationHeroSectionController extends Controller
             $section = InspirationHeroSection::create([
                 'title' => 'Ideas, stories & inspiration',
                 'title_highlight' => 'Insights',
-                'breadcrumb_parent_text' => 'Home',
-                'breadcrumb_parent_link' => '/',
-                'breadcrumb_current_text' => 'Inspiration',
                 'is_active' => true,
             ]);
         }
@@ -56,9 +53,6 @@ class InspirationHeroSectionController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'title_highlight' => 'nullable|string|max:255',
-            'breadcrumb_parent_text' => 'nullable|string|max:100',
-            'breadcrumb_parent_link' => 'nullable|string|max:255',
-            'breadcrumb_current_text' => 'nullable|string|max:100',
             'background_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
         ]);
 
@@ -77,9 +71,6 @@ class InspirationHeroSectionController extends Controller
         // Update fields
         $section->title = $validated['title'];
         $section->title_highlight = $validated['title_highlight'] ?? null;
-        $section->breadcrumb_parent_text = $validated['breadcrumb_parent_text'] ?? 'Home';
-        $section->breadcrumb_parent_link = $validated['breadcrumb_parent_link'] ?? '/';
-        $section->breadcrumb_current_text = $validated['breadcrumb_current_text'] ?? 'Inspiration';
         $section->is_active = $request->has('is_active');
         $section->updated_by = Auth::id();
         $section->save();

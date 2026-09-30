@@ -114,7 +114,7 @@ export default function ProductInfo({
 
                   if (color) {
                     if (color.type === 'gradient') {
-                      popupStyle = { background: `linear-gradient(135deg, ${color.gradient_start}, ${color.gradient_end})` } as React.CSSProperties;
+                      popupStyle = { background: `linear-gradient(135deg, ${color.gradient_start} 50%, ${color.gradient_end} 50%)` } as React.CSSProperties;
                     } else {
                       popupStyle = { background: color.hex_code } as React.CSSProperties;
                     }

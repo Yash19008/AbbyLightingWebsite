@@ -30,11 +30,6 @@
                 <div class="row">
                     <div class="col-sm-12">
                         @include('admin.include.notification')
-                        @if(session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
                         <table class="table data-table table-bordered" data-order='[[ 4, "asc" ]]' id="collections-table" style="width:100%">
                             <thead>
                                 <tr>
@@ -78,6 +73,7 @@
                                     <td class="text-center align-middle font-weight-bold">{{ $collection->order ?? 0 }}</td>
                                     <td class="text-center align-middle list-action actBtn-td" style="white-space: nowrap;">
                                         <a href="{{ route('admin.collections.edit', $collection->slug) }}" class="mx-1 text-primary" data-toggle="tooltip" title="Edit"><i class="ft-edit-2 font-medium-3"></i></a>
+                                        <a href="{{ route('admin.collections.duplicate', $collection->slug) }}" class="mx-1 text-warning" data-toggle="tooltip" title="Duplicate"><i class="ft-copy font-medium-3"></i></a>
                                         <a href="/collections/{{ $collection->slug }}" target="_blank" class="mx-1 text-info" data-toggle="tooltip" title="Preview"><i class="ft-eye font-medium-3"></i></a>
                                         <a href="javascript:;" class="delete-collection-btn mx-1 text-danger" data-slug="{{ $collection->slug }}" data-toggle="tooltip" title="Delete"><i class="icon ft-trash-2 font-medium-3"></i></a>
                                         <form id="delete-form-{{ $collection->slug }}" action="{{ route('admin.collections.destroy', $collection->slug) }}" method="POST" style="display: none;">

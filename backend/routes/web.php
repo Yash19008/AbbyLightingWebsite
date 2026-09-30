@@ -560,6 +560,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('/{collection}/edit', 'edit')->name('admin.collections.edit');
             Route::put('/{collection}', 'update')->name('admin.collections.update');
             Route::delete('/{collection}', 'destroy')->name('admin.collections.destroy');
+            Route::get('/{collection}/duplicate', 'duplicate')->name('admin.collections.duplicate');
             Route::patch('/{collection}/toggle-active', 'toggleActive')->name('admin.collections.toggle-active');
             Route::post('/{collection}/hero-section', 'storeHeroSection')->name('admin.collections.store-hero');
             Route::post('/{collection}/parameters-section', 'storeParametersSection')->name('admin.collections.store-parameters');

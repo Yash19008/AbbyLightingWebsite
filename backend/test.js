@@ -1,616 +1,4 @@
-@extends('admin.page')
-@section('title', isset($product) ? 'Edit Product' : 'Add Product')
-@php $main_module = 'Decorative Product'; @endphp
 
-@section('extra_css')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <style>
-        /* Wizard Shell Styles */
-        .wizard-container {
-            display: flex;
-            flex-wrap: nowrap;
-            gap: 20px;
-            align-items: flex-start;
-        }
-
-        @media (max-width: 768px) {
-            .wizard-container {
-                flex-direction: column;
-            }
-
-            .wizard-nav {
-                width: 100%;
-            }
-        }
-
-        .wizard-nav {
-            width: 240px;
-            flex-shrink: 0;
-            background: #fff;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            padding: 15px 0;
-        }
-
-        .wizard-nav .nav-title {
-            padding: 0 20px 10px;
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 10px;
-        }
-
-        .wizard-nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .wizard-nav li {
-            margin: 2px 0;
-        }
-
-        .wizard-nav a {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            color: #666;
-            text-decoration: none;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-
-        .wizard-nav a:hover {
-            background: #f8f9fa;
-            color: #333;
-        }
-
-        .wizard-nav a.active {
-            background: #f4ece4;
-            /* theme accent light */
-            color: #333;
-            border-left: 3px solid #d9a05b;
-        }
-
-        .wizard-nav a .step-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 1px solid #ccc;
-            margin-right: 12px;
-            font-size: 10px;
-            color: transparent;
-        }
-
-        .wizard-nav a.completed .step-icon {
-            background: #28a745;
-            border-color: #28a745;
-            color: white;
-        }
-
-        .wizard-nav a.active .step-icon {
-            border-color: #333;
-        }
-
-        .wizard-nav a.active.completed .step-icon {
-            border-color: #28a745;
-        }
-
-        .wizard-content {
-            flex-grow: 1;
-            min-width: 0;
-            /* prevent flex blowout */
-        }
-
-        /* Tab panes */
-        .wizard-pane {
-            display: none;
-        }
-
-        .wizard-pane.active {
-            display: block;
-        }
-
-        .wizard-topbar {
-            background: #fff;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Image Picker */
-        .image-picker-container {
-            border: 2px dashed #d1d5db;
-            border-radius: 8px;
-            padding: 30px 20px;
-            text-align: center;
-            background: #f9fafb;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s;
-        }
-
-        .image-picker-container:hover {
-            background: #f3f4f6;
-            border-color: #9ca3af;
-        }
-
-        .image-picker-input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .image-picker-preview {
-            display: none;
-        }
-
-        .image-picker-preview img {
-            max-width: 100%;
-            max-height: 180px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .variant-form-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .variant-form-card .card-header {
-            background-color: #f9fafb;
-            border-bottom: 1px solid #e5e7eb;
-        }
-    </style>
-@endsection
-
-@section('content')
-    <div class="content-overlay"></div>
-    <div class="content-wrapper">
-        <div class="content-body">
-
-            <!-- Top Bar -->
-            <div class="wizard-topbar">
-                <div class="topbar-left">
-                    <a href="{{ route('decorative_product_admin') }}" class="btn btn-sm btn-outline-secondary"
-                        title="Back to list">
-                        <i class="ft-arrow-left"></i>
-                    </a>
-                    <h3 class="m-0" style="font-size:18px; font-weight:600;">
-                        {{ isset($product) ? 'Edit Product – ' . $product->name : 'Add New Product' }}
-                    </h3>
-                    @if (isset($product))
-                        <span
-                            class="badge {{ $product->status == 'published' ? 'badge-success' : ($product->status == 'archived' ? 'badge-secondary' : 'badge-warning') }}">
-                            {{ ucfirst($product->status) }}
-                        </span>
-                    @endif
-                </div>
-                <div class="topbar-right">
-                    @if (isset($product))
-                        <a href="#" class="btn btn-sm btn-outline-secondary"><i class="ft-eye"></i> Preview</a>
-                    @endif
-                    <button type="button" class="btn btn-sm btn-dark" id="btn-save-wizard">Save Changes</button>
-                </div>
-            </div>
-
-            <!-- Wizard Layout -->
-            <div class="wizard-container">
-
-                <!-- Left Navigation -->
-                <div class="wizard-nav">
-                    <div class="nav-title">Product Setup</div>
-                    <ul id="wizard-tabs">
-                        @php
-                            $isBasicDone = isset($product);
-                            $isVariantsDone =
-                                $isBasicDone && ($product->colors->count() > 0 || $product->sizes->count() > 0);
-                            $isImagesDone =
-                                $isBasicDone &&
-                                $product->colors->count() > 0 &&
-                                $product->colors->every(function ($v) {
-                                    return $v->main_image && $v->lighton_image;
-                                });
-                            $isSpecsDone =
-                                $isBasicDone &&
-                                \App\Models\Decorative\DecProductSpecRow::where('product_id', $product->id)->count() >
-                                    0;
-                            $isDownloadsDone =
-                                $isBasicDone && ($product->installation_guide || $product->care_instructions);
-
-                            // Just checking if any related products exist
-                            $isRelatedDone =
-                                $isBasicDone &&
-                                \App\Models\Decorative\DecProductRelated::where('product_id', $product->id)->count() >
-                                    0;
-
-                            $isSeoDone =
-                                $isBasicDone &&
-                                ($product->meta_title || $product->meta_description || $product->meta_keywords);
-                        @endphp
-
-                        <li><a href="#basic" class="active {{ $isBasicDone ? 'completed' : '' }}"><i
-                                    class="step-icon ft-check"></i> Basic Information</a></li>
-                        <li><a href="#variants"
-                                class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isVariantsDone ? 'completed' : '' }}"><i
-                                    class="step-icon ft-check"></i> Colors & Sizes</a></li>
-                        <li><a href="#images"
-                                class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isImagesDone ? 'completed' : '' }}"><i
-                                    class="step-icon ft-check"></i> Images</a></li>
-                        <li><a href="#specifications"
-                                class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isSpecsDone ? 'completed' : '' }}"><i
-                                    class="step-icon ft-check"></i> Specifications</a></li>
-                        <li><a href="#downloads"
-                                class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isDownloadsDone ? 'completed' : '' }}"><i
-                                    class="step-icon ft-check"></i> Downloads</a></li>
-                        <li><a href="#related"
-                                class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isRelatedDone ? 'completed' : '' }}"><i
-                                    class="step-icon ft-check"></i> Related Products</a></li>
-                        <li><a href="#seo"
-                                class="{{ !$isBasicDone ? 'disabled' : '' }} {{ $isSeoDone ? 'completed' : '' }}"><i
-                                    class="step-icon ft-check"></i> SEO & Settings</a></li>
-                    </ul>
-                </div>
-
-                <!-- Center Content -->
-                <div class="wizard-content">
-
-                    @include('admin.decorative.partials.tab-basic')
-
-                    @include('admin.decorative.partials.tab-variants')
-
-                    @include('admin.decorative.partials.tab-images')
-
-                    @include('admin.decorative.partials.tab-specifications')
-
-                    @include('admin.decorative.partials.tab-downloads')
-
-                    @include('admin.decorative.partials.tab-related')
-
-                    @include('admin.decorative.partials.tab-seo')
-
-
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-
-    {{-- ===================== SPEC EDIT MODAL ===================== --}}
-    @if (isset($product))
-        <div class="modal fade" id="spec-edit-modal" tabindex="-1" role="dialog" aria-labelledby="specEditModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content" style="border-radius:12px; overflow:hidden; border:0;">
-                    <div class="modal-header" style="background:#6366f1; color:#fff; padding:16px 20px;">
-                        <h5 class="modal-title m-0" id="specEditModalLabel" style="font-size:15px; font-weight:600;">
-                            <i class="ft-edit-2 mr-1"></i> Edit Specification
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal" style="color:#fff; opacity:.9;">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" style="padding:24px;">
-                        <input type="hidden" id="spec-edit-id">
-
-                        <div class="form-group mb-3">
-                            <label class="font-weight-bold" style="font-size:13px;">Attribute <span
-                                    class="text-danger">*</span></label>
-                            <select id="spec-edit-label" class="form-control select2" style="width: 100%;">
-                                <option value="">-- Select Attribute --</option>
-                                @foreach ($spec_attributes as $attr)
-                                    <option value="{{ $attr->id }}">{{ $attr->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="font-weight-bold" style="font-size:13px;">Value Type</label>
-                            <div class="d-flex" style="gap:10px;">
-                                <label class="spec-type-option" data-val="text"
-                                    style="flex:1; padding:10px 14px; border:2px solid #6366f1; border-radius:8px; cursor:pointer; text-align:center; background:#f5f3ff; font-size:13px; font-weight:500;">
-                                    <i class="ft-type d-block mb-1" style="font-size:18px;"></i> Plain Text
-                                </label>
-                                <label class="spec-type-option" data-val="richtext"
-                                    style="flex:1; padding:10px 14px; border:2px solid #e5e7eb; border-radius:8px; cursor:pointer; text-align:center; background:#fff; font-size:13px; font-weight:500;">
-                                    <i class="ft-bold d-block mb-1" style="font-size:18px;"></i> Rich Text
-                                </label>
-                                <label class="spec-type-option" data-val="chips"
-                                    style="flex:1; padding:10px 14px; border:2px solid #e5e7eb; border-radius:8px; cursor:pointer; text-align:center; background:#fff; font-size:13px; font-weight:500;">
-                                    <i class="ft-tag d-block mb-1" style="font-size:18px;"></i> Chips
-                                </label>
-                            </div>
-                            <input type="hidden" id="spec-edit-value-type" value="text">
-                        </div>
-
-                        <div class="form-group mb-0">
-                            <label class="font-weight-bold" style="font-size:13px;">Value</label>
-                            <textarea id="spec-edit-value-plain" class="form-control" rows="3" placeholder="Enter value..."
-                                style="font-size:13px; resize:vertical;"></textarea>
-                            <div id="spec-edit-richtext-wrap" style="display:none;">
-                                <textarea id="spec-edit-value-rich"></textarea>
-                            </div>
-                            <div id="spec-edit-chips-wrap" style="display:none;">
-                                <div id="spec-edit-chips-list" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-                                </div>
-                                <button type="button" id="btn-add-chip" class="btn btn-sm btn-outline-primary" style="font-size:12px;">
-                                    <i class="ft-plus"></i> Add Value
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer"
-                        style="padding:12px 20px; background:#f9fafb; border-top:1px solid #f3f4f6;">
-                        <button type="button" class="btn btn-light" data-dismiss="modal"
-                            style="font-size:13px;">Cancel</button>
-                        <button type="button" id="btn-spec-modal-save" class="btn btn-primary"
-                            style="font-size:13px; font-weight:600; background:#6366f1; border-color:#6366f1;">
-                            <i class="ft-save"></i> Save
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Modal: Edit Dimension Specs --}}
-        <div class="modal fade" id="dim-spec-edit-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content" style="border-radius:12px; overflow:hidden; border:0;">
-                    <div class="modal-header" style="background:#6366f1; color:#fff; padding:16px 20px;">
-                        <h5 class="modal-title m-0" style="font-size:15px; font-weight:600;">
-                            <i class="ft-edit-2 mr-1"></i> Edit Dimension Specification
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal" style="color:#fff; opacity:.9;">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" style="padding:24px;">
-                        <input type="hidden" id="dim-spec-edit-id">
-
-                        <div class="form-group mb-3">
-                            <label class="font-weight-bold" style="font-size:13px;">Attribute <span
-                                    class="text-danger">*</span></label>
-                            <select id="dim-spec-edit-label" class="form-control select2" style="width: 100%;">
-                                <option value="">-- Select Attribute --</option>
-                                @foreach ($spec_attributes as $attr)
-                                    <option value="{{ $attr->id }}">{{ $attr->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="font-weight-bold" style="font-size:13px;">Value Type</label>
-                            <div class="d-flex" style="gap:10px;">
-                                <label class="dim-spec-type-option" data-val="text"
-                                    style="flex:1; padding:10px 14px; border:2px solid #6366f1; border-radius:8px; cursor:pointer; text-align:center; background:#f5f3ff; font-size:13px; font-weight:500;">
-                                    <i class="ft-type d-block mb-1" style="font-size:18px;"></i> Plain Text
-                                </label>
-                                <label class="dim-spec-type-option" data-val="richtext"
-                                    style="flex:1; padding:10px 14px; border:2px solid #e5e7eb; border-radius:8px; cursor:pointer; text-align:center; background:#fff; font-size:13px; font-weight:500;">
-                                    <i class="ft-bold d-block mb-1" style="font-size:18px;"></i> Rich Text
-                                </label>
-                                <label class="dim-spec-type-option" data-val="chips"
-                                    style="flex:1; padding:10px 14px; border:2px solid #e5e7eb; border-radius:8px; cursor:pointer; text-align:center; background:#fff; font-size:13px; font-weight:500;">
-                                    <i class="ft-tag d-block mb-1" style="font-size:18px;"></i> Chips
-                                </label>
-                            </div>
-                            <input type="hidden" id="dim-spec-edit-value-type" value="text">
-                        </div>
-
-                        <div id="dim-spec-inputs-container">
-                            @if ($product->sizes && $product->sizes->count() > 0)
-                                @foreach ($product->sizes as $size)
-                                    <div class="form-group mb-3">
-                                        <label class="font-weight-bold" style="font-size:13px;">Value for
-                                            {{ $size->label }}</label>
-                                        <textarea class="form-control dim-spec-value-plain" data-size-id="{{ $size->id }}" rows="2"
-                                            placeholder="Enter value..." style="font-size:13px; resize:vertical;"></textarea>
-                                        <div class="dim-spec-richtext-wrap" style="display:none;">
-                                            <textarea class="dim-spec-value-rich" id="dim-spec-rich-{{ $size->id }}" data-size-id="{{ $size->id }}"></textarea>
-                                        </div>
-                                        <div class="dim-spec-chips-wrap" id="dim-spec-chips-wrap-{{ $size->id }}" style="display:none;">
-                                            <div class="dim-spec-chips-list" id="dim-spec-chips-list-{{ $size->id }}" data-size-id="{{ $size->id }}" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-                                            </div>
-                                            <button type="button" class="btn-add-dim-chip btn btn-sm btn-outline-primary" data-size-id="{{ $size->id }}" style="font-size:12px;">
-                                                <i class="ft-plus"></i> Add Value
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="alert alert-info">No sizes configured. Go to Colors & Sizes tab to add sizes.
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="modal-footer"
-                        style="padding:12px 20px; background:#f9fafb; border-top:1px solid #f3f4f6;">
-                        <button type="button" class="btn btn-light" data-dismiss="modal"
-                            style="font-size:13px;">Cancel</button>
-                        <button type="button" id="btn-dim-spec-modal-save" class="btn btn-primary"
-                            style="font-size:13px; font-weight:600; background:#6366f1; border-color:#6366f1;">
-                            <i class="ft-save"></i> Save
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Modal: Copy Specs --}}
-        <div class="modal fade" id="spec-copy-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content" style="border-radius:12px; overflow:hidden; border:0;">
-                    <div class="modal-header"
-                        style="background:#f3f4f6; padding:16px 20px; border-bottom:1px solid #e5e7eb;">
-                        <h5 class="modal-title m-0" style="font-size:15px; font-weight:600;"><i
-                                class="ft-copy mr-1 text-muted"></i> Copy Specifications</h5>
-                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                    </div>
-                    <div class="modal-body" style="padding:24px;">
-                        <div class="alert alert-warning mb-3" style="font-size:12px; padding:10px;"><i
-                                class="ft-alert-triangle"></i> This will <strong>overwrite</strong> all current
-                            specifications for this product.</div>
-                        <div class="form-group mb-0">
-                            <label class="font-weight-bold" style="font-size:13px;">Source Product</label>
-                            <select id="spec-copy-source" class="form-control select2"
-                                style="font-size:13px; width: 100%;">
-                                <option value="">-- Select Product --</option>
-                                @if (isset($all_products))
-                                    @foreach ($all_products as $prod)
-                                        <option value="{{ $prod->id }}">{{ $prod->name }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer"
-                        style="padding:12px 20px; background:#f9fafb; border-top:1px solid #f3f4f6;">
-                        <button type="button" class="btn btn-light" data-dismiss="modal"
-                            style="font-size:13px;">Cancel</button>
-                        <button type="button" id="btn-spec-copy-confirm" class="btn btn-primary"
-                            style="font-size:13px; font-weight:600;"><i class="ft-check"></i> Copy</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Modal: Save Template --}}
-        <div class="modal fade" id="spec-save-template-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content" style="border-radius:12px; overflow:hidden; border:0;">
-                    <div class="modal-header"
-                        style="background:#f3f4f6; padding:16px 20px; border-bottom:1px solid #e5e7eb;">
-                        <h5 class="modal-title m-0" style="font-size:15px; font-weight:600;"><i
-                                class="ft-save mr-1 text-muted"></i> Save as Template</h5>
-                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                    </div>
-                    <div class="modal-body" style="padding:24px;">
-                        <p class="text-muted" style="font-size:12px;">Save the current specification structure (labels &
-                            values) as a reusable template for other products.</p>
-                        <div class="form-group mb-0">
-                            <label class="font-weight-bold" style="font-size:13px;">Template Name <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" id="spec-template-name" class="form-control"
-                                placeholder="e.g. Standard Pendant Specs" style="font-size:13px;">
-                        </div>
-                    </div>
-                    <div class="modal-footer"
-                        style="padding:12px 20px; background:#f9fafb; border-top:1px solid #f3f4f6;">
-                        <button type="button" class="btn btn-light" data-dismiss="modal"
-                            style="font-size:13px;">Cancel</button>
-                        <button type="button" id="btn-spec-save-template-confirm" class="btn btn-primary"
-                            style="font-size:13px; font-weight:600;"><i class="ft-check"></i> Save</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Modal: Apply Template --}}
-        <div class="modal fade" id="spec-apply-template-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content" style="border-radius:12px; overflow:hidden; border:0;">
-                    <div class="modal-header"
-                        style="background:#f3f4f6; padding:16px 20px; border-bottom:1px solid #e5e7eb;">
-                        <h5 class="modal-title m-0" style="font-size:15px; font-weight:600;"><i
-                                class="ft-download mr-1 text-muted"></i> Apply Template</h5>
-                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                    </div>
-                    <div class="modal-body" style="padding:24px;">
-                        <div class="alert alert-warning mb-3" style="font-size:12px; padding:10px;"><i
-                                class="ft-alert-triangle"></i> This will <strong>overwrite</strong> all current
-                            specifications for this product.</div>
-                        <div class="form-group mb-0">
-                            <label class="font-weight-bold" style="font-size:13px;">Select Template</label>
-                            <select id="spec-template-select" class="form-control" style="font-size:13px;">
-                                <option value="">Loading templates...</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer"
-                        style="padding:12px 20px; background:#f9fafb; border-top:1px solid #f3f4f6;">
-                        <button type="button" class="btn btn-light" data-dismiss="modal"
-                            style="font-size:13px;">Cancel</button>
-                        <button type="button" id="btn-spec-apply-template-confirm" class="btn btn-primary"
-                            style="font-size:13px; font-weight:600;"><i class="ft-check"></i> Apply</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{-- Modal: Search & Add Related Product --}}
-        <div class="modal fade" id="related-search-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content" style="border-radius:12px; overflow:hidden; border:0;">
-                    <div class="modal-header"
-                        style="background:#f3f4f6; padding:16px 20px; border-bottom:1px solid #e5e7eb;">
-                        <h5 class="modal-title m-0" style="font-size:15px; font-weight:600;"><i
-                                class="ft-search mr-1 text-muted"></i> Add <span id="related-search-type-label"></span>
-                            Product</h5>
-                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                    </div>
-                    <div class="modal-body" style="padding:24px;">
-                        <input type="hidden" id="related-search-type">
-                        <div class="form-group position-relative mb-3">
-                            <input type="text" id="related-search-input" class="form-control"
-                                placeholder="Search by name or SKU..."
-                                style="font-size:13px; padding-left:36px; border-radius:8px;">
-                            <i class="ft-search position-absolute text-muted"
-                                style="left:12px; top:10px; font-size:16px;"></i>
-                        </div>
-
-                        <div id="related-search-results"
-                            style="max-height:300px; overflow-y:auto; border:1px solid #eee; border-radius:8px; display:none;">
-                            <!-- Results injected here -->
-                        </div>
-                        <div id="related-search-loading" class="text-center p-3 text-muted"
-                            style="display:none; font-size:13px;">
-                            <i class="ft-loader spinner font-large-1 mb-1"></i><br>Searching...
-                        </div>
-                    </div>
-                    <div class="modal-footer"
-                        style="padding:12px 20px; background:#f9fafb; border-top:1px solid #f3f4f6;">
-                        <button type="button" class="btn btn-light" data-dismiss="modal"
-                            style="font-size:13px;">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-@endsection
-
-
-@section('extra_js')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script>
         $(document).ready(function() {
 
             // ================================================================
@@ -751,17 +139,17 @@
                 }).then(function(result) {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '{{ isset($product) ? route('decorative_product_admin.destroy', $product->id) : '' }}',
+                            url: '"BLADE"',
                             method: 'DELETE',
                             data: {
-                                _token: '{{ csrf_token() }}'
+                                _token: '"BLADE"'
                             },
                             success: function(res) {
                                 if (res.success) {
                                     toastr.success(res.message);
                                     setTimeout(function() {
                                         window.location.href =
-                                            '{{ route('decorative_product_admin') }}';
+                                            '"BLADE"';
                                     }, 500);
                                 }
                             },
@@ -773,7 +161,7 @@
                 });
             });
 
-            @if (isset($product))
+            /*BLADE*/ (isset($product))
 
                 // ================================================================
                 // COLORS & SIZES SORTABLE
@@ -790,10 +178,10 @@
                                 order[$(this).data('id')] = i + 1;
                             });
                             $.ajax({
-                                url: '{{ route('decorative_product_admin.colors.reorder', $product->id) }}',
+                                url: '"BLADE"',
                                 method: 'POST',
                                 data: {
-                                    _token: '{{ csrf_token() }}',
+                                    _token: '"BLADE"',
                                     orders: order
                                 }
                             });
@@ -812,10 +200,10 @@
                                 order[$(this).data('id')] = i + 1;
                             });
                             $.ajax({
-                                url: '{{ route('decorative_product_admin.sizes.reorder', $product->id) }}',
+                                url: '"BLADE"',
                                 method: 'POST',
                                 data: {
-                                    _token: '{{ csrf_token() }}',
+                                    _token: '"BLADE"',
                                     orders: order
                                 }
                             });
@@ -874,7 +262,7 @@
                     if (!id) return;
                     var formData = new FormData($('#form-color-images')[0]);
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/colors') }}/' + id + '/images',
+                        url: '"BLADE"/' + id + '/images',
                         method: 'POST',
                         data: formData,
                         processData: false,
@@ -889,10 +277,10 @@
                             if (res.success) {
                                 toastr.success(res.message);
                                 var mainUrl = res.color.main_image ?
-                                    '{{ asset('storage/uploads/decorative') }}/' + res.color
+                                    '"BLADE"/' + res.color
                                     .main_image : '';
                                 var lightUrl = res.color.lighton_image ?
-                                    '{{ asset('storage/uploads/decorative') }}/' + res.color
+                                    '"BLADE"/' + res.color
                                     .lighton_image : '';
                                 $('#image-color-select option[value="' + id + '"]').data('main',
                                     mainUrl).data('lighton', lightUrl);
@@ -959,7 +347,7 @@
                     $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Saving...');
                     var orders = {};
                     var formData = new FormData();
-                    formData.append('_token', '{{ csrf_token() }}');
+                    formData.append('_token', '"BLADE"');
 
                     $('.gallery-item').each(function(index) {
                         var id = String($(this).data('id'));
@@ -975,11 +363,11 @@
                         } else {
                             orders[id] = index + 1;
                             $.ajax({
-                                url: '{{ url('admin/decorative-products/gallery') }}/' +
+                                url: '"BLADE"/' +
                                     id,
                                 method: 'PUT',
                                 data: {
-                                    _token: '{{ csrf_token() }}',
+                                    _token: '"BLADE"',
                                     caption: caption
                                 }
                             });
@@ -988,10 +376,10 @@
 
                     // Save order for existing
                     $.ajax({
-                        url: '{{ route('decorative_product_admin.gallery.reorder', $product->id) }}',
+                        url: '"BLADE"',
                         method: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             orders: orders
                         }
                     });
@@ -1001,7 +389,7 @@
                             formData.append('temp_ids[]', item.id);
                         });
                         $.ajax({
-                            url: '{{ route('decorative_product_admin.gallery.store', $product->id) }}',
+                            url: '"BLADE"',
                             method: 'POST',
                             data: formData,
                             processData: false,
@@ -1052,10 +440,10 @@
                         });
                     } else {
                         $.ajax({
-                            url: '{{ url('admin/decorative-products/gallery') }}/' + id,
+                            url: '"BLADE"/' + id,
                             method: 'DELETE',
                             data: {
-                                _token: '{{ csrf_token() }}'
+                                _token: '"BLADE"'
                             },
                             success: function(res) {
                                 if (res.success) {
@@ -1094,13 +482,13 @@
                     }
 
                     var id = $('#color_id').val();
-                    var url = id ? '{{ url('admin/decorative-products/colors') }}/' + id :
-                        '{{ route('decorative_product_admin.colors.store', $product->id) }}';
+                    var url = id ? '"BLADE"/' + id :
+                        '"BLADE"';
                     var method = id ? 'PUT' : 'POST';
                     $.ajax({
                         url: url,
                         method: method,
-                        data: $('#form-color').serialize() + '&_token={{ csrf_token() }}',
+                        data: $('#form-color').serialize() + '&_token="BLADE"',
                         beforeSend: function() {
                             $('#btn-save-color').attr('disabled', true).html(
                                 '<i class="ft-loader spinner"></i>');
@@ -1146,10 +534,10 @@
                     }).then(function(result) {
                         if (result.isConfirmed) {
                             $.ajax({
-                                url: '{{ url('admin/decorative-products/colors') }}/' + id,
+                                url: '"BLADE"/' + id,
                                 method: 'DELETE',
                                 data: {
-                                    _token: '{{ csrf_token() }}'
+                                    _token: '"BLADE"'
                                 },
                                 success: function(res) {
                                     if (res.success) {
@@ -1190,13 +578,13 @@
                     }
 
                     var id = $('#size_id').val();
-                    var url = id ? '{{ url('admin/decorative-products/sizes') }}/' + id :
-                        '{{ route('decorative_product_admin.sizes.store', $product->id) }}';
+                    var url = id ? '"BLADE"/' + id :
+                        '"BLADE"';
                     var method = id ? 'PUT' : 'POST';
                     $.ajax({
                         url: url,
                         method: method,
-                        data: $('#form-size').serialize() + '&_token={{ csrf_token() }}',
+                        data: $('#form-size').serialize() + '&_token="BLADE"',
                         beforeSend: function() {
                             $('#btn-save-size').attr('disabled', true).html(
                                 '<i class="ft-loader spinner"></i>');
@@ -1244,10 +632,10 @@
                     }).then(function(result) {
                         if (result.isConfirmed) {
                             $.ajax({
-                                url: '{{ url('admin/decorative-products/sizes') }}/' + id,
+                                url: '"BLADE"/' + id,
                                 method: 'DELETE',
                                 data: {
-                                    _token: '{{ csrf_token() }}'
+                                    _token: '"BLADE"'
                                 },
                                 success: function(res) {
                                     if (res.success) {
@@ -1267,17 +655,6 @@
                 // SPECIFICATIONS TAB
                 // ================================================================
 
-                function buildChipItemHtml(value, code) {
-                    value = value || '';
-                    code = code || '';
-                    return '<div class="chip-item" style="display:flex; align-items:center; gap:6px; background:#f5f3ff; border:1px solid #c4b5fd; border-radius:8px; padding:6px 10px;">' +
-                        '<div style="display:flex; flex-direction:column; gap:4px;">' +
-                        '<input type="text" class="chip-value form-control form-control-sm" placeholder="Value (e.g. 2700K)" value="' + value.replace(/"/g, '&quot;') + '" style="width:140px; font-size:12px; height: 26px;">' +
-                        '<input type="text" class="chip-code form-control form-control-sm" placeholder="Code (optional, e.g. 27K)" value="' + code.replace(/"/g, '&quot;') + '" style="width:140px; font-size:12px; height: 26px;">' +
-                        '</div>' +
-                        '<button type="button" class="btn-remove-chip btn btn-sm btn-link text-danger p-0 m-0 ml-1" style="font-size:18px; line-height:1;"><i class="ft-x"></i></button>' +
-                        '</div>';
-                }
                 function renderSpecRow(row) {
                     var isRich = row.value_type === 'richtext';
                     var isChips = row.value_type === 'chips';
@@ -1292,7 +669,7 @@
                         if (isChips) {
                             try {
                                 var parsed = JSON.parse(rawVal);
-                                displayVal = '<div style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="Chips">' + parsed.length + ' chip(s)</div>';
+                                displayVal = parsed.length + ' chip(s)';
                             } catch(e) { displayVal = 'Invalid Chips'; }
                         } else {
                             var strippedVal = rawVal.replace(/<[^>]*>?/gm, ''); // strip HTML
@@ -1324,10 +701,10 @@
                     var safeLabel = row.label ? row.label.replace(/"/g, '&quot;') : '';
 
                     var sizesCols = '';
-                    @if ($product->sizes && $product->sizes->count() > 0)
-                        @foreach ($product->sizes as $size)
-                            var sizeValData = (row.values && row.values[{{ $size->id }}]) ? row.values[
-                                {{ $size->id }}] : null;
+                    /*BLADE*/ ($product->sizes && $product->sizes->count() > 0)
+                        /*BLADE*/ ($product->sizes as $size)
+                            var sizeValData = (row.values && row.values["BLADE"]) ? row.values[
+                                "BLADE"] : null;
                             var rawVal = sizeValData ? (sizeValData.value || '') : '';
                             var isRich = sizeValData ? (sizeValData.value_type === 'richtext') : false;
                             var isChips = sizeValData ? (sizeValData.value_type === 'chips') : false;
@@ -1339,7 +716,7 @@
                                 if (isChips) {
                                     try {
                                         var parsed = JSON.parse(rawVal);
-                                        displayVal = '<div style="max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="Chips">' + parsed.length + ' chip(s)</div>';
+                                        displayVal = parsed.length + ' chip(s)';
                                     } catch(e) { displayVal = 'Invalid Chips'; }
                                 } else {
                                     var strippedVal = rawVal.replace(/<[^>]*>?/gm, '');
@@ -1352,8 +729,8 @@
                             }
                             sizesCols += '<td style="padding:10px 12px; vertical-align:middle; color:#4b5563;">' +
                                 valDisplay + displayVal + '</td>';
-                        @endforeach
-                    @else
+                        /*BLADE*/
+                    /*BLADE*/
                         var sizeValData = (row.values && Object.values(row.values)[0]) ? Object.values(row.values)[
                             0] : null;
                         var rawVal = sizeValData ? (sizeValData.value || '') : '';
@@ -1367,7 +744,7 @@
                             if (isChips) {
                                 try {
                                     var parsed = JSON.parse(rawVal);
-                                    displayVal = '<div style="max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="Chips">' + parsed.length + ' chip(s)</div>';
+                                    displayVal = parsed.length + ' chip(s)';
                                 } catch(e) { displayVal = 'Invalid Chips'; }
                             } else {
                                 var strippedVal = rawVal.replace(/<[^>]*>?/gm, '');
@@ -1380,7 +757,7 @@
                         }
                         sizesCols += '<td style="padding:10px 12px; vertical-align:middle; color:#4b5563;">' +
                             valDisplay + displayVal + '</td>';
-                    @endif
+                    /*BLADE*/
 
                     // encode values JSON to store in data attribute for editing
                     var valuesJson = encodeURIComponent(JSON.stringify(row.values || {}));
@@ -1413,10 +790,10 @@
                                     orders[$(this).data('id')] = i + 1;
                                 });
                                 $.ajax({
-                                    url: '{{ url('admin/decorative-products/' . $product->id . '/specs/reorder') }}',
+                                    url: '"BLADE"',
                                     method: 'POST',
                                     data: {
-                                        _token: '{{ csrf_token() }}',
+                                        _token: '"BLADE"',
                                         orders: orders
                                     }
                                 });
@@ -1428,7 +805,7 @@
                 function loadProductSpecs() {
                     $('.spec-tbody').empty();
 
-                    $.get('{{ url('admin/decorative-products/' . $product->id . '/specs') }}', function(res) {
+                    $.get('"BLADE"', function(res) {
                         if (!res.success) return;
 
                         // Basic Specs
@@ -1476,10 +853,10 @@
                     var defaultAttrId = $('#spec-edit-label option:nth-child(2)').val() || 1;
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/specs') }}',
+                        url: '"BLADE"',
                         method: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             section: section,
                             dec_spec_attribute_id: defaultAttrId
                         },
@@ -1531,20 +908,7 @@
                         'background': '#f5f3ff'
                     });
 
-                    if (row.value_type === 'chips') {
-                        $('#spec-edit-value-plain').hide();
-                        $('#spec-edit-richtext-wrap').hide();
-                        $('#spec-edit-chips-wrap').show();
-                        if (tinymce.get('spec-edit-value-rich')) {
-                            tinymce.get('spec-edit-value-rich').remove();
-                        }
-                        var chips = [];
-                        try { chips = JSON.parse(row.value || '[]'); } catch(e) {}
-                        var $list = $('#spec-edit-chips-list').empty();
-                        chips.forEach(function(chip) {
-                            $list.append(buildChipItemHtml(chip.value, chip.code));
-                        });
-                    } else if (row.value_type === 'richtext') {
+                    if (row.value_type === 'richtext') {
                         $('#spec-edit-value-plain').hide();
                         $('#spec-edit-chips-wrap').hide();
                         $('#spec-edit-richtext-wrap').show();
@@ -1605,6 +969,16 @@
                                 }
                             });
                         }
+                    } else if (row.value_type === 'chips') {
+                        $('#spec-edit-value-plain').hide();
+                        $('#spec-edit-richtext-wrap').hide();
+                        if (tinymce.get('spec-edit-value-rich')) tinymce.get('spec-edit-value-rich').remove();
+                        $('#spec-edit-chips-wrap').show();
+                        
+                        var chipsVal = row.value || '[]';
+                        if (!chipsVal.startsWith('[')) chipsVal = '[]';
+                        $('#spec-edit-value-chips').val(chipsVal);
+                        renderChipsUI($('#spec-chips-container'), $('#spec-edit-value-chips'));
                     } else {
                         $('#spec-edit-value-plain').show().val(row.value || '');
                         $('#spec-edit-richtext-wrap').hide();
@@ -1654,27 +1028,7 @@
                         $(this).val(val);
                     });
 
-                    if (vType === 'chips') {
-                        $('.dim-spec-value-plain').hide();
-                        $('.dim-spec-richtext-wrap').hide();
-                        $('.dim-spec-chips-wrap').show();
-                        
-                        $('.dim-spec-value-rich').each(function() {
-                            if (tinymce.get($(this).attr('id'))) tinymce.get($(this).attr('id')).remove();
-                        });
-                        
-                        $('.dim-spec-chips-wrap').each(function() {
-                            var sizeId = $(this).attr('id').replace('dim-spec-chips-wrap-', '');
-                            var val = '';
-                            if (row.values && row.values[sizeId]) val = row.values[sizeId].value || '';
-                            var chips = [];
-                            try { chips = JSON.parse(val || '[]'); } catch(e) {}
-                            var $list = $('#dim-spec-chips-list-' + sizeId).empty();
-                            chips.forEach(function(chip) {
-                                $list.append(buildChipItemHtml(chip.value, chip.code));
-                            });
-                        });
-                    } else if (vType === 'richtext') {
+                    if (vType === 'richtext') {
                         $('.dim-spec-value-plain').hide();
                         $('.dim-spec-chips-wrap').hide();
                         $('.dim-spec-richtext-wrap').show();
@@ -1735,6 +1089,23 @@
                                 });
                             }
                         });
+                    } else if (vType === 'chips') {
+                        $('.dim-spec-value-plain').hide();
+                        $('.dim-spec-richtext-wrap').hide();
+                        $('.dim-spec-value-rich').each(function() {
+                            if (tinymce.get($(this).attr('id'))) tinymce.get($(this).attr('id')).remove();
+                        });
+                        $('.dim-spec-chips-wrap').show();
+                        
+                        $('.dim-spec-value-chips').each(function() {
+                            var sizeId = $(this).data('size-id');
+                            var val = '[]';
+                            if (row.values && row.values[sizeId]) val = row.values[sizeId].value || '[]';
+                            if (!val.startsWith('[')) val = '[]';
+                            $(this).val(val);
+                            var $container = $(this).closest('.dim-spec-chips-wrap').find('.dim-spec-chips-container');
+                            renderChipsUI($container, $(this));
+                        });
                     } else {
                         $('.dim-spec-value-plain').show();
                         $('.dim-spec-richtext-wrap').hide();
@@ -1750,14 +1121,7 @@
                 // Reinit tinymce when value type changes in modal
                 $('#spec-edit-value-type').on('change', function() {
                     var type = $(this).val();
-                    if (type === 'chips') {
-                        $('#spec-edit-value-plain').hide();
-                        $('#spec-edit-richtext-wrap').hide();
-                        $('#spec-edit-chips-wrap').show();
-                        if (tinymce.get('spec-edit-value-rich')) {
-                            tinymce.get('spec-edit-value-rich').remove();
-                        }
-                    } else if (type === 'richtext') {
+                    if (type === 'richtext') {
                         $('#spec-edit-value-plain').hide();
                         $('#spec-edit-chips-wrap').hide();
                         $('#spec-edit-richtext-wrap').show();
@@ -1810,6 +1174,19 @@
                                 }
                             });
                         }
+                        }
+                    } else if (type === 'chips') {
+                        $('#spec-edit-richtext-wrap').hide();
+                        $('#spec-edit-value-plain').hide();
+                        if (tinymce.get('spec-edit-value-rich')) {
+                            tinymce.get('spec-edit-value-rich').remove();
+                        }
+                        $('#spec-edit-chips-wrap').show();
+                        var $hidden = $('#spec-edit-value-chips');
+                        var chipsVal = $hidden.val() || '[]';
+                        if (!chipsVal.startsWith('[')) chipsVal = '[]';
+                        $hidden.val(chipsVal);
+                        renderChipsUI($('#spec-chips-container'), $hidden);
                     } else {
                         $('#spec-edit-richtext-wrap').hide();
                         $('#spec-edit-chips-wrap').hide();
@@ -1826,14 +1203,7 @@
                 // Reinit tinymce when value type changes in DIMENSIONS modal
                 $('#dim-spec-edit-value-type').on('change', function() {
                     var type = $(this).val();
-                    if (type === 'chips') {
-                        $('.dim-spec-value-plain').hide();
-                        $('.dim-spec-richtext-wrap').hide();
-                        $('.dim-spec-chips-wrap').show();
-                        $('.dim-spec-value-rich').each(function() {
-                            if (tinymce.get($(this).attr('id'))) tinymce.get($(this).attr('id')).remove();
-                        });
-                    } else if (type === 'richtext') {
+                    if (type === 'richtext') {
                         $('.dim-spec-value-plain').hide();
                         $('.dim-spec-chips-wrap').hide();
                         $('.dim-spec-richtext-wrap').show();
@@ -1891,6 +1261,20 @@
                                 });
                             }
                         });
+                    } else if (type === 'chips') {
+                        $('.dim-spec-richtext-wrap').hide();
+                        $('.dim-spec-value-plain').hide();
+                        $('.dim-spec-value-rich').each(function() {
+                            if (tinymce.get($(this).attr('id'))) tinymce.get($(this).attr('id')).remove();
+                        });
+                        $('.dim-spec-chips-wrap').show();
+                        $('.dim-spec-value-chips').each(function() {
+                            var chipsVal = $(this).val() || '[]';
+                            if (!chipsVal.startsWith('[')) chipsVal = '[]';
+                            $(this).val(chipsVal);
+                            var $container = $(this).closest('.dim-spec-chips-wrap').find('.dim-spec-chips-container');
+                            renderChipsUI($container, $(this));
+                        });
                     } else {
                         $('.dim-spec-richtext-wrap').hide();
                         $('.dim-spec-chips-wrap').hide();
@@ -1934,29 +1318,6 @@
                     $('#dim-spec-edit-value-type').val($(this).data('val')).trigger('change');
                 });
 
-                // Chip handlers
-                $(document).on('click', '#btn-add-chip', function() {
-                    if ($('#spec-edit-chips-list .chip-item').length >= 20) {
-                        toastr.error('Maximum 20 chips allowed.');
-                        return;
-                    }
-                    $('#spec-edit-chips-list').append(buildChipItemHtml('', ''));
-                });
-                
-                $(document).on('click', '.btn-add-dim-chip', function() {
-                    var sizeId = $(this).data('size-id');
-                    var $list = $('#dim-spec-chips-list-' + sizeId);
-                    if ($list.find('.chip-item').length >= 20) {
-                        toastr.error('Maximum 20 chips allowed.');
-                        return;
-                    }
-                    $list.append(buildChipItemHtml('', ''));
-                });
-
-                $(document).on('click', '.btn-remove-chip', function() {
-                    $(this).closest('.chip-item').remove();
-                });
-
                 // Click edit button on row
                 $(document).on('click', '.btn-edit-spec', function() {
                     var tr = $(this).closest('tr');
@@ -1991,17 +1352,11 @@
                     var attrId = $('#spec-edit-label').val();
                     var label = $('#spec-edit-label option:selected').text();
 
-                    var value;
-                    if (type === 'chips') {
-                        var chips = [];
-                        $('#spec-edit-chips-list .chip-item').each(function() {
-                            var v = $(this).find('.chip-value').val().trim();
-                            var c = $(this).find('.chip-code').val().trim();
-                            if (v) chips.push({ value: v, code: c || null });
-                        });
-                        value = JSON.stringify(chips);
-                    } else if (type === 'richtext') {
+                    var value = '';
+                    if (type === 'richtext') {
                         value = tinymce.get('spec-edit-value-rich') ? tinymce.get('spec-edit-value-rich').getContent() : '';
+                    } else if (type === 'chips') {
+                        value = $('#spec-edit-value-chips').val();
                     } else {
                         value = $('#spec-edit-value-plain').val();
                     }
@@ -2010,10 +1365,10 @@
                     $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Saving...');
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/specs') }}/' + id,
+                        url: '"BLADE"/' + id,
                         method: 'PUT',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             dec_spec_attribute_id: attrId,
                             value_type: type,
                             value: value,
@@ -2045,21 +1400,16 @@
                     var label = $('#dim-spec-edit-label option:selected').text();
 
                     var values = {};
-                    if (type === 'chips') {
-                        $('.dim-spec-chips-list').each(function() {
-                            var sizeId = $(this).data('size-id');
-                            var chips = [];
-                            $(this).find('.chip-item').each(function() {
-                                var v = $(this).find('.chip-value').val().trim();
-                                var c = $(this).find('.chip-code').val().trim();
-                                if (v) chips.push({ value: v, code: c || null });
-                            });
-                            values[sizeId] = JSON.stringify(chips);
-                        });
-                    } else if (type === 'richtext') {
+                    if (type === 'richtext') {
                         $('.dim-spec-value-rich').each(function() {
                             var sizeId = $(this).data('size-id');
-                            values[sizeId] = tinymce.get($(this).attr('id')) ? tinymce.get($(this).attr('id')).getContent() : '';
+                            values[sizeId] = tinymce.get($(this).attr('id')) ? tinymce.get($(this)
+                                .attr('id')).getContent() : '';
+                        });
+                    } else if (type === 'chips') {
+                        $('.dim-spec-value-chips').each(function() {
+                            var sizeId = $(this).data('size-id');
+                            values[sizeId] = $(this).val();
                         });
                     } else {
                         $('.dim-spec-value-plain').each(function() {
@@ -2072,10 +1422,10 @@
                     $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Saving...');
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/specs') }}/' + id,
+                        url: '"BLADE"/' + id,
                         method: 'PUT',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             dec_spec_attribute_id: attrId,
                             value_type: type,
                             values: values,
@@ -2122,10 +1472,10 @@
                     var tr = $(this).closest('tr');
                     var tbody = tr.closest('tbody');
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/specs') }}/' + id,
+                        url: '"BLADE"/' + id,
                         method: 'DELETE',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             section: 'basic_specifications'
                         },
                         success: function(res) {
@@ -2151,10 +1501,10 @@
                     var tr = $(this).closest('tr');
                     var tbody = tr.closest('tbody');
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/specs') }}/' + id,
+                        url: '"BLADE"/' + id,
                         method: 'DELETE',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             section: 'dimensions'
                         },
                         success: function(res) {
@@ -2187,10 +1537,10 @@
                     $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Copying...');
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/specs/copy') }}',
+                        url: '"BLADE"',
                         method: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             source_product_id: sourceId
                         },
                         success: function(res) {
@@ -2227,10 +1577,10 @@
                     $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Saving...');
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/specs/templates') }}',
+                        url: '"BLADE"',
                         method: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             name: name
                         },
                         success: function(res) {
@@ -2254,7 +1604,7 @@
                     $('#spec-template-select').html('<option value="">Loading templates...</option>');
                     $('#spec-apply-template-modal').modal('show');
 
-                    $.get('{{ url('admin/decorative-products/specs/templates') }}', function(res) {
+                    $.get('"BLADE"', function(res) {
                         if (res.success) {
                             var opts = '<option value="">-- Select a template --</option>';
                             res.templates.forEach(function(t) {
@@ -2277,10 +1627,10 @@
                     $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Applying...');
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/specs/templates/apply') }}',
+                        url: '"BLADE"',
                         method: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             template_id: templateId
                         },
                         success: function(res) {
@@ -2299,13 +1649,13 @@
                         }
                     });
                 });
-            @endif
+            /*BLADE*/
 
             // ================================================================
             // PHASE 7 - DOWNLOADS TAB
             // ================================================================
 
-            @if (isset($product))
+            /*BLADE*/ (isset($product))
                 $('.btn-replace-download').on('click', function() {
                     var type = $(this).data('type');
                     var idPrefix = type === 'installation_guide' ? 'installation-guide' :
@@ -2320,7 +1670,7 @@
                     var idPrefix = type === 'installation_guide' ? 'installation-guide' :
                         'care-instructions';
                     var formData = new FormData(this);
-                    formData.append('_token', '{{ csrf_token() }}');
+                    formData.append('_token', '"BLADE"');
                     formData.append('type', type);
 
                     var $btn = $(this).find('button[type="submit"]');
@@ -2328,7 +1678,7 @@
                     $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Uploading...');
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/downloads') }}',
+                        url: '"BLADE"',
                         method: 'POST',
                         data: formData,
                         contentType: false,
@@ -2338,7 +1688,7 @@
                             if (res.success) {
                                 $('#' + idPrefix + '-filename').text(res.filename);
                                 $('#' + idPrefix + '-link').attr('href',
-                                    '{{ asset('storage/uploads/decorative/downloads/') }}/' +
+                                    '"BLADE"/' +
                                     res.filename);
                                 $('#' + idPrefix + '-upload').hide();
                                 $('#' + idPrefix + '-display').show();
@@ -2363,10 +1713,10 @@
                     $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i>');
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/downloads') }}',
+                        url: '"BLADE"',
                         method: 'DELETE',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             type: type
                         },
                         success: function(res) {
@@ -2380,13 +1730,13 @@
                         }
                     });
                 });
-            @endif
+            /*BLADE*/
 
             // ================================================================
             // PHASE 8 - RELATED PRODUCTS TAB
             // ================================================================
 
-            @if (isset($product))
+            /*BLADE*/ (isset($product))
                 // Move modal to body
                 $('#related-search-modal').appendTo('body');
 
@@ -2401,7 +1751,7 @@
 
                 function renderRelatedRow(item) {
                     var prod = item.related_product || {};
-                    var image = prod.featured_image ? '{{ asset('storage/uploads/decorative/') }}/' + prod
+                    var image = prod.featured_image ? '"BLADE"/' + prod
                         .featured_image : '';
                     return '<tr data-id="' + item.id + '" style="border-bottom:1px solid #f3f4f6;">' +
                         '<td style="padding:10px 8px; vertical-align:middle; width:28px;"><i class="ft-menu handle text-muted" style="cursor:move; font-size:14px;"></i></td>' +
@@ -2434,10 +1784,10 @@
                                     orders[$(this).data('id')] = i + 1;
                                 });
                                 $.ajax({
-                                    url: '{{ url('admin/decorative-products/' . $product->id . '/related/reorder') }}',
+                                    url: '"BLADE"',
                                     method: 'POST',
                                     data: {
-                                        _token: '{{ csrf_token() }}',
+                                        _token: '"BLADE"',
                                         orders: orders
                                     }
                                 });
@@ -2448,7 +1798,7 @@
 
                 function loadRelatedProducts() {
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/related') }}',
+                        url: '"BLADE"',
                         method: 'GET',
                         cache: false,
                         success: function(res) {
@@ -2508,11 +1858,11 @@
                         $('#related-search-loading').show();
 
                         $.ajax({
-                            url: '{{ url('admin/decorative-products/related/search') }}',
+                            url: '"BLADE"',
                             method: 'GET',
                             data: {
                                 q: q,
-                                exclude_id: {{ $product->id }}
+                                exclude_id: "BLADE"
                             },
                             cache: false,
                             success: function(res) {
@@ -2561,10 +1911,10 @@
                     $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i>');
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/related') }}',
+                        url: '"BLADE"',
                         method: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '"BLADE"',
                             related_product_id: relatedId,
                             type: type
                         },
@@ -2599,10 +1949,10 @@
                     var type = tbody.data('type');
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/related') }}/' + id,
+                        url: '"BLADE"/' + id,
                         method: 'DELETE',
                         data: {
-                            _token: '{{ csrf_token() }}'
+                            _token: '"BLADE"'
                         },
                         success: function(res) {
                             if (res.success) {
@@ -2616,13 +1966,13 @@
                         }
                     });
                 });
-            @endif
+            /*BLADE*/
 
             // ================================================================
             // PHASE 9 - SEO & SETTINGS
             // ================================================================
 
-            @if (isset($product))
+            /*BLADE*/ (isset($product))
                 function updateSeoCounters() {
                     var title = $('#meta_title').val() || '';
                     var desc = $('#meta_description').val() || '';
@@ -2632,7 +1982,7 @@
                     $('#meta-desc-counter').text(desc.length + ' / 160').css('color', desc.length > 160 ?
                         '#ef4444' : '');
 
-                    $('#seo-preview-title').text(title || '{{ $product->name }}');
+                    $('#seo-preview-title').text(title || '"BLADE"');
                     $('#seo-preview-desc').text(desc || 'No description provided.');
                 }
 
@@ -2647,9 +1997,9 @@
                     $btn.attr('disabled', true).html('<i class="ft-loader spinner"></i> Saving...');
 
                     $.ajax({
-                        url: '{{ url('admin/decorative-products/' . $product->id . '/seo') }}',
+                        url: '"BLADE"',
                         method: 'POST',
-                        data: $(this).serialize() + '&_token={{ csrf_token() }}',
+                        data: $(this).serialize() + '&_token="BLADE"',
                         success: function(res) {
                             $btn.attr('disabled', false).html(originalBtn);
                             if (res.success) {
@@ -2675,10 +2025,10 @@
                         '<i class="ft-loader spinner"></i> Duplicating...');
 
                         $.ajax({
-                            url: '{{ url('admin/decorative-products/' . $product->id . '/duplicate') }}',
+                            url: '"BLADE"',
                             method: 'POST',
                             data: {
-                                _token: '{{ csrf_token() }}'
+                                _token: '"BLADE"'
                             },
                             success: function(res) {
                                 if (res.success) {
@@ -2696,7 +2046,7 @@
                         });
                     }
                 });
-            @endif
+            /*BLADE*/
 
             // Initialize Select2 for Specification Attribute Dropdown
             if ($('#spec-edit-label').length) {
@@ -2707,6 +2057,72 @@
                     width: '100%'
                 });
             }
+            
+            // ================================================================
+            // CHIPS LOGIC
+            // ================================================================
+            window.renderChipsUI = function($container, $hiddenInput) {
+                var chips = [];
+                try {
+                    chips = JSON.parse($hiddenInput.val() || '[]');
+                } catch(e) {}
+                $container.empty();
+                chips.forEach(function(chip, index) {
+                    var codeHtml = chip.code ? '<sup class="text-muted ml-1" style="font-size:10px;">' + chip.code + '</sup>' : '';
+                    $container.append('<div class="badge border d-flex align-items-center" style="font-size:13px; padding:6px 10px; background:#fff; color:#374151; border-color:#e5e7eb;">' +
+                        '<span class="mr-2 font-weight-bold">' + chip.value + codeHtml + '</span>' +
+                        '<i class="ft-x text-danger cursor-pointer btn-remove-chip" data-index="' + index + '"></i>' +
+                    '</div>');
+                });
+            };
+
+            $(document).on('click', '.btn-remove-chip', function() {
+                var $wrap = $(this).closest('.dim-spec-chips-wrap, #spec-edit-chips-wrap');
+                var $hidden = $wrap.find('input[type="hidden"]');
+                var $container = $wrap.find('.dim-spec-chips-container, #spec-chips-container');
+                var idx = $(this).data('index');
+                
+                var chips = [];
+                try { chips = JSON.parse($hidden.val() || '[]'); } catch(e) {}
+                chips.splice(idx, 1);
+                $hidden.val(JSON.stringify(chips));
+                window.renderChipsUI($container, $hidden);
+            });
+
+            $('#btn-add-spec-chip').on('click', function() {
+                var val = $('#spec-chip-value').val().trim();
+                var code = $('#spec-chip-code').val().trim();
+                if (!val) {
+                    toastr.error('Value is required');
+                    return;
+                }
+                var $hidden = $('#spec-edit-value-chips');
+                var chips = [];
+                try { chips = JSON.parse($hidden.val() || '[]'); } catch(e) {}
+                chips.push({ value: val, code: code });
+                $hidden.val(JSON.stringify(chips));
+                window.renderChipsUI($('#spec-chips-container'), $hidden);
+                $('#spec-chip-value').val('');
+                $('#spec-chip-code').val('');
+            });
+
+            $('.btn-add-dim-spec-chip').on('click', function() {
+                var sizeId = $(this).data('size-id');
+                var val = $('.dim-spec-chip-value[data-size-id="' + sizeId + '"]').val().trim();
+                var code = $('.dim-spec-chip-code[data-size-id="' + sizeId + '"]').val().trim();
+                if (!val) {
+                    toastr.error('Value is required');
+                    return;
+                }
+                var $hidden = $('.dim-spec-value-chips[data-size-id="' + sizeId + '"]');
+                var chips = [];
+                try { chips = JSON.parse($hidden.val() || '[]'); } catch(e) {}
+                chips.push({ value: val, code: code });
+                $hidden.val(JSON.stringify(chips));
+                window.renderChipsUI($('.dim-spec-chips-container[data-size-id="' + sizeId + '"]'), $hidden);
+                $('.dim-spec-chip-value[data-size-id="' + sizeId + '"]').val('');
+                $('.dim-spec-chip-code[data-size-id="' + sizeId + '"]').val('');
+            });
 
         }); // end document.ready
 
@@ -2751,5 +2167,4 @@
                 }
             }
         }
-    </script>
-@endsection
+    

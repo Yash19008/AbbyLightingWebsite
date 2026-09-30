@@ -188,6 +188,7 @@ class DecorativeProductApiController extends Controller
             $specData = [
                 'label' => $row->attribute ? $row->attribute->name : '',
                 'value' => $row->value,
+                'value_type' => $row->value_type,
                 'note' => $row->note
             ];
             if ($row->section === 'basic_specifications') {
@@ -207,6 +208,7 @@ class DecorativeProductApiController extends Controller
                         $dimensions[] = [
                             'label' => $row->attribute ? $row->attribute->name : '',
                             'value' => $row->value,
+                            'value_type' => $row->value_type,
                             'note' => $row->note
                         ];
                     }

@@ -55,27 +55,7 @@
                         </div>
                     </div>
 
-                    <!-- Breadcrumbs -->
-                    <div class="form-group row">
-                        <label for="breadcrumb_parent_text" class="col-sm-3 control-label">Breadcrumb Parent Text</label>
-                        <div class="col-sm-6">
-                            <input type="text" id="breadcrumb_parent_text" name="breadcrumb_parent_text" class="form-control" placeholder="Home" value="{{ old('breadcrumb_parent_text', @$section->breadcrumb_parent_text ?? 'Home') }}">
-                        </div>
-                    </div>
 
-                    <div class="form-group row">
-                        <label for="breadcrumb_parent_link" class="col-sm-3 control-label">Breadcrumb Parent Link</label>
-                        <div class="col-sm-6">
-                            <input type="text" id="breadcrumb_parent_link" name="breadcrumb_parent_link" class="form-control" placeholder="/" value="{{ old('breadcrumb_parent_link', @$section->breadcrumb_parent_link ?? '/') }}">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="breadcrumb_current_text" class="col-sm-3 control-label">Breadcrumb Current Text</label>
-                        <div class="col-sm-6">
-                            <input type="text" id="breadcrumb_current_text" name="breadcrumb_current_text" class="form-control" placeholder="Inspiration" value="{{ old('breadcrumb_current_text', @$section->breadcrumb_current_text ?? 'Inspiration') }}">
-                        </div>
-                    </div>
 
                     <!-- Background Image -->
                     <div class="form-group row">

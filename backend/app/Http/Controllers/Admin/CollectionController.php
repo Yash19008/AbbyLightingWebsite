@@ -120,6 +120,111 @@ class CollectionController extends Controller
     }
 
     /**
+     * Duplicate the specified collection.
+     */
+    public function duplicate(Collection $collection)
+    {
+        $collection->load([
+            'heroSection',
+            'parametersSection.items',
+            'compositionsSection.items',
+            'tonesSection.families.colors',
+            'placesSection.items',
+            'catalogueSection',
+            'spreadDropSection',
+            'productsSection'
+        ]);
+
+        $newCollection = $collection->replicate();
+        $newCollection->name = $collection->name . ' (Copy)';
+        $newCollection->slug = $collection->slug . '-' . time();
+        $newCollection->is_active = false;
+        $newCollection->save();
+
+        if ($collection->heroSection) {
+            $newHero = $collection->heroSection->replicate();
+            $newHero->collection_id = $newCollection->id;
+            $newHero->save();
+        }
+
+        if ($collection->parametersSection) {
+            $newParams = $collection->parametersSection->replicate();
+            $newParams->collection_id = $newCollection->id;
+            $newParams->save();
+
+            foreach ($collection->parametersSection->items as $item) {
+                $newItem = $item->replicate();
+                $newItem->parameters_section_id = $newParams->id;
+                $newItem->save();
+            }
+        }
+
+        if ($collection->compositionsSection) {
+            $newCompositions = $collection->compositionsSection->replicate();
+            $newCompositions->collection_id = $newCollection->id;
+            $newCompositions->save();
+
+            foreach ($collection->compositionsSection->items as $item) {
+                $newItem = $item->replicate();
+                $newItem->compositions_section_id = $newCompositions->id;
+                $newItem->save();
+            }
+        }
+
+        if ($collection->tonesSection) {
+            $newTones = $collection->tonesSection->replicate();
+            $newTones->collection_id = $newCollection->id;
+            $newTones->save();
+
+            foreach ($collection->tonesSection->families as $family) {
+                $newFamily = $family->replicate();
+                $newFamily->tones_section_id = $newTones->id;
+                $newFamily->save();
+                
+                // Duplicate colors relation
+                foreach ($family->colors as $color) {
+                    $newFamily->colors()->attach($color->id, [
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+        }
+
+        if ($collection->placesSection) {
+            $newPlaces = $collection->placesSection->replicate();
+            $newPlaces->collection_id = $newCollection->id;
+            $newPlaces->save();
+
+            foreach ($collection->placesSection->items as $item) {
+                $newItem = $item->replicate();
+                $newItem->places_section_id = $newPlaces->id;
+                $newItem->save();
+            }
+        }
+
+        if ($collection->catalogueSection) {
+            $newCat = $collection->catalogueSection->replicate();
+            $newCat->collection_id = $newCollection->id;
+            $newCat->save();
+        }
+
+        if ($collection->spreadDropSection) {
+            $newSpread = $collection->spreadDropSection->replicate();
+            $newSpread->collection_id = $newCollection->id;
+            $newSpread->save();
+        }
+
+        if ($collection->productsSection) {
+            $newProdSection = $collection->productsSection->replicate();
+            $newProdSection->collection_id = $newCollection->id;
+            $newProdSection->save();
+        }
+
+        return redirect()->route('admin.collections.edit', $newCollection->slug)->with('success', 'Collection duplicated successfully.');
+    }
+
+    /**
      * Toggle collection active status.
      */
     public function toggleActive(Collection $collection)

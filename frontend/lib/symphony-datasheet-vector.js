@@ -30,6 +30,7 @@ const readProductData = () => {
   const specRows = [];
   const specOptions = {};
   const specOptionCodes = {};
+  const specOptionHtml = {};
   const primarySpecBody = document.querySelector('.spec-grid>.spec-accordion:first-child .spec-body') || document;
   primarySpecBody.querySelectorAll('p,.figma-spec-row').forEach(row => {
     const key = row.querySelector('b')?.textContent?.trim();
@@ -38,8 +39,9 @@ const readProductData = () => {
     const clone = valueNode.cloneNode(true);
     clone.querySelectorAll('small').forEach(note => note.remove());
     clone.querySelectorAll('.spec-code').forEach(code => code.remove());
-    clone.querySelectorAll('sup').forEach(sup => sup.remove());
+    // Do not remove sups so they can be rendered in the PDF
     clone.innerHTML = clone.innerHTML
+      .replace(/<span[^>]*class="[^"]*spec-chip-sep[^"]*"[^>]*>.*?<\/span>/gi, '&nbsp;&nbsp;&nbsp;&nbsp;')
       .replace(/<br\s*\/?>/gi, '\n')
       .replace(/<\/?(p|div)>/gi, '\n')
       .replace(/<li>/gi, '\n• ')
@@ -67,15 +69,40 @@ const readProductData = () => {
     const normalKey = normaliseKey(key);
     if (value && !specs[normalKey]) {
       specs[normalKey] = value;
-      specRows.push({ key, normalKey, value, displayValue, note });
+      const newRow = { key, normalKey, value, displayValue, note };
+      specRows.push(newRow);
       const options = valueNode.dataset.values?.split('|').map(item => item.trim()).filter(Boolean);
       if (options?.length) {
         specOptions[normalKey] = options;
         const optionNodes = [...valueNode.children].filter(node => node.tagName === 'SPAN');
-        specOptionCodes[normalKey] = options.map((_, index) => optionNodes[index]?.querySelector('.spec-code')?.textContent?.trim() || null);
+        specOptionCodes[normalKey] = options.map((_, index) => optionNodes[index]?.querySelector('.spec-code, .spec-chip-code')?.textContent?.trim() || null);
+        specOptionHtml[normalKey] = options.map((_, index) => {
+          const clone = optionNodes[index]?.cloneNode(true);
+          if (clone) {
+              clone.querySelectorAll('.spec-code').forEach(code => code.remove());
+              clone.querySelectorAll('.spec-chip-code').forEach(code => code.style.color = '#888888');
+          }
+          return clone ? clone.innerHTML : null;
+        });
       } else {
-        const inlineCode = valueNode.querySelector('.spec-code')?.textContent?.trim();
-        if (inlineCode) specOptionCodes[normalKey] = [inlineCode];
+        const inlineCode = valueNode.querySelector('.spec-code, .spec-chip-code')?.textContent?.trim();
+        if (inlineCode) {
+           specOptionCodes[normalKey] = [];
+           for (let i = 0; i < 20; i++) specOptionCodes[normalKey].push(inlineCode);
+        }
+        const firstChip = valueNode.querySelector('.spec-chip');
+        if (firstChip) {
+            newRow.isChips = true;
+            newRow.chipNodes = [...valueNode.querySelectorAll('.spec-chip')].map(c => {
+                const clone = c.cloneNode(true);
+                clone.querySelectorAll('.spec-code').forEach(code => code.remove());
+                clone.querySelectorAll('.spec-chip-code').forEach(code => code.style.color = '#888888');
+                return clone.innerHTML.replace(/>\s+</g, '><').replace(/<br\s*\/?>/gi, '\n');
+            });
+            const cloneVal = firstChip.cloneNode(true);
+            cloneVal.querySelector('.spec-chip-code')?.remove();
+            specOptions[normalKey] = [cloneVal.textContent.trim()];
+        }
       }
     }
   });
@@ -118,6 +145,7 @@ const readProductData = () => {
     specRows,
     specOptions,
     specOptionCodes,
+    specOptionHtml,
     order: {
       product: product.toUpperCase(),
       size: (codeFor('size') || firstListed(selectedSize || find('size'))?.replace(/\s+/g, ''))?.toUpperCase() || null,
@@ -159,7 +187,16 @@ const loadJpeg = async (src, options = {}) => {
 };
 
 class PageCanvas {
-  constructor() { this.ops = []; }
+  constructor() { 
+    this.ops = []; 
+    const c = document.createElement('canvas');
+    this.ctx = c.getContext('2d');
+  }
+  measure(text, size, font) {
+    const weight = font === 'F2' ? 'bold' : (font === 'F3' ? 'italic' : 'normal');
+    this.ctx.font = `${weight} ${size}px Helvetica, Arial, sans-serif`;
+    return this.ctx.measureText(text).width;
+  }
   push(value) { this.ops.push(value); }
   fill(r, g, b) { this.push(`${r} ${g} ${b} rg`); }
   stroke(r, g, b) { this.push(`${r} ${g} ${b} RG`); }
@@ -210,14 +247,16 @@ class PageCanvas {
       return defaultColour;
     };
 
-    const walk = (node, currentFont, currentColour) => {
+    const walk = (node, currentFont, currentColour, currentYOffset = 0, currentSizeMult = 1) => {
       let nextFont = currentFont; let nextColour = currentColour;
+      let nextYOffset = currentYOffset; let nextSizeMult = currentSizeMult;
       if (node.nodeType === 1) {
         const tag = node.tagName.toLowerCase();
         if (tag === 'em' || tag === 'i') nextFont = 'F3';
         if (tag === 'strong' || tag === 'b') nextFont = 'F2';
+        if (tag === 'sup') { nextYOffset = -2; nextSizeMult = 0.7; }
         if (node.style.color) nextColour = parseColor(node.style.color);
-        node.childNodes.forEach(child => walk(child, nextFont, nextColour));
+        node.childNodes.forEach(child => walk(child, nextFont, nextColour, nextYOffset, nextSizeMult));
       } else if (node.nodeType === 3) {
         const tokens = node.textContent.split(/(\n|[ \t]+)/);
         tokens.forEach(word => {
@@ -231,13 +270,12 @@ class PageCanvas {
           if (word.trim() === '') {
             if (currentLineWidth > 0 && currentLine.length > 0) {
               currentLine[currentLine.length - 1].text += ' ';
-              currentLineWidth += size * (currentLine[currentLine.length - 1].font === 'F2' ? 0.54 : 0.49);
+              currentLineWidth += this.measure(' ', size * (currentLine[currentLine.length - 1].sizeMult || 1), currentLine[currentLine.length - 1].font);
             }
             return;
           }
 
-          const charMultiplier = nextFont === 'F2' ? 0.54 : 0.49;
-          const wordWidth = word.length * size * charMultiplier;
+          const wordWidth = this.measure(word, size * nextSizeMult, nextFont);
 
           if (currentLineWidth + wordWidth > width && currentLineWidth > 0) {
             lines.push(currentLine);
@@ -245,10 +283,10 @@ class PageCanvas {
             currentLineWidth = 0;
           }
 
-          if (currentLine.length > 0 && currentLine[currentLine.length - 1].font === nextFont && currentLine[currentLine.length - 1].color === nextColour) {
+          if (currentLine.length > 0 && currentLine[currentLine.length - 1].font === nextFont && currentLine[currentLine.length - 1].color === nextColour && currentLine[currentLine.length - 1].yOffset === nextYOffset) {
             currentLine[currentLine.length - 1].text += word;
           } else {
-            currentLine.push({ text: word, font: nextFont, color: nextColour });
+            currentLine.push({ text: word, font: nextFont, color: nextColour, yOffset: nextYOffset, sizeMult: nextSizeMult });
           }
           currentLineWidth += wordWidth;
         });
@@ -263,8 +301,8 @@ class PageCanvas {
       if (line.length === 0) { ty += lineHeight; return; }
       let tx = x;
       line.forEach(chunk => {
-        this.text(chunk.text, tx, ty, size, chunk.font, chunk.color);
-        tx += chunk.text.length * size * (chunk.font === 'F2' ? 0.54 : 0.49);
+        this.text(chunk.text, tx, ty + (chunk.yOffset || 0), size * (chunk.sizeMult || 1), chunk.font, chunk.color);
+        tx += this.measure(chunk.text, size * (chunk.sizeMult || 1), chunk.font);
       });
       ty += lineHeight;
     });
@@ -299,8 +337,8 @@ const specRow = (canvas, label, value, y, options = {}) => {
 const textWithCode = (canvas, value, code, x, y, size = 6.3) => {
   canvas.text(value, x, y, size, 'F1', [0, 0, 0]);
   if (code) {
-    const estimated = String(value).length * size * .49;
-    canvas.text(code, x + estimated + 5, y - 1, Math.max(4.2, size - 1.6), 'F2', [.72, .72, .72]);
+    const estimated = canvas.measure(String(value), size, 'F1');
+    canvas.text(code, x + estimated + 1, y - 1, Math.max(4.2, size - 1.6), 'F2', [.53, .53, .53]);
   }
 };
 
@@ -336,11 +374,22 @@ export const buildPageOne = (data, product, drawing) => {
       const boxHeight = boxRows.length * rowHeight;
       canvas.stroke(.7, .7, .7); canvas.lineWidth(.25); canvas.rect(46, boxTop, 502, boxHeight, 'S');
       boxRows.forEach((row, index) => {
-        const rowY = boxTop + index * rowHeight + (rowHeight / 2) - 2.9;
+        const rowY = boxTop + index * rowHeight + (rowHeight / 2) + 2;
         const options = data.specOptions[row.normalKey] || [row.value];
         const codes = data.specOptionCodes[row.normalKey] || [];
+        const htmls = data.specOptionHtml?.[row.normalKey] || [];
         canvas.text(row.key, 54, rowY, 5.8, 'F1', [.45, .45, .45]);
-        options.slice(0, 5).forEach((value, optionIndex) => textWithCode(canvas, value, codes[optionIndex], 166 + optionIndex * 78, rowY, 5.8));
+        options.slice(0, 5).forEach((value, optionIndex) => {
+            const html = htmls[optionIndex];
+            if (html && html.includes('spec-chip')) {
+                // Remove spaces and newlines between tags so richWrapped renders it cleanly
+                const cleanHtml = html.replace(/>\s+</g, '><').replace(/<br\s*\/?>/gi, '\n')
+                                      .replace(/<span[^>]*class="[^"]*spec-chip-sep[^"]*"[^>]*>.*?<\/span>/gi, '&nbsp;&nbsp;&nbsp;&nbsp;');
+                canvas.richWrapped(cleanHtml, 166 + optionIndex * 78, rowY, 76, 5.8, 'F1', [0, 0, 0], 7.2);
+            } else {
+                textWithCode(canvas, value, codes[optionIndex], 166 + optionIndex * 78, rowY, 5.8);
+            }
+        });
         if (index < boxRows.length - 1) { 
           canvas.stroke(.88, .88, .88); 
           canvas.lineWidth(.3); 
@@ -373,8 +422,16 @@ export const buildPageOne = (data, product, drawing) => {
 
       canvas.text(row.key, 46, y, 5.8, 'F1', [.45, .45, .45]);
 
-      const valueHeight = canvas.richWrapped(row.displayValue, 166, y, 382, 5.8, 'F1', [0, 0, 0], 7.2);
-      const lastValueBaseline = valueHeight - 7.2;
+      let valueHeight = 0;
+      if (row.isChips && row.chipNodes && row.chipNodes.length > 0) {
+          // Join chips with invisible text to force a precise, reliable gap
+          const joinedHtml = row.chipNodes.join('<span style="color: #ffffff">______</span>');
+          valueHeight = canvas.richWrapped(joinedHtml, 166, y, 382, 5.8, 'F1', [0, 0, 0], 7.2);
+      } else {
+          valueHeight = canvas.richWrapped(row.displayValue, 166, y, 382, 5.8, 'F1', [0, 0, 0], 7.2);
+      }
+      
+      const lastValueBaseline = valueHeight > 7.2 ? valueHeight - 7.2 : 0;
 
       let noteHeight = 0;
       if (row.note) {

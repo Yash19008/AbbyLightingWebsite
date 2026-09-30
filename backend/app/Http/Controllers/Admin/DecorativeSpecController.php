@@ -65,7 +65,7 @@ class DecorativeSpecController extends Controller
         $request->validate([
             'section' => 'required|in:basic_specifications,dimensions',
             'dec_spec_attribute_id' => 'required|exists:dec_spec_attributes,id',
-            'value_type' => 'nullable|in:text,richtext',
+            'value_type' => 'nullable|in:text,richtext,chips',
             'values' => 'nullable|array' // For dimensions: size_id => value
         ]);
 
@@ -78,7 +78,11 @@ class DecorativeSpecController extends Controller
             $values = $request->values ?? [];
             $firstRow = null;
             foreach ($values as $sizeId => $valueRaw) {
-                $val = $request->value_type === 'richtext' ? strip_tags($valueRaw, $allowedTags) : $valueRaw;
+                $val = match($request->value_type) {
+                    'richtext' => strip_tags($valueRaw, $allowedTags),
+                    'chips'    => $valueRaw,
+                    default    => $valueRaw,
+                };
                 $row = DecProductSpecRow::create([
                     'product_id' => $productId,
                     'size_id'    => $sizeId,
@@ -106,9 +110,11 @@ class DecorativeSpecController extends Controller
         }
 
         // Basic specs
-        $value = $request->value_type === 'richtext'
-            ? strip_tags($request->value, $allowedTags)
-            : $request->value;
+        $value = match($request->value_type) {
+            'richtext' => strip_tags($request->value, $allowedTags),
+            'chips'    => $request->value,
+            default    => $request->value,
+        };
 
         $row = DecProductSpecRow::create([
             'product_id' => $productId,
@@ -131,7 +137,7 @@ class DecorativeSpecController extends Controller
         $request->validate([
             'section' => 'required|in:basic_specifications,dimensions',
             'dec_spec_attribute_id' => 'required|exists:dec_spec_attributes,id',
-            'value_type' => 'nullable|in:text,richtext',
+            'value_type' => 'nullable|in:text,richtext,chips',
             'values' => 'nullable|array'
         ]);
 
@@ -155,7 +161,11 @@ class DecorativeSpecController extends Controller
 
             foreach ($values as $sizeId => $valueRaw) {
                 if (empty($valueRaw)) continue;
-                $val = $request->value_type === 'richtext' ? strip_tags($valueRaw, $allowedTags) : $valueRaw;
+                $val = match($request->value_type) {
+                    'richtext' => strip_tags($valueRaw, $allowedTags),
+                    'chips'    => $valueRaw,
+                    default    => $valueRaw,
+                };
                 
                 $row = DecProductSpecRow::create([
                     'product_id' => $productId,
@@ -186,9 +196,11 @@ class DecorativeSpecController extends Controller
 
         // Basic Specs
         $row = DecProductSpecRow::findOrFail($id);
-        $value = $request->value_type === 'richtext'
-            ? strip_tags($request->value, $allowedTags)
-            : $request->value;
+        $value = match($request->value_type) {
+            'richtext' => strip_tags($request->value, $allowedTags),
+            'chips'    => $request->value,
+            default    => $request->value,
+        };
 
         $row->update([
             'dec_spec_attribute_id' => $request->dec_spec_attribute_id,
@@ -263,7 +275,11 @@ class DecorativeSpecController extends Controller
         $allowedTags = '<b><strong><i><em><u><ul><ol><li><br><p><span><s><sub><sup>';
         
         foreach ($sourceBasic as $row) {
-            $value = $row->value_type === 'richtext' ? strip_tags($row->value, $allowedTags) : $row->value;
+            $value = match($row->value_type) {
+                'richtext' => strip_tags($row->value, $allowedTags),
+                'chips'    => $row->value,
+                default    => $row->value,
+            };
             DecProductSpecRow::create([
                 'product_id' => $productId,
                 'size_id'    => null,

@@ -1,6 +1,7 @@
 export interface DecSpecItem {
   label: string;
   value: string;
+  value_type?: 'text' | 'richtext' | 'chips';
   note?: string | null;
 }
 

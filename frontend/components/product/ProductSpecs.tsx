@@ -39,6 +39,27 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
     setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const renderChipsValue = (jsonValue: string) => {
+    try {
+      const chips: { value: string; code?: string | null }[] = JSON.parse(jsonValue);
+      return (
+        <span className="spec-chips">
+          {chips.map((chip, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <span className="spec-chip-sep" style={{ margin: '0 12px' }}>&nbsp;</span>}
+              <span className="spec-chip">
+                {chip.value}
+                {chip.code && <sup className="spec-chip-code" style={{ color: '#C0C0C0', marginLeft: '2px', fontWeight: '500' }}>{chip.code}</sup>}
+              </span>
+            </React.Fragment>
+          ))}
+        </span>
+      );
+    } catch {
+      return <span>{jsonValue}</span>;
+    }
+  };
+
   const renderSpecItems = (items: DecSpecItem[]) => {
     if (!items || items.length === 0) return null;
     return (
@@ -54,7 +75,7 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
                       <i className="spec-code">OS</i> <span dangerouslySetInnerHTML={{ __html: item.value }} />
                     </span>
                   ) : (
-                    <span dangerouslySetInnerHTML={{ __html: item.value }} />
+                    item.value_type === 'chips' ? renderChipsValue(item.value) : <span dangerouslySetInnerHTML={{ __html: item.value }} />
                   )}
                   {item.note && (
                     <small className="figma-spec-note">
@@ -96,7 +117,10 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
                 <b>Size</b>
                 <span style={{ display: 'none' }} data-values={sizes.map(s => s.label).join('|')}>
                   {sizes.map((s, idx) => (
-                    <span key={idx}>{s.label}</span>
+                    <span key={idx}>
+                      {s.label}
+                      {s.code && <sup className="spec-code">{s.code}</sup>}
+                    </span>
                   ))}
                 </span>
               </td>
@@ -104,7 +128,7 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
                 <td key={s.id} className="spec-value">
                   <strong>
                     {s.label}
-                    {s.code && <sup style={{ color: '#C0C0C0', marginLeft: '2px' }}>{s.code}</sup>}
+                    {s.code && <sup style={{ color: '#C0C0C0', marginLeft: '2px', fontWeight: '400' }}>{s.code}</sup>}
                   </strong>
                 </td>
               ))}
@@ -114,12 +138,20 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
                 <td className="spec-label">
                   <b>{label}</b>
                   <span style={{ display: 'none' }} data-values={sizes.map(s => {
-                     const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
-                     return spec ? spec.value.replace(/<[^>]*>?/gm, '') : "-";
+                    const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
+                    if (spec && spec.value_type === 'chips') {
+                      try {
+                        const parsed = JSON.parse(spec.value);
+                        return parsed.map((c: any) => c.value).join('  ');
+                      } catch (e) { return spec.value; }
+                    }
+                    return spec ? spec.value.replace(/<[^>]*>?/gm, '') : "-";
                   }).join('|')}>
                     {sizes.map((s, idx) => {
-                       const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
-                       return <span key={idx} dangerouslySetInnerHTML={{ __html: spec ? spec.value : "-" }} />;
+                      const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
+                      return <span key={idx}>
+                        {spec ? (spec.value_type === 'chips' ? renderChipsValue(spec.value) : <span dangerouslySetInnerHTML={{ __html: spec.value }} />) : "-"}
+                      </span>;
                     })}
                   </span>
                 </td>
@@ -127,7 +159,7 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
                   const spec = s.spec_rows?.dimensions?.find((d: DecSpecItem) => d.label === label);
                   return (
                     <td key={s.id} className="spec-value">
-                      {spec ? <div dangerouslySetInnerHTML={{ __html: spec.value }} /> : "-"}
+                      {spec ? (spec.value_type === 'chips' ? renderChipsValue(spec.value) : <div dangerouslySetInnerHTML={{ __html: spec.value }} />) : "-"}
                     </td>
                   );
                 })}
@@ -143,7 +175,7 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
     <section className="product-specs">
       <h2 className="product-reveal" suppressHydrationWarning>About this product</h2>
       <div className="spec-grid product-reveal product-delay-1" suppressHydrationWarning>
-        
+
         {/* Basic Specifications (and Dimensions appended) */}
         {(specRows.basic_specifications.length > 0 || (allSizes && allSizes.length > 0)) && (
           <section className={`spec-accordion ${openSections['basic_specifications'] ? "open" : ""}`}>
@@ -168,23 +200,23 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
         <details open={openSections['downloads']} onToggle={(e) => setOpenSections(prev => ({ ...prev, downloads: (e.target as HTMLDetailsElement).open }))}>
           <summary>Downloads</summary>
           <div className="download-row">
-              <button 
-                id="download-tds-btn"
-                onClick={handleDownloadDatasheet} 
-                disabled={isGeneratingPdf}
-              >
-                  {isGeneratingPdf ? 'Preparing PDF…' : 'Datasheet (PDF)'}
+            <button
+              id="download-tds-btn"
+              onClick={handleDownloadDatasheet}
+              disabled={isGeneratingPdf}
+            >
+              {isGeneratingPdf ? 'Preparing PDF…' : 'Datasheet (PDF)'}
+            </button>
+            {installationGuide && (
+              <button onClick={() => window.open(installationGuide, '_blank')}>
+                Installation guide
               </button>
-              {installationGuide && (
-                  <button onClick={() => window.open(installationGuide, '_blank')}>
-                      Installation guide
-                  </button>
-              )}
-              {careInstructions && (
-                  <button onClick={() => window.open(careInstructions, '_blank')}>
-                      Care Instructions
-                  </button>
-              )}
+            )}
+            {careInstructions && (
+              <button onClick={() => window.open(careInstructions, '_blank')}>
+                Care Instructions
+              </button>
+            )}
           </div>
         </details>
       </div>

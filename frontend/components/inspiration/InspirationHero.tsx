@@ -14,9 +14,6 @@ export default function InspirationHero({ heroSection }: InspirationHeroProps) {
 
   const title = heroSection?.title || "Ideas, stories & inspiration";
   const titleHighlight = heroSection?.title_highlight;
-  const parentText = heroSection?.breadcrumb_parent_text || "Home";
-  const parentLink = heroSection?.breadcrumb_parent_link || "/";
-  const currentText = heroSection?.breadcrumb_current_text || "Inspiration";
   const bgImage = heroSection?.background_image;
 
   return (
@@ -25,9 +22,9 @@ export default function InspirationHero({ heroSection }: InspirationHeroProps) {
       style={bgImage ? { backgroundImage: `url('${bgImage}')` } : undefined}
     >
       <nav className="site-breadcrumb site-breadcrumb--on-dark insp-hero-breadcrumb" aria-label="Breadcrumb">
-        <Link href={parentLink}>{parentText}</Link>
+        <Link href="/">Home</Link>
         &nbsp;&nbsp;/&nbsp;&nbsp;
-        <span>{currentText}</span>
+        <span>Inspiration</span>
       </nav>
       <div className="insp-hero-copy">
         <h1>{title}</h1>
