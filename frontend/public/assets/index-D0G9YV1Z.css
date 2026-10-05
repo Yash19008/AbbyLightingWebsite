@@ -1614,7 +1614,7 @@ body.spot-on #spotlight {
   padding: 0;
   position: absolute;
   bottom: 72px;
-  left: max(32px, 7vw)
+  left: max(32px, 6.45vw)
 }
 
 .hero-copy .display {
@@ -1756,7 +1756,7 @@ body.spot-on #spotlight {
 .image-cta .copy {
   width: min(700px, 52vw);
   max-width: none;
-  inset: 50% auto auto max(32px, 7vw);
+  inset: 50% auto auto max(32px, 6.45vw);
   transform: translateY(-15%)
 }
 

@@ -7,6 +7,7 @@
 
 /* Fix for mega dropdown with dynamic categories */
 @media (width>=901px) {
+
   /* Ensure mega-grid has correct height */
   .sitehead .mega-grid {
     display: grid !important;
@@ -28,7 +29,7 @@
     left: auto !important;
   }
 
-  .sitehead .mega-grid > .msep:nth-child(2) {
+  .sitehead .mega-grid>.msep:nth-child(2) {
     grid-column: 2 !important;
     grid-row: 1 !important;
     align-self: stretch !important;
@@ -48,7 +49,7 @@
     left: auto !important;
   }
 
-  .sitehead .mega-grid > .msep:nth-child(4) {
+  .sitehead .mega-grid>.msep:nth-child(4) {
     grid-column: 5 !important;
     grid-row: 1 !important;
     align-self: stretch !important;
@@ -96,15 +97,15 @@
   .sitehead .mgroup:focus-within:before {
     opacity: 1 !important;
   }
-  
+
   /* Make heading text golden on hover */
-  .sitehead .mgroup:hover > .mhead,
-  .sitehead .mgroup:focus-within > .mhead {
+  .sitehead .mgroup:hover>.mhead,
+  .sitehead .mgroup:focus-within>.mhead {
     color: #f6c177 !important;
   }
 
   /* Style mega separators */
-  .sitehead .mega-grid > .msep {
+  .sitehead .mega-grid>.msep {
     background: #ffffff38 !important;
   }
 
@@ -135,12 +136,12 @@
     flex: 1 1 calc(25% - 10px);
     max-width: calc(25% - 10px);
   }
-  
+
   .project-grid:has(.project:nth-child(3)) .project:first-child {
     flex: 1 1 calc(50% - 10px);
     max-width: calc(50% - 10px);
   }
-  
+
   .project-grid:has(.project:nth-child(6)) .project:nth-child(5) {
     flex: 1 1 calc(50% - 10px);
     max-width: calc(50% - 10px);
@@ -163,14 +164,12 @@
   border-radius: 50%;
   pointer-events: none;
   transform: translate(-50%, -50%);
-  background: radial-gradient(
-    circle,
-    rgba(246, 193, 119, 0.5) 70%,
-    rgba(246, 193, 119, 0.3) 20%,
-    rgba(246, 193, 119, 0.15) 40%,
-    rgba(246, 193, 119, 0.05) 60%,
-    transparent 50%
-  );
+  background: radial-gradient(circle,
+      rgba(246, 193, 119, 0.5) 70%,
+      rgba(246, 193, 119, 0.3) 20%,
+      rgba(246, 193, 119, 0.15) 40%,
+      rgba(246, 193, 119, 0.05) 60%,
+      transparent 50%);
   z-index: 9999;
   opacity: 1;
   transition: left 0.1s ease, top 0.1s ease;
@@ -285,11 +284,11 @@
   .news-carousel {
     padding: 0 40px;
   }
-  
+
   .story {
     flex: 0 0 280px;
   }
-  
+
   .news-arrow {
     width: 34px;
     height: 34px;

@@ -6,7 +6,11 @@ export interface InspirationHeroData {
   title_highlight?: string | null;
   background_image?: string | null;
   is_active: boolean;
+  breadcrumb_parent_text?: string | null;
+  breadcrumb_parent_link?: string | null;
+  breadcrumb_current_text?: string | null;
 }
+
 
 export async function getInspirationHero(): Promise<{ success: boolean; data: InspirationHeroData }> {
   try {

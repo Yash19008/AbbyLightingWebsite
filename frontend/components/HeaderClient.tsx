@@ -1070,7 +1070,7 @@ export default function HeaderClient() {
                   onClick={() => setProductAccordion(prev => prev === 'dec' ? null : 'dec')}
                 >
                   <span className={productAccordion === 'dec' ? 'pdrop-amber-text' : ''}>
-                    Decorative <span className="mnew" style={{ marginLeft: 6, fontSize: '0.65rem', padding: '1px 5px', color: '#fff', borderRadius: 3 }}>NEW</span>
+                    Decorative <span className="mnew" style={{ marginLeft: 6, fontSize: '0.65rem', padding: '1px 5px', color: 'black', borderRadius: 3 }}>NEW</span>
                   </span>
                   <span className="pdrop-caret">
                     {productAccordion === 'dec' ? (

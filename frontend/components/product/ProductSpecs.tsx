@@ -142,8 +142,8 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
                     if (spec && spec.value_type === 'chips') {
                       try {
                         const parsed = JSON.parse(spec.value);
-                        return parsed.map((c: any) => c.value).join('  ');
-                      } catch (e) { return spec.value; }
+                        return parsed.map((c: { value: string }) => c.value).join('  ');
+                      } catch (_e) { return spec.value; }
                     }
                     return spec ? spec.value.replace(/<[^>]*>?/gm, '') : "-";
                   }).join('|')}>

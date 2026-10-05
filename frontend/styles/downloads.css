@@ -910,8 +910,8 @@ body:has(.downloads-page) .sitehead {
   }
 
   .downloads-page .downloads-hero-copy {
-    left: 20px;
-    bottom: 29px;
+    left: 6.45vw;
+    bottom: 6.45vw;
   }
 
   .downloads-page .hero-copy-desktop {

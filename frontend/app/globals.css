@@ -23,7 +23,7 @@ body {
   /* Ensure mega-grid has correct height */
   .sitehead .mega-grid {
     display: grid !important;
-    grid-template-columns: 192px 1px 9px 370px 1px 34px 144px !important;
+    grid-template-columns: 192px 1px 9px 450px 1px 34px 144px !important;
     align-items: start !important;
     width: 888px !important;
     height: auto !important;
@@ -1440,7 +1440,7 @@ body {
    Collection Page Alignment & Padding (Unified with Homepage)
    ========================================================================== */
 .s-section {
-  padding: 80px 7vw !important;
+  padding: 80px 6.45vw !important;
   box-sizing: border-box !important;
 
 }
@@ -1451,12 +1451,14 @@ body {
   padding-bottom: 0px !important;
 }
 
+
+
 .s-hero-copy {
   padding: 130px 6.45vw 40px !important;
 }
 
 .s-catalogue>div {
-  left: 7vw !important;
+  left: 6.45vw !important;
 }
 
 .s-related>.s-slider-container,
@@ -1488,14 +1490,11 @@ body {
   }
 
   .s-catalogue>div {
-    left: 20px !important;
+    left: 6.45vw !important;
     right: 20px !important;
   }
 
-  .s-inspire,
-  .s-places {
-    padding-right: 20px !important;
-  }
+
 }
 
 /* ==========================================================================
@@ -2088,7 +2087,7 @@ footer#contact {
   }
 
   .figma-footer {
-    padding: 0 25px !important;
+    padding: 0 6.45vw !important;
   }
 
   .footer-main {

@@ -41,7 +41,7 @@
 @media (max-width: 768px) {
   .s-crumb {
     top: 96px;
-    left: 20px;
+    left: 6.45vw;
     font-size: 10.5px;
   }
 }
@@ -140,7 +140,7 @@
 
   .s-crumb {
     top: 82px;
-    left: 20px;
+    left: 6.45vw;
     font-size: 10.5px;
   }
 
