@@ -150,5 +150,6 @@
         var siteUrl= "{{url('/admin')}}";
         var baseUrl= "{{url('/')}}";
     </script>
+    @stack('modals')
     </body>
 </html>

@@ -2,8 +2,9 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import DecorativeCard from './DecorativeCard';
-import DecorativeFilterModal, { FilterState } from './DecorativeFilterModal';
+import DecorativeFilterModal, { FilterState, FinishOption } from './DecorativeFilterModal';
 import DecorativeToolbar from './DecorativeToolbar';
 import DecorativeStickyWidget from './DecorativeStickyWidget';
 
@@ -25,6 +26,7 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
   const [featuredCategories, setFeaturedCategories] = useState<string[]>(['All']);
   const [rawCategories, setRawCategories] = useState<CategoryItem[]>([]);
   const [availableCollections, setAvailableCollections] = useState<string[]>([]);
+  const [availableFinishes, setAvailableFinishes] = useState<FinishOption[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isPaginating, setIsPaginating] = useState(false);
@@ -39,7 +41,37 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
   const [activeFilters, setActiveFilters] = useState<FilterState>({
     category: initialCategory ? [initialCategory] : [],
     collection: [],
+    finish: [],
   });
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const updateUrlCategory = (cat: string) => {
+    if (typeof window === 'undefined') return;
+    
+    let urlValue = cat;
+    if (cat !== 'All' && rawCategories.length > 0) {
+      const matched = rawCategories.find(c => c.name === cat);
+      if (matched && matched.slug) {
+        urlValue = matched.slug;
+      }
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    if (cat === 'All') {
+      params.delete('category');
+    } else {
+      params.set('category', urlValue);
+    }
+    
+    // Construct new URL string
+    const newSearch = params.toString();
+    const newUrl = newSearch ? `${pathname}?${newSearch}` : pathname;
+    
+    // Update URL without triggering a full page reload or scrolling
+    window.history.replaceState(null, '', newUrl);
+  };
 
   const handleTabChange = (cat: string) => {
     setActiveCategory(cat);
@@ -48,6 +80,7 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
       category: cat === 'All' ? [] : [cat]
     }));
     setPage(1);
+    updateUrlCategory(cat);
   };
 
   useEffect(() => {
@@ -76,9 +109,10 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-        const [categoriesRes, collectionsRes] = await Promise.all([
+        const [categoriesRes, collectionsRes, finishesRes] = await Promise.all([
           fetch(`${API_URL}/api/dec-categories`, { cache: 'no-store' }),
-          fetch(`${API_URL}/api/dec-collections`, { cache: 'no-store' })
+          fetch(`${API_URL}/api/dec-collections`, { cache: 'no-store' }),
+          fetch(`${API_URL}/api/dec-finishes`, { cache: 'no-store' })
         ]);
 
         const categoriesData = await categoriesRes.json();
@@ -93,6 +127,11 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
         if (collectionsData.data) {
           const collectionNames = collectionsData.data.map((c: { name: string }) => c.name);
           setAvailableCollections(collectionNames);
+        }
+
+        const finishesData = await finishesRes.json();
+        if (finishesData.data) {
+          setAvailableFinishes(finishesData.data);
         }
       } catch (error) {
         console.error('Error fetching filters:', error);
@@ -119,6 +158,9 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
         }
         if (activeFilters.collection.length > 0) {
           params.append('collection', activeFilters.collection.join(','));
+        }
+        if (activeFilters.finish && activeFilters.finish.length > 0) {
+          params.append('finish', activeFilters.finish.join(','));
         }
 
         const response = await fetch(`${API_URL}/api/dec-products?${params.toString()}`, { cache: 'no-store' });
@@ -258,13 +300,16 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
           initialFilters={activeFilters}
           availableCategories={availableCategories}
           availableCollections={availableCollections}
+          availableFinishes={availableFinishes}
           onApply={(filters) => {
             setActiveFilters(filters);
             setPage(1);
             if (filters.category.length === 1) {
               setActiveCategory(filters.category[0]);
+              updateUrlCategory(filters.category[0]);
             } else {
               setActiveCategory('All');
+              updateUrlCategory('All');
             }
           }}
           onClose={() => setIsFilterModalOpen(false)}

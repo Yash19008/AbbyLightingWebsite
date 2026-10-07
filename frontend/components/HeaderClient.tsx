@@ -110,15 +110,18 @@ export default function HeaderClient() {
   const [architecturalCategories, setArchitecturalCategories] = React.useState<Array<{ id: number; title?: string; name?: string; slug?: string; uri?: string }>>([]);
   const [decorativeCategories, setDecorativeCategories] = React.useState<Array<{ id: number | string; name: string; slug?: string }>>([]);
   const [collections, setCollections] = React.useState<Array<{ id: number | string; name: string; slug?: string }>>([]);
+  const [menuItems, setMenuItems] = React.useState<Array<{ id: number; title: string; url: string; location: string }>>([]);
+  const [isMenuLoading, setIsMenuLoading] = React.useState(true);
 
   React.useEffect(() => {
     async function fetchMenuData() {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const [archRes, decRes, colRes] = await Promise.all([
+        const [archRes, decRes, colRes, menuRes] = await Promise.all([
           fetch(`${API_URL}/api/categories`, { cache: 'no-store' }),
           fetch(`${API_URL}/api/dec-categories`, { cache: 'no-store' }),
-          fetch(`${API_URL}/api/collections?menu_only=1`, { cache: 'no-store' })
+          fetch(`${API_URL}/api/collections?menu_only=1`, { cache: 'no-store' }),
+          fetch(`${API_URL}/api/menu-items?location=header_mega`, { cache: 'no-store' })
         ]);
 
         if (archRes.ok) {
@@ -141,8 +144,16 @@ export default function HeaderClient() {
             setCollections(colData.data);
           }
         }
+        if (menuRes.ok) {
+          const menuData = await menuRes.json();
+          if (menuData.success && Array.isArray(menuData.data)) {
+            setMenuItems(menuData.data);
+          }
+        }
       } catch (error) {
         console.error('Error fetching menu categories:', error);
+      } finally {
+        setIsMenuLoading(false);
       }
     }
 
@@ -730,13 +741,28 @@ export default function HeaderClient() {
                 </a>
                 <div className="mega">
                   <div className="mega-panel">
-                    <div className="mega-grid">
+                    <style>{`
+                      @media (min-width: 901px) {
+                        .sitehead .mega-grid.mega-grid-dynamic {
+                          width: max-content !important;
+                          grid-template-columns: 192px 1px 9px 450px 1px 34px auto !important;
+                          padding-right: 48px !important;
+                        }
+                      }
+                    `}</style>
+                    <div className={`mega-grid ${menuItems.length > 0 ? 'mega-grid-dynamic' : ''}`}>
                       {/* ARCHITECTURAL - Dynamic */}
                       <div className="mgroup m-arch">
                         <div className="mhead">Architectural</div>
                         <div className="msub">Browse by category</div>
                         <ul>
-                          {architecturalCategories.length > 0 ? (
+                          {isMenuLoading ? (
+                            Array.from({ length: 4 }).map((_, i) => (
+                              <li key={i} style={{ padding: '4px 0' }}>
+                                <div style={{ height: '12px', width: `${60 + (i % 3) * 10}%`, background: '#eee', borderRadius: '4px', animation: 'pulse 1.5s infinite ease-in-out' }} />
+                              </li>
+                            ))
+                          ) : architecturalCategories.length > 0 ? (
                             architecturalCategories.map((category) => (
                               <li key={category.id}>
                                 <a href={category.uri ? category.uri : `/products?category=${category.slug || ''}`}>
@@ -767,7 +793,13 @@ export default function HeaderClient() {
                           <div>
                             <div className="msub">Browse by category</div>
                             <ul>
-                              {decorativeCategories.length > 0 ? (
+                              {isMenuLoading ? (
+                                Array.from({ length: 4 }).map((_, i) => (
+                                  <li key={i} style={{ padding: '4px 0' }}>
+                                    <div style={{ height: '12px', width: `${50 + (i % 2) * 20}%`, background: '#eee', borderRadius: '4px', animation: 'pulse 1.5s infinite ease-in-out' }} />
+                                  </li>
+                                ))
+                              ) : decorativeCategories.length > 0 ? (
                                 decorativeCategories.map((cat) => (
                                   <li key={cat.id || cat.slug || cat.name}>
                                     <Link href={`/decorative-products?category=${cat.slug || cat.name}`}>
@@ -790,7 +822,13 @@ export default function HeaderClient() {
                           <div>
                             <div className="msub">Browse by collection</div>
                             <ul>
-                              {collections.length > 0 ? (
+                              {isMenuLoading ? (
+                                Array.from({ length: 3 }).map((_, i) => (
+                                  <li key={i} style={{ padding: '4px 0' }}>
+                                    <div style={{ height: '12px', width: `${40 + (i % 3) * 15}%`, background: '#eee', borderRadius: '4px', animation: 'pulse 1.5s infinite ease-in-out' }} />
+                                  </li>
+                                ))
+                              ) : collections.length > 0 ? (
                                 collections.map((col) => (
                                   <li key={col.id || col.slug || col.name}>
                                     <Link href={`/collections/${col.slug || col.name.toLowerCase()}`}>
@@ -811,14 +849,44 @@ export default function HeaderClient() {
                       </div>
 
                       <div className="msep lg"></div>
-                      <div className="m-worlds">
-                        <Link className="mgroup m-out" href="/#worlds">
-                          <span className="mhead">Outdoor</span>
-                        </Link>
-                        <div className="msep hz"></div>
-                        <Link className="mgroup m-smart" href="/#worlds">
-                          <span className="mhead">Smart Lighting</span>
-                        </Link>
+                      <div 
+                        className="m-worlds"
+                        style={menuItems.length > 0 ? {
+                          width: 'max-content',
+                          display: 'grid',
+                          gridTemplateRows: `repeat(${Math.min(5, menuItems.length)}, max-content)`,
+                          gridAutoFlow: 'column',
+                          gridAutoColumns: 'minmax(144px, max-content)',
+                          columnGap: '16px',
+                          rowGap: '8px'
+                        } : {}}
+                      >
+                        {isMenuLoading ? (
+                          Array.from({ length: 2 }).map((_, i) => (
+                            <React.Fragment key={i}>
+                              {i > 0 && <div className="msep hz"></div>}
+                              <div className="mgroup m-out" style={{ padding: '24px' }}>
+                                <div style={{ height: '16px', width: '120px', background: '#eee', borderRadius: '4px', animation: 'pulse 1.5s infinite ease-in-out' }} />
+                              </div>
+                            </React.Fragment>
+                          ))
+                        ) : menuItems.length > 0 ? (
+                          menuItems.map((item, i) => (
+                            <Link key={item.id} className="mgroup m-out w-100" href={item.url} style={{ margin: 0 }}>
+                              <span className="mhead">{item.title}</span>
+                            </Link>
+                          ))
+                        ) : (
+                          <>
+                            <Link className="mgroup m-out" href="/#worlds">
+                              <span className="mhead">Outdoor</span>
+                            </Link>
+                            <div className="msep hz"></div>
+                            <Link className="mgroup m-smart" href="/#worlds">
+                              <span className="mhead">Smart Lighting</span>
+                            </Link>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1134,19 +1202,14 @@ export default function HeaderClient() {
                 )}
               </div>
 
-              {/* 3. Outdoor */}
-              <div className="pdrop-direct-row">
-                <Link href="/#worlds" onClick={closeSheet}>
-                  Outdoor
-                </Link>
-              </div>
-
-              {/* 4. Smart Lighting */}
-              <div className="pdrop-direct-row">
-                <Link href="/#worlds" onClick={closeSheet}>
-                  Smart Lighting
-                </Link>
-              </div>
+              {/* 3. Dynamic Extra Categories (Outdoor, Smart Lighting, etc.) */}
+              {menuItems.map((item) => (
+                <div key={item.id} className="pdrop-direct-row">
+                  <Link href={item.url} onClick={closeSheet}>
+                    {item.title}
+                  </Link>
+                </div>
+              ))}
             </div>
           )}
 

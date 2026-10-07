@@ -2,6 +2,11 @@
 
 @push('css')
 @vite(['resources/scss/project-internal.scss'])
+<style>
+    table td, table th {
+        vertical-align: middle !important;
+    }
+</style>
 @endpush
 
 @section('page-content')

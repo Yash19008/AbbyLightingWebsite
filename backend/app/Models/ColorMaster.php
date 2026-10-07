@@ -68,4 +68,11 @@ class ColorMaster extends Model
         return $query->where('type', $type);
     }
 
+    /**
+     * Relationship: DecProductColors using this master color
+     */
+    public function decProductColors()
+    {
+        return $this->hasMany(\App\Models\Decorative\DecProductColor::class, 'color_master_id');
+    }
 }

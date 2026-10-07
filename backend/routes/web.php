@@ -37,6 +37,7 @@ use App\Http\Controllers\Admin\JobAdminController;
 use App\Http\Controllers\Admin\ClientAdminController;
 use App\Http\Controllers\Admin\HomeSliderController as AdminHomeSliderController;
 use App\Http\Controllers\Admin\CollectionController;
+use App\Http\Controllers\Admin\MenuItemAdminController;
 use App\Http\Controllers\HomeController as WebsiteHomeController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeSliderController;
@@ -615,6 +616,10 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('/tone-families/{family}/test-edit', 'debugEditToneFamily')->name('admin.debug.tone-families.edit');
             Route::post('/tone-families/{family}/test-update', 'debugUpdateToneFamily')->name('admin.debug.tone-families.update');
         });
+
+        /********************MENU ITEMS********************/
+        Route::post('menu-items/reorder', [MenuItemAdminController::class, 'reorder'])->name('admin.menu-items.reorder');
+        Route::resource('menu-items', MenuItemAdminController::class)->names('admin.menu-items');
 
     });
 });

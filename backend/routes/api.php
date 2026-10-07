@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\NewsItemApiController;
 use App\Http\Controllers\Api\NewArrivalsApiController;
 use App\Http\Controllers\Api\LightWorldApiController;
 use App\Http\Controllers\Api\CollectionApiController;
+use App\Http\Controllers\Api\MenuApiController;
 use App\Http\Controllers\Api\ColorMasterApiController;
 use App\Http\Controllers\Api\CategoryApiController;
 use App\Http\Controllers\Api\HomeCatalogueSectionApiController;
@@ -65,12 +66,17 @@ Route::get('/light-worlds', [LightWorldApiController::class, 'index']);
 Route::controller(DecorativeProductApiController::class)->group(function () {
     Route::get('/dec-categories', 'categories');
     Route::get('/dec-collections', 'collections');
+    Route::get('/dec-finishes', 'finishes');
     Route::get('/dec-products', 'index');
     Route::get('/dec-products/{slug}/related', 'relatedProducts');
     Route::get('/dec-products/{slug}', 'show');
 });
 
 // Collections
+Route::controller(MenuApiController::class)->group(function () {
+    Route::get('/menu-items', 'index');
+});
+
 Route::controller(CollectionApiController::class)->group(function () {
     Route::get('/collections', 'index');
     Route::get('/collections/{slug}', 'show');

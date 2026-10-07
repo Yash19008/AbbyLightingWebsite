@@ -265,6 +265,9 @@
                             <li class="{{ (@$main_module == 'Jobs') ? 'active' : '' }}">
                                 <a class="menu-item" href="{{ route('job_admin') }}"><i class="ft-clipboard" style="font-size:11px;margin-right:4px;"></i> Jobs / Careers</a>
                             </li>
+                            <li class="{{ (@$main_module == 'Menu Items') ? 'active' : '' }}">
+                                <a class="menu-item" href="{{ route('admin.menu-items.index') }}"><i class="ft-menu" style="font-size:11px;margin-right:4px;"></i> Menu Items</a>
+                            </li>
                         </ul>
                     </li>
 

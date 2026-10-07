@@ -110,7 +110,7 @@ export default function DecorativeToolbar({
         >
           <span style={{ fontSize: '14px', lineHeight: 1 }} aria-hidden="true">☷</span>
           FILTER BY
-          {(activeFilters.category.length > 0 || activeFilters.collection.length > 0) && (
+          {(activeFilters.category.length > 0 || activeFilters.collection.length > 0 || (activeFilters.finish && activeFilters.finish.length > 0)) && (
             <span style={{ background: '#f6c177', borderRadius: '50%', width: '6px', height: '6px', display: 'inline-block' }} />
           )}
         </button>

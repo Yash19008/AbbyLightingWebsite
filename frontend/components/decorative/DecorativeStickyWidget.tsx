@@ -50,7 +50,7 @@ export default function DecorativeStickyWidget({
   }, [targetRef]);
 
   const hasActiveFilters =
-    activeFilters.category.length > 0 || activeFilters.collection.length > 0;
+    activeFilters.category.length > 0 || activeFilters.collection.length > 0 || (activeFilters.finish && activeFilters.finish.length > 0);
 
   const tabRefs = React.useRef<Record<string, HTMLButtonElement | null>>({});
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });

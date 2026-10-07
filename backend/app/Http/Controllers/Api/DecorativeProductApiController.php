@@ -44,6 +44,16 @@ class DecorativeProductApiController extends Controller
             }
         }
 
+        if ($request->has('finish')) {
+            $finishes = array_filter(explode(',', $request->get('finish')));
+            if (count($finishes) > 0) {
+                $query->whereHas('colors.colorMaster', function($q) use ($finishes) {
+                    $q->whereIn('name', $finishes)
+                      ->orWhereIn('code', $finishes);
+                });
+            }
+        }
+
         $sort = $request->get('sort', 'new');
         if ($sort === 'popular' || $sort === 'most_popular') {
             $query->orderBy('order', 'asc')->orderBy('id', 'desc');
@@ -118,6 +128,25 @@ class DecorativeProductApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $collections
+        ]);
+    }
+
+    /**
+     * Get all available finishes (colors) used by published decorative products
+     */
+    public function finishes()
+    {
+        $colors = \App\Models\ColorMaster::whereHas('decProductColors.product', function($q) {
+                $q->where('status', 'published');
+            })
+            ->active()
+            ->ordered()
+            ->get(['id', 'name', 'code', 'type', 'hex_code', 'gradient_start', 'gradient_end']);
+
+        // Since css_value is an appended attribute, it will be automatically included in the JSON representation
+        return response()->json([
+            'success' => true,
+            'data' => $colors
         ]);
     }
 

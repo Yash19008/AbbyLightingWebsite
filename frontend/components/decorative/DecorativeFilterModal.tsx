@@ -5,17 +5,25 @@ import React, { useState } from 'react';
 export interface FilterState {
   category: string[];
   collection: string[];
+  finish: string[];
+}
+
+export interface FinishOption {
+  name: string;
+  css_value: string;
+  type: string;
 }
 
 interface DecorativeFilterModalProps {
   initialFilters: FilterState;
   availableCategories: string[];
   availableCollections: string[];
+  availableFinishes: FinishOption[];
   onApply: (filters: FilterState) => void;
   onClose: () => void;
 }
 
-export default function DecorativeFilterModal({ initialFilters, availableCategories, availableCollections, onApply, onClose }: DecorativeFilterModalProps) {
+export default function DecorativeFilterModal({ initialFilters, availableCategories, availableCollections, availableFinishes, onApply, onClose }: DecorativeFilterModalProps) {
   // Draft state for filters before applying
   const [draft, setDraft] = useState<FilterState>(initialFilters);
 
@@ -23,6 +31,7 @@ export default function DecorativeFilterModal({ initialFilters, availableCategor
   const [openSections, setOpenSections] = useState({
     category: true,
     collection: true,
+    finish: true,
   });
 
   const toggleSection = (section: keyof typeof openSections) => {
@@ -45,7 +54,7 @@ export default function DecorativeFilterModal({ initialFilters, availableCategor
   };
 
   const clearAll = () => {
-    setDraft({ category: [], collection: [] });
+    setDraft({ category: [], collection: [], finish: [] });
   };
 
   const applyFilters = () => {
@@ -134,6 +143,52 @@ export default function DecorativeFilterModal({ initialFilters, availableCategor
                     onChange={() => handleToggleFilter('collection', opt)}
                   />
                   <span>{opt}</span>
+                </label>
+              ))}
+            </div>
+          </section>
+
+          {/* Finishes */}
+          <section className="decorative-filter-accordion">
+            <button
+              className="decorative-filter-accordion-toggle"
+              type="button"
+              aria-expanded={openSections.finish}
+              onClick={() => toggleSection('finish')}
+            >
+              <span>Finishes</span>
+              <i className="decorative-filter-chevron" aria-hidden="true" />
+            </button>
+            <div className="decorative-filter-options" hidden={!openSections.finish}>
+              <label className="decorative-filter-option">
+                <input
+                  type="checkbox"
+                  checked={draft.finish.length === 0}
+                  onChange={() => handleToggleAll('finish')}
+                />
+                <span>All</span>
+              </label>
+              {availableFinishes.map((opt) => (
+                <label key={opt.name} className="decorative-filter-option" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <input
+                    type="checkbox"
+                    checked={draft.finish.includes(opt.name)}
+                    onChange={() => handleToggleFilter('finish', opt.name)}
+                  />
+                  <span
+                    className="spec-color-swatch"
+                    style={{
+                      display: 'inline-block',
+                      width: '16px',
+                      height: '16px',
+                      borderRadius: '50%',
+                      background: opt.css_value,
+                      border: '1px solid #e0e0e0',
+                      flexShrink: 0
+                    }}
+                    title={opt.name}
+                  />
+                  <span>{opt.name}</span>
                 </label>
               ))}
             </div>
