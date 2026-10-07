@@ -157,28 +157,28 @@ export default function Header() {
                     <path d="m16 16 4.5 4.5"></path>
                   </svg>
                 </span>
-                <input 
+                <input
                   ref={searchInputRef}
-                  type="search" 
-                  placeholder="Search for products, collections and more" 
-                  aria-label="Search Abby Lighting" 
-                  autoComplete="off" 
-                  defaultValue="" 
+                  type="search"
+                  placeholder="Search for products, collections and more"
+                  aria-label="Search Abby Lighting"
+                  autoComplete="off"
+                  defaultValue=""
                 />
                 <button className="abby-search-go" type="submit" aria-label="Submit search" disabled>
                   →
                 </button>
               </form>
-              <button 
-                type="button" 
-                className="abby-search-toggle" 
+              <button
+                type="button"
+                className="abby-search-toggle"
                 aria-label={isSearchOpen ? "Close search" : "Open search"}
                 aria-expanded={isSearchOpen}
                 onClick={handleSearchToggle}
               >
                 {isSearchOpen ? (
                   <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 ) : (
                   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -190,7 +190,7 @@ export default function Header() {
             </div>
             <Link href="/contact" className="nav-cta">
               <span className="lbl-d">Get in Touch</span>
-              <span className="lbl-m">Contact</span>
+              <span className="lbl-m">Contact US</span>
             </Link>
           </div>
         </div>

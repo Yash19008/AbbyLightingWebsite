@@ -891,7 +891,7 @@ export default function HeaderClient() {
             </div>
             <a href="/contact" className="nav-cta">
               <span className="lbl-d">Get in Touch</span>
-              <span className="lbl-m">Contact</span>
+              <span className="lbl-m">Contact Us</span>
             </a>
           </div>
         </div>
@@ -990,7 +990,7 @@ export default function HeaderClient() {
                 </svg>
               </button>
               <a href="/contact" onClick={closeSheet} className="pdrop-contact-btn">
-                CONTACT
+                CONTACT US
               </a>
             </div>
           </div>

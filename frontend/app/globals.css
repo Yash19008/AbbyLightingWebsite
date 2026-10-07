@@ -1455,6 +1455,10 @@ body {
 
 .s-hero-copy {
   padding: 130px 6.45vw 40px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  margin-bottom: 3.45vw;
 }
 
 .s-catalogue>div {
@@ -1729,31 +1733,36 @@ body {
 }
 
 /* ==========================================================================
-   Footer Social Icons (Desktop vs Mobile)
+   Footer Social Icons (PNG Images for Desktop and Mobile)
    ========================================================================== */
-.footer-icon-mobile {
-  display: none !important;
-}
-
-.footer-icon-desktop {
+.footer-social-icon {
   display: flex !important;
   align-items: center;
   justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.footer-social-img {
+  width: 27px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.footer-facebook {
+  width: 22px !important;
+  height: 37px !important;
+
+}
+
+.footer-social a:hover .footer-social-img {
+  opacity: 0.8;
+  transform: scale(1.08);
 }
 
 @media (max-width: 900px) {
-  .footer-icon-desktop {
-    display: none !important;
-  }
-
-  .footer-icon-mobile {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    color: #c4c4c4 !important;
-    transition: color 0.2s ease;
-  }
-
   .footer-social {
     display: flex !important;
     align-items: center !important;
@@ -1769,33 +1778,14 @@ body {
     text-decoration: none !important;
   }
 
-  .footer-social a:hover .footer-icon-mobile {
-    color: #ffffff !important;
-  }
-
-  .footer-social-icon.footer-icon-mobile {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+  .footer-social-icon {
     width: 24px !important;
     height: 24px !important;
   }
 
-  .footer-social-icon.footer-icon-mobile svg {
+  .footer-social-img {
     width: 22px !important;
     height: 22px !important;
-    fill: currentColor !important;
-  }
-
-  .footer-social a:last-child,
-  .footer-social a:last-child .footer-social-icon {
-    width: 24px !important;
-    height: 24px !important;
-  }
-
-  .footer-social a:last-child svg {
-    width: 20px !important;
-    height: 20px !important;
   }
 }
 
@@ -2145,6 +2135,12 @@ footer#contact {
   .footer-base>span {
     font-size: 12px !important;
     color: #a0a0a0 !important;
+  }
+
+  .footer-accordion.is-open .footer-accordion-panel,
+  .footer-accordion.open .footer-accordion-panel {
+
+    gap: 0px;
   }
 
   .footer-social {
