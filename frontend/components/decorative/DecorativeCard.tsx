@@ -40,16 +40,7 @@ interface DecorativeCardProps {
 export default function DecorativeCard({ product, order, filterDelay, isGlobalLightOn, hideNewBadge }: DecorativeCardProps) {
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [maxSwatches, setMaxSwatches] = useState(6);
-
-  useEffect(() => {
-    const updateMaxSwatches = () => {
-      setMaxSwatches(window.innerWidth <= 600 ? 4 : 6);
-    };
-    updateMaxSwatches();
-    window.addEventListener('resize', updateMaxSwatches);
-    return () => window.removeEventListener('resize', updateMaxSwatches);
-  }, []);
+  const [maxSwatches] = useState(4);
 
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
