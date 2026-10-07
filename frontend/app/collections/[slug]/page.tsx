@@ -60,7 +60,10 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
 
         {/* Compositions Section - Dynamic if data exists */}
         {collection.compositions_section && (
-          <CompositionsSectionDynamic compositionsSection={collection.compositions_section} />
+          <CompositionsSectionDynamic 
+            compositionsSection={collection.compositions_section} 
+            collectionName={collection.name}
+          />
         )}
 
         {/* Products Section - Dynamic if data exists */}

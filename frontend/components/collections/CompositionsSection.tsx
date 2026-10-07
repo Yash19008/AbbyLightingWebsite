@@ -11,6 +11,7 @@ type CompositionItem = {
   title: string;
   category: string;
   kicker: string;
+  collection?: string;
 };
 
 type CompositionsSectionData = {
@@ -48,9 +49,10 @@ export default function CompositionsSection({ data }: Props) {
 
   const handleClick = (comp: CompositionItem, index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
+    const subtitle = [comp.kicker, comp.category, comp.collection].filter(Boolean).join(' · ');
     setActiveLook({
-      title: comp.kicker || comp.title || 'Composition',
-      kicker: [comp.title, comp.category].filter(Boolean).join(' · ') || 'Symphony Composition',
+      title: comp.title || 'Composition',
+      kicker: subtitle || 'Symphony Composition',
       room: comp.category ? comp.category.toLowerCase() : 'living',
       image: comp.image,
     });
@@ -90,8 +92,10 @@ export default function CompositionsSection({ data }: Props) {
                 style={{ objectFit: 'cover' }}
               />
               <div>
-                {comp.kicker && <p>{comp.kicker}</p>}
-                <span>{comp.title} {comp.category ? `· ${comp.category}` : ''}</span>
+                <p style={{ font: '500 italic 18px Inter', margin: '0 0 4px', color: '#ffffff' }}>{comp.title}</p>
+                <span style={{ fontSize: 13, color: 'rgba(255, 255, 255, 0.85)' }}>
+                  {[comp.kicker, comp.category, comp.collection].filter(Boolean).join(' · ')}
+                </span>
               </div>
             </article>
           ))}

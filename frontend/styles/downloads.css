@@ -526,6 +526,104 @@ body:has(.downloads-page) .sitehead {
   line-height: 1.45;
 }
 
+/* ==========================================================================
+   Thank You Card Design (After Catalogue Form Submission)
+   ========================================================================== */
+.download-dialog-thankyou {
+  width: min(760px, 100%) !important;
+  height: 760px !important;
+  min-height: min(760px, calc(100vh - 48px)) !important;
+  max-height: calc(100vh - 48px) !important;
+  padding: 53px 76px 49px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center;
+  box-sizing: border-box !important;
+}
+
+.download-thankyou-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: auto 0;
+}
+
+.download-thankyou-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #f3b469;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+  box-shadow: 0 4px 18px rgba(243, 180, 105, 0.4);
+}
+
+.download-thankyou-icon svg {
+  width: 26px;
+  height: 26px;
+  stroke: #111111;
+  stroke-width: 2.8;
+}
+
+.download-thankyou-title {
+  margin: 0 0 16px !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 40px !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.02em !important;
+  color: #111111 !important;
+  text-align: center !important;
+}
+
+.download-thankyou-desc {
+  margin: 0 auto 38px !important;
+  max-width: 470px;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  color: #555555 !important;
+  text-align: center !important;
+}
+
+.download-thankyou-btn {
+  width: 236px;
+  height: 38px;
+  border: 0;
+  border-radius: 2px;
+  background: #f3b469;
+  color: #111111;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 4%;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 180ms ease, transform 140ms ease, box-shadow 180ms ease;
+  box-shadow: 0 3px 12px rgba(243, 180, 105, 0.4);
+}
+
+.download-thankyou-btn:hover {
+  background: #e5a454;
+  box-shadow: 0 5px 16px rgba(243, 180, 105, 0.5);
+  transform: translateY(-1px);
+}
+
+.download-thankyou-btn:active {
+  transform: translateY(0);
+}
+
 .download-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -573,7 +671,7 @@ body:has(.downloads-page) .sitehead {
 
 .download-field input,
 .download-field select {
-  height: 48px;
+  height: 47px;
 }
 
 .download-field select {
@@ -584,6 +682,108 @@ body:has(.downloads-page) .sitehead {
   background-repeat: no-repeat;
   padding-right: 36px;
   cursor: pointer;
+}
+
+/* Custom Dropdown Select */
+.download-select-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.download-select-trigger {
+  width: 100%;
+  height: 47px;
+  border: 1px solid #111;
+  border-radius: 0;
+  background: #fff;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  outline: 0;
+  box-sizing: border-box;
+  text-align: left;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.download-select-trigger:focus,
+.download-select-trigger.is-open {
+  border-color: #000;
+  box-shadow: 0 0 0 1px #000;
+}
+
+.download-select-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #111111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.download-select-label.is-placeholder {
+  color: #545454;
+  font-size: 12px;
+}
+
+.download-select-arrow {
+  flex-shrink: 0;
+  margin-left: 8px;
+  transition: transform 180ms ease;
+}
+
+.download-select-arrow.is-open {
+  transform: rotate(180deg);
+}
+
+.download-select-menu {
+  position: absolute;
+  top: calc(100% + 1px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 0;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+  z-index: 100;
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.download-select-option {
+  width: 100%;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #111111;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.download-select-option:last-child {
+  border-bottom: 0;
+}
+
+.download-select-option:hover {
+  background-color: #f7f7f7;
+}
+
+.download-select-option.is-selected {
+  background-color: #f0f0f0;
+  font-weight: 500;
 }
 
 .download-field textarea {
@@ -666,7 +866,7 @@ body:has(.downloads-page) .sitehead {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  z-index: 50;
+  z-index: 100;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -775,39 +975,53 @@ body:has(.downloads-page) .sitehead {
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 11px;
-  width: 179px;
+  width: 185px;
   height: 47px;
   margin-top: 4px;
-  padding: 0 8px;
-  box-shadow: 0 1px 3.4px rgba(0, 0, 0, 0.25);
+  padding: 0 10px;
+  border: 1px solid #dcdcdc;
+  box-shadow: 0 1px 3.4px rgba(0, 0, 0, 0.15);
   font-family: 'Inter', sans-serif;
-  font-weight: 300;
-  font-size: 8.2px;
+  font-weight: 400;
+  font-size: 11px;
   line-height: 1;
   background: #fff;
   cursor: pointer;
 }
 
+.download-captcha-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.download-captcha-badge {
+  display: flex;
+  align-items: center;
+}
+
 .download-captcha input {
   appearance: none;
-  width: 21px;
-  height: 19px;
-  border: 1px solid #111;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #999;
+  border-radius: 2px;
   cursor: pointer;
   margin: 0;
 }
 
 .download-captcha input:checked {
   background: #e5a95d;
-  box-shadow: inset 0 0 0 4px #fff;
+  box-shadow: inset 0 0 0 3px #fff;
 }
 
 .download-submit {
   grid-column: 1 / -1;
   justify-self: center;
   width: 225px;
-  height: 44px;
+  height: 38px;
   margin-top: 25px;
   border: 0;
   border-radius: 2px;
@@ -1049,49 +1263,280 @@ body:has(.downloads-page) .sitehead {
   }
 
   .download-modal {
-    padding: 0;
+    padding: 20px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .download-dialog {
-    width: 100%;
-    height: 100dvh;
-    max-height: none;
-    padding: calc(56px + env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));
-    box-shadow: none;
-  }
-
-  .download-dialog h2 {
-    font-size: 20px;
-    padding-right: 26px;
-  }
-
-  .download-dialog>p {
-    margin: 12px 0 28px;
-  }
-
-  .download-form {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .download-field.full,
-  .download-captcha,
-  .download-submit,
-  .download-consent,
-  .download-status {
-    grid-column: 1;
-  }
-
-  .download-submit {
-    width: 100%;
-    height: 43px;
-    margin-top: 12px;
+    width: 100% !important;
+    max-width: 440px !important;
+    height: auto !important;
+    max-height: calc(100dvh - 36px) !important;
+    padding: 28px 20px 24px !important;
+    border-radius: 20px !important;
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.3) !important;
+    position: relative !important;
+    overflow-y: auto !important;
+    background: #ffffff !important;
   }
 
   .download-close {
-    position: fixed;
-    z-index: 2;
-    right: 18px;
-    top: calc(14px + env(safe-area-inset-top));
+    position: absolute !important;
+    top: 16px !important;
+    right: 16px !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    background: #f0f0f0 !important;
+    color: #555555 !important;
+    font-size: 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    border: 0 !important;
+    cursor: pointer !important;
+    z-index: 10 !important;
+  }
+
+  .download-dialog h2 {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    padding-right: 36px !important;
+    margin: 0 0 8px 0 !important;
+  }
+
+  .download-dialog>p {
+    margin: 0 0 18px 0 !important;
+    font-size: 11.5px !important;
+    line-height: 1.45 !important;
+    color: rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .download-form {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .download-field input,
+  .download-select-trigger,
+  .phone-country-trigger {
+    height: 44px !important;
+    border: 1px solid #dcdcdc !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+  }
+
+  .download-field input {
+    padding: 0 14px !important;
+  }
+
+  .download-field label {
+    left: 14px !important;
+    top: 14px !important;
+    font-size: 12px !important;
+    color: #555555 !important;
+  }
+
+  .download-field.phone-field-wrap {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .download-field.phone-field-wrap .phone-country-select-container {
+    flex-shrink: 0 !important;
+  }
+
+  .download-field.phone-field-wrap .phone-country-trigger {
+    border-right: 1px solid #dcdcdc !important;
+    padding: 0 10px !important;
+  }
+
+  .download-field.phone-field-wrap input {
+    border-left: 1px solid #dcdcdc !important;
+    border-radius: 8px !important;
+    flex: 1 !important;
+  }
+
+  .download-field.phone-field-wrap label {
+    left: 88px !important;
+    top: 14px !important;
+  }
+
+  .download-select-trigger {
+    padding: 0 14px !important;
+  }
+
+  .download-select-label {
+    font-size: 13px !important;
+  }
+
+  .download-select-label.is-placeholder {
+    font-size: 12px !important;
+    color: #555555 !important;
+  }
+
+  .download-select-menu {
+    border-radius: 8px !important;
+    border: 1px solid #e0e0e0 !important;
+  }
+
+  .download-field textarea {
+    border: 1px solid #dcdcdc !important;
+    border-radius: 8px !important;
+    min-height: 85px !important;
+    padding: 12px 14px !important;
+    font-size: 12.5px !important;
+  }
+
+  .download-field.message label {
+    position: static !important;
+    display: block !important;
+    margin-bottom: 6px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #333333 !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .download-captcha {
+    width: 100% !important;
+    height: 48px !important;
+    border: 1px solid #dcdcdc !important;
+    border-radius: 8px !important;
+    background: #ffffff !important;
+    padding: 0 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    box-shadow: none !important;
+    margin-top: 4px !important;
+  }
+
+  .download-captcha-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .download-captcha-left span {
+    font-size: 12px !important;
+    color: #333333 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 400 !important;
+  }
+
+  .download-captcha input {
+    width: 18px !important;
+    height: 18px !important;
+    border: 1.5px solid #aaa !important;
+    border-radius: 3px !important;
+    margin: 0 !important;
+  }
+
+  .download-captcha input:checked {
+    background: #e5a95d !important;
+    box-shadow: inset 0 0 0 3px #fff !important;
+  }
+
+  .download-captcha-badge {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .download-submit {
+    width: 100% !important;
+    height: 46px !important;
+    border-radius: 8px !important;
+    background: #f3b469 !important;
+    color: #111111 !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+    margin-top: 6px !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .download-consent {
+    font-size: 10px !important;
+    color: #888888 !important;
+    text-align: center !important;
+    margin-top: 8px !important;
+    line-height: 1.45 !important;
+  }
+
+  .download-dialog-thankyou {
+    width: min(390px, calc(100vw - 40px)) !important;
+    height: auto !important;
+    min-height: unset !important;
+    max-height: 90vh !important;
+    padding: 40px 24px 32px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 18px !important;
+    margin: auto !important;
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.35) !important;
+    position: relative !important;
+  }
+
+  .download-dialog-thankyou .download-close {
+    position: absolute !important;
+    top: 14px !important;
+    right: 16px !important;
+    font-size: 24px !important;
+    color: #888 !important;
+    z-index: 10 !important;
+  }
+
+  .download-dialog-thankyou .download-thankyou-icon {
+    width: 56px !important;
+    height: 56px !important;
+    margin: 0 auto 20px !important;
+    background: #f3b469 !important;
+  }
+
+  .download-dialog-thankyou .download-thankyou-icon svg {
+    width: 22px !important;
+    height: 22px !important;
+    stroke-width: 2.6 !important;
+  }
+
+  .download-dialog-thankyou .download-thankyou-title {
+    font-size: 23px !important;
+    font-weight: 700 !important;
+    line-height: 1.28 !important;
+    margin: 0 auto 14px !important;
+    max-width: 260px !important;
+    color: #111111 !important;
+  }
+
+  .download-dialog-thankyou .download-thankyou-desc {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    color: #555555 !important;
+    max-width: 290px !important;
+    margin: 0 auto 28px !important;
+  }
+
+  .download-dialog-thankyou .download-thankyou-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 48px !important;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    background: #f3b469 !important;
+    box-shadow: none !important;
   }
 }

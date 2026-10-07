@@ -94,7 +94,7 @@ export default function Footer() {
             </a>
             <a href="#" aria-label="YouTube">
               <span className="footer-social-icon">
-                <img src="/icons/youtube.png" alt="YouTube" width="22" height="22" className="footer-social-img" />
+                <img src="/icons/youtube.png" alt="YouTube" width="22" height="22" className="footer-social-img footer-youtube" />
               </span>
             </a>
           </div>

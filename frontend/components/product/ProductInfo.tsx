@@ -37,11 +37,15 @@ export default function ProductInfo({
   }, []);
 
   const displayColourLabel = activeVariant?.name || "";
+  const collectionRaw = (product.collection?.name || "").trim();
+  const collectionDisplay = collectionRaw
+    ? (/\s*collection$/i.test(collectionRaw) ? collectionRaw : `${collectionRaw} Collection`)
+    : "Product Collection";
 
   return (
     <div className="product-info product-reveal product-delay-1" suppressHydrationWarning>
       <p className="product-tag">
-        {product.collection?.name || "Product"} Collection &middot; {product.category?.name || "Category"}
+        {collectionDisplay} &middot; {product.category?.name || "Category"}
       </p>
       <h1>{product.name}</h1>
       <p className="mobile-category">{product.category?.name}</p>

@@ -348,9 +348,10 @@ body:has(.calculator-page) .sitehead {
 /* Results & Recommendation Panel */
 .calculator-page .result-panels {
   display: grid;
-  grid-template-columns: minmax(0, 744px) minmax(0, 482px);
+  grid-template-columns: minmax(0, 1.54fr) minmax(0, 1fr);
   gap: 19px;
   margin-top: 58px;
+  width: 100%;
 }
 
 .calculator-page .calculator-result {
@@ -409,7 +410,7 @@ body:has(.calculator-page) .sitehead {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0;
-  max-width: 650px;
+  width: 100%;
 }
 
 .calculator-page .result-row {
@@ -476,9 +477,9 @@ body:has(.calculator-page) .sitehead {
 .calculator-page .recommendation-cta:after {
   content: "";
   position: absolute;
-  inset: 0 auto 0 0;
-  width: min(359px, 100%);
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.48) 52%, rgba(0, 0, 0, 0) 100%);
+  inset: 0;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 50%, rgba(0, 0, 0, 0) 85%);
   pointer-events: none;
 }
 
@@ -685,6 +686,104 @@ body:has(.calculator-page) .sitehead {
   font-weight: 300;
   font-size: 12px;
   line-height: 1.45;
+}
+
+/* ==========================================================================
+   Thank You Card Design (After Get in Touch Form Submission)
+   ========================================================================== */
+.calculator-contact-dialog-thankyou {
+  width: min(760px, 100%) !important;
+  height: 760px !important;
+  min-height: min(760px, calc(100vh - 48px)) !important;
+  max-height: calc(100vh - 48px) !important;
+  padding: 53px 76px 49px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center;
+  box-sizing: border-box !important;
+}
+
+.calculator-thankyou-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: auto 0;
+}
+
+.calculator-thankyou-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #f3b469;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+  box-shadow: 0 4px 18px rgba(243, 180, 105, 0.4);
+}
+
+.calculator-thankyou-icon svg {
+  width: 26px;
+  height: 26px;
+  stroke: #111111;
+  stroke-width: 2.8;
+}
+
+.calculator-thankyou-title {
+  margin: 0 0 16px !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 32px !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.02em !important;
+  color: #111111 !important;
+  text-align: center !important;
+}
+
+.calculator-thankyou-desc {
+  margin: 0 auto 38px !important;
+  max-width: 420px;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 14.5px !important;
+  line-height: 1.6 !important;
+  color: #555555 !important;
+  text-align: center !important;
+}
+
+.calculator-thankyou-btn {
+  width: 200px;
+  height: 46px;
+  border: 0;
+  border-radius: 2px;
+  background: #f3b469;
+  color: #111111;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 180ms ease, transform 140ms ease, box-shadow 180ms ease;
+  box-shadow: 0 3px 12px rgba(243, 180, 105, 0.4);
+}
+
+.calculator-thankyou-btn:hover {
+  background: #e5a454;
+  box-shadow: 0 5px 16px rgba(243, 180, 105, 0.5);
+  transform: translateY(-1px);
+}
+
+.calculator-thankyou-btn:active {
+  transform: translateY(0);
 }
 
 .calculator-contact-form {
@@ -1150,5 +1249,72 @@ body:has(.calculator-page) .sitehead {
 
   .calculator-contact-consent {
     margin-top: 2px !important;
+  }
+
+  .calculator-contact-dialog-thankyou {
+    width: min(390px, calc(100vw - 40px)) !important;
+    height: auto !important;
+    min-height: unset !important;
+    max-height: 90vh !important;
+    padding: 40px 24px 32px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 18px !important;
+    margin: auto !important;
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.35) !important;
+    position: relative !important;
+  }
+
+  .calculator-contact-dialog-thankyou .calculator-contact-close {
+    position: absolute !important;
+    top: 14px !important;
+    right: 16px !important;
+    font-size: 24px !important;
+    color: #888 !important;
+    z-index: 10 !important;
+  }
+
+  .calculator-contact-dialog-thankyou .calculator-thankyou-icon {
+    width: 56px !important;
+    height: 56px !important;
+    margin: 0 auto 20px !important;
+    background: #f3b469 !important;
+  }
+
+  .calculator-contact-dialog-thankyou .calculator-thankyou-icon svg {
+    width: 22px !important;
+    height: 22px !important;
+    stroke-width: 2.6 !important;
+  }
+
+  .calculator-contact-dialog-thankyou .calculator-thankyou-title {
+    font-size: 23px !important;
+    font-weight: 700 !important;
+    line-height: 1.28 !important;
+    margin: 0 auto 14px !important;
+    max-width: 260px !important;
+    color: #111111 !important;
+  }
+
+  .calculator-contact-dialog-thankyou .calculator-thankyou-desc {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    color: #555555 !important;
+    max-width: 290px !important;
+    margin: 0 auto 28px !important;
+  }
+
+  .calculator-contact-dialog-thankyou .calculator-thankyou-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 48px !important;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    background: #f3b469 !important;
+    box-shadow: none !important;
   }
 }
