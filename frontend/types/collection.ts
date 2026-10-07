@@ -46,6 +46,7 @@ export interface CompositionItem {
   title: string;
   category: string;
   kicker: string;
+  collection?: string;
   products?: CompositionProduct[];
 }
 

@@ -254,16 +254,18 @@ class CollectionApiController extends Controller
                             'title' => $comp->title,
                             'category' => $comp->category_rel ? $comp->category_rel->name : $comp->category,
                             'kicker' => $comp->kicker ?? '',
+                            'collection' => $collection->name ?? '',
                             'products' => $productsUsed
                         ];
                     })
-                    : ($collection->compositionsSection->items ? $collection->compositionsSection->items->map(function ($item) {
+                    : ($collection->compositionsSection->items ? $collection->compositionsSection->items->map(function ($item) use ($collection) {
                         return [
                             'id' => $item->id,
                             'image' => $item->image_url ?? ($item->image ? asset('storage/' . $item->image) : ''),
                             'title' => $item->products ?? '',
                             'category' => '',
                             'kicker' => $item->description ?? '',
+                            'collection' => $collection->name ?? '',
                         ];
                     }) : []),
             ] : null,

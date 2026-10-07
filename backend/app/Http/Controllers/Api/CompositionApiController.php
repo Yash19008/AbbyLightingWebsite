@@ -14,7 +14,7 @@ class CompositionApiController extends Controller
     public function showcase()
     {
         $compositions = Composition::where('is_showcase', 1)
-            ->with(['category_rel', 'products.category', 'products.collection', 'products.colors.colorMaster'])
+            ->with(['category_rel', 'collections', 'products.category', 'products.collection', 'products.colors.colorMaster'])
             ->orderBy('id', 'desc')
             ->get()
             ->map(function ($comp) {
@@ -78,11 +78,14 @@ class CompositionApiController extends Controller
                     ];
                 });
 
+                $coll = $comp->collections ? $comp->collections->first() : null;
+
                 return [
                     'id' => $comp->id,
                     'title' => $comp->title,
                     'kicker' => $comp->kicker,
                     'category' => $comp->category_rel ? $comp->category_rel->name : $comp->category,
+                    'collection' => $coll ? $coll->name : null,
                     'image' => $comp->image ? asset('storage/uploads/compositions/' . $comp->image) : null,
                     'products' => $productsUsed
                 ];

@@ -9,6 +9,7 @@ interface CompositionItem {
   title: string;
   kicker?: string;
   category?: string;
+  collection?: string;
   image?: string;
   products?: ProductUsedItem[];
 }
@@ -55,8 +56,8 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
 
   const mappedLooks: LookItem[] = compositions && compositions.length > 0
     ? compositions.map((c: CompositionItem) => ({
-      title: c.kicker || c.title || "",
-      kicker: [c.title, c.category].filter(Boolean).join(' · ') || c.kicker || c.category || "",
+      title: c.title || c.kicker || "",
+      kicker: [c.kicker, c.category, c.collection].filter(Boolean).join(' · ') || c.kicker || c.category || "",
       room: c.category ? c.category.toLowerCase() : "all",
       image: c.image || "/images/reference/project-atlas.png",
       productsUsed: c.products || []

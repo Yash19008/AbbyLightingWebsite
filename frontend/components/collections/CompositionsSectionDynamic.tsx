@@ -8,9 +8,10 @@ import '@/styles/inspiration.css';
 
 interface Props {
   compositionsSection: CompositionsSectionType;
+  collectionName?: string;
 }
 
-export default function CompositionsSectionDynamic({ compositionsSection }: Props) {
+export default function CompositionsSectionDynamic({ compositionsSection, collectionName }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
@@ -178,9 +179,10 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
                 tabIndex={0}
                 onClick={() => {
                   setActiveIndex(activeIndex === index ? null : index);
+                  const subtitle = [comp.kicker, comp.category, comp.collection || collectionName].filter(Boolean).join(' · ');
                   setActiveLook({
-                    title: comp.kicker || comp.title || 'Composition',
-                    kicker: [comp.title, comp.category].filter(Boolean).join(' · ') || 'Symphony Composition',
+                    title: comp.title || 'Composition',
+                    kicker: subtitle || 'Symphony Composition',
                     room: comp.category ? comp.category.toLowerCase() : 'living',
                     image: comp.image,
                     productsUsed: comp.products || []
@@ -215,8 +217,10 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
                   background: 'linear-gradient(transparent, rgba(0,0,0,0.82))',
                 }} />
                 <div style={{ position: 'absolute', zIndex: 2, left: isMobile ? 12 : 28, right: isMobile ? 12 : 24, bottom: isMobile ? 12 : 25 }}>
-                  <p style={{ font: isMobile ? '500 italic 12px Inter' : '500 italic 18px Inter', margin: '0 0 4px' }}>{comp.kicker}</p>
-                  <span style={{ fontSize: isMobile ? 10 : 13 }}>{comp.title} {comp.category ? `· ${comp.category}` : ''}</span>
+                  <p style={{ font: isMobile ? '500 italic 12px Inter' : '500 italic 18px Inter', margin: '0 0 4px', color: '#ffffff' }}>{comp.title}</p>
+                  <span style={{ fontSize: isMobile ? 10 : 13, color: 'rgba(255, 255, 255, 0.85)' }}>
+                    {[comp.kicker, comp.category, comp.collection || collectionName].filter(Boolean).join(' · ')}
+                  </span>
                 </div>
               </article>
             ))}
@@ -356,9 +360,10 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
             const prevIdx = activeIndex - 1;
             setActiveIndex(prevIdx);
             const comp = items[prevIdx];
+            const subtitle = [comp.kicker, comp.category, comp.collection || collectionName].filter(Boolean).join(' · ');
             setActiveLook({
-              title: comp.kicker || comp.title || 'Composition',
-              kicker: [comp.title, comp.category].filter(Boolean).join(' · ') || 'Symphony Composition',
+              title: comp.title || 'Composition',
+              kicker: subtitle || 'Symphony Composition',
               room: comp.category ? comp.category.toLowerCase() : 'living',
               image: comp.image,
               productsUsed: comp.products || []
@@ -370,9 +375,10 @@ export default function CompositionsSectionDynamic({ compositionsSection }: Prop
             const nextIdx = activeIndex + 1;
             setActiveIndex(nextIdx);
             const comp = items[nextIdx];
+            const subtitle = [comp.kicker, comp.category, comp.collection || collectionName].filter(Boolean).join(' · ');
             setActiveLook({
-              title: comp.kicker || comp.title || 'Composition',
-              kicker: [comp.title, comp.category].filter(Boolean).join(' · ') || 'Symphony Composition',
+              title: comp.title || 'Composition',
+              kicker: subtitle || 'Symphony Composition',
               room: comp.category ? comp.category.toLowerCase() : 'living',
               image: comp.image,
               productsUsed: comp.products || []

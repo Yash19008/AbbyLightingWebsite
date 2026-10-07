@@ -1757,6 +1757,12 @@ body {
 
 }
 
+.footer-youtube {
+  width: 32px !important;
+  height: 38px !important;
+
+}
+
 .footer-social a:hover .footer-social-img {
   opacity: 0.8;
   transform: scale(1.08);
