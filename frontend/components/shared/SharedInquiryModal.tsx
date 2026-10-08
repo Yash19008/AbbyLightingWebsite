@@ -352,7 +352,7 @@ export default function SharedInquiryModal({
                     onChange={handleFormChange}
                     required
                   />
-                  <span>I'm not a robot</span>
+                  <span>I&apos;m not a robot</span>
                 </div>
                 <div className="download-captcha-badge">
                   <svg

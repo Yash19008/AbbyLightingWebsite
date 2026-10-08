@@ -350,22 +350,7 @@ export default function LightCalculatorContent() {
     setOpenLegends((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
-  const handleContactChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value, type } = e.target;
-    if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setContactForm((prev) => ({ ...prev, [name]: checked }));
-    } else {
-      setContactForm((prev) => ({ ...prev, [name]: value }));
-    }
-  };
 
-  const handleContactSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setContactSubmitted(true);
-  };
 
   return (
     <div className="calculator-page" ref={calculatorRef}>
