@@ -1,9 +1,11 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { API_URL, API_BASE } from '@/lib/config';
+
+
 import { CompositionItem } from '@/types/collection';
 
 export async function getShowcaseCompositions(): Promise<{ success: boolean; data: CompositionItem[] }> {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/compositions/showcase`, {
+    const res = await fetch(`${API_URL}/compositions/showcase`, {
       cache: 'no-store'
     });
     

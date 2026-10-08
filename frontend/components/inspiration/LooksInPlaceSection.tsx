@@ -59,7 +59,7 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
       title: c.title || c.kicker || "",
       kicker: [c.kicker, c.category, c.collection].filter(Boolean).join(' · ') || c.kicker || c.category || "",
       room: c.category ? c.category.toLowerCase() : "all",
-      image: c.image || "/images/reference/project-atlas.png",
+      image: c.image || "/images/placeholder.svg",
       productsUsed: c.products || []
     }))
     : [];
@@ -133,7 +133,7 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
                   src={item.image}
                   alt={item.title}
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
+                    (e.currentTarget as HTMLImageElement).src = "/images/placeholder.svg";
                   }}
                 />
                 <span className="look-copy">

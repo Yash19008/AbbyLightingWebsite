@@ -1,13 +1,15 @@
+import { API_URL, API_BASE } from '@/lib/config';
+
 import type { ClientsResponse, ClientResponse } from '@/types/client';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 
 /**
  * Fetch all clients from Laravel API
  */
 export async function getClients(): Promise<ClientsResponse> {
   try {
-    const response = await fetch(`${API_URL}/api/clients`, {
+    const response = await fetch(`${API_URL}/clients`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +34,7 @@ export async function getClients(): Promise<ClientsResponse> {
  */
 export async function getClientById(id: number): Promise<ClientResponse> {
   try {
-    const response = await fetch(`${API_URL}/api/clients/${id}`, {
+    const response = await fetch(`${API_URL}/clients/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

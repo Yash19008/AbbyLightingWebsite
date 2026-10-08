@@ -246,23 +246,20 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
                         backgroundColor: "#eeeeee",
                       }}
                     >
-                      {product.image_url ? (
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            display: "block",
-                            transition: "transform 0.5s ease",
-                          }}
-                        />
-                      ) : (
-                        <div style={{ width: "100%", height: "100%", background: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <span style={{ color: "#999999", fontSize: isMobile ? "12px" : "14px" }}>No image</span>
-                        </div>
-                      )}
+                      <img
+                        src={product.image_url || "/images/placeholder.svg"}
+                        alt={product.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block",
+                          transition: "transform 0.5s ease",
+                        }}
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src = "/images/placeholder.svg";
+                        }}
+                      />
                     </div>
                     <h3
                       style={{

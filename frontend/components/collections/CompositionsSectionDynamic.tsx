@@ -122,14 +122,14 @@ export default function CompositionsSectionDynamic({ compositionsSection, collec
   const cardFlex = isMobile
     ? '0 0 calc(50% - 5px)'
     : isTablet
-    ? `0 0 calc((100% - 2 * ${GAP}px) / 2.45)`
-    : `0 0 calc((100% - 3 * ${GAP}px) / 3.5)`;
+      ? `0 0 calc((100% - 2 * ${GAP}px) / 2.45)`
+      : `0 0 calc((100% - 3 * ${GAP}px) / 3.5)`;
 
   const cardDim = isMobile
     ? 'calc(50% - 5px)'
     : isTablet
-    ? `calc((100% - 2 * ${GAP}px) / 2.45)`
-    : undefined;
+      ? `calc((100% - 2 * ${GAP}px) / 2.45)`
+      : undefined;
 
   return (
     <section className="s-section s-inspire">
@@ -307,44 +307,6 @@ export default function CompositionsSectionDynamic({ compositionsSection, collec
           </button>
         )}
       </div>
-
-      {/* Dots Indicator (Desktop only) */}
-      {!isMobile && showNav && totalDots > 1 && (
-        <div 
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: 6,
-            padding: '24px 0 0',
-          }}
-        >
-          {Array.from({ length: totalDots }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                const el = trackRef.current;
-                if (!el) return;
-                const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
-                const cardWidth = getCardWidth();
-                const itemWidth = cardWidth + GAP;
-                const targetScroll = i === totalDots - 1 ? maxScroll : Math.min(i * itemWidth, maxScroll);
-                el.scrollTo({ left: targetScroll, behavior: 'smooth' });
-              }}
-              aria-label={`Go to slide ${i + 1}`}
-              style={{
-                width: activeSlide === i ? 30 : 6,
-                height: 6,
-                borderRadius: 3,
-                backgroundColor: activeSlide === i ? '#f6c177' : '#ead8bd',
-                border: 'none',
-                padding: 0,
-                cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
-              }}
-            />
-          ))}
-        </div>
-      )}
 
       <LookModal
         isOpen={Boolean(activeLook)}

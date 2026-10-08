@@ -124,7 +124,7 @@ class SubTagAdminController extends Controller
         // Handle PDF upload
         if ($request->hasFile('product_catalog')) {
             $file = $request->file('product_catalog');
-            $fileName = $file->getClientOriginalName();
+            $fileName = str_replace(' ', '_', $file->getClientOriginalName());
             $file->move(public_path('storage/uploads/product_catalogs'), $fileName);
             $values['product_catalog'] = $fileName;
 
@@ -134,7 +134,7 @@ class SubTagAdminController extends Controller
         $file = $request->file;
 
         if ($file) {
-            $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
 
             $filePath = $file->storeAs('uploads/sub_tags', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -145,7 +145,7 @@ class SubTagAdminController extends Controller
         $file = $request->hover_file;
 
         if ($file) {
-            $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
 
             $filePath = $file->storeAs('uploads/sub_tags', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -155,7 +155,7 @@ class SubTagAdminController extends Controller
 
         $file = $request->banner;
         if ($file) {
-            $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
 
             $filePath = $file->storeAs('uploads/sub_tags', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -168,7 +168,7 @@ class SubTagAdminController extends Controller
         foreach ($bannerNoArr as $bannerNo) {
             $file = $request['banner_' . $bannerNo];
             if ($file) {
-                $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+                $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
 
                 $filePath = $file->storeAs('uploads/sub_tags', $fileNamePhoto, 'public');
                 // $fileModel->save();
@@ -295,7 +295,7 @@ class SubTagAdminController extends Controller
         // Handle Product Catalog PDF upload
         if ($request->hasFile('product_catalog')) {
             $file = $request->file('product_catalog');
-            $fileName = $file->getClientOriginalName();
+            $fileName = str_replace(' ', '_', $file->getClientOriginalName());
 
             $destinationPath = public_path('storage/uploads/product_catalogs');
 
@@ -333,7 +333,7 @@ class SubTagAdminController extends Controller
 
         $file = $request->file;
         if ($file) {
-            $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
 
             $filePath = $file->storeAs('uploads/sub_tags', $fileNamePhoto, 'public');
             $update_array['image'] = $fileNamePhoto;
@@ -341,7 +341,7 @@ class SubTagAdminController extends Controller
 
         $file = $request->hover_file;
         if ($file) {
-            $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
 
             $filePath = $file->storeAs('uploads/sub_tags', $fileNamePhoto, 'public');
             $update_array['hover_image'] = $fileNamePhoto;
@@ -349,7 +349,7 @@ class SubTagAdminController extends Controller
 
         $file = $request->banner;
         if ($file) {
-            $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
 
             $filePath = $file->storeAs('uploads/sub_tags', $fileNamePhoto, 'public');
             $update_array['banner_image'] = $fileNamePhoto;
@@ -365,7 +365,7 @@ class SubTagAdminController extends Controller
             }
 
             if ($file) {
-                $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+                $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
 
                 $filePath = $file->storeAs('uploads/sub_tags', $fileNamePhoto, 'public');
                 $update_array['banner_image_' . $bannerNo] = $fileNamePhoto;

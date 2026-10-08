@@ -1,4 +1,6 @@
 "use client";
+import { API_URL, blogImageUrl } from '@/lib/config';
+
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
@@ -44,7 +46,7 @@ export default function JournalSection() {
   const sortRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 
   // Close sort & filter dropdowns on outside click
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function JournalSection() {
   useEffect(() => {
     async function loadCategories() {
       try {
-        const catRes = await fetch(`${API_URL}/api/blog-categories?only_used=1`, { cache: 'no-store' });
+        const catRes = await fetch(`${API_URL}/blog-categories?only_used=1`, { cache: 'no-store' });
         if (catRes.ok) {
           const catJson = await catRes.json();
           if (catJson.success && Array.isArray(catJson.data)) {
@@ -102,7 +104,7 @@ export default function JournalSection() {
           params.set("category", activeCategory);
         }
 
-        const res = await fetch(`${API_URL}/api/blogs?${params.toString()}`, { cache: 'no-store' });
+        const res = await fetch(`${API_URL}/blogs?${params.toString()}`, { cache: 'no-store' });
         if (res.ok && isMounted) {
           const json = await res.json();
           if (json.success && Array.isArray(json.data)) {
@@ -119,9 +121,7 @@ export default function JournalSection() {
                 tag: b.category?.name || "Story",
                 title: b.title,
                 categorySlug: b.category?.slug || "general",
-                image: b.featured_image
-                  ? `${API_URL}/uploads/blogs/${b.featured_image}`
-                  : "/images/reference/project-atlas.png",
+                image: blogImageUrl(b.featured_image),
                 link: `/blogs/${b.slug}`,
                 order: b.sort_order ?? idx,
                 views: b.views_count ?? 0,
@@ -163,7 +163,7 @@ export default function JournalSection() {
         params.set("category", activeCategory);
       }
 
-      const res = await fetch(`${API_URL}/api/blogs?${params.toString()}`);
+      const res = await fetch(`${API_URL}/blogs?${params.toString()}`);
       if (res.ok) {
         const json = await res.json();
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
@@ -180,9 +180,7 @@ export default function JournalSection() {
               tag: b.category?.name || "Story",
               title: b.title,
               categorySlug: b.category?.slug || "general",
-              image: b.featured_image
-                ? `${API_URL}/uploads/blogs/${b.featured_image}`
-                : "/images/reference/project-atlas.png",
+              image: blogImageUrl(b.featured_image),
               link: `/blogs/${b.slug}`,
               order: b.sort_order ?? idx,
               views: b.views_count ?? 0,
@@ -388,7 +386,7 @@ export default function JournalSection() {
                   src={story.image}
                   alt={story.title}
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
+                    (e.currentTarget as HTMLImageElement).src = "/images/placeholder.svg";
                   }}
                 />
                 <div className="story-copy">

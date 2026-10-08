@@ -45,4 +45,12 @@ class Blog extends Model
     {
         return $this->belongsTo(BlogCategory::class, 'category_id');
     }
+
+    /**
+     * Scope a query to only include published blogs.
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('status', 'published');
+    }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import EnquireModal from "./EnquireModal";
+import SharedInquiryModal from "@/components/shared/SharedInquiryModal";
 import { DecProductDetail, DecVariant, DecSize } from "@/types/decorative";
 
 interface ProductInfoProps {
@@ -200,11 +200,13 @@ export default function ProductInfo({
         </span>
       </p>
 
-      <EnquireModal
+      <SharedInquiryModal
         isOpen={isEnquireOpen}
         onClose={() => setIsEnquireOpen(false)}
-        productName={product.name}
-        selectedVariant={`${displayColourLabel}${activeSize ? ` - ${activeSize.label}` : ''}`}
+        type="product"
+        title="Product Enquiry"
+        subtitle="Tell us about your project, and our team will get back to you shortly."
+        reference={`${product.name}${activeSize ? ` - ${activeSize.label}` : ''}${displayColourLabel ? ` - ${displayColourLabel}` : ''}`}
       />
     </div>
   );

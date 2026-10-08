@@ -33,7 +33,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     setActiveSizeIndex(index);
   }, []);
 
-  const activeVariant = product.variants[activeColourIndex] ?? product.variants[0];
+  const activeVariant = product.variants?.[activeColourIndex] ?? product.variants?.[0] ?? null;
   const activeSize = product.sizes?.[activeSizeIndex] ?? product.sizes?.[0];
 
   // Derive the main stage image based on fallback rules
@@ -41,7 +41,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     if (activeVariant?.lighton_image) return getImageUrl(activeVariant.lighton_image);
     
     // Fallback 1: First variant that has an image
-    const firstVariantWithImage = product.variants.find(v => v.lighton_image);
+    const firstVariantWithImage = product.variants?.find(v => v.lighton_image);
     if (firstVariantWithImage) return getImageUrl(firstVariantWithImage.lighton_image);
     
     // Fallback 2: Product featured image

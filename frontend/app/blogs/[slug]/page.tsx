@@ -1,3 +1,5 @@
+import { API_URL, blogImageUrl } from '@/lib/config';
+import type { Blog } from "@/types/blog";
 import type { Metadata } from "next";
 import BlogArticleHead from "@/components/blogs/BlogArticleHead";
 import BlogTableOfContents from "@/components/blogs/BlogTableOfContents";
@@ -15,8 +17,8 @@ interface PageProps {
 
 async function fetchBlog(slug: string) {
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    const res = await fetch(`${API_URL}/api/blogs/${slug}`, {
+    
+    const res = await fetch(`${API_URL}/blogs/${slug}`, {
       cache: 'no-store',
     });
     if (!res.ok) return { blog: null, latestBlogs: [] };
@@ -51,16 +53,11 @@ export default async function BlogDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const { blog, latestBlogs } = await fetchBlog(slug);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const featuredImg = blog?.featured_image ? blogImageUrl(blog.featured_image) : undefined;
+  const secondaryImg = blog?.secondary_image ? blogImageUrl(blog.secondary_image) : undefined;
 
-  // Detail Page image: uses secondary_image, falling back to featured_image
-  const detailImg = blog?.secondary_image
-    ? `${API_URL}/uploads/blogs/${blog.secondary_image}`
-    : (blog?.featured_image
-      ? `${API_URL}/uploads/blogs/${blog.featured_image}`
-      : undefined);
-
-  const detailImgCaption = blog?.secondary_image_caption || blog?.featured_image_caption || undefined;
+  const featuredImgCaption = blog?.featured_image_caption || undefined;
+  const secondaryImgCaption = blog?.secondary_image_caption || undefined;
 
   const publishDateStr = blog?.published_at
     ? new Date(blog.published_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })
@@ -70,12 +67,8 @@ export default async function BlogDetailPage({ params }: PageProps) {
   const { processedHtml, tocItems } = processArticleContent(blog?.content);
 
   // Format the latest blogs (excluding current open article) for the Keep Reading section
-  const relatedArticles = latestBlogs.map((b: { featured_image?: string, secondary_image?: string, featured_image_caption?: string, slug?: string, title?: string, category?: { name?: string }, published_at?: string }) => {
-    const imgUrl = b.featured_image
-      ? `${API_URL}/uploads/blogs/${b.featured_image}`
-      : (b.secondary_image
-        ? `${API_URL}/uploads/blogs/${b.secondary_image}`
-        : "/images/reference/project-atlas.png");
+  const relatedArticles = latestBlogs.map((b: Partial<Blog>) => {
+    const imgUrl = blogImageUrl(b.featured_image || b.secondary_image);
 
     return {
       title: b.title,
@@ -98,8 +91,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
         {tocItems.length > 0 && <BlogTableOfContents items={tocItems} />}
         <BlogArticleContent
           content={processedHtml || undefined}
-          featuredImage={detailImg}
-          featuredImageCaption={detailImgCaption}
+          featuredImage={featuredImg}
+          featuredImageCaption={featuredImgCaption}
+          secondaryImage={secondaryImg}
+          secondaryImageCaption={secondaryImgCaption}
           pullQuote={blog?.pull_quote || undefined}
           quoteAuthor={blog?.quote_author || undefined}
         />

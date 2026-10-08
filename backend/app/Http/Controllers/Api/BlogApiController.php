@@ -109,11 +109,17 @@ class BlogApiController extends Controller
                 'data' => $blog,
                 'latest_blogs' => $latestBlogs,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Blog article not found',
             ], 404);
+        } catch (\Exception $e) {
+            Log::error('BlogApiController::show — ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error',
+            ], 500);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\InquiryApiController;
 use App\Http\Controllers\Api\ClientApiController;
 use App\Http\Controllers\Api\HomeSliderApiController;
 use App\Http\Controllers\Api\ProjectApiController;
@@ -85,7 +86,6 @@ Route::controller(CollectionApiController::class)->group(function () {
 
 // Color Masters
 Route::controller(ColorMasterApiController::class)->group(function () {
-    Route::get('/color-masters', 'index');
     Route::get('/colors', 'index');
     Route::get('/colors/by-category', 'byCategory');
     Route::get('/colors/categories', 'categories');
@@ -118,5 +118,8 @@ Route::controller(CatalogueApiController::class)->group(function () {
     Route::get('/catalogues', 'index');
     Route::get('/catalogues/{slug}', 'show');
     Route::get('/catalogues/{id}/download-pdf', 'downloadPdf');
-    Route::post('/catalog-downloads', 'storeDownloadLead');
+    // Removed legacy /catalog-downloads
 });
+
+// Unified Inquiries
+Route::post('/inquiries', [InquiryApiController::class, 'store'])->middleware('throttle:60,1');

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminAuth\LoginAdminController;
 use App\Http\Controllers\Admin\AdminAuth\ForgotPasswordAdminController;
 use App\Http\Controllers\Admin\AdminAuth\ResetPasswordAdminController;
 use App\Http\Controllers\Admin\ContactFormAdminController;
+use App\Http\Controllers\Admin\InquiryAdminController;
 use App\Http\Controllers\Admin\CategoryAdminController;
 use App\Http\Controllers\Admin\FamilyAdminController;
 use App\Http\Controllers\Admin\TagAdminController;
@@ -26,7 +27,7 @@ use App\Http\Controllers\Admin\AttributeAdminController;
 use App\Http\Controllers\Admin\GroupAdminController;
 use App\Http\Controllers\Admin\VariantAdminController;
 use App\Http\Controllers\Admin\ProfileAdminController;
-use App\Http\Controllers\Admin\SubscriptionController;
+
 use App\Http\Controllers\Admin\EventAdminController;
 use App\Http\Controllers\Admin\IconAdminController;
 use App\Http\Controllers\Admin\DecorativeProductController;
@@ -37,6 +38,10 @@ use App\Http\Controllers\Admin\JobAdminController;
 use App\Http\Controllers\Admin\ClientAdminController;
 use App\Http\Controllers\Admin\HomeSliderController as AdminHomeSliderController;
 use App\Http\Controllers\Admin\CollectionController;
+use App\Http\Controllers\Admin\CollectionParameterController;
+use App\Http\Controllers\Admin\CollectionCompositionController;
+use App\Http\Controllers\Admin\CollectionToneController;
+use App\Http\Controllers\Admin\CollectionPlaceController;
 use App\Http\Controllers\Admin\MenuItemAdminController;
 use App\Http\Controllers\HomeController as WebsiteHomeController;
 use App\Http\Controllers\EventController;
@@ -67,10 +72,6 @@ Route::controller(WebsiteHomeController::class)->group(function () {
     Route::post('/catalog-download-user-form', 'catalogDownloadUserForm')->name('catalog-download-user-form');
 });
 
-// DEBUG: Test CSS URL generation
-Route::get('/test-css-urls', function() {
-    return view('test-css');
-});
 
 Route::controller(EventController::class)->group(function () {
     Route::get('fair-events', 'index')->name('page.fair-events');
@@ -244,6 +245,13 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('/contact-forms/list', 'list')->name('contact_form_admin.list');
             Route::get('/subscriptions', 'subscriptions')->name('subscriptions_admin');
             Route::get('/subscriptions/list', 'subscriptions_list')->name('subscriptions_admin.list');
+        });
+
+                /********************INQUIRIES********************/
+        Route::controller(InquiryAdminController::class)->group(function () {
+            Route::get('/inquiries', 'index')->name('inquiries_admin');
+            Route::get('/inquiries/list', 'list')->name('inquiries_admin.list');
+            Route::delete('/inquiries/delete/{id}', 'destroy')->name('inquiries_admin.delete');
         });
 
         /********************CATEGORIES********************/
@@ -564,58 +572,54 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('/{collection}/duplicate', 'duplicate')->name('admin.collections.duplicate');
             Route::patch('/{collection}/toggle-active', 'toggleActive')->name('admin.collections.toggle-active');
             Route::post('/{collection}/hero-section', 'storeHeroSection')->name('admin.collections.store-hero');
+            Route::post('/{collection}/catalogue-section', 'storeCatalogueSection')->name('admin.collections.store-catalogue');
+            Route::post('/{collection}/spread-drop-section', 'storeSpreadDropSection')->name('admin.collections.store-spread-drop');
+        });
+
+        // Parameters Section
+        Route::controller(CollectionParameterController::class)->prefix('collections')->group(function () {
             Route::post('/{collection}/parameters-section', 'storeParametersSection')->name('admin.collections.store-parameters');
-            
-            // Parameter Items CRUD
             Route::get('/{collection}/parameter-items/add', 'addParameterItem')->name('admin.collections.parameter-items.add');
             Route::post('/{collection}/parameter-items', 'storeParameterItem')->name('admin.collections.parameter-items.store');
             Route::get('/{collection}/parameter-items/{item}/edit', 'editParameterItem')->name('admin.collections.parameter-items.edit');
             Route::put('/{collection}/parameter-items/{item}', 'updateParameterItem')->name('admin.collections.parameter-items.update');
             Route::delete('/{collection}/parameter-items/{item}', 'deleteParameterItem')->name('admin.collections.parameter-items.delete');
+        });
 
-            // Compositions Section
+        // Compositions Section
+        Route::controller(CollectionCompositionController::class)->prefix('collections')->group(function () {
             Route::post('/{collection}/compositions-section', 'storeCompositionsSection')->name('admin.collections.store-compositions');
-
-            // Products Section
-            Route::post('/{collection}/products-section', 'storeProductsSection')->name('admin.collections.store-products');
-            
-            // Composition Items CRUD
             Route::get('/{collection}/composition-items/add', 'addCompositionItem')->name('admin.collections.composition-items.add');
             Route::post('/{collection}/composition-items', 'storeCompositionItem')->name('admin.collections.composition-items.store');
             Route::get('/{collection}/composition-items/{item}/edit', 'editCompositionItem')->name('admin.collections.composition-items.edit');
             Route::put('/{collection}/composition-items/{item}', 'updateCompositionItem')->name('admin.collections.composition-items.update');
             Route::delete('/{collection}/composition-items/{item}', 'deleteCompositionItem')->name('admin.collections.composition-items.delete');
+        });
 
-            // Tones Section
+        // Products Section
+        Route::post('collections/{collection}/products-section', [CollectionController::class, 'storeProductsSection'])->name('admin.collections.store-products');
+
+        // Tones Section
+        Route::controller(CollectionToneController::class)->prefix('collections')->group(function () {
             Route::post('/{collection}/tones-section', 'storeTonesSection')->name('admin.collections.store-tones');
-            
-            // Tone Families CRUD
             Route::get('/{collection}/tone-families/add', 'addToneFamily')->name('admin.collections.tone-families.add');
             Route::post('/{collection}/tone-families', 'storeToneFamily')->name('admin.collections.tone-families.store');
             Route::get('/{collection}/tone-families/{family}/edit', 'editToneFamily')->name('admin.collections.tone-families.edit');
             Route::put('/{collection}/tone-families/{family}', 'updateToneFamily')->name('admin.collections.tone-families.update');
             Route::delete('/{collection}/tone-families/{family}', 'deleteToneFamily')->name('admin.collections.tone-families.delete');
+        });
 
-            // Places Section
+        // Places Section
+        Route::controller(CollectionPlaceController::class)->prefix('collections')->group(function () {
             Route::post('/{collection}/places-section', 'storePlacesSection')->name('admin.collections.store-places');
-            Route::post('/{collection}/catalogue-section', 'storeCatalogueSection')->name('admin.collections.store-catalogue');
-            
-            // Place Items CRUD
             Route::get('/{collection}/place-items/add', 'addPlaceItem')->name('admin.collections.place-items.add');
             Route::post('/{collection}/place-items', 'storePlaceItem')->name('admin.collections.place-items.store');
             Route::get('/{collection}/place-items/{item}/edit', 'editPlaceItem')->name('admin.collections.place-items.edit');
             Route::put('/{collection}/place-items/{item}', 'updatePlaceItem')->name('admin.collections.place-items.update');
             Route::delete('/{collection}/place-items/{item}', 'deletePlaceItem')->name('admin.collections.place-items.delete');
-            // Spread & Drop Section
-            Route::post('/{collection}/spread-drop-section', 'storeSpreadDropSection')->name('admin.collections.store-spread-drop');
         });
 
-        // DEBUG ROUTES - REMOVE IN PRODUCTION
-        Route::controller(CollectionController::class)->prefix('debug')->group(function () {
-            Route::get('/tone-families', 'debugToneFamilies')->name('admin.debug.tone-families');
-            Route::get('/tone-families/{family}/test-edit', 'debugEditToneFamily')->name('admin.debug.tone-families.edit');
-            Route::post('/tone-families/{family}/test-update', 'debugUpdateToneFamily')->name('admin.debug.tone-families.update');
-        });
+
 
         /********************MENU ITEMS********************/
         Route::post('menu-items/reorder', [MenuItemAdminController::class, 'reorder'])->name('admin.menu-items.reorder');

@@ -1,9 +1,11 @@
 "use client";
+import { API_URL, API_BASE } from '@/lib/config';
+
 
 import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-
+import SharedInquiryModal from "@/components/shared/SharedInquiryModal";
 type TabId = "home" | "products" | "work" | "inspiration" | "more";
 
 interface TabItem {
@@ -105,6 +107,7 @@ export default function HeaderClient() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = React.useState(false);
   const searchRef = React.useRef<HTMLDivElement>(null);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
   const [architecturalCategories, setArchitecturalCategories] = React.useState<Array<{ id: number; title?: string; name?: string; slug?: string; uri?: string }>>([]);
@@ -116,12 +119,12 @@ export default function HeaderClient() {
   React.useEffect(() => {
     async function fetchMenuData() {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        
         const [archRes, decRes, colRes, menuRes] = await Promise.all([
-          fetch(`${API_URL}/api/categories`, { cache: 'no-store' }),
-          fetch(`${API_URL}/api/dec-categories`, { cache: 'no-store' }),
-          fetch(`${API_URL}/api/collections?menu_only=1`, { cache: 'no-store' }),
-          fetch(`${API_URL}/api/menu-items?location=header_mega`, { cache: 'no-store' })
+          fetch(`${API_URL}/categories`, { cache: 'no-store' }),
+          fetch(`${API_URL}/dec-categories`, { cache: 'no-store' }),
+          fetch(`${API_URL}/collections?menu_only=1`, { cache: 'no-store' }),
+          fetch(`${API_URL}/menu-items?location=header_mega`, { cache: 'no-store' })
         ]);
 
         if (archRes.ok) {
@@ -770,15 +773,7 @@ export default function HeaderClient() {
                                 </a>
                               </li>
                             ))
-                          ) : (
-                            <>
-                              <li><a href="/products">Spots &amp; Accents</a></li>
-                              <li><a href="/products">Downlights</a></li>
-                              <li><a href="/products">Profiles</a></li>
-                              <li><a href="/products">Track Lights</a></li>
-                              <li><a href="/products">Washers &amp; Grazers</a></li>
-                            </>
-                          )}
+                          ) : null}
                         </ul>
                       </div>
 
@@ -807,15 +802,7 @@ export default function HeaderClient() {
                                     </Link>
                                   </li>
                                 ))
-                              ) : (
-                                <>
-                                  <li><Link href="/decorative-products?category=chandelier">Chandelier</Link></li>
-                                  <li><Link href="/decorative-products?category=pendant-lights">Pendant Lights</Link></li>
-                                  <li><Link href="/decorative-products?category=wall-lights">Wall Lights</Link></li>
-                                  <li><Link href="/decorative-products?category=floor-lamps">Floor Lamps</Link></li>
-                                  <li><Link href="/decorative-products?category=table-lamps">Table Lamps</Link></li>
-                                </>
-                              )}
+                              ) : null}
                             </ul>
                           </div>
                           <div className="msep sm"></div>
@@ -836,13 +823,7 @@ export default function HeaderClient() {
                                     </Link>
                                   </li>
                                 ))
-                              ) : (
-                                <>
-                                  <li><Link href="/collections/symphony">Symphony</Link></li>
-                                  <li><Link href="/collections/quarry">Quarry</Link></li>
-                                  <li><Link href="/collections/neoma">Neoma</Link></li>
-                                </>
-                              )}
+                              ) : null}
                             </ul>
                           </div>
                         </div>
@@ -876,17 +857,7 @@ export default function HeaderClient() {
                               <span className="mhead">{item.title}</span>
                             </Link>
                           ))
-                        ) : (
-                          <>
-                            <Link className="mgroup m-out" href="/#worlds">
-                              <span className="mhead">Outdoor</span>
-                            </Link>
-                            <div className="msep hz"></div>
-                            <Link className="mgroup m-smart" href="/#worlds">
-                              <span className="mhead">Smart Lighting</span>
-                            </Link>
-                          </>
-                        )}
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -957,10 +928,10 @@ export default function HeaderClient() {
                 )}
               </button>
             </div>
-            <a href="/contact" className="nav-cta">
+            <button onClick={() => setIsContactModalOpen(true)} className="nav-cta">
               <span className="lbl-d">Get in Touch</span>
               <span className="lbl-m">Contact Us</span>
-            </a>
+            </button>
           </div>
         </div>
       </header>
@@ -1306,6 +1277,13 @@ export default function HeaderClient() {
           )}
         </div>
       </div>
+      <SharedInquiryModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+        type="general"
+        title="Get in Touch"
+        subtitle="We'd love to hear from you."
+      />
     </>
   );
 }

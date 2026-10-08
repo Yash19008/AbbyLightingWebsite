@@ -1,13 +1,15 @@
+import { API_URL, API_BASE } from '@/lib/config';
+
 import { CollectionsApiResponse, CollectionDetailApiResponse } from '@/types/collection';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 
 /**
  * Fetch all collections
  */
 export async function getCollections(): Promise<CollectionsApiResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/collections`, {
+    const response = await fetch(`${API_URL}/collections`, {
       cache: 'no-store'
     });
 
@@ -27,7 +29,7 @@ export async function getCollections(): Promise<CollectionsApiResponse> {
  */
 export async function getCollection(slug: string): Promise<CollectionDetailApiResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/collections/${slug}`, {
+    const response = await fetch(`${API_URL}/collections/${slug}`, {
       cache: 'no-store'
     });
 
@@ -47,7 +49,7 @@ export async function getCollection(slug: string): Promise<CollectionDetailApiRe
  */
 export async function getCollectionParameters(slug: string, page: number = 1, limit: number = 8) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/collections/${slug}/parameters?page=${page}&limit=${limit}`, {
+    const response = await fetch(`${API_URL}/collections/${slug}/parameters?page=${page}&limit=${limit}`, {
       cache: 'no-store'
     });
     if (!response.ok) {

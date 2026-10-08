@@ -87,7 +87,7 @@ class IconAdminController extends Controller
         $file = $request->file;     
        
         if($file) {
-            $fileNamePhoto =time().'_'.trim($file->getClientOriginalName());
+            $fileNamePhoto =time().'_'.str_replace(' ', '_', trim($file->getClientOriginalName()));
             
             $filePath = $file->storeAs('uploads/icons', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -151,7 +151,7 @@ class IconAdminController extends Controller
             if(File::exists($image_path)) {
                 File::delete($image_path);
             }
-            $fileNamePhoto =time().'_'.trim($file->getClientOriginalName());
+            $fileNamePhoto =time().'_'.str_replace(' ', '_', trim($file->getClientOriginalName()));
             
             $filePath = $file->storeAs('uploads/icons', $fileNamePhoto, 'public');
             // $fileModel->save();

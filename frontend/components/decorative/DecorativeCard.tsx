@@ -40,7 +40,7 @@ interface DecorativeCardProps {
 export default function DecorativeCard({ product, order, filterDelay, isGlobalLightOn, hideNewBadge }: DecorativeCardProps) {
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [maxSwatches] = useState(4);
+  const maxSwatches = 4;
 
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);

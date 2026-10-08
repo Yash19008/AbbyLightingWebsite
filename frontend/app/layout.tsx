@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { fetchMenuItems } from '@/lib/api/menu';
 import HeaderClient from "../components/HeaderClient";
 import Footer from "../components/Footer";
 import SpotlightEffect from "../components/home/SpotlightEffect";
@@ -28,7 +29,7 @@ export default async function RootLayout({
           <SpotlightEffect />
           <HeaderClient />
           {children}
-          <Footer />
+          <Footer initialMenuItems={await fetchMenuItems()} />
         </main>
       </body>
     </html>

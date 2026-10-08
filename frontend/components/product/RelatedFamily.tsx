@@ -1,4 +1,6 @@
 "use client";
+import { API_URL, API_BASE } from '@/lib/config';
+
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { DecRelatedProduct } from "@/types/decorative";
@@ -69,13 +71,15 @@ export default function RelatedFamily({
     setIsLoading(true);
     try {
       const nextPage = page + 1;
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const cleanApiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl.replace(/\/$/, '')}/api`;
+      
+      const cleanApiUrl = API_BASE.endsWith('/api') ? API_BASE : `${API_BASE.replace(/\/$/, '')}/api`;
       const res = await fetch(`${cleanApiUrl}/dec-products/${productSlug}/related?page=${nextPage}`);
       if (!res.ok) throw new Error("Failed to fetch related products");
-      const data = await res.json();
-
-      const newProducts = data.data || [];
+      const json = await res.json();
+      
+      const paginator = json.success ? json.data : json;
+      const newProducts = paginator.data || [];
+      
       if (newProducts.length > 0) {
         setProducts(prev => {
           const existingIds = new Set(prev.map(p => p.id));
@@ -85,7 +89,7 @@ export default function RelatedFamily({
         setPage(nextPage);
       }
 
-      if (!data.next_page_url) {
+      if (!paginator.next_page_url) {
         setHasMore(false);
       }
     } catch (error) {

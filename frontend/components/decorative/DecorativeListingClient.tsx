@@ -1,4 +1,6 @@
 'use client';
+import { API_URL, API_BASE } from '@/lib/config';
+
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
@@ -107,12 +109,12 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
   useEffect(() => {
     const fetchFilters = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        
 
         const [categoriesRes, collectionsRes, finishesRes] = await Promise.all([
-          fetch(`${API_URL}/api/dec-categories`, { cache: 'no-store' }),
-          fetch(`${API_URL}/api/dec-collections`, { cache: 'no-store' }),
-          fetch(`${API_URL}/api/dec-finishes`, { cache: 'no-store' })
+          fetch(`${API_URL}/dec-categories`, { cache: 'no-store' }),
+          fetch(`${API_URL}/dec-collections`, { cache: 'no-store' }),
+          fetch(`${API_URL}/dec-finishes`, { cache: 'no-store' })
         ]);
 
         const categoriesData = await categoriesRes.json();
@@ -146,7 +148,7 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
         if (page === 1) setIsLoading(true);
         else setIsPaginating(true);
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        
         const params = new URLSearchParams({
           page: page.toString(),
           per_page: '8',
@@ -163,8 +165,13 @@ export default function DecorativeListingClient({ initialCategory }: DecorativeL
           params.append('finish', activeFilters.finish.join(','));
         }
 
-        const response = await fetch(`${API_URL}/api/dec-products?${params.toString()}`, { cache: 'no-store' });
-        const data = await response.json();
+        const response = await fetch(`${API_URL}/dec-products?${params.toString()}`, { cache: 'no-store' });
+        let data = await response.json();
+        
+        // Handle API success envelope if present
+        if (data.success && data.data && data.data.data) {
+            data = data.data;
+        }
 
         if (data.data) {
           if (page === 1) {

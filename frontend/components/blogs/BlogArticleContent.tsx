@@ -1,4 +1,6 @@
 "use client";
+import { API_URL, API_BASE } from '@/lib/config';
+
 
 import React, { useState } from "react";
 
@@ -87,12 +89,12 @@ export default function BlogArticleContent({
       {content && (() => {
         // Rewrite any /uploads/... relative paths AND any old absolute backend URLs
         // stored in the content HTML so they always resolve correctly.
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+        
 
         const rewriteContentUrls = (html: string): string => {
           return html.replace(
             /(src|href)=['"]([^'"]*?\/)?uploads\//gi,
-            `$1="${API_URL}/uploads/`
+            `$1="${API_BASE}/uploads/`
           );
         };
 

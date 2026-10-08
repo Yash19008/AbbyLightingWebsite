@@ -1,38 +1,15 @@
 "use client";
+import { API_URL, API_BASE } from '@/lib/config';
 
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import Link from "next/link";
+import type { MenuItem } from "@/lib/api/menu";
 
-interface MenuItem {
-  id: number;
-  title: string;
-  url: string;
-  location: string;
-  type: string;
-  children?: MenuItem[];
-}
 
-export default function Footer() {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
+export default function Footer({ initialMenuItems = [] }: { initialMenuItems?: MenuItem[] }) {
   const [openAccordions, setOpenAccordions] = useState<Record<number, boolean>>({});
-
-  useEffect(() => {
-    async function fetchMenuItems() {
-      try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const res = await fetch(`${API_URL}/api/menu-items`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success && Array.isArray(data.data)) {
-            setMenuItems(data.data);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching footer menu items:', error);
-      }
-    }
-    fetchMenuItems();
-  }, []);
 
   const toggleAccordion = (id: number) => {
     setOpenAccordions(prev => ({
@@ -41,8 +18,8 @@ export default function Footer() {
     }));
   };
 
-  const renderColumnItems = (items: MenuItem[], fallbackContent: React.ReactNode, colClass: string = '') => {
-    if (items.length === 0) return fallbackContent;
+  const renderColumnItems = (items: MenuItem[], colClass: string = '') => {
+    if (items.length === 0) return null;
 
     return items.map(item => {
       if (item.type === 'group') {
@@ -89,55 +66,15 @@ export default function Footer() {
           </div>
           
           <nav className="footer-links footer-products" aria-label="Product links">
-            {renderColumnItems(menuItems.filter(item => item.location === 'footer_col_1'), (
-              <>
-                <div className="footer-accordion">
-                  <button className="footer-accordion-toggle" type="button">
-                    <span>Products</span>
-                    <span className="footer-accordion-icon" aria-hidden="true"></span>
-                  </button>
-                  <div className="footer-accordion-panel">
-                    <a href="/products">Architectural</a>
-                    <a href="/products">Outdoor</a>
-                    <a href="/abby-smart">Smart Lighting</a>
-                  </div>
-                </div>
-                <div className="footer-accordion">
-                  <button className="footer-accordion-toggle" type="button">
-                    <span>Our Work</span>
-                    <span className="footer-accordion-icon" aria-hidden="true"></span>
-                  </button>
-                  <div className="footer-accordion-panel">
-                    <a href="/clients">Clients</a>
-                    <a href="/projects">Projects</a>
-                  </div>
-                </div>
-                <a className="footer-inspiration" href="/inspiration">Inspiration</a>
-              </>
-            ), "footer-inspiration")}
+            {renderColumnItems(initialMenuItems.filter(item => item.location === 'footer_col_1'), "footer-inspiration")}
           </nav>
 
           <nav className="footer-links footer-company" aria-label="Company links">
-            {renderColumnItems(menuItems.filter(item => item.location === 'footer_col_2'), (
-              <>
-                <a href="/company">About Us</a>
-                <a href="/contact">Contact Us</a>
-                <a href="/career">Careers</a>
-                <Link href="/catalogues">Catalogues</Link>
-                <a className="footer-mobile-legal" href="/privacy-policy">Privacy Policy</a>
-                <a className="footer-mobile-legal" href="/terms-and-conditions">Terms of Use</a>
-                <a href="/fair-events">Fairs &amp; Events</a>
-              </>
-            ))}
+            {renderColumnItems(initialMenuItems.filter(item => item.location === 'footer_col_2'))}
           </nav>
 
           <nav className="footer-links footer-legal" aria-label="Legal links">
-            {renderColumnItems(menuItems.filter(item => item.location === 'footer_col_3'), (
-              <>
-                <a href="/privacy-policy">Privacy Policy</a>
-                <a href="/terms-and-conditions">Terms of Use</a>
-              </>
-            ))}
+            {renderColumnItems(initialMenuItems.filter(item => item.location === 'footer_col_3'))}
           </nav>
         </div>
         <div className="footer-rule"></div>

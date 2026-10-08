@@ -1,3 +1,5 @@
+import { API_URL, API_BASE } from '@/lib/config';
+
 // Server-side data fetching functions with Next.js caching
 // These functions are designed to run ONLY on the server
 
@@ -11,7 +13,7 @@ import type { HomeCatalogueSection } from "@/types/home-catalogue-section";
 import type { NewArrivalCategory } from "@/types/new-arrival";
 import type { LightWorld } from "@/types/light-world";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 
 
 /**
@@ -20,8 +22,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
  */
 export async function fetchClients(): Promise<Client[]> {
   try {
-    const response = await fetch(`${API_URL}/api/clients`, {
-      cache: 'no-store'
+    const response = await fetch(`${API_URL}/clients`, {
+      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
@@ -42,8 +44,8 @@ export async function fetchClients(): Promise<Client[]> {
  */
 export async function fetchSliders(): Promise<{ web: Slider[]; mobile: Slider[] }> {
   try {
-    const response = await fetch(`${API_URL}/api/sliders`, {
-      cache: 'no-store'
+    const response = await fetch(`${API_URL}/sliders`, {
+      next: { revalidate: 600 }
     });
 
     if (!response.ok) {
@@ -64,9 +66,9 @@ export async function fetchSliders(): Promise<{ web: Slider[]; mobile: Slider[] 
  */
 export async function fetchProjects(limit: number = 6, featured: boolean = true): Promise<Project[]> {
   try {
-    const url = `${API_URL}/api/projects?limit=${limit}${featured ? '&featured=1' : ''}`;
+    const url = `${API_URL}/projects?limit=${limit}${featured ? '&featured=1' : ''}`;
     const response = await fetch(url, {
-      cache: 'no-store'
+      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
@@ -87,8 +89,8 @@ export async function fetchProjects(limit: number = 6, featured: boolean = true)
  */
 export async function fetchNewsItems(): Promise<NewsItem[]> {
   try {
-    const response = await fetch(`${API_URL}/api/news-items`, {
-      cache: 'no-store'
+    const response = await fetch(`${API_URL}/news-items`, {
+      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
@@ -109,8 +111,8 @@ export async function fetchNewsItems(): Promise<NewsItem[]> {
  */
 export async function fetchManufacturingSection(): Promise<ManufacturingSection | null> {
   try {
-    const response = await fetch(`${API_URL}/api/manufacturing-section`, {
-      cache: 'no-store'
+    const response = await fetch(`${API_URL}/manufacturing-section`, {
+      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
@@ -131,8 +133,8 @@ export async function fetchManufacturingSection(): Promise<ManufacturingSection 
  */
 export async function fetchNewArrivals(): Promise<NewArrivalCategory[]> {
   try {
-    const response = await fetch(`${API_URL}/api/products/new-arrivals`, {
-      cache: 'no-store'
+    const response = await fetch(`${API_URL}/products/new-arrivals`, {
+      next: { revalidate: 300 }
     });
 
     if (!response.ok) {
@@ -153,8 +155,8 @@ export async function fetchNewArrivals(): Promise<NewArrivalCategory[]> {
  */
 export async function fetchLightWorlds(): Promise<LightWorld[]> {
   try {
-    const response = await fetch(`${API_URL}/api/light-worlds`, {
-      cache: 'no-store'
+    const response = await fetch(`${API_URL}/light-worlds`, {
+      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
@@ -175,8 +177,8 @@ export async function fetchLightWorlds(): Promise<LightWorld[]> {
  */
 export async function fetchHomeCatalogueSection(): Promise<HomeCatalogueSection | null> {
   try {
-    const response = await fetch(`${API_URL}/api/home-catalogue-section`, {
-      cache: 'no-store'
+    const response = await fetch(`${API_URL}/home-catalogue-section`, {
+      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {

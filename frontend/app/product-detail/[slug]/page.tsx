@@ -7,9 +7,7 @@ import { notFound } from "next/navigation";
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// Base URL for the API
-const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api").replace(/\/$/, "");
-const API_URL = baseUrl.endsWith("/api") ? baseUrl : `${baseUrl}/api`;
+import { API_URL } from "@/lib/config";
 
 async function fetchProductBySlug(slug: string): Promise<DecProductDetail | null> {
   try {
@@ -22,7 +20,8 @@ async function fetchProductBySlug(slug: string): Promise<DecProductDetail | null
       throw new Error(`Failed to fetch product: ${res.statusText}`);
     }
     
-    return await res.json();
+    const json = await res.json();
+    return json.success ? json.data : json;
   } catch (error) {
     console.error("Error fetching product:", error);
     return null;

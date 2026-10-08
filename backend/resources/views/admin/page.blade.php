@@ -239,7 +239,7 @@
                         <a href="#"><i class="ft-mail"></i><span class="menu-title">Inquiries</span></a>
                         <ul class="menu-content">
                             <li class="{{ (@$main_module == 'Contact Form') ? 'active' : '' }}">
-                                <a class="menu-item" href="{{ route('contact_form_admin') }}"><i class="ft-message-circle" style="font-size:11px;margin-right:4px;"></i> Contact Forms</a>
+                                <a class="menu-item" href="{{ route('inquiries_admin') }}"><i class="ft-message-circle" style="font-size:11px;margin-right:4px;"></i> Inquiries</a>
                             </li>
                             <li class="{{ (@$main_module == 'Catalog') ? 'active' : '' }}">
                                 <a class="menu-item" href="{{ route('catalog_admin') }}"><i class="ft-download" style="font-size:11px;margin-right:4px;"></i> Catalog Downloads</a>
@@ -526,4 +526,4 @@
         </div>
     </div>
 </div>
-@stop
+@stop

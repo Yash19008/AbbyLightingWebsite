@@ -173,7 +173,7 @@ class ProductAdminController extends Controller
         $featured_image = $request->featured_image;
 
         if ($featured_image) {
-            $fileNamePhoto = time() . '_' . trim($featured_image->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($featured_image->getClientOriginalName()));
 
             $filePath = $featured_image->storeAs('uploads/products', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -186,7 +186,7 @@ class ProductAdminController extends Controller
         if ($request->has('productImages') && $request->productImages !== null && $request->productImages !== 'null') {
             $productImages = $request->productImages;
             foreach ($productImages as $productImage) {
-                $fileNamePhoto = time() . '_' . trim($productImage['item']->getClientOriginalName());
+                $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($productImage['item']->getClientOriginalName()));
                 $productImage['item']->storeAs('uploads/products', $fileNamePhoto, 'public');
                 $insertImage = [
                     'product_id' => $product->id,
@@ -336,7 +336,7 @@ class ProductAdminController extends Controller
         $featured_image = $request->featured_image;
 
         if ($featured_image) {
-            $fileNamePhoto = time() . '_' . trim($featured_image->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($featured_image->getClientOriginalName()));
 
             $filePath = $featured_image->storeAs('uploads/products', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -371,7 +371,7 @@ class ProductAdminController extends Controller
             $productImages = $request->productImages;
             if (count($productImages) > 0) {
                 foreach ($productImages as $productImage) {
-                    $fileNamePhoto = time() . '_' . trim($productImage['item']->getClientOriginalName());
+                    $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($productImage['item']->getClientOriginalName()));
                     $productImage['item']->storeAs('uploads/products', $fileNamePhoto, 'public');
                     $insertImage = [
                         'product_id' => $id,
@@ -487,7 +487,7 @@ class ProductAdminController extends Controller
         $line_diagram = $request->line_diagram;
 
         if ($line_diagram) {
-            $fileNamePhoto = time() . '_' . trim($line_diagram->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($line_diagram->getClientOriginalName()));
 
             $filePath = $line_diagram->storeAs('uploads/products', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -497,7 +497,7 @@ class ProductAdminController extends Controller
         $photometry_file = $request->photometry_file;
 
         if ($photometry_file) {
-            $fileNamePhotometry = time() . '_' . trim($photometry_file->getClientOriginalName());
+            $fileNamePhotometry = time() . '_' . str_replace(' ', '_', trim($photometry_file->getClientOriginalName()));
 
             $filePath = $photometry_file->storeAs('uploads/products', $fileNamePhotometry, 'public');
             // $fileModel->save();
@@ -507,7 +507,7 @@ class ProductAdminController extends Controller
         $custom_specsheet = $request->custom_specsheet;
 
         if ($custom_specsheet) {
-            $fileNameSpecSheet = time() . '_' . trim($custom_specsheet->getClientOriginalName());
+            $fileNameSpecSheet = time() . '_' . str_replace(' ', '_', trim($custom_specsheet->getClientOriginalName()));
 
             $filePath = $custom_specsheet->storeAs('uploads/products', $fileNameSpecSheet, 'public');
             // $fileModel->save();
@@ -520,7 +520,7 @@ class ProductAdminController extends Controller
         if ($request->has('varientImages') && $request->varientImages !== null && $request->varientImages !== 'null') {
             $varientImages = $request->varientImages;
             foreach ($varientImages as $varientImage) {
-                $fileNamePhoto = time() . '_' . trim($varientImage['item']->getClientOriginalName());
+                $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($varientImage['item']->getClientOriginalName()));
                 $varientImage['item']->storeAs('uploads/product_variant_images', $fileNamePhoto, 'public');
                 $insertImage = [
                     'product_variant_id' => $product->id,
@@ -536,7 +536,7 @@ class ProductAdminController extends Controller
         if ($request->has('iesFiles') && $request->iesFiles !== null && $request->iesFiles !== 'null') {
             $iesFiles = $request->iesFiles;
             foreach ($iesFiles as $iesFile) {
-                $fileNamePhoto = time() . '_' . trim($iesFile['item']->getClientOriginalName());
+                $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($iesFile['item']->getClientOriginalName()));
                 $iesFile['item']->storeAs('uploads/product_variant_ies_files', $fileNamePhoto, 'public');
                 $insertImage = [
                     'product_variant_id' => $product->id,
@@ -668,7 +668,7 @@ class ProductAdminController extends Controller
         $line_diagram = $request->line_diagram;
 
         if ($line_diagram) {
-            $fileNamePhoto = time() . '_' . trim($line_diagram->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($line_diagram->getClientOriginalName()));
 
             $filePath = $line_diagram->storeAs('uploads/products', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -678,7 +678,7 @@ class ProductAdminController extends Controller
         $photometry_file = $request->photometry_file;
 
         if ($photometry_file) {
-            $fileNamePhotoFile = time() . '_' . trim($photometry_file->getClientOriginalName());
+            $fileNamePhotoFile = time() . '_' . str_replace(' ', '_', trim($photometry_file->getClientOriginalName()));
 
             $filePath = $photometry_file->storeAs('uploads/products', $fileNamePhotoFile, 'public');
             // $fileModel->save();
@@ -688,7 +688,7 @@ class ProductAdminController extends Controller
         $custom_specsheet = $request->custom_specsheet;
 
         if ($custom_specsheet) {
-            $fileNameSpecSheet = time() . '_' . trim($custom_specsheet->getClientOriginalName());
+            $fileNameSpecSheet = time() . '_' . str_replace(' ', '_', trim($custom_specsheet->getClientOriginalName()));
 
             $filePath = $custom_specsheet->storeAs('uploads/products', $fileNameSpecSheet, 'public');
             // $fileModel->save();
@@ -707,7 +707,7 @@ class ProductAdminController extends Controller
         if ($request->has('varientImages') && $request->varientImages !== null && $request->varientImages !== 'null') {
             $varientImages = $request->varientImages;
             foreach ($varientImages as $varientImage) {
-                $fileNamePhoto = time() . '_' . trim($varientImage['item']->getClientOriginalName());
+                $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($varientImage['item']->getClientOriginalName()));
                 $varientImage['item']->storeAs('uploads/product_variant_images', $fileNamePhoto, 'public');
                 $insertImage = [
                     'product_variant_id' => $id,
@@ -727,7 +727,7 @@ class ProductAdminController extends Controller
         if ($request->has('iesFiles') && $request->iesFiles !== null && $request->iesFiles !== 'null') {
             $iesFiles = $request->iesFiles;
             foreach ($iesFiles as $iesFile) {
-                $fileNamePhoto = time() . '_' . trim($iesFile['item']->getClientOriginalName());
+                $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($iesFile['item']->getClientOriginalName()));
                 $iesFile['item']->storeAs('uploads/product_variant_ies_files', $fileNamePhoto, 'public');
                 $insertImage = [
                     'product_variant_id' => $id,

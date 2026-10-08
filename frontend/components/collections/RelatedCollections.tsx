@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useHorizontalCarousel } from '@/lib/hooks/useHorizontalCarousel';
 
 interface RelatedCollectionsProps {
   collections: Array<{
@@ -21,75 +22,31 @@ interface RelatedCollectionsProps {
 }
 
 export default function RelatedCollections({ collections }: RelatedCollectionsProps) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
   const items = collections || [];
-  const GAP = isMobile ? 12 : isTablet ? 20 : 24;
 
-  const getCardWidth = useCallback(() => {
-    const el = trackRef.current;
-    if (!el) return 500;
-    const cardEl = el.firstElementChild as HTMLElement;
-    if (!cardEl) return (el.clientWidth - GAP) / 2;
-    return cardEl.getBoundingClientRect().width || (el.clientWidth - GAP) / 2;
-  }, [GAP]);
-
-  const updateScrollState = useCallback(() => {
-    const el = trackRef.current;
-    if (!el || items.length === 0) return;
-
-    const scrollLeft = el.scrollLeft;
-    const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
-    const hasOverflow = maxScroll > 5;
-
-    setCanScrollLeft(hasOverflow && scrollLeft > 10);
-    setCanScrollRight(hasOverflow && scrollLeft < maxScroll - 10);
-  }, [items.length]);
-
-  useEffect(() => {
-    const checkViewport = () => {
-      const w = window.innerWidth;
-      setIsMobile(w <= 600);
-      setIsTablet(w > 600 && w <= 1024);
-    };
-    checkViewport();
-
-    const handleResize = () => {
-      checkViewport();
-      updateScrollState();
-    };
-    window.addEventListener('resize', handleResize);
-
-    const el = trackRef.current;
-    if (el) {
-      updateScrollState();
-      el.addEventListener('scroll', updateScrollState, { passive: true });
-    }
-
-    const timer = setTimeout(updateScrollState, 150);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (el) el.removeEventListener('scroll', updateScrollState);
-      clearTimeout(timer);
-    };
-  }, [updateScrollState]);
+  const {
+    trackRef,
+    isMobile,
+    isTablet,
+    canScrollLeft,
+    canScrollRight,
+    scrollLeft,
+    scrollRight,
+    handleScroll,
+    gap,
+  } = useHorizontalCarousel({
+    itemCount: items.length,
+    gap: { mobile: 12, tablet: 20, desktop: 24 },
+    desktopCardsVisible: 2,
+    tabletCardsVisible: 2,
+    mobileCardsVisible: 2,
+  });
 
   if (!collections || collections.length === 0) {
     return null;
   }
 
-  const scroll = (dir: 1 | -1) => {
-    const el = trackRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * (getCardWidth() + GAP), behavior: 'smooth' });
-  };
-
-  const cardDim = `calc((100% - ${GAP}px) / 2)`;
+  const cardDim = `calc((100% - ${gap}px) / 2)`;
 
   return (
     <section className="s-section s-related">
@@ -103,7 +60,7 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
             className="s-carousel-arrow s-carousel-prev"
             type="button"
             aria-label="Previous collections"
-            onClick={() => scroll(-1)}
+            onClick={scrollLeft}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 18l-6-6 6-6"></path>
@@ -114,10 +71,11 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
         <div style={{ overflow: 'hidden', width: '100%' }}>
           <div
             ref={trackRef}
+            onScroll={handleScroll}
             className="s-scroll"
             style={{
               display: 'flex',
-              gap: GAP,
+              gap: gap,
               overflowX: 'scroll',
               scrollSnapType: 'x mandatory',
               scrollbarWidth: 'none',
@@ -190,7 +148,7 @@ export default function RelatedCollections({ collections }: RelatedCollectionsPr
             className="s-carousel-arrow s-carousel-next"
             type="button"
             aria-label="Next collections"
-            onClick={() => scroll(1)}
+            onClick={scrollRight}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 18l6-6-6-6"></path>

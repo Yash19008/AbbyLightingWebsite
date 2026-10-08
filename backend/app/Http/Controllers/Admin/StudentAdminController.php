@@ -118,7 +118,7 @@ class StudentAdminController extends Controller
         $photo = $request->file;     
                   
         if($photo) {
-            $fileNamePhoto = time().'_'.$photo->getClientOriginalName();
+            $fileNamePhoto = time().'_'.str_replace(' ', '_', $photo->getClientOriginalName());
             
             $filePath = $photo->storeAs('uploads/user_photo', $fileNamePhoto, 'public');
 
@@ -207,7 +207,7 @@ class StudentAdminController extends Controller
         $photo = $request->file;     
                   
         if($photo) {
-            $fileNamePhoto = time().'_'.$photo->getClientOriginalName();
+            $fileNamePhoto = time().'_'.str_replace(' ', '_', $photo->getClientOriginalName());
             
             $filePath = $photo->storeAs('uploads/user_photo', $fileNamePhoto, 'public');
 

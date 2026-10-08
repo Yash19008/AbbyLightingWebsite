@@ -189,7 +189,7 @@ class EventAdminController extends Controller
             $eventImages = $request->eventImages;
             if (count($eventImages) > 0) {
                 foreach ($eventImages as $eventImage) {
-                    $fileNamePhoto = time() . '_' . trim($eventImage['item']->getClientOriginalName());
+                    $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($eventImage['item']->getClientOriginalName()));
                     $eventImage['item']->storeAs('uploads/events', $fileNamePhoto, 'public');
                     $insertImage = [
                         'event_id' => $id,

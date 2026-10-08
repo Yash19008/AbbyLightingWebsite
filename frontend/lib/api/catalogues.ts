@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { API_URL, API_BASE } from '@/lib/config';
+
+
 
 export interface CatalogueCategoryDto {
   id: number;
@@ -55,7 +57,7 @@ export interface CataloguesResponse {
  */
 export async function getCatalogueCategories(): Promise<CatalogueCategoriesResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/catalogue-categories`, {
+    const response = await fetch(`${API_URL}/catalogue-categories`, {
       cache: 'no-store'
     });
 
@@ -82,7 +84,7 @@ export async function getCatalogues(params?: {
   per_page?: number;
 }): Promise<CataloguesResponse> {
   try {
-    const url = new URL(`${API_BASE_URL}/api/catalogues`);
+    const url = new URL(`${API_URL}/catalogues`);
     if (params?.category && params.category !== 'all' && params.category !== 'All') {
       url.searchParams.set('category', params.category);
     }
@@ -132,7 +134,7 @@ export interface CatalogDownloadPayload {
 
 export async function submitCatalogDownload(payload: CatalogDownloadPayload): Promise<{ success: boolean; message?: string }> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/catalog-downloads`, {
+    const response = await fetch(`${API_URL}/catalog-downloads`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

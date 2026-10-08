@@ -30,15 +30,29 @@ class NewArrivalsApiController extends Controller
                 // Fetch products for this category
                 $products = ProductMaster::where('is_active', 'yes')
                     ->where('category_id', $cat->id)
+                    ->with('variants')
                     ->latest()
                     ->take(12)
                     ->get()
                     ->map(function ($p) use ($cat) {
-                        $imageUrl = $p->featured_image
-                            ? (str_starts_with($p->featured_image, 'http')
-                                ? $p->featured_image
-                                : asset('storage/uploads/products/' . $p->featured_image))
-                            : null;
+                        $imageUrl = null;
+                        if ($p->featured_image) {
+                            if (str_starts_with($p->featured_image, 'http')) {
+                                $imageUrl = $p->featured_image;
+                            } else {
+                                $path = 'uploads/products/' . $p->featured_image;
+                                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                                    $imageUrl = asset('storage/' . $path);
+                                }
+                            }
+                        }
+
+                        if (!$imageUrl && $p->variants->isNotEmpty() && $p->variants->first()->image) {
+                            $vImg = $p->variants->first()->image;
+                            $imageUrl = str_starts_with($vImg, 'http')
+                                ? $vImg
+                                : asset('storage/uploads/variants/' . $vImg);
+                        }
 
                         $subTagSlug = null;
                         if (!empty($p->sub_tag_ids)) {
@@ -90,18 +104,28 @@ class NewArrivalsApiController extends Controller
                     ->map(function ($p) use ($cat) {
                         $imageUrl = null;
                         if ($p->featured_image) {
-                            $imageUrl = str_starts_with($p->featured_image, 'http')
-                                ? $p->featured_image
-                                : (str_contains($p->featured_image, '/')
-                                    ? asset('storage/' . $p->featured_image)
-                                    : asset('storage/uploads/decorative/' . $p->featured_image));
-                        } elseif ($p->colors->isNotEmpty() && $p->colors->first()->main_image) {
-                            $vImg = $p->colors->first()->main_image;
-                            $imageUrl = str_starts_with($vImg, 'http')
-                                ? $vImg
-                                : (str_contains($vImg, '/')
-                                    ? asset('storage/' . $vImg)
-                                    : asset('storage/uploads/decorative/' . $vImg));
+                            if (str_starts_with($p->featured_image, 'http')) {
+                                $imageUrl = $p->featured_image;
+                            } else {
+                                $path = str_contains($p->featured_image, '/')
+                                    ? $p->featured_image
+                                    : 'uploads/decorative/' . $p->featured_image;
+                                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                                    $imageUrl = asset('storage/' . $path);
+                                }
+                            }
+                        }
+                        
+                        if (!$imageUrl && $p->colors->isNotEmpty()) {
+                            $firstColor = $p->colors->first();
+                            $vImg = $firstColor->lighton_image ?? $firstColor->main_image;
+                            if ($vImg) {
+                                $imageUrl = str_starts_with($vImg, 'http')
+                                    ? $vImg
+                                    : (str_contains($vImg, '/')
+                                        ? asset('storage/' . $vImg)
+                                        : asset('storage/uploads/decorative/' . $vImg));
+                            }
                         }
 
                         return [

@@ -1,13 +1,15 @@
+import { API_URL, API_BASE } from '@/lib/config';
+
 import type { SlidersResponse } from '@/types/slider';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 
 /**
  * Fetch all sliders from Laravel API
  */
 export async function getSliders(): Promise<SlidersResponse> {
   try {
-    const response = await fetch(`${API_URL}/api/sliders`, {
+    const response = await fetch(`${API_URL}/sliders`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

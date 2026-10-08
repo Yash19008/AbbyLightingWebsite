@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { API_URL, API_BASE } from '@/lib/config';
+
+
 
 export interface InspirationHeroData {
   id?: number;
@@ -14,7 +16,7 @@ export interface InspirationHeroData {
 
 export async function getInspirationHero(): Promise<{ success: boolean; data: InspirationHeroData }> {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/inspiration-hero-section`, {
+    const res = await fetch(`${API_URL}/inspiration-hero-section`, {
       cache: 'no-store',
     });
 

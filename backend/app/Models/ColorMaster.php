@@ -69,6 +69,14 @@ class ColorMaster extends Model
     }
 
     /**
+     * Scope: Get colors by category
+     */
+    public function scopeInCategory($query, string $category)
+    {
+        return $query->where('category', $category);
+    }
+
+    /**
      * Relationship: DecProductColors using this master color
      */
     public function decProductColors()

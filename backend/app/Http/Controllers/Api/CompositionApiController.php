@@ -6,34 +6,40 @@ use App\Http\Controllers\Controller;
 use App\Models\Composition;
 use Illuminate\Http\Request;
 
+use App\Traits\ResolvesImagePath;
+use Illuminate\Support\Facades\Log;
+
 class CompositionApiController extends Controller
 {
+    use ResolvesImagePath;
+
     /**
      * Get compositions that are marked to be showcased in the inspiration page.
      */
     public function showcase()
     {
-        $compositions = Composition::where('is_showcase', 1)
-            ->with(['category_rel', 'collections', 'products.category', 'products.collection', 'products.colors.colorMaster'])
-            ->orderBy('id', 'desc')
-            ->get()
-            ->map(function ($comp) {
-                
-                $productsUsed = $comp->products->map(function($product) {
-                    $firstColor = $product->colors->first();
+        try {
+            $compositions = Composition::where('is_showcase', 1)
+                ->with(['category_rel', 'collections', 'products.category', 'products.collection', 'products.colors.colorMaster'])
+                ->orderBy('id', 'desc')
+                ->get()
+                ->map(function ($comp) {
                     
-                    // Image priority: lighton_image -> main_image
-                    $image = null;
-                    if ($firstColor) {
-                        if ($firstColor->lighton_image) {
-                            $image = asset('storage/uploads/decorative/' . $firstColor->lighton_image);
-                        } elseif ($firstColor->main_image) {
-                            $image = asset('storage/uploads/decorative/' . $firstColor->main_image);
+                    $productsUsed = $comp->products->map(function($product) {
+                        $firstColor = $product->colors->first();
+                        
+                        // Image priority: lighton_image -> main_image
+                        $image = null;
+                        if ($firstColor) {
+                            if ($firstColor->lighton_image) {
+                                $image = $this->resolveImagePath($firstColor->lighton_image, 'uploads/decorative');
+                            } elseif ($firstColor->main_image) {
+                                $image = $this->resolveImagePath($firstColor->main_image, 'uploads/decorative');
+                            }
                         }
-                    }
-                    if (!$image && $product->featured_image) {
-                        $image = asset('storage/uploads/decorative/' . $product->featured_image);
-                    }
+                        if (!$image && $product->featured_image) {
+                            $image = $this->resolveImagePath($product->featured_image, 'uploads/decorative');
+                        }
 
                     // Get colors and images from colors
                     $variants = [];
@@ -41,9 +47,9 @@ class CompositionApiController extends Controller
                     foreach ($product->colors as $color) {
                         $cImage = null;
                         if ($color->lighton_image) {
-                            $cImage = asset('storage/uploads/decorative/' . $color->lighton_image);
+                            $cImage = $this->resolveImagePath($color->lighton_image, 'uploads/decorative');
                         } elseif ($color->main_image) {
-                            $cImage = asset('storage/uploads/decorative/' . $color->main_image);
+                            $cImage = $this->resolveImagePath($color->main_image, 'uploads/decorative');
                         }
                         
                         // Fallback to default product image if color doesn't have one
@@ -86,14 +92,21 @@ class CompositionApiController extends Controller
                     'kicker' => $comp->kicker,
                     'category' => $comp->category_rel ? $comp->category_rel->name : $comp->category,
                     'collection' => $coll ? $coll->name : null,
-                    'image' => $comp->image ? asset('storage/uploads/compositions/' . $comp->image) : null,
+                    'image' => $this->resolveImagePath($comp->image, 'uploads/compositions'),
                     'products' => $productsUsed
                 ];
             });
 
-        return response()->json([
-            'success' => true,
-            'data' => $compositions
-        ]);
+            return response()->json([
+                'success' => true,
+                'data' => $compositions
+            ]);
+        } catch (\Exception $e) {
+            Log::error('CompositionApiController::showcase — ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load showcase compositions'
+            ], 500);
+        }
     }
 }

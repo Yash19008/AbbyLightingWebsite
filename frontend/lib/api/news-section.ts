@@ -1,10 +1,12 @@
+import { API_URL, API_BASE } from '@/lib/config';
+
 import { NewsSection } from '@/types/news-section';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 
 export async function getNewsSection(): Promise<NewsSection | null> {
   try {
-    const response = await fetch(`${API_URL}/api/news-section`, {
+    const response = await fetch(`${API_URL}/news-section`, {
       cache: 'no-store',
     });
 

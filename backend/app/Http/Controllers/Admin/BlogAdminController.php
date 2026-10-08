@@ -240,7 +240,7 @@ class BlogAdminController extends Controller
         $file = $request->file('upload') ?: $request->file('file');
 
         if ($file) {
-            $originName = $file->getClientOriginalName();
+            $originName = str_replace(' ', '_', $file->getClientOriginalName());
             $fileName = pathinfo($originName, PATHINFO_FILENAME);
             $extension = $file->getClientOriginalExtension() ?: 'jpg';
             $fileName = time() . '_' . uniqid() . '.' . $extension;

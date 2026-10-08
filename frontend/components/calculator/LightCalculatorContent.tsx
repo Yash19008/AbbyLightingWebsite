@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import SharedInquiryModal from "@/components/shared/SharedInquiryModal";
 
 const ROOM_AMBIENCE_DEFAULTS: Record<string, string> = {
   "200_bedroom": "0.9|2700",
@@ -211,17 +212,7 @@ export default function LightCalculatorContent() {
 
   // Contact Modal State
   const [contactModalOpen, setContactModalOpen] = useState(false);
-  const [contactSubmitted, setContactSubmitted] = useState(false);
-  const [contactForm, setContactForm] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    city: "",
-    company: "",
-    role: "",
-    message: "",
-    captcha: false,
-  });
+
 
   const calculatorRef = useRef<HTMLDivElement>(null);
 
@@ -868,7 +859,6 @@ export default function LightCalculatorContent() {
                   type="button"
                   aria-haspopup="dialog"
                   onClick={() => {
-                    setContactSubmitted(false);
                     setContactModalOpen(true);
                   }}
                 >
@@ -907,174 +897,13 @@ export default function LightCalculatorContent() {
       </div>
 
       {/* Contact Modal */}
-      {contactModalOpen && (
-        <div className="calculator-contact-modal" id="contact-modal" aria-hidden="false">
-          <button
-            className="calculator-contact-backdrop"
-            type="button"
-            tabIndex={-1}
-            aria-label="Close contact form"
-            onClick={() => setContactModalOpen(false)}
-          />
-          <section
-            className={`calculator-contact-dialog ${contactSubmitted ? "calculator-contact-dialog-thankyou" : ""}`}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={contactSubmitted ? "calculator-thankyou-title" : "contact-dialog-title"}
-          >
-            <button
-              className="calculator-contact-close"
-              type="button"
-              aria-label="Close contact form"
-              onClick={() => setContactModalOpen(false)}
-            >
-              ×
-            </button>
-
-            {contactSubmitted ? (
-              <div className="calculator-thankyou-card">
-                <div className="calculator-thankyou-icon" aria-hidden="true">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#111111"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                <h2 id="calculator-thankyou-title" className="calculator-thankyou-title">
-                  Thank You for Your Interest
-                </h2>
-                <p className="calculator-thankyou-desc">
-                  Thank you for reaching out. Our team will get back to you shortly with pricing, finishes and lead time.
-                </p>
-                <button
-                  type="button"
-                  className="calculator-thankyou-btn"
-                  onClick={() => setContactModalOpen(false)}
-                >
-                  CONTINUE
-                </button>
-              </div>
-            ) : (
-              <>
-                <h2 id="contact-dialog-title">Let&apos;s Discuss Your Lighting Requirements</h2>
-                <p>Tell us about your project, and our team will get back to you shortly.</p>
-
-                <form className="calculator-contact-form" onSubmit={handleContactSubmit} noValidate>
-                  <div className={`calculator-contact-field full ${contactForm.name ? "filled" : ""}`}>
-                    <label htmlFor="contact-name">Name*</label>
-                    <input
-                      id="contact-name"
-                      name="name"
-                      value={contactForm.name}
-                      onChange={handleContactChange}
-                      autoComplete="name"
-                    />
-                  </div>
-
-                  <div className="calculator-contact-field">
-                    <div className={`calculator-contact-phone-wrap ${contactForm.phone ? "filled" : ""}`}>
-                      <div className="calculator-contact-phone-prefix" aria-hidden="true">
-                        <span>🇮🇳</span>
-                        <span>+91</span>
-                      </div>
-                      <label htmlFor="contact-phone">Mobile number*</label>
-                      <input
-                        id="contact-phone"
-                        name="phone"
-                        type="tel"
-                        value={contactForm.phone}
-                        onChange={handleContactChange}
-                        autoComplete="tel"
-                      />
-                    </div>
-                  </div>
-
-                  <div className={`calculator-contact-field ${contactForm.email ? "filled" : ""}`}>
-                    <label htmlFor="contact-email">Email id*</label>
-                    <input
-                      id="contact-email"
-                      name="email"
-                      type="email"
-                      value={contactForm.email}
-                      onChange={handleContactChange}
-                      autoComplete="email"
-                    />
-                  </div>
-
-                  <div className={`calculator-contact-field ${contactForm.city ? "filled" : ""}`}>
-                    <label htmlFor="contact-city">City*</label>
-                    <input
-                      id="contact-city"
-                      name="city"
-                      value={contactForm.city}
-                      onChange={handleContactChange}
-                      autoComplete="address-level2"
-                    />
-                  </div>
-
-                  <div className={`calculator-contact-field ${contactForm.company ? "filled" : ""}`}>
-                    <label htmlFor="contact-company">Company / Firm Name</label>
-                    <input
-                      id="contact-company"
-                      name="company"
-                      value={contactForm.company}
-                      onChange={handleContactChange}
-                      autoComplete="organization"
-                    />
-                  </div>
-
-                  <div className={`calculator-contact-field full ${contactForm.role ? "filled" : ""}`}>
-                    <label id="contact-role-label" htmlFor="contact-role-trigger">I am a*</label>
-                    <CustomSelect
-                      id="contact-role-trigger"
-                      labelId="contact-role-label"
-                      value={contactForm.role}
-                      options={ROLE_OPTIONS}
-                      onChange={(val) => setContactForm((prev) => ({ ...prev, role: String(val) }))}
-                      placeholder=""
-                    />
-                  </div>
-
-                  <div className={`calculator-contact-field full ${contactForm.message ? "filled" : ""}`}>
-                    <label htmlFor="contact-message">Tell us more</label>
-                    <textarea
-                      id="contact-message"
-                      name="message"
-                      value={contactForm.message}
-                      onChange={handleContactChange}
-                    />
-                  </div>
-
-                  <label className="calculator-contact-captcha">
-                    <input
-                      type="checkbox"
-                      name="captcha"
-                      checked={contactForm.captcha}
-                      onChange={handleContactChange}
-                    />
-                    <span>I’m not a robot</span>
-                  </label>
-
-                  <button className="calculator-contact-submit" type="submit">
-                    Submit form
-                  </button>
-
-                  <p className="calculator-contact-consent">
-                    By submitting this form, you agree to be contacted by <span>Abby Lighting</span> regarding your enquiry.
-                  </p>
-                </form>
-              </>
-            )}
-          </section>
-        </div>
-      )}
+      <SharedInquiryModal
+        isOpen={contactModalOpen}
+        onClose={() => setContactModalOpen(false)}
+        type="calculator"
+        title="Get in Touch"
+        subtitle="Explore Abby Lighting fixtures suited to your lighting requirements."
+      />
     </div>
   );
 }

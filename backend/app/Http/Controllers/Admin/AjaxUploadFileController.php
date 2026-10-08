@@ -13,7 +13,7 @@ class AjaxUploadFileController extends Controller
         if ($request->has('uploadedImages') && $request->uploadedImages !== null && $request->uploadedImages !== 'null') {
             $uploadedImages = $request->uploadedImages;
             foreach ($uploadedImages as $uploadedImage) {
-                $fileNamePhoto = time() . '_' . trim($uploadedImage->getClientOriginalName());
+                $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($uploadedImage->getClientOriginalName()));
                 $uploadedImage->storeAs($request->path, $fileNamePhoto, 'public');
                 $fileNames[] = $fileNamePhoto;
             }

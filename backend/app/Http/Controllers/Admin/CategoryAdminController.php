@@ -103,7 +103,7 @@ class CategoryAdminController extends Controller
         $featured_image = $request->featured_image;     
         
         if($featured_image) {
-            $fileNamePhotoImage =time().'_'.trim($featured_image->getClientOriginalName());
+            $fileNamePhotoImage =time().'_'.str_replace(' ', '_', trim($featured_image->getClientOriginalName()));
             
             $filePath = $featured_image->storeAs('uploads/categories', $fileNamePhotoImage, 'public');
             // $fileModel->save();
@@ -113,7 +113,7 @@ class CategoryAdminController extends Controller
         $display_icon = $request->display_icon;     
         
         if($display_icon) {
-            $fileNamePhoto =time().'_'.trim($display_icon->getClientOriginalName());
+            $fileNamePhoto =time().'_'.str_replace(' ', '_', trim($display_icon->getClientOriginalName()));
             
             $filePath = $display_icon->storeAs('uploads/categories', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -126,7 +126,7 @@ class CategoryAdminController extends Controller
         if($request->hasFile('gallary')){
             foreach ($request->file('gallary') as $key => $value) {
                 // \Storage::delete('uploads/products'.$productimage->images);
-                $fileNamePhotoGall =time().'_'.trim($value->getClientOriginalName());
+                $fileNamePhotoGall =time().'_'.str_replace(' ', '_', trim($value->getClientOriginalName()));
                 
                 $filePath = $value->storeAs('uploads/categories', $fileNamePhotoGall, 'public');
                 // $fileModel->save();
@@ -207,7 +207,7 @@ class CategoryAdminController extends Controller
         
         if($featured_image) {
             //\Storage::delete('uploads/categories'.$oldCategory->featured_image);
-            $fileNamePhotoImage =time().'_'.trim($featured_image->getClientOriginalName());
+            $fileNamePhotoImage =time().'_'.str_replace(' ', '_', trim($featured_image->getClientOriginalName()));
             
             $filePath = $featured_image->storeAs('uploads/categories', $fileNamePhotoImage, 'public');
             // $fileModel->save();
@@ -218,7 +218,7 @@ class CategoryAdminController extends Controller
         
         if($display_icon) {
             //\Storage::delete('uploads/categories'.$oldCategory->display_icon);
-            $fileNamePhoto =time().'_'.trim($display_icon->getClientOriginalName());
+            $fileNamePhoto =time().'_'.str_replace(' ', '_', trim($display_icon->getClientOriginalName()));
             
             $filePath = $display_icon->storeAs('uploads/categories', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -230,7 +230,7 @@ class CategoryAdminController extends Controller
             CategoryImages::where('category_id',$id)->delete();
             foreach ($request->file('gallary') as $key => $value) {
                 //\Storage::delete('uploads/categories'.$oldCategory->image);
-                $fileNamePhotoGall =time().'_'.trim($value->getClientOriginalName());
+                $fileNamePhotoGall =time().'_'.str_replace(' ', '_', trim($value->getClientOriginalName()));
                 
                 $filePath = $value->storeAs('uploads/categories', $fileNamePhotoGall, 'public');
                 // $fileModel->save();

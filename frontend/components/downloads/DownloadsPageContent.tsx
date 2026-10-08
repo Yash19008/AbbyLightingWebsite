@@ -1,8 +1,10 @@
 "use client";
+import { API_URL, API_BASE } from '@/lib/config';
+
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { getCatalogueCategories, getCatalogues, submitCatalogDownload } from "@/lib/api/catalogues";
-import { COUNTRIES, Country } from "@/lib/countries";
+import { getCatalogueCategories, getCatalogues } from "@/lib/api/catalogues";
+import SharedInquiryModal from "@/components/shared/SharedInquiryModal";
 
 interface CatalogueItem {
   id: number;
@@ -26,133 +28,6 @@ const SORT_OPTIONS = [
   { id: "za", label: "Alphabetical Z-A" },
 ];
 
-interface CustomSelectOption {
-  value: string;
-  label: string;
-}
-
-const CITY_OPTIONS: CustomSelectOption[] = [
-  { value: "Bengaluru", label: "Bengaluru" },
-  { value: "Delhi", label: "Delhi" },
-  { value: "Mumbai", label: "Mumbai" },
-  { value: "Other", label: "Other" },
-];
-
-const ROLE_OPTIONS: CustomSelectOption[] = [
-  { value: "Architect", label: "Architect" },
-  { value: "Interior Designer", label: "Interior Designer" },
-  { value: "Lighting Consultant", label: "Lighting Consultant" },
-  { value: "Contractor", label: "Contractor" },
-  { value: "Homeowner", label: "Homeowner" },
-  { value: "Other", label: "Other" },
-];
-
-interface CustomFormSelectProps {
-  id: string;
-  name: string;
-  placeholder: string;
-  value: string;
-  options: CustomSelectOption[];
-  onChange: (name: string, value: string) => void;
-  required?: boolean;
-  className?: string;
-}
-
-function CustomFormSelect({
-  id,
-  name,
-  placeholder,
-  value,
-  options,
-  onChange,
-  className = "",
-}: CustomFormSelectProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("click", handleClickOutside);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
-  const selectedOption = options.find((opt) => opt.value === value);
-
-  return (
-    <div
-      className={`download-field ${className} ${isOpen ? "dropdown-active" : ""}`}
-      ref={containerRef}
-      style={{ zIndex: isOpen ? 60 : 1 }}
-    >
-      <div className={`download-select-wrap ${isOpen ? "is-open" : ""}`}>
-        <button
-          id={id}
-          type="button"
-          className={`download-select-trigger ${isOpen ? "is-open" : ""}`}
-          aria-haspopup="listbox"
-          aria-expanded={isOpen}
-          onClick={() => setIsOpen((prev) => !prev)}
-        >
-          <span className={`download-select-label ${!selectedOption ? "is-placeholder" : ""}`}>
-            {selectedOption ? selectedOption.label : placeholder}
-          </span>
-          <svg
-            className={`download-select-arrow ${isOpen ? "is-open" : ""}`}
-            width="12"
-            height="8"
-            viewBox="0 0 12 8"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M1.5 1.75L6 6.25L10.5 1.75"
-              stroke="#666666"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-
-        {isOpen && (
-          <div className="download-select-menu" role="listbox">
-            {options.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                role="option"
-                aria-selected={opt.value === value}
-                className={`download-select-option ${opt.value === value ? "is-selected" : ""}`}
-                onClick={() => {
-                  onChange(name, opt.value);
-                  setIsOpen(false);
-                }}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
-
 type SortMode = "new" | "az" | "za";
 
 export default function DownloadsPageContent() {
@@ -172,38 +47,7 @@ export default function DownloadsPageContent() {
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCatalogue, setSelectedCatalogue] = useState<CatalogueItem | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Country Flag Selector State
-  const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
-  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
-  const [countrySearch, setCountrySearch] = useState("");
-  const countryRef = useRef<HTMLDivElement>(null);
-
-  const filteredCountries = useMemo(() => {
-    if (!countrySearch.trim()) return COUNTRIES;
-    const q = countrySearch.toLowerCase().trim();
-    return COUNTRIES.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.dialCode.includes(q) ||
-        c.code.toLowerCase().includes(q)
-    );
-  }, [countrySearch]);
-
-  // Form fields
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    city: "",
-    company: "",
-    role: "",
-    message: "",
-    captcha: false,
-  });
 
   const sortRef = useRef<HTMLDivElement>(null);
   const mobileFilterRef = useRef<HTMLDivElement>(null);
@@ -259,7 +103,7 @@ export default function DownloadsPageContent() {
               categorySlug: item.category?.slug || "all",
               image: item.cover_image || "/images/figma-update/catalogue.png",
               pdfUrl: item.pdf_url,
-              downloadUrl: item.download_url || (item.id ? `${API_BASE_URL}/api/catalogues/${item.id}/download-pdf` : null),
+              downloadUrl: item.download_url || (item.id ? `${API_URL}/catalogues/${item.id}/download-pdf` : null),
               fileSize: item.file_size,
               isFeatured: item.is_featured,
             }));
@@ -304,7 +148,7 @@ export default function DownloadsPageContent() {
           categorySlug: item.category?.slug || "all",
           image: item.cover_image || "/images/figma-update/catalogue.png",
           pdfUrl: item.pdf_url,
-          downloadUrl: item.download_url || (item.id ? `${API_BASE_URL}/api/catalogues/${item.id}/download-pdf` : null),
+          downloadUrl: item.download_url || (item.id ? `${API_URL}/catalogues/${item.id}/download-pdf` : null),
           fileSize: item.file_size,
           isFeatured: item.is_featured,
         }));
@@ -339,9 +183,6 @@ export default function DownloadsPageContent() {
       }
       if (mobileFilterRef.current && !mobileFilterRef.current.contains(e.target as Node)) {
         setMobileFilterOpen(false);
-      }
-      if (countryRef.current && !countryRef.current.contains(e.target as Node)) {
-        setCountryDropdownOpen(false);
       }
     }
     document.addEventListener("click", handleClickOutside);
@@ -379,19 +220,6 @@ export default function DownloadsPageContent() {
   const openDownloadModal = (item: CatalogueItem, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     setSelectedCatalogue(item);
-    setSubmitted(false);
-    setSubmitting(false);
-    setSubmitError(null);
-    setFormData({
-      name: "",
-      phone: "",
-      email: "",
-      city: "",
-      company: "",
-      role: "",
-      message: "",
-      captcha: false,
-    });
     setModalOpen(true);
   };
 
@@ -474,7 +302,7 @@ export default function DownloadsPageContent() {
     const downloadUrl =
       selectedCatalogue?.downloadUrl ||
       (selectedCatalogue?.id
-        ? `${API_BASE_URL}/api/catalogues/${selectedCatalogue.id}/download-pdf`
+        ? `${API_URL}/catalogues/${selectedCatalogue.id}/download-pdf`
         : null);
     if (downloadUrl) {
       const cleanName = (selectedCatalogue?.title || "catalogue")
@@ -728,279 +556,21 @@ export default function DownloadsPageContent() {
       </section>
 
       {/* Download Modal */}
-      {modalOpen && (
-        <div className="download-modal" id="download-modal" aria-hidden="false">
-          <button
-            className="download-backdrop"
-            type="button"
-            tabIndex={-1}
-            aria-label="Close download form"
-            onClick={closeModal}
-          />
-          <section
-            className={`download-dialog ${submitted ? "download-dialog-thankyou" : ""}`}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={submitted ? "download-thankyou-title" : "download-dialog-title"}
-          >
-            <button
-              className="download-close"
-              type="button"
-              aria-label="Close download form"
-              onClick={closeModal}
-            >
-              ×
-            </button>
-
-            {submitted ? (
-              <div className="download-thankyou-card">
-                <div className="download-thankyou-icon" aria-hidden="true">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                <h2 id="download-thankyou-title" className="download-thankyou-title">
-                  Thank You for Your Interest
-                </h2>
-                <p className="download-thankyou-desc">
-                  Your download should have started automatically. If it hasn&apos;t, click the link below to download the catalogue.
-                </p>
-                <button
-                  type="button"
-                  className="download-thankyou-btn"
-                  onClick={() => {
-                    const downloadUrl =
-                      selectedCatalogue?.downloadUrl ||
-                      (selectedCatalogue?.id
-                        ? `${API_BASE_URL}/api/catalogues/${selectedCatalogue.id}/download-pdf`
-                        : null);
-                    if (downloadUrl) {
-                      const cleanName = (selectedCatalogue?.title || "catalogue")
-                        .toLowerCase()
-                        .replace(/[^a-z0-9]+/g, "-");
-                      triggerFileDownload(downloadUrl, `${cleanName}-catalogue.pdf`);
-                    } else if (selectedCatalogue?.pdfUrl) {
-                      window.open(selectedCatalogue.pdfUrl, "_blank");
-                    }
-                  }}
-                >
-                  DOWNLOAD
-                </button>
-              </div>
-            ) : (
-              <>
-                <h2 id="download-dialog-title">Download Catalogue</h2>
-                <p>
-                  Fill in your details to access Abby Lighting&apos;s complete <strong>{selectedCatalogue?.title}</strong> catalogue, including product specifications, technical details, finishes, and application references.
-                </p>
-
-                <form className="download-form" noValidate onSubmit={handleFormSubmit}>
-                  <div className={`download-field full ${formData.name ? "filled" : ""}`}>
-                    <label htmlFor="download-name">Your name*</label>
-                    <input
-                      id="download-name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleFormChange}
-                      autoComplete="name"
-                      required
-                    />
-                  </div>
-
-                  <div className={`download-field phone-field-wrap ${formData.phone ? "filled" : ""} ${countryDropdownOpen ? "dropdown-open" : ""}`} style={{ zIndex: countryDropdownOpen ? 70 : 1 }}>
-                    <div className="phone-country-select-container" ref={countryRef}>
-                      <button
-                        type="button"
-                        className="phone-country-trigger"
-                        onClick={() => setCountryDropdownOpen((prev) => !prev)}
-                        aria-label="Select Country Code"
-                        aria-expanded={countryDropdownOpen}
-                      >
-                        <img
-                          src={`https://flagcdn.com/w40/${selectedCountry.code.toLowerCase()}.png`}
-                          alt={selectedCountry.name}
-                          className="country-flag-img"
-                        />
-                        <svg
-                          className={`country-chevron-icon ${countryDropdownOpen ? 'is-open' : ''}`}
-                          width="10"
-                          height="6"
-                          viewBox="0 0 10 6"
-                          fill="none"
-                          stroke="#555"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M1 1L5 5L9 1" />
-                        </svg>
-                      </button>
-
-                      {countryDropdownOpen && (
-                        <div className="phone-country-dropdown">
-                          <div className="phone-country-search-wrap">
-                            <input
-                              type="text"
-                              className="phone-country-search-input"
-                              placeholder="Search country..."
-                              value={countrySearch}
-                              onChange={(e) => setCountrySearch(e.target.value)}
-                              onClick={(e) => e.stopPropagation()}
-                              autoFocus
-                            />
-                          </div>
-                          <div className="phone-country-list">
-                            {filteredCountries.length > 0 ? (
-                              filteredCountries.map((c) => (
-                                <button
-                                  key={c.code}
-                                  type="button"
-                                  className={`phone-country-option ${selectedCountry.code === c.code ? "is-selected" : ""}`}
-                                  onClick={() => {
-                                    setSelectedCountry(c);
-                                    setCountryDropdownOpen(false);
-                                    setCountrySearch("");
-                                  }}
-                                >
-                                  <img
-                                    src={`https://flagcdn.com/w40/${c.code.toLowerCase()}.png`}
-                                    alt={c.name}
-                                    className="country-flag-img-option"
-                                    loading="lazy"
-                                  />
-                                  <span className="country-name-text">{c.name}</span>
-                                  <span className="country-dial-code">{c.dialCode}</span>
-                                </button>
-                              ))
-                            ) : (
-                              <div className="phone-country-empty">No country found</div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    <label htmlFor="download-phone">Enter number</label>
-                    <input
-                      id="download-phone"
-                      name="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={handleFormChange}
-                      autoComplete="tel"
-                      required
-                    />
-                  </div>
-
-                  <div className={`download-field ${formData.email ? "filled" : ""}`}>
-                    <label htmlFor="download-email">Enter Email id*</label>
-                    <input
-                      id="download-email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleFormChange}
-                      autoComplete="email"
-                      required
-                    />
-                  </div>
-
-                  <CustomFormSelect
-                    id="download-city"
-                    name="city"
-                    placeholder="Select City*"
-                    value={formData.city}
-                    options={CITY_OPTIONS}
-                    onChange={handleSelectChange}
-                    required
-                  />
-
-                  <div className={`download-field ${formData.company ? "filled" : ""}`}>
-                    <label htmlFor="download-company">Enter Company / Firm Name</label>
-                    <input
-                      id="download-company"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleFormChange}
-                      autoComplete="organization"
-                    />
-                  </div>
-
-                  <CustomFormSelect
-                    id="download-role"
-                    name="role"
-                    placeholder="I am a*"
-                    value={formData.role}
-                    options={ROLE_OPTIONS}
-                    onChange={handleSelectChange}
-                    className="full"
-                    required
-                  />
-
-                  <div className={`download-field full message ${formData.message ? "filled" : ""}`}>
-                    <label htmlFor="download-message">Tell us more (optional)</label>
-                    <textarea
-                      id="download-message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleFormChange}
-                      placeholder="Quantities, project details, custom finish or cable length, timeline .................."
-                    />
-                  </div>
-
-                  <label className="download-captcha">
-                    <div className="download-captcha-left">
-                      <input
-                        type="checkbox"
-                        name="captcha"
-                        checked={formData.captcha}
-                        onChange={handleFormChange}
-                        required
-                      />
-                      <span>I&apos;m not a robot</span>
-                    </div>
-                    <div className="download-captcha-badge">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#4285f4"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                        <polyline points="9 12 11 14 15 10" />
-                      </svg>
-                    </div>
-                  </label>
-
-                  <button
-                    className="download-submit"
-                    type="submit"
-                    disabled={submitting}
-                    style={{ opacity: submitting ? 0.7 : 1, cursor: submitting ? "not-allowed" : "pointer" }}
-                  >
-                    {submitting ? "SUBMITTING..." : "SUBMIT FORM"}
-                  </button>
-
-                  {submitError && (
-                    <p className="download-error" style={{ color: "#dc2626", fontSize: "13px", marginTop: "8px", textAlign: "center" }}>
-                      {submitError}
-                    </p>
-                  )}
-
-                  <p className="download-consent">
-                    By submitting this form, you agree to be contacted by <span>Abby Lighting</span> regarding your enquiry.
-                  </p>
-                </form>
-              </>
-            )}
-          </section>
-        </div>
-      )}
+      <SharedInquiryModal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        type="catalogue"
+        title="Download Catalogue"
+        subtitle={`Fill in your details to access Abby Lighting's complete ${selectedCatalogue?.title} catalogue.`}
+        reference={selectedCatalogue?.title}
+        catalogueDownloadUrl={
+          selectedCatalogue?.downloadUrl ||
+          (selectedCatalogue?.id
+            ? `${API_URL}/catalogues/${selectedCatalogue.id}/download-pdf`
+            : undefined)
+        }
+        cataloguePdfUrl={selectedCatalogue?.pdfUrl || undefined}
+      />
     </div>
   );
 }

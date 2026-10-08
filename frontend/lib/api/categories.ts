@@ -1,4 +1,6 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { API_URL, API_BASE } from '@/lib/config';
+
+
 
 export interface CategoryItem {
   id: number | string;
@@ -10,7 +12,7 @@ export interface CategoryItem {
 
 export async function getArchitecturalCategories(): Promise<CategoryItem[]> {
   try {
-    const response = await fetch(`${API_URL}/api/categories`, {
+    const response = await fetch(`${API_URL}/categories`, {
       next: { revalidate: 3600 }
     });
 

@@ -299,7 +299,7 @@ body:has(.blog-page) .sitehead {
 .blog-page .copy table {
   width: 100% !important;
   max-width: 100% !important;
-  display: block;
+  /* display: block; */
   overflow-x: auto;
   border-collapse: collapse;
   margin: 24px 0;

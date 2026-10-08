@@ -50,7 +50,7 @@ const ChevronRightIcon = () => (
 function ProductCard({ p }: { p: ProductUsedItem }) {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariantItem | null>(null);
 
-  const displayImage = (selectedVariant ? selectedVariant.image : p.image) || "/images/reference/project-atlas.png";
+  const displayImage = (selectedVariant ? selectedVariant.image : p.image) || "/images/placeholder.svg";
 
   const ImageContent = (
     <div className="product-card-image-wrap" style={{ width: '100%', height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9f9f9', borderRadius: '4px', overflow: 'hidden' }}>
@@ -59,7 +59,7 @@ function ProductCard({ p }: { p: ProductUsedItem }) {
         alt={p.name}
         style={{ width: '100%', height: '100%', objectFit: 'cover', padding: '5px' }}
         onError={(e) => {
-          (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
+          (e.currentTarget as HTMLImageElement).src = "/images/placeholder.svg";
         }}
       />
     </div>
@@ -90,7 +90,7 @@ function ProductCard({ p }: { p: ProductUsedItem }) {
 
         {p.variants && p.variants.length > 0 ? (
           <div className="product-card-colors" aria-label="Available variants" style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-            {p.variants.slice(0, 5).map((v, vIdx) => (
+            {p.variants.slice(0, 4).map((v, vIdx) => (
               <span
                 key={vIdx}
                 className={`color-dot ${selectedVariant === v ? 'is-active' : ''}`}
@@ -114,15 +114,15 @@ function ProductCard({ p }: { p: ProductUsedItem }) {
                 }}
               />
             ))}
-            {p.variants.length > 5 && (
+            {p.variants.length > 4 && (
               <span style={{ fontSize: '0.75rem', color: '#666', marginLeft: '4px' }}>
-                +{p.variants.length - 5}
+                +{p.variants.length - 4}
               </span>
             )}
           </div>
         ) : p.colors && p.colors.length > 0 ? (
           <div className="product-card-colors" aria-label="Available colors" style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-            {p.colors.slice(0, 5).map((colorHex, cIdx) => (
+            {p.colors.slice(0, 4).map((colorHex, cIdx) => (
               <span
                 key={cIdx}
                 className="color-dot"
@@ -137,9 +137,9 @@ function ProductCard({ p }: { p: ProductUsedItem }) {
                 title={colorHex}
               />
             ))}
-            {p.colors.length > 5 && (
+            {p.colors.length > 4 && (
               <span style={{ fontSize: '0.75rem', color: '#666', marginLeft: '4px' }}>
-                +{p.colors.length - 5}
+                +{p.colors.length - 4}
               </span>
             )}
           </div>
@@ -255,7 +255,7 @@ export default function LookModal({
           src={look.image}
           alt={look.title}
           onError={(e) => {
-            (e.currentTarget as HTMLImageElement).src = "/images/reference/project-atlas.png";
+            (e.currentTarget as HTMLImageElement).src = "/images/placeholder.svg";
           }}
         />
         <div className="modal-content">

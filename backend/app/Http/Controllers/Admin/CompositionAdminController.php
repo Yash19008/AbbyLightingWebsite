@@ -63,7 +63,7 @@ class CompositionAdminController extends Controller
         $file = $request->file;
 
         if ($file) {
-            $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
             $filePath = $file->storeAs('uploads/compositions', $fileNamePhoto, 'public');
             $values['image'] = $fileNamePhoto;
         }
@@ -111,7 +111,7 @@ class CompositionAdminController extends Controller
         $file = $request->file;
 
         if ($file) {
-            $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
             $filePath = $file->storeAs('uploads/compositions', $fileNamePhoto, 'public');
             $values['image'] = $fileNamePhoto;
         }

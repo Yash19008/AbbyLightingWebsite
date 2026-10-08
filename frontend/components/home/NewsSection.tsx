@@ -2,73 +2,32 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import type { NewsItem } from "@/types/news-item";
+import { useHorizontalCarousel } from "@/lib/hooks/useHorizontalCarousel";
 
 interface NewsSectionProps {
   newsItems?: NewsItem[];
 }
 
 export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  const GAP = isMobile ? 12 : 18;
-
   const items = newsItems || [];
-
-  const getCardWidth = useCallback(() => {
-    const el = trackRef.current;
-    if (!el) return isMobile ? 320 : isTablet ? 300 : 380;
-    const cardEl = el.firstElementChild as HTMLElement;
-    if (!cardEl) return isMobile ? el.clientWidth : isTablet ? ((el.clientWidth - 2 * GAP) / 2.45) : 380;
-    return cardEl.getBoundingClientRect().width || (isMobile ? el.clientWidth : isTablet ? ((el.clientWidth - 2 * GAP) / 2.45) : 380);
-  }, [isMobile, isTablet, GAP]);
-
-  const updateScrollState = useCallback(() => {
-    const el = trackRef.current;
-    if (!el || items.length === 0) return;
-
-    const scrollLeft = el.scrollLeft;
-    const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
-
-    setCanScrollLeft(scrollLeft > 10);
-    setCanScrollRight(scrollLeft < maxScroll - 10);
-  }, [items.length]);
-
-  useEffect(() => {
-    const checkViewport = () => {
-      const w = window.innerWidth;
-      setIsMobile(w <= 700);
-      setIsTablet(w > 700 && w <= 1024);
-    };
-    checkViewport();
-
-    const handleResize = () => {
-      checkViewport();
-      updateScrollState();
-    };
-    window.addEventListener("resize", handleResize);
-
-    const el = trackRef.current;
-    if (el) {
-      updateScrollState();
-      el.addEventListener("scroll", updateScrollState, { passive: true });
-    }
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      if (el) el.removeEventListener("scroll", updateScrollState);
-    };
-  }, [updateScrollState]);
-
-  const scroll = (dir: 1 | -1) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const cardWidth = getCardWidth();
-    el.scrollBy({ left: dir * (cardWidth + GAP), behavior: "smooth" });
-  };
+  
+  const {
+    trackRef,
+    isMobile,
+    isTablet,
+    canScrollLeft,
+    canScrollRight,
+    scrollLeft,
+    scrollRight,
+    handleScroll,
+    gap,
+  } = useHorizontalCarousel({
+    itemCount: items.length,
+    gap: { mobile: 12, desktop: 18 },
+    desktopCardsVisible: 3,
+    tabletCardsVisible: 2.45,
+    mobileCardsVisible: 1,
+  });
 
   const showNav = items.length > (isMobile ? 1 : isTablet ? 2 : 3);
 
@@ -102,13 +61,13 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
   const cardFlex = isMobile
     ? "0 0 100%"
     : isTablet
-    ? `0 0 calc((100% - 2 * ${GAP}px) / 2.45)`
-    : `0 0 calc((100% - 2 * ${GAP}px) / 3)`;
+    ? `0 0 calc((100% - 2 * ${gap}px) / 2.45)`
+    : `0 0 calc((100% - 2 * ${gap}px) / 3)`;
 
   const cardDim = isMobile
     ? "100%"
     : isTablet
-    ? `calc((100% - 2 * ${GAP}px) / 2.45)`
+    ? `calc((100% - 2 * ${gap}px) / 2.45)`
     : undefined;
 
   return (
@@ -122,7 +81,7 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
           {/* Desktop Previous Arrow */}
           {!isMobile && (
             <button
-              onClick={() => scroll(-1)}
+              onClick={scrollLeft}
               aria-label="Previous news stories"
               style={{ ...desktopArrow(canScrollLeft), left: -50 }}
               disabled={!canScrollLeft}
@@ -137,10 +96,11 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
           <div style={{ overflow: "hidden", width: "100%" }}>
             <div
               ref={trackRef}
+              onScroll={handleScroll}
               className="news"
               style={{
                 display: "flex",
-                gap: GAP,
+                gap: gap,
                 overflowX: "scroll",
                 scrollSnapType: "x mandatory",
                 scrollbarWidth: "none",
@@ -249,7 +209,7 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
           {/* Desktop Next Arrow */}
           {!isMobile && (
             <button
-              onClick={() => scroll(1)}
+              onClick={scrollRight}
               aria-label="Next news stories"
               style={{ ...desktopArrow(canScrollRight), right: -50 }}
               disabled={!canScrollRight}
@@ -263,7 +223,7 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
           {/* Mobile Floating Circular Previous Arrow Button */}
           {isMobile && canScrollLeft && (
             <button
-              onClick={() => scroll(-1)}
+              onClick={scrollLeft}
               aria-label="Previous news stories"
               style={{
                 position: "absolute",
@@ -294,7 +254,7 @@ export default function NewsSection({ newsItems = [] }: NewsSectionProps) {
           {/* Mobile Floating Circular Next Arrow Button */}
           {isMobile && canScrollRight && (
             <button
-              onClick={() => scroll(1)}
+              onClick={scrollRight}
               aria-label="Next news stories"
               style={{
                 position: "absolute",

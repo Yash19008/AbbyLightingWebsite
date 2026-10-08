@@ -51,7 +51,7 @@ class ClientAdminController extends Controller
         $file = $request->file;
 
         if ($file) {
-            $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
 
             $filePath = $file->storeAs('uploads/clients', $fileNamePhoto, 'public');
             // $fileModel->save();
@@ -108,7 +108,7 @@ class ClientAdminController extends Controller
         $file = $request->file;
 
         if ($file) {
-            $fileNamePhoto = time() . '_' . trim($file->getClientOriginalName());
+            $fileNamePhoto = time() . '_' . str_replace(' ', '_', trim($file->getClientOriginalName()));
 
             $filePath = $file->storeAs('uploads/clients', $fileNamePhoto, 'public');
             // $fileModel->save();

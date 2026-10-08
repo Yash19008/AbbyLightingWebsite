@@ -35,7 +35,7 @@ export default function BlogRelatedSection({
                   alt={item.alt || item.title}
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).src =
-                      "/images/reference/project-atlas.png";
+                      "/images/placeholder.svg";
                   }}
                 />
               </figure>

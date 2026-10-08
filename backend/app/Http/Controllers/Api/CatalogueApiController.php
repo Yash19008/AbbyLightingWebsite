@@ -96,26 +96,7 @@ class CatalogueApiController extends Controller
                 $catalogues = collect($paginated->items());
 
                 $formatted = $catalogues->map(function ($item) {
-                    return [
-                        'id' => $item->id,
-                        'title' => $item->title,
-                        'slug' => $item->slug,
-                        'description' => $item->description,
-                        'category_id' => $item->catalogue_category_id,
-                        'category' => $item->category ? [
-                            'id' => $item->category->id,
-                            'name' => $item->category->name,
-                            'slug' => $item->category->slug,
-                        ] : null,
-                        'cover_image' => $item->cover_image ? asset('uploads/catalogues/images/' . $item->cover_image) : null,
-                        'pdf_url' => $item->pdf_file ? asset('uploads/catalogues/pdfs/' . $item->pdf_file) : asset('1product-catalog.pdf'),
-                        'download_url' => url('/api/catalogues/' . $item->id . '/download-pdf'),
-                        'pdf_file_name' => $item->pdf_file ?: '1product-catalog.pdf',
-                        'file_size' => $item->file_size ?? 'PDF',
-                        'is_featured' => (bool)$item->is_featured,
-                        'sort_order' => $item->sort_order,
-                        'created_at' => $item->created_at ? $item->created_at->toISOString() : null,
-                    ];
+                    return $this->formatCatalogue($item);
                 });
 
                 return response()->json([
@@ -134,26 +115,7 @@ class CatalogueApiController extends Controller
             $catalogues = $query->get();
 
             $formatted = $catalogues->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'title' => $item->title,
-                    'slug' => $item->slug,
-                    'description' => $item->description,
-                    'category_id' => $item->catalogue_category_id,
-                    'category' => $item->category ? [
-                        'id' => $item->category->id,
-                        'name' => $item->category->name,
-                        'slug' => $item->category->slug,
-                    ] : null,
-                    'cover_image' => $item->cover_image ? asset('uploads/catalogues/images/' . $item->cover_image) : null,
-                    'pdf_url' => $item->pdf_file ? asset('uploads/catalogues/pdfs/' . $item->pdf_file) : asset('1product-catalog.pdf'),
-                    'download_url' => url('/api/catalogues/' . $item->id . '/download-pdf'),
-                    'pdf_file_name' => $item->pdf_file ?: '1product-catalog.pdf',
-                    'file_size' => $item->file_size ?? 'PDF',
-                    'is_featured' => (bool)$item->is_featured,
-                    'sort_order' => $item->sort_order,
-                    'created_at' => $item->created_at ? $item->created_at->toISOString() : null,
-                ];
+                return $this->formatCatalogue($item);
             });
 
             return response()->json([
@@ -186,76 +148,66 @@ class CatalogueApiController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'id' => $catalogue->id,
-                    'title' => $catalogue->title,
-                    'slug' => $catalogue->slug,
-                    'description' => $catalogue->description,
-                    'category' => $catalogue->category ? [
-                        'id' => $catalogue->category->id,
-                        'name' => $catalogue->category->name,
-                        'slug' => $catalogue->category->slug,
-                    ] : null,
-                    'cover_image' => $catalogue->cover_image ? asset('uploads/catalogues/images/' . $catalogue->cover_image) : null,
-                    'pdf_url' => $catalogue->pdf_file ? asset('uploads/catalogues/pdfs/' . $catalogue->pdf_file) : asset('1product-catalog.pdf'),
-                    'download_url' => url('/api/catalogues/' . $catalogue->id . '/download-pdf'),
-                    'pdf_file_name' => $catalogue->pdf_file ?: '1product-catalog.pdf',
-                    'file_size' => $catalogue->file_size,
-                    'is_featured' => (bool)$catalogue->is_featured,
-                    'sort_order' => $catalogue->sort_order,
-                ],
+                'data' => $this->formatCatalogue($catalogue),
             ]);
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Catalogue not found',
             ], 404);
+        } catch (\Exception $e) {
+            Log::error('CatalogueApiController::show — ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error',
+            ], 500);
         }
     }
 
     public function storeDownloadLead(Request $request)
     {
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:100',
-            'mobile' => 'nullable|string|max:100',
-            'city' => 'nullable|string|max:255',
-            'company' => 'nullable|string|max:255',
-            'role' => 'nullable|string|max:255',
-            'message' => 'nullable|string',
-            'catalogue_name' => 'nullable|string|max:255',
-            'catalogue_id' => 'nullable|integer',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-                'message' => 'Validation failed: ' . $validator->errors()->first(),
-            ], 422);
-        }
-
         try {
-            $mobile = $request->input('phone') ?? $request->input('mobile');
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'nullable|string|max:100',
+                'mobile' => 'nullable|string|max:100',
+                'city' => 'nullable|string|max:255',
+                'company' => 'nullable|string|max:255',
+                'role' => 'nullable|string|max:255',
+                'message' => 'nullable|string',
+                'catalogue_name' => 'nullable|string|max:255',
+                'catalogue_id' => 'nullable|integer',
+            ]);
+
+            $mobile = $validated['phone'] ?? $validated['mobile'] ?? null;
+            
             $lead = \App\Models\CatalogDownload::create([
-                'catalogue_name' => $request->catalogue_name,
-                'catalogue_id' => $request->catalogue_id,
-                'name' => $request->name,
-                'email' => $request->email,
+                'catalogue_name' => $validated['catalogue_name'] ?? null,
+                'catalogue_id' => $validated['catalogue_id'] ?? null,
+                'name' => $validated['name'],
+                'email' => $validated['email'],
                 'mobile' => $mobile,
-                'city' => $request->city,
-                'company' => $request->company,
-                'role' => $request->role,
-                'message' => $request->message,
+                'city' => $validated['city'] ?? null,
+                'company' => $validated['company'] ?? null,
+                'role' => $validated['role'] ?? null,
+                'message' => $validated['message'] ?? null,
                 'is_active' => 'yes',
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Your request has been submitted successfully.',
-                'data' => $lead,
+                'data' => [
+                    'id' => $lead->id
+                ],
             ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors(),
+                'message' => 'Validation failed: ' . collect($e->errors())->first()[0],
+            ], 422);
         } catch (\Exception $e) {
             Log::error('CatalogueApiController::storeDownloadLead — ' . $e->getMessage());
             return response()->json([
@@ -267,28 +219,59 @@ class CatalogueApiController extends Controller
 
     public function downloadPdf($id)
     {
-        $catalogue = Catalogue::find($id);
-        if ($catalogue && $catalogue->pdf_file) {
-            $path = public_path('uploads/catalogues/pdfs/' . $catalogue->pdf_file);
-            if (file_exists($path)) {
-                $cleanTitle = \Illuminate\Support\Str::slug($catalogue->title) ?: 'catalogue';
-                return response()->download($path, $cleanTitle . '.pdf', [
+        try {
+            $catalogue = Catalogue::findOrFail($id);
+            if ($catalogue && $catalogue->pdf_file) {
+                $path = public_path('uploads/catalogues/pdfs/' . $catalogue->pdf_file);
+                if (file_exists($path)) {
+                    $cleanTitle = \Illuminate\Support\Str::slug($catalogue->title) ?: 'catalogue';
+                    return response()->download($path, $cleanTitle . '.pdf', [
+                        'Content-Type' => 'application/pdf',
+                        'Content-Disposition' => 'attachment; filename="' . $cleanTitle . '.pdf"',
+                    ]);
+                }
+            }
+
+            $fallbackPath = public_path('1product-catalog.pdf');
+            if (file_exists($fallbackPath)) {
+                $filename = \Illuminate\Support\Str::slug($catalogue->title) . '-catalogue.pdf';
+                return response()->download($fallbackPath, $filename, [
                     'Content-Type' => 'application/pdf',
-                    'Content-Disposition' => 'attachment; filename="' . $cleanTitle . '.pdf"',
+                    'Content-Disposition' => 'attachment; filename="' . $filename . '"',
                 ]);
             }
-        }
 
-        $fallbackPath = public_path('1product-catalog.pdf');
-        if (file_exists($fallbackPath)) {
-            $filename = ($catalogue ? \Illuminate\Support\Str::slug($catalogue->title) : 'abby-lighting') . '-catalogue.pdf';
-            return response()->download($fallbackPath, $filename, [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            ]);
+            return response()->json(['success' => false, 'message' => 'PDF file not found'], 404);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['success' => false, 'message' => 'Catalogue not found'], 404);
+        } catch (\Exception $e) {
+            Log::error('CatalogueApiController::downloadPdf — ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Server error'], 500);
         }
+    }
 
-        return response()->json(['message' => 'PDF file not found'], 404);
+    private function formatCatalogue(Catalogue $item): array
+    {
+        return [
+            'id' => $item->id,
+            'title' => $item->title,
+            'slug' => $item->slug,
+            'description' => $item->description,
+            'category_id' => $item->catalogue_category_id,
+            'category' => $item->category ? [
+                'id' => $item->category->id,
+                'name' => $item->category->name,
+                'slug' => $item->category->slug,
+            ] : null,
+            'cover_image' => $item->cover_image ? asset('uploads/catalogues/images/' . $item->cover_image) : null,
+            'pdf_url' => $item->pdf_file ? asset('uploads/catalogues/pdfs/' . $item->pdf_file) : asset('1product-catalog.pdf'),
+            'download_url' => url('/api/catalogues/' . $item->id . '/download-pdf'),
+            'pdf_file_name' => $item->pdf_file ?: '1product-catalog.pdf',
+            'file_size' => $item->file_size ?? 'PDF',
+            'is_featured' => (bool)$item->is_featured,
+            'sort_order' => $item->sort_order,
+            'created_at' => $item->created_at ? $item->created_at->toISOString() : null,
+        ];
     }
 }
 
