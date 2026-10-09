@@ -24,13 +24,12 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 50px;">#</th>
-                                    <th>TYPE</th>
+                                    <th>PAGE</th>
                                     <th>REFERENCE</th>
                                     <th>NAME</th>
                                     <th>CONTACT</th>
-                                    <th>DETAILS</th>
-                                    <th>MESSAGE</th>
-                                    <th class="text-center" style="width: 140px;">DATE</th>
+                                    <th>ROLE</th>
+                                    <th class="text-center" style="width: 160px;">DATE</th>
                                     <th class="text-center" style="width: 110px; min-width: 110px;">ACTION</th>
                                 </tr>
                             </thead>
@@ -39,12 +38,11 @@
                             <tfoot>
                                 <tr>
                                     <th class="text-center">#</th>
-                                    <th>Type</th>
+                                    <th>Page</th>
                                     <th>Reference</th>
                                     <th>Name</th>
                                     <th>Contact</th>
-                                    <th>Details</th>
-                                    <th>Message</th>
+                                    <th>Role</th>
                                     <th class="text-center">Date</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -73,8 +71,8 @@
                 <table class="table table-bordered table-striped m-0" style="font-size: 13px;">
                     <tbody>
                         <tr>
-                            <th style="width: 32%; background: #f8f9fa;" class="align-middle">Inquiry Type</th>
-                            <td id="modalType" class="font-weight-bold text-dark align-middle"></td>
+                            <th style="width: 32%; background: #f8f9fa;" class="align-middle">Page</th>
+                            <td id="modalPage" class="font-weight-bold text-dark align-middle"></td>
                         </tr>
                         <tr>
                             <th style="background: #f8f9fa;" class="align-middle">Reference</th>
@@ -182,7 +180,7 @@
                 class: 'text-center align-middle font-weight-bold text-muted'
             },
             {
-                data: 'type',
+                data: 'page',
                 name: 'type',
                 orderable: true,
                 searchable: true,
@@ -210,15 +208,8 @@
                 searchable: true,
             },
             {
-                data: 'details',
-                name: 'details',
-                class: 'align-middle',
-                orderable: true,
-                searchable: true,
-            },
-            {
-                data: 'message',
-                name: 'message',
+                data: 'role',
+                name: 'role',
                 class: 'align-middle',
                 orderable: true,
                 searchable: true,
@@ -226,7 +217,7 @@
             {
                 data: 'created_at',
                 name: 'created_at',
-                width: '140px',
+                width: '160px',
                 class: 'text-center align-middle text-muted',
                 orderable: true,
                 searchable: true,
@@ -249,7 +240,7 @@
             searching: true,
             pageLength: 10,
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            order: [[7, "desc"]],
+            order: [[6, "desc"]],
             language: {
                 emptyTable: "No inquiries recorded yet."
             }
@@ -273,7 +264,7 @@
                     data = JSON.parse(data);
                 }
 
-                $('#modalType').text(data.type || '-');
+                $('#modalPage').text(data.page || data.type || '-');
                 $('#modalReference').text(data.reference || '-');
                 $('#modalName').text(data.name || '-');
                 $('#modalEmail').html(data.email ? '<a href="mailto:' + data.email + '" style="color:#0284c7; font-weight:600;">' + data.email + '</a>' : '-');

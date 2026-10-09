@@ -19,7 +19,7 @@ class RedirectIfAdmin
 	{
 		
 	    if (Auth::guard($guard)->check()) {
-	        return redirect('admin/contact-forms');
+	        return redirect('admin/inquiries');
 	    }
 
 	    return $next($request);

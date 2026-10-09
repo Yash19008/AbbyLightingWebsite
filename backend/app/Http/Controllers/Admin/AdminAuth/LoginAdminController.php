@@ -22,7 +22,7 @@ class LoginAdminController extends Controller
      *
      * @var string
      */
-    public $redirectTo = 'admin/contact-forms';
+    public $redirectTo = 'admin/inquiries';
 
     /**
      * Create a new controller instance.
@@ -66,7 +66,7 @@ class LoginAdminController extends Controller
     public function login(Request $request){
        //print_r($request->all());exit;
         if (Auth::guard('admin')->check()) {
-            return redirect('admin/contact-forms');
+            return redirect('admin/inquiries');
         }    
         // VALIDATION RULE
         $validation_array = array(
@@ -107,8 +107,8 @@ class LoginAdminController extends Controller
                         return redirect('admin/product');
                     } else {
                         // All other admins → default dashboard
-                    return redirect('admin/contact-forms');
-                }
+                        return redirect('admin/inquiries');
+                    }
             }
             }else{
                 // INVALID PASSWORD

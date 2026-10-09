@@ -39,7 +39,7 @@
         <!-- main menu header-->
         <!-- Sidebar Header starts-->
         <div class="sidebar-header">
-            <div class="logo clearfix"><a class="logo-text float-left" href="{{route('contact_form_admin')}}">
+            <div class="logo clearfix"><a class="logo-text float-left" href="{{route('inquiries_admin')}}">
                     <div class="logo-img"><img src="{{asset('images/abbydashboardlogo.png')}}" alt="" style="width:175px;" /></div>
                     <!-- <span class="text">APEX</span> -->
                 </a><a class="nav-toggle d-none d-lg-none d-xl-block" id="sidebarToggle" href="javascript:;"><i class="toggle-icon ft-toggle-right" data-toggle="expanded"></i></a><a class="nav-close d-block d-lg-block d-xl-none" id="sidebarClose" href="javascript:;"><i class="ft-x"></i></a></div>
@@ -235,10 +235,10 @@
                     {{-- ══════════════════════════════════════
                          SECTION: INQUIRIES
                          ══════════════════════════════════════ --}}
-                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['Contact Form', 'Catalog', 'Subscriptions'])) ? 'open' : '' }}">
+                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['Inquiries', 'Contact Form', 'Catalog', 'Subscriptions'])) ? 'open' : '' }}">
                         <a href="#"><i class="ft-mail"></i><span class="menu-title">Inquiries</span></a>
                         <ul class="menu-content">
-                            <li class="{{ (@$main_module == 'Contact Form') ? 'active' : '' }}">
+                            <li class="{{ (in_array(@$main_module, ['Inquiries', 'Contact Form'])) ? 'active' : '' }}">
                                 <a class="menu-item" href="{{ route('inquiries_admin') }}"><i class="ft-message-circle" style="font-size:11px;margin-right:4px;"></i> Inquiries</a>
                             </li>
                             <li class="{{ (@$main_module == 'Catalog') ? 'active' : '' }}">

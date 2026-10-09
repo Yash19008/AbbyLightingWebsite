@@ -24,21 +24,7 @@ class ContactFormAdminController extends Controller
     }
     public function index(Request $request)
     {
-        $data = array('title' => "Enquiries", 'main_module' => $this->main_module);
-        $data['search'] = $request->input('search');
-        $data['results'] = new Inquiry;
-
-        if ($data['search'] != '') {
-            \Log::info($data['search']);
-            // $data['results'] = $data['results']->where(function ($query) use ($data) {
-            //     $query->where('full_name', 'LIKE', '%' . $data['search'] . '%');
-            // });
-        }
-        $data['results'] =  $data['results']->orderBy('id', 'DESC')->paginate(10); //config('custom_config.settings.admin_pagination_limit')
-        // $data['tbl'] =  Crypt::encryptString('inquiries');
-        $data['tbl'] = Common_function::encrypt('inquiries');
-
-        return view('admin.contact_form', $data); //inquiry
+        return redirect()->route('inquiries_admin');
     }
 
     public function uploadBanner(Request $request)

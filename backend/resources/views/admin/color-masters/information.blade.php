@@ -15,7 +15,7 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="{{ route('contact_form_admin') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('inquiries_admin') }}">Home</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('color_master_admin') }}">Color Masters</a></li>
                     <li class="breadcrumb-item active">Details</li>
                 </ol>

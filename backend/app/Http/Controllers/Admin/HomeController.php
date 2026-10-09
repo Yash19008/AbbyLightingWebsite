@@ -18,7 +18,6 @@ class HomeController extends Controller
     }
 
     public function index(Request $request){
-        $data = array('title'=>"Dashboard",'main_module'=>$this->main_module);
-        return view('admin.dashboard',$data);
+        return redirect()->route('inquiries_admin');
     }
 }

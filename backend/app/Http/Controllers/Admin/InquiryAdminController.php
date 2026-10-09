@@ -10,6 +10,8 @@ use Yajra\DataTables\Facades\DataTables;
 
 class InquiryAdminController extends Controller
 {
+    protected $main_module;
+
     public function __construct()
     {
         $this->middleware('admin');
@@ -24,6 +26,30 @@ class InquiryAdminController extends Controller
         return view('admin.inquiries', $data);
     }
 
+    private function getPageName(?string $type): string
+    {
+        $map = [
+            'general' => 'Contact Us',
+            'calculator' => 'Light Calculator',
+            'catalogue' => 'Catalogues',
+            'product' => 'Product',
+        ];
+        return $map[strtolower($type ?? '')] ?? ucfirst(str_replace(['_', '-'], ' ', $type ?? 'General'));
+    }
+
+    private function getPageBadge(?string $type): string
+    {
+        $badgeMap = [
+            'general' => 'badge-info',
+            'calculator' => 'badge-warning',
+            'catalogue' => 'badge-primary',
+            'product' => 'badge-success',
+        ];
+        $badgeClass = $badgeMap[strtolower($type ?? '')] ?? 'badge-secondary';
+        $pageName = $this->getPageName($type);
+        return '<span class="badge ' . $badgeClass . '" style="font-size: 11px; padding: 4px 8px;">' . e($pageName) . '</span>';
+    }
+
     public function list(Request $request)
     {
         if ($request->ajax()) {
@@ -36,31 +62,41 @@ class InquiryAdminController extends Controller
                 ->setRowClass(function ($row) {
                     return 'data';
                 })
+                ->addColumn('page', function ($row) {
+                    return $this->getPageBadge($row->type);
+                })
                 ->addColumn('type', function ($row) {
-                    return ucfirst($row->type);
+                    return $this->getPageBadge($row->type);
                 })
                 ->addColumn('reference', function ($row) {
-                    return $row->reference ?? '-';
+                    return !empty($row->reference) ? '<span class="font-weight-bold text-dark">' . e($row->reference) . '</span>' : '<span class="text-muted">-</span>';
                 })
                 ->addColumn('name', function ($row) {
-                    return $row->name;
+                    return '<span class="text-dark font-weight-bold">' . e($row->name) . '</span>';
                 })
                 ->addColumn('contact', function ($row) {
-                    return $row->email . '<br/>' . $row->phone;
+                    $parts = [];
+                    if (!empty($row->email)) {
+                        $parts[] = '<a href="mailto:' . e($row->email) . '" style="color:#0284c7; text-decoration:none; font-weight:500;">' . e($row->email) . '</a>';
+                    }
+                    if (!empty($row->phone)) {
+                        $parts[] = '<span class="text-muted d-block small mt-1">' . e($row->phone) . '</span>';
+                    }
+                    return !empty($parts) ? implode('', $parts) : '<span class="text-muted">-</span>';
                 })
-                ->addColumn('details', function ($row) {
-                    return $row->role . '<br/>' . $row->company . '<br/>' . $row->city;
-                })
-                ->addColumn('message', function ($row) {
-                    return $row->message;
+                ->addColumn('role', function ($row) {
+                    return !empty($row->role) ? e($row->role) : '<span class="text-muted">-</span>';
                 })
                 ->addColumn('created_at', function ($row) {
-                    return $row->created_at ? $row->created_at->format('Y-m-d H:i') : '';
+                    return $row->created_at ? $row->created_at->format('M d, Y h:i A') : '-';
                 })
                 ->addColumn('action', function ($row) {
+                    $pageName = $this->getPageName($row->type);
+
                     $jsonPayload = htmlspecialchars(json_encode([
                         'id' => $row->id,
-                        'type' => ucfirst($row->type),
+                        'page' => $pageName,
+                        'type' => $pageName,
                         'reference' => $row->reference ?: '-',
                         'name' => $row->name,
                         'email' => $row->email,
@@ -77,7 +113,38 @@ class InquiryAdminController extends Controller
                                 <a href="javascript:;" class="delete-lead-btn mx-1 text-danger" data-id="' . $row->id . '" data-toggle="tooltip" title="Delete"><i class="icon ft-trash-2 font-medium-3"></i></a>
                             </div>';
                 })
-                ->rawColumns(['type', 'reference', 'name', 'contact', 'details', 'message', 'action'])
+                ->rawColumns(['page', 'type', 'reference', 'name', 'contact', 'role', 'action'])
+                ->filterColumn('contact', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('email', 'like', "%{$keyword}%")
+                          ->orWhere('phone', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('created_at', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->whereRaw("DATE_FORMAT(created_at, '%b %d, %Y') like ?", ["%{$keyword}%"])
+                          ->orWhere('created_at', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('page', function ($query, $keyword) {
+                    $reverseMap = [
+                        'contact' => 'general',
+                        'contact us' => 'general',
+                        'light' => 'calculator',
+                        'light calculator' => 'calculator',
+                        'calculator' => 'calculator',
+                        'catalogue' => 'catalogue',
+                        'catalogues' => 'catalogue',
+                        'catalog' => 'catalogue',
+                        'product' => 'product',
+                    ];
+                    $lower = strtolower(trim($keyword));
+                    if (isset($reverseMap[$lower])) {
+                        $query->where('type', 'like', "%{$reverseMap[$lower]}%");
+                    } else {
+                        $query->where('type', 'like', "%{$keyword}%");
+                    }
+                })
                 ->make(true);
         }
     }
