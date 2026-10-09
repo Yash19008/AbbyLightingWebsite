@@ -62,8 +62,8 @@ class DecorativeColorController extends Controller
         $color = DecProductColor::findOrFail($id);
 
         $request->validate([
-            'main_image' => 'nullable|image|max:5120',
-            'lighton_image' => 'nullable|image|max:5120',
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'lighton_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
         ]);
 
         if ($request->hasFile('main_image')) {

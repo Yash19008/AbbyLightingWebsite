@@ -9,6 +9,11 @@ class AjaxUploadFileController extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'uploadedImages' => 'nullable|array',
+            'uploadedImages.*' => 'file|mimes:jpeg,png,jpg,webp,gif,svg,pdf|max:10240',
+        ]);
+
         $fileNames = [];
         if ($request->has('uploadedImages') && $request->uploadedImages !== null && $request->uploadedImages !== 'null') {
             $uploadedImages = $request->uploadedImages;

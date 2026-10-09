@@ -51,7 +51,7 @@ class TagAdminController extends Controller
             'display_name'=>'required',
             'name'=>'required',
             'slug'=>'required',
-            'file'=>'required',
+            'file'=>'required|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
         );
         $rules = [
             'display_name.required' => 'The Display name is required',
@@ -125,6 +125,12 @@ class TagAdminController extends Controller
             'created_at'=>$oldTag->created_at
         ];
         $oldDataArr = json_encode($oldData);
+        $this->validate($request, [
+            'display_name' => 'required',
+            'name' => 'required',
+            'file' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+        ]);
+
         // UPDATE ARRAY
         $update_array = array(
             'display_name' => ($request->display_name != '') ? $request->display_name : NULL,

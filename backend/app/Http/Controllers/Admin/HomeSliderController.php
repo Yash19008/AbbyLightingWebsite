@@ -51,9 +51,9 @@ class HomeSliderController extends Controller
     public function insert(Request $request){
         // VALIDATION RULE
         $validation_array = array(
-            'path'=>'required|image',
-            'mobile_path'=>'nullable|image',
-            'tablet_path'=>'nullable|image',
+            'path'=>'required|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'mobile_path'=>'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'tablet_path'=>'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
             'for_mobile'=>'nullable|boolean',
             'sort_order'=>'required|numeric',
             'is_active'=>'nullable|boolean',
@@ -99,6 +99,19 @@ class HomeSliderController extends Controller
     
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'path' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'mobile_path' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'tablet_path' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'for_mobile' => 'nullable|boolean',
+            'sort_order' => 'required|numeric',
+            'is_active' => 'nullable|boolean',
+            'heading' => 'nullable|string|max:255',
+            'heading_highlight' => 'nullable|string|max:255',
+            'button_text' => 'nullable|string|max:100',
+            'button_link' => 'nullable|string|max:255',
+        ]);
+
         $update_array = array(
             'for_mobile' => $request->input('for_mobile', 0),
             'is_active' => $request->input('is_active', 0) ? 1 : 0,

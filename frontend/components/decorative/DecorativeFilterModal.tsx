@@ -27,11 +27,11 @@ export default function DecorativeFilterModal({ initialFilters, availableCategor
   // Draft state for filters before applying
   const [draft, setDraft] = useState<FilterState>(initialFilters);
 
-  // Accordion open state
+  // Accordion open state — collapsed by default unless active
   const [openSections, setOpenSections] = useState({
-    category: true,
-    collection: true,
-    finish: true,
+    category: (initialFilters?.category?.length ?? 0) > 0,
+    collection: (initialFilters?.collection?.length ?? 0) > 0,
+    finish: (initialFilters?.finish?.length ?? 0) > 0,
   });
 
   const toggleSection = (section: keyof typeof openSections) => {

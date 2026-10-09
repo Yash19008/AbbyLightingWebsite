@@ -45,7 +45,7 @@ class CompositionAdminController extends Controller
     {
         $validation_array = array(
             'title' => 'required',
-            'file' => 'required',
+            'file' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
         );
         $rules = [
             'title.required' => 'The Title is required',
@@ -95,6 +95,7 @@ class CompositionAdminController extends Controller
     {
         $validation_array = array(
             'title' => 'required',
+            'file' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
         );
         $rules = [
             'title.required' => 'The Title is required',

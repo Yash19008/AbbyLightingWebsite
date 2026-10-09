@@ -79,6 +79,11 @@ class IconAdminController extends Controller
         return view('admin.icon.icon_edit', $data);
     }
     public function insert(Request $request){
+        $this->validate($request, [
+            'name' => 'required',
+            'file' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif|max:2048',
+        ]);
+
         $Val = [
             'name'=>$request->name,
             'created_at'=>$this->currentDateTime,
@@ -137,6 +142,11 @@ class IconAdminController extends Controller
         ];
         $oldDataArr = json_encode($oldData);
         
+        $this->validate($request, [
+            'name' => 'required',
+            'file' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif|max:2048',
+        ]);
+
         // UPDATE ARRAY
         $update_array = array(
             'name'=>$request->name,

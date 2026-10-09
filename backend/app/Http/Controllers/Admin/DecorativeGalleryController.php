@@ -15,6 +15,11 @@ class DecorativeGalleryController extends Controller
     {
         $product = DecProduct::findOrFail($productId);
 
+        $request->validate([
+            'new_images' => 'required|array',
+            'new_images.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+        ]);
+
         if ($request->hasFile('new_images')) {
             $files = $request->file('new_images');
             $captions = $request->input('new_captions', []);

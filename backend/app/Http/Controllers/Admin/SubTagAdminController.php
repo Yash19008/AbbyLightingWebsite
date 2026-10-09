@@ -96,7 +96,9 @@ class SubTagAdminController extends Controller
             'name' => 'required',
             'slug' => 'required',
             'tags' => 'required',
-            'file' => 'required',
+            'file' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'hover_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'banner' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
             'product_catalog' => 'nullable|mimes:pdf|max:10240', // ✅ 10MB max
         );
         $rules = [
@@ -312,6 +314,12 @@ class SubTagAdminController extends Controller
 
 
         $request->validate([
+            'display_name' => 'required',
+            'name' => 'required',
+            'file' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'hover_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'banner' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'product_catalog' => 'nullable|mimes:pdf|max:10240',
             'linked_sub_tags' => 'array',
             'linked_sub_tags.*' => 'integer|exists:sub_tags,id',
         ]);

@@ -82,6 +82,9 @@ class CategoryAdminController extends Controller
         $validation_array = array(
             'title'=>'required',
             'slug'=>'required',
+            'featured_image'=>'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'display_icon'=>'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:2048',
+            'gallary.*'=>'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
         );
         $rules = [
             'title.required' => 'Title is required',
@@ -191,6 +194,13 @@ class CategoryAdminController extends Controller
         ];
         $oldDataArr = json_encode($oldData);
         
+        $this->validate($request, [
+            'title' => 'required',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'display_icon' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:2048',
+            'gallary.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+        ]);
+
         // UPDATE ARRAY
         $update_array = array(
             'title'=>$request->title,

@@ -42,6 +42,7 @@ class DecorativeProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:dec_products,slug',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
         ]);
 
         $product = DecProduct::create([
@@ -97,6 +98,7 @@ class DecorativeProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:dec_products,slug,'.$id,
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
         ]);
 
         $product->update([

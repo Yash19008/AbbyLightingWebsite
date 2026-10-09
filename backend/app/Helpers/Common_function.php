@@ -24,9 +24,9 @@ class Common_function{
     }
 
     public static function thumb_create($file,$path){
-        $image = Image::make($file)->resize(335, 335,function ($file) {
-            $file->aspectRatio();
-            $file->upsize();
+        $image = Image::make($file)->orientate()->resize(335, 335,function ($c) {
+            $c->aspectRatio();
+            $c->upsize();
         })->encode();
         Storage::disk('s3')->put($path, $image);
         // Storage::disk('public')->put($path, $image,'public');

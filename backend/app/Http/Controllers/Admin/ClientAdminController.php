@@ -37,7 +37,7 @@ class ClientAdminController extends Controller
     {
         // VALIDATION RULE
         $validation_array = array(
-            'file' => 'required',
+            'file' => 'required|image|mimes:jpeg,png,jpg,webp,gif,svg|max:5120',
         );
         $rules = [
             'file.required' => 'Image is required',
@@ -99,7 +99,10 @@ class ClientAdminController extends Controller
             'created_by' => $oldClient->created_by,
             'created_at' => $oldClient->created_at
         ];
-        $oldDataArr = json_encode($oldData);
+        $this->validate($request, [
+            'file' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:5120',
+        ]);
+
         // UPDATE ARRAY
         $update_array = array(
             'updated_by' => Auth::guard('admin')->user()->id,
