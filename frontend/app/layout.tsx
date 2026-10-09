@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import Script from "next/script";
 import { fetchMenuItems } from '@/lib/api/menu';
 import HeaderClient from "../components/HeaderClient";
 import Footer from "../components/Footer";
@@ -23,6 +24,10 @@ export default async function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Script
+          src="https://www.google.com/recaptcha/api.js?render=explicit"
+          strategy="afterInteractive"
+        />
       </head>
       <body>
         <main>

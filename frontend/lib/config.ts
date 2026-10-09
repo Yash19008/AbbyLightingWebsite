@@ -1,5 +1,6 @@
 export const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
 export const API_URL = `${API_BASE}/api`;
+export const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6Lf9pMgpAAAAALMPOL0I0ZDi9he4KKDCRcepVuBY';
 
 /** Build a full URL from a storage-relative path */
 export function storageUrl(path: string | null | undefined, fallback = '/images/placeholder.svg'): string {

@@ -26,12 +26,21 @@ class GoogleCaptcha implements Rule
      */
     public function passes($attribute, $value)
     {
-        $http = Http::asForm()->post(config('google_captcha.gc_verification_url'),[
-            'secret' => config('google_captcha.secret_key'),
-            'response' => $value,
-        ]);
+        if (empty($value)) {
+            return false;
+        }
 
-        return $http->object()->success;
+        try {
+            $response = Http::asForm()->timeout(10)->post(config('google_captcha.gc_verification_url'), [
+                'secret'   => config('google_captcha.secret_key'),
+                'response' => $value,
+            ]);
+
+            return !empty($response->object()?->success);
+        } catch (\Throwable $e) {
+            \Log::error('reCAPTCHA verification error: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**

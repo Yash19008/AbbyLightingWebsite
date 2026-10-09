@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Inquiry;
+use App\Rules\GoogleCaptcha;
 use Illuminate\Support\Facades\Validator;
 
 class InquiryApiController extends Controller
 {
     public function store(Request $request)
     {
+        if (!$request->has('g-recaptcha-response') && $request->has('captcha')) {
+            $request->merge(['g-recaptcha-response' => $request->input('captcha')]);
+        }
+
         $validator = Validator::make($request->all(), [
             'type'      => 'required|in:product,catalogue,calculator,general',
             'reference' => 'nullable|string|max:255',
@@ -21,6 +26,9 @@ class InquiryApiController extends Controller
             'company'   => 'nullable|string|max:255',
             'role'      => 'required|string|max:255',
             'message'   => 'nullable|string|max:1000',
+            'g-recaptcha-response' => ['required', new GoogleCaptcha],
+        ], [
+            'g-recaptcha-response.required' => 'Please complete Google Captcha verification.',
         ]);
 
         if ($validator->fails()) {

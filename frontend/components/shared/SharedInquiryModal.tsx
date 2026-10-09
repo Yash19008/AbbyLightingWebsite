@@ -1,9 +1,10 @@
 "use client";
 import "@/styles/shared-inquiry.css";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { COUNTRIES, Country } from "@/lib/countries";
 import PhoneInputGroup from "@/components/ui/PhoneInputGroup";
 import CustomFormSelect, { CustomSelectOption } from "@/components/ui/CustomFormSelect";
+import GoogleReCaptcha, { GoogleReCaptchaHandle } from "@/components/ui/GoogleReCaptcha";
 import { API_URL } from "@/lib/config";
 
 export type InquiryType = "product" | "catalogue" | "calculator" | "general";
@@ -56,12 +57,13 @@ export default function SharedInquiryModal({
     company: "",
     role: "",
     message: "",
-    captcha: false,
   });
 
   const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
   const [apiErrors, setApiErrors] = useState<Record<string, string[]>>({});
+  const [captchaToken, setCaptchaToken] = useState<string>("");
   const [captchaError, setCaptchaError] = useState(false);
+  const recaptchaRef = useRef<GoogleReCaptchaHandle>(null);
 
   // Lock body scroll while modal is open
   useEffect(() => {
@@ -84,7 +86,9 @@ export default function SharedInquiryModal({
     if (isOpen) {
       setSubmitState("idle");
       setApiErrors({});
+      setCaptchaToken("");
       setCaptchaError(false);
+      recaptchaRef.current?.reset();
       setFormData({
         name: "",
         phone: "",
@@ -93,24 +97,28 @@ export default function SharedInquiryModal({
         company: "",
         role: "",
         message: "",
-        captcha: false,
       });
     }
   }, [isOpen, type, reference]);
 
-  if (!isOpen) return null;
+  const handleCaptchaVerify = useCallback((token: string) => {
+    setCaptchaToken(token);
+    setCaptchaError(false);
+    setApiErrors((prev) => {
+      if (!prev["g-recaptcha-response"]) return prev;
+      return { ...prev, "g-recaptcha-response": [] };
+    });
+  }, []);
+
+  const handleCaptchaExpire = useCallback(() => {
+    setCaptchaToken("");
+  }, []);
 
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type } = e.target;
-    if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-      if (name === "captcha") setCaptchaError(false);
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (apiErrors[name]) setApiErrors((prev) => ({ ...prev, [name]: [] }));
     if (apiErrors.general) setApiErrors((prev) => ({ ...prev, general: [] }));
   };
@@ -124,7 +132,7 @@ export default function SharedInquiryModal({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setApiErrors({});
-    if (!formData.captcha) {
+    if (!captchaToken) {
       setCaptchaError(true);
       return;
     }
@@ -143,6 +151,7 @@ export default function SharedInquiryModal({
           company: formData.company,
           role: formData.role,
           message: formData.message,
+          'g-recaptcha-response': captchaToken,
         }),
       });
       
@@ -152,12 +161,19 @@ export default function SharedInquiryModal({
         if (res.status === 422 && data?.errors) {
           setApiErrors(data.errors);
           setSubmitState("idle");
+          if (data.errors['g-recaptcha-response']) {
+            setCaptchaError(true);
+            setCaptchaToken("");
+            recaptchaRef.current?.reset();
+          }
           return;
         }
         throw new Error(data?.message || 'Server error');
       }
       
       setSubmitState("success");
+      setCaptchaToken("");
+      recaptchaRef.current?.reset();
     } catch {
       setSubmitState("error");
       setApiErrors({ general: ["Failed to send enquiry. Please try again later."] });
@@ -183,6 +199,8 @@ export default function SharedInquiryModal({
       window.open(cataloguePdfUrl, "_blank");
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -343,35 +361,23 @@ export default function SharedInquiryModal({
               </div>
 
               {apiErrors.general && <div style={{color: '#e53e3e', fontSize: '13px', marginBottom: '10px', textAlign: 'center', fontWeight: 600}}>{apiErrors.general[0]}</div>}
-              <label className="download-captcha figma-captcha-box" style={{ borderColor: captchaError ? '#e53e3e' : undefined }}>
-                <div className="download-captcha-left">
-                  <input
-                    type="checkbox"
-                    name="captcha"
-                    checked={formData.captcha}
-                    onChange={handleFormChange}
-                    required
-                  />
-                  <span>I&apos;m not a robot</span>
-                </div>
-                <div className="download-captcha-badge">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#4285f4"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    <polyline points="9 12 11 14 15 10" />
-                  </svg>
-                </div>
-              </label>
-              {captchaError && <div style={{ color: '#e53e3e', fontSize: '12px', marginTop: '4px' }}>Please complete the captcha verification</div>}
+              <div className="figma-captcha-wrapper">
+                <GoogleReCaptcha
+                  ref={recaptchaRef}
+                  onVerify={handleCaptchaVerify}
+                  onExpire={handleCaptchaExpire}
+                />
+                {captchaError && (
+                  <div className="figma-captcha-error" role="alert">
+                    Please complete Google Captcha verification.
+                  </div>
+                )}
+                {apiErrors["g-recaptcha-response"] && (
+                  <div className="figma-captcha-error" role="alert">
+                    {apiErrors["g-recaptcha-response"][0]}
+                  </div>
+                )}
+              </div>
 
               <button
                 className="figma-enquiry-submit"

@@ -398,50 +398,42 @@
   flex-shrink: 0;
 }
 
-/* Captcha inside Figma Enquiry */
-.figma-captcha-box {
+/* Real Google reCAPTCHA inside Inquiry Modal */
+.figma-captcha-wrapper {
+  margin: 20px 0 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 11px;
-  width: 185px;
-  height: 47px;
-  margin: 16px 0 0;
-  padding: 0 10px;
-  border: 1px solid #dcdcdc;
-  box-shadow: 0 1px 3.4px rgba(0, 0, 0, 0.15);
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.figma-captcha-wrapper .google-recaptcha-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  min-height: 78px;
+}
+
+.figma-captcha-error {
+  color: #e53e3e;
+  font-size: 12px;
+  margin-top: 6px;
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 11px;
-  line-height: 1;
-  background: #fff;
-  cursor: pointer;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
-.figma-enquiry .download-captcha-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+@media (max-width: 480px) {
+  .figma-captcha-wrapper .google-recaptcha-wrapper {
+    transform: scale(0.92);
+    transform-origin: 0 0;
+    max-width: 100%;
+  }
 }
 
-.figma-enquiry .download-captcha-badge {
-  display: flex;
-  align-items: center;
-}
-
-.figma-enquiry .download-captcha input {
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border: 1.5px solid #999;
-  border-radius: 2px;
-  cursor: pointer;
-  margin: 0;
-}
-
-.figma-enquiry .download-captcha input:checked {
-  background: #e5a95d;
-  box-shadow: inset 0 0 0 3px #fff;
+@media (max-width: 360px) {
+  .figma-captcha-wrapper .google-recaptcha-wrapper {
+    transform: scale(0.82);
+    transform-origin: 0 0;
+  }
 }
 
 .figma-enquiry-submit {
