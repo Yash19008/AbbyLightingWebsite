@@ -92,7 +92,7 @@
     @endif
     <section>
         <div class="container-fluid stupid-padding mt-5">
-            <div class="row gx-4 mt-5 text-center g-0" id="sub-tag-tiles">
+            <div class="row gx-4 mt-5  g-0" id="sub-tag-tiles">
                 @foreach($subTags as $index => $subTag)
                 <div class="element-item col-12 col-md-6 col-lg-3 hover-img @foreach($subTag->tags as $tag) --t{{$tag}} @endforeach">
                     <a class="w-100 img-hover-img" href="{{route('products', $subTag->slug)}}">
@@ -103,7 +103,7 @@
                     </a>
                     <br>
                     <a href="{{route('products', $subTag->slug)}}"
-                        class="section-text2 fw-500 pt-4">{{$subTag->display_name}}</a>
+                        class="section-text2 fw-600 pt-4">{{$subTag->display_name}}</a>
                 </div>
                 @endforeach
             </div>

@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abby Lighting - Next.js Exact Header</title>
+
+  <!-- Google Fonts used in Next.js -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. GLOBAL RESET & BASE
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      background-color: #0b0c0d;
+      color: #ffffff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 200vh;
+      padding-top: 111px;
+    }
+
+    ul, ol {
+      list-style: none;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      outline: none;
+      padding: 0;
+    }
+
+    /* ==========================================================================
+       2. NEXT.JS HEADER BASE (.sitehead)
+       ========================================================================== */
+    .sitehead {
+      z-index: 5000;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 111px;
+      background: #1a1c1d;
+      border-bottom: 1px solid rgba(246, 193, 119, 0.16);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .sitehead .wrap {
+      width: 100%;
+      height: 111px;
+      margin: 0;
+      padding: 0 clamp(48px, 4.86vw, 70px) 0 clamp(64px, 6.39vw, 92px);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+    }
+
+    /* Logo */
+    .sitehead .logo {
+      flex: 0 0 105px;
+      width: 105px;
+      height: 72px;
+      margin-right: 105px;
+      display: flex;
+      align-items: center;
+    }
+
+    .sitehead .logo-asset {
+      width: 105px;
+      height: 72px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      display: block;
+    }
+
+    /* Desktop Navigation */
+    .sitehead nav {
+      height: 111px;
+      display: flex;
+      align-items: center;
+    }
+
+    .sitehead nav > ul {
+      height: 111px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sitehead nav > ul > li {
+      height: 111px;
+      display: flex;
+      align-items: center;
+    }
+
+    .sitehead nav > ul > li:nth-child(2) {
+      margin-left: 40px;
+    }
+
+    .sitehead nav > ul > li:nth-child(3) {
+      margin-left: 51px;
+    }
+
+    .sitehead nav > ul > li:nth-child(4) {
+      margin-left: 56px;
+    }
+
+    .sitehead nav a.link {
+      color: #ffffff;
+      font: 700 14px/22px 'Inter', sans-serif;
+      height: 111px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: color 0.2s ease;
+      letter-spacing: 0;
+    }
+
+    .sitehead nav a.link:hover,
+    .sitehead .has-mega:hover > a.link,
+    .sitehead .has-mega:focus-within > a.link,
+    .sitehead .has-drop:hover > a.link,
+    .sitehead .has-drop:focus-within > a.link {
+      color: #f6c177;
+    }
+
+    .sitehead .has-mega > a.link .caret {
+      display: block;
+      border-top: 5px solid;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      width: 0;
+      height: 0;
+      margin-top: 2px;
+    }
+
+    .sitehead .has-drop > a.link .caret {
+      display: none;
+    }
+
+    /* Right Action Bar */
+    .sitehead .right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 31px;
+    }
+
+    /* "Get in Touch" CTA Button */
+    .sitehead .nav-cta {
+      background: #f6c177;
+      color: #000000 !important;
+      width: 127px;
+      height: 37px;
+      min-height: 37px;
+      border-radius: 2px;
+      font: 400 14px/37px 'Poppins', sans-serif;
+      letter-spacing: 0.56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.18s ease;
+    }
+
+    .sitehead .nav-cta:hover {
+      background: #e5b066;
+    }
+
+    .sitehead .nav-cta .lbl-d {
+      display: inline;
+    }
+
+    .sitehead .nav-cta .lbl-m {
+      display: none;
+    }
+
+    /* ==========================================================================
+       3. MEGA DROPDOWN (1:1 Next.js CSS Grid from globals.css)
+       ========================================================================== */
+    .sitehead .has-mega {
+      position: static;
+    }
+
+    .sitehead .mega {
+      position: absolute;
+      top: 111px;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 5010;
+    }
+
+    .sitehead .has-mega:hover .mega,
+    .sitehead .has-mega:focus-within .mega {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sitehead .mega-panel {
+      background: #050505fa;
+      min-height: 288px;
+      height: auto;
+      padding: 32px 0;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+    }
+
+    .sitehead .mega-grid {
+      width: max-content;
+      max-width: 100%;
+      height: auto;
+      min-height: 227px;
+      margin: 0 auto;
+      padding: 0 48px;
+      display: grid;
+      grid-template-columns: 192px 1px 9px 450px 1px 34px auto;
+      align-items: start;
+      position: relative;
+    }
+
+    /* Grid Positioning for Mega Children */
+    .sitehead .mgroup.m-arch {
+      grid-column: 1;
+      grid-row: 1;
+      width: 192px;
+      position: relative;
+      top: auto;
+      left: auto;
+      margin: 0;
+    }
+
+    .sitehead .mega-grid > .msep:nth-of-type(1) {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: stretch;
+      width: 1px;
+      min-height: 219px;
+      background: rgba(255, 255, 255, 0.22);
+      position: relative;
+      top: auto;
+      left: auto;
+      margin: 0;
+    }
+
+    .sitehead .mgroup.m-dec {
+      grid-column: 4;
+      grid-row: 1;
+      width: 450px;
+      position: relative;
+      top: auto;
+      left: auto;
+      margin: 0;
+    }
+
+    .sitehead .mega-grid > .msep.lg {
+      grid-column: 5;
+      grid-row: 1;
+      align-self: stretch;
+      width: 1px;
+      min-height: 219px;
+      background: rgba(255, 255, 255, 0.22);
+      position: relative;
+      top: auto;
+      left: auto;
+      margin: 0;
+    }
+
+    .sitehead .m-worlds {
+      grid-column: 7;
+      grid-row: 1;
+      width: max-content;
+      min-width: 144px;
+      position: relative;
+      top: auto;
+      left: auto;
+      margin: 0;
+      display: grid;
+      grid-template-rows: repeat(5, max-content);
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(144px, max-content);
+      column-gap: 16px;
+      row-gap: 8px;
+    }
+
+    /* Category Group Cards (.mgroup) */
+    .sitehead .mgroup {
+      border-radius: 1px;
+      padding: 10px 14px;
+      box-sizing: border-box;
+      overflow: hidden;
+      background: transparent;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    /* Glowing Gradient Box Effect on Hover */
+    .sitehead .mgroup::before {
+      content: "";
+      box-sizing: border-box;
+      background: linear-gradient(156deg, rgba(172, 139, 92, 0.31) 11%, rgba(66, 38, 0, 0.31) 92%);
+      border: 1px solid rgba(255, 255, 255, 0.31);
+      border-radius: 1px;
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .sitehead .mgroup:hover::before,
+    .sitehead .mgroup:focus-within::before,
+    .sitehead .mgroup.lit::before,
+    .sitehead .m-worlds .mgroup:hover::before,
+    .sitehead .m-worlds .mgroup:focus-within::before {
+      opacity: 1;
+    }
+
+    .sitehead .mgroup:hover > .mhead,
+    .sitehead .mgroup:focus-within > .mhead,
+    .sitehead .mgroup.lit > .mhead,
+    .sitehead .m-worlds .mgroup:hover .mhead,
+    .sitehead .m-worlds .mgroup:focus-within .mhead {
+      color: #f6c177;
+    }
+
+    .sitehead .mhead {
+      color: #ffffff;
+      font: 700 14px/17px 'Inter', sans-serif;
+      letter-spacing: 0.56px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 2;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+
+    .sitehead .m-arch > .mhead,
+    .sitehead .m-dec > .mhead {
+      color: #f6c177;
+    }
+
+    .sitehead .mnew {
+      color: #1a1c1d;
+      background: #f6c177;
+      text-align: center;
+      border-radius: 1px;
+      width: 28px;
+      height: 14px;
+      font: 500 7px/14px 'Poppins', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sitehead .msub {
+      color: rgba(255, 255, 255, 0.62);
+      font: 300 11px/14px 'Poppins', sans-serif;
+      letter-spacing: 0.44px;
+      margin: 12px 0 6px;
+      position: relative;
+      z-index: 2;
+      text-transform: uppercase;
+    }
+
+    .sitehead .mcols {
+      display: flex;
+      align-items: flex-start;
+      margin-top: 12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .sitehead .mcols .msub {
+      margin: 0 0 6px;
+    }
+
+    .sitehead .mcols > div:first-child {
+      flex: 0 0 102px;
+      width: 102px;
+    }
+
+    .sitehead .mcols .msep.sm {
+      background: rgba(255, 255, 255, 0.22);
+      width: 1px;
+      height: 144px;
+      margin: 0 31px;
+      align-self: stretch;
+    }
+
+    .sitehead .mega ul {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sitehead .mega li a {
+      color: #e1dcd6;
+      font: 400 14px/27px 'Inter', sans-serif;
+      letter-spacing: 0.56px;
+      transition: color 0.2s ease;
+      display: inline-block;
+    }
+
+    .sitehead .mega li a:hover {
+      color: #ffffff;
+    }
+
+    /* Worlds items (.mgroup.m-out) */
+    .sitehead .m-worlds .mgroup {
+      margin: 0;
+      min-width: 144px;
+      width: 100%;
+      height: 38px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      cursor: pointer;
+    }
+
+    .sitehead .m-worlds .mgroup .mhead {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 15px;
+      letter-spacing: 0.52px;
+      text-transform: none;
+    }
+
+    /* ==========================================================================
+       4. STANDARD DROPDOWNS ("Our Work", "More")
+       ========================================================================== */
+    .sitehead .has-drop {
+      position: relative;
+    }
+
+    .sitehead .drop {
+      background: #050505fa;
+      border: 0;
+      border-radius: 0;
+      top: 88px;
+      padding: 18px 19px;
+      position: absolute;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.24s ease, visibility 0.24s ease;
+      z-index: 5020;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sitehead nav > ul > li:nth-child(2) .drop {
+      width: 136px;
+      min-width: 136px;
+      height: 104px;
+      left: 0;
+    }
+
+    .sitehead nav > ul > li:nth-child(4) .drop {
+      width: 168px;
+      min-width: 168px;
+      height: 162px;
+      left: -32px;
+    }
+
+    .sitehead .has-drop:hover .drop,
+    .sitehead .has-drop:focus-within .drop {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sitehead .drop a {
+      color: #e1dcd6;
+      font: 400 14px/31px 'Inter', sans-serif;
+      letter-spacing: 0.56px;
+      display: block;
+      transition: color 0.2s ease;
+      background: transparent;
+    }
+
+    .sitehead .drop a:hover {
+      color: #ffffff;
+      background: transparent;
+    }
+
+    /* ==========================================================================
+       5. SEARCH BAR (1:1 Next.js page-DNa-mY-1.css)
+       ========================================================================== */
+    .abby-search {
+      z-index: 130;
+      flex: 0 0 18px;
+      width: 18px;
+      height: 18px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .abby-search-form {
+      opacity: 0;
+      pointer-events: none;
+      color: #fff;
+      background: #1a1c1d;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 2px;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      transition: width 0.38s cubic-bezier(0.2, 0.75, 0.25, 1), opacity 0.18s ease;
+      display: flex;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      overflow: hidden;
+      transform: translateY(-50%);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
+    }
+
+    .abby-search.is-open .abby-search-form {
+      opacity: 1;
+      pointer-events: auto;
+      width: min(400px, 34vw);
+    }
+
+    .abby-search-leading {
+      color: rgba(255, 255, 255, 0.58);
+      flex: 0 0 40px;
+      display: grid;
+      place-items: center;
+    }
+
+    .abby-search svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5px;
+      stroke-linecap: round;
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .abby-search input {
+      color: #fff;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      padding: 0 48px 0 0;
+      font: 400 12px/1.2 'Poppins', sans-serif;
+    }
+
+    .abby-search input::-webkit-search-cancel-button {
+      display: none;
+    }
+
+    .abby-search input::placeholder {
+      color: rgba(255, 255, 255, 0.48);
+    }
+
+    .abby-search-go {
+      color: #f6c177;
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      font: 300 20px/1 'Inter', sans-serif;
+      position: absolute;
+      top: 0;
+      right: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .abby-search-toggle {
+      z-index: 3;
+      color: #fff;
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+      display: grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      transition: color 0.2s ease, transform 0.25s ease;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+    }
+
+    .abby-search-toggle:hover {
+      color: #f6c177;
+    }
+
+    .abby-search.is-open .abby-search-toggle {
+      transform: translateY(-50%) rotate(90deg);
+    }
+
+    /* ==========================================================================
+       6. MOBILE RESPONSIVE RULES (< 901px)
+       ========================================================================== */
+    @media (max-width: 900px) {
+      body {
+        padding-top: 82px;
+      }
+
+      .sitehead {
+        height: 82px;
+        background: #1a1c1d;
+        border-bottom: 1px solid rgba(246, 193, 119, 0.16);
+      }
+
+      .sitehead .wrap {
+        height: 82px;
+        padding: 0 20px;
+        justify-content: space-between;
+      }
+
+      .sitehead .logo {
+        height: 52px;
+        width: auto;
+        margin-right: 0;
+      }
+
+      .sitehead .logo-asset {
+        height: 46px;
+        width: auto;
+      }
+
+      .sitehead nav {
+        display: none;
+      }
+
+      .sitehead .right {
+        gap: 16px;
+      }
+
+      .sitehead .nav-cta {
+        height: 32px;
+        width: auto;
+        padding: 0 14px;
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .sitehead .nav-cta .lbl-d {
+        display: none;
+      }
+
+      .sitehead .nav-cta .lbl-m {
+        display: inline;
+      }
+    }
+
+    /* Demo Hero Section */
+    .demo-hero {
+      max-width: 1200px;
+      margin: 80px auto;
+      padding: 0 40px;
+      text-align: center;
+    }
+    .demo-hero h1 {
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+    .demo-hero p {
+      font-size: 16px;
+      color: #a0a0a0;
+      max-width: 620px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       NEXT.JS EXACT HEADER (100% IDENTICAL DOM TO Next.js HeaderClient.tsx)
+       ========================================================================== -->
+  <header class="sitehead" id="sitehead">
+    <div class="wrap">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="logo" aria-label="Abby Lighting home">
+        <img class="logo-asset" src="images/abby-logo.png" alt="Abby Lighting" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/Yash19008/AbbyLightingWebsite/live/frontend/public/images/abby-logo.png';" />
+      </a>
+
+      <!-- Primary Navigation -->
+      <nav aria-label="Primary navigation">
+        <ul>
+          
+          <!-- PRODUCTS WITH MEGA MENU -->
+          <li class="has-mega">
+            <a class="link" href="/products">
+              Product<span class="caret"></span>
+            </a>
+            <div class="mega">
+              <div class="mega-panel">
+                <div class="mega-grid" id="megaGrid">
+                  
+                  <!-- ARCHITECTURAL SECTION -->
+                  <div class="mgroup m-arch">
+                    <div class="mhead">Architectural</div>
+                    <div class="msub">Browse by category</div>
+                    <ul id="archCategories">
+                      <li><a href="/products?category=spots-accents">Spots &amp; Accents</a></li>
+                      <li><a href="/products?category=downlights">Downlights</a></li>
+                      <li><a href="/products?category=profiles">Profiles</a></li>
+                      <li><a href="/products?category=track-lights">Track Lights</a></li>
+                      <li><a href="/products?category=washers-grazers">Washers &amp; Grazers</a></li>
+                    </ul>
+                  </div>
+
+                  <!-- SEPARATOR 1 -->
+                  <div class="msep"></div>
+
+                  <!-- DECORATIVE SECTION -->
+                  <div class="mgroup m-dec">
+                    <div class="mhead">
+                      Decorative <span class="mnew">NEW</span>
+                    </div>
+                    <div class="mcols">
+                      <div>
+                        <div class="msub">Browse by category</div>
+                        <ul id="decCategories">
+                          <li><a href="/decorative-products?category=chandelier">Chandelier</a></li>
+                          <li><a href="/decorative-products?category=pendant-lights">Pendant Lights</a></li>
+                          <li><a href="/decorative-products?category=wall-lights">Wall Lights</a></li>
+                          <li><a href="/decorative-products?category=floor-lamps">Floor Lamps</a></li>
+                          <li><a href="/decorative-products?category=table-lamps">Table Lamps</a></li>
+                        </ul>
+                      </div>
+                      <div class="msep sm"></div>
+                      <div>
+                        <div class="msub">Browse by collection</div>
+                        <ul id="decCollections">
+                          <li><a href="/collections/symphony">Symphony</a></li>
+                          <li><a href="/collections/quarry">Quarry</a></li>
+                          <li><a href="/collections/neoma">Neoma</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- SEPARATOR 2 -->
+                  <div class="msep lg"></div>
+
+                  <!-- WORLDS & EXTRA LINKS (CATALOGUES, OUTDOOR, SMART LIGHTING) -->
+                  <div class="m-worlds" id="menuWorlds">
+                    <a class="mgroup m-out w-100" href="/catalogues">
+                      <span class="mhead">Catalogues</span>
+                    </a>
+                    <a class="mgroup m-out w-100" href="/#worlds">
+                      <span class="mhead">Outdoor</span>
+                    </a>
+                    <a class="mgroup m-out w-100" href="/#worlds">
+                      <span class="mhead">Smart Lighting</span>
+                    </a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <!-- OUR WORK WITH DROPDOWN -->
+          <li class="has-drop">
+            <a class="link" href="/projects">
+              Our Work<span class="caret"></span>
+            </a>
+            <div class="drop">
+              <a href="/projects">Projects</a>
+              <a href="/clients">Clients</a>
+            </div>
+          </li>
+
+          <!-- INSPIRATION LINK -->
+          <li>
+            <a class="link" href="/inspiration">Inspiration</a>
+          </li>
+
+          <!-- MORE WITH DROPDOWN -->
+          <li class="has-drop">
+            <a class="link" href="/company">
+              More<span class="caret"></span>
+            </a>
+            <div class="drop">
+              <a href="/company">About Us</a>
+              <a href="/contact">Contact Us</a>
+              <a href="/career">Careers</a>
+              <a href="/catalogues">Catalogues</a>
+            </div>
+          </li>
+
+        </ul>
+      </nav>
+
+      <!-- Right Header Actions (Search & CTA) -->
+      <div class="right">
+        
+        <!-- Expanding Search Bar -->
+        <div class="abby-search" id="searchContainer">
+          <form class="abby-search-form" role="search" id="searchForm" onsubmit="event.preventDefault();">
+            <span class="abby-search-leading">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="10.7" cy="10.7" r="6.7"></circle>
+                <path d="m16 16 4.5 4.5"></path>
+              </svg>
+            </span>
+            <input 
+              type="search" 
+              placeholder="Search for products, collections and more" 
+              aria-label="Search Abby Lighting" 
+              id="searchInput" 
+              autocomplete="off" 
+              value=""
+            />
+            <button class="abby-search-go" type="submit" aria-label="Submit search" disabled="">→</button>
+          </form>
+          <button 
+            type="button" 
+            class="abby-search-toggle" 
+            id="searchToggle" 
+            aria-label="Open search" 
+            aria-expanded="false"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" id="searchToggleSvg">
+              <circle cx="10.7" cy="10.7" r="6.7"></circle>
+              <path d="m16 16 4.5 4.5"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Contact CTA Button -->
+        <button class="nav-cta" onclick="window.location.href='/contact'">
+          <span class="lbl-d">Get in Touch</span>
+          <span class="lbl-m">Contact Us</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Demo Content Below Header -->
+  <main class="demo-hero">
+    <h1>Abby Lighting Next.js Header Component</h1>
+    <p>100% self-contained header with embedded Next.js CSS. Hover over <strong>Product</strong> to view the multi-column mega dropdown with gold glowing background cards (<strong>Catalogues</strong>, <strong>Outdoor</strong>, <strong>Smart Lighting</strong>).</p>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 1. Search toggle
+      const searchContainer = document.getElementById('searchContainer');
+      const searchToggle = document.getElementById('searchToggle');
+      const searchToggleSvg = document.getElementById('searchToggleSvg');
+      const searchInput = document.getElementById('searchInput');
+
+      const SEARCH_SVG_MAGNIFIER = '<circle cx="10.7" cy="10.7" r="6.7"></circle><path d="m16 16 4.5 4.5"></path>';
+      const SEARCH_SVG_CLOSE = '<path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />';
+
+      if (searchToggle && searchContainer) {
+        searchToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const isOpen = searchContainer.classList.contains('is-open');
+          if (isOpen) {
+            searchContainer.classList.remove('is-open');
+            searchToggle.setAttribute('aria-expanded', 'false');
+            searchToggleSvg.innerHTML = SEARCH_SVG_MAGNIFIER;
+          } else {
+            searchContainer.classList.add('is-open');
+            searchToggle.setAttribute('aria-expanded', 'true');
+            searchToggleSvg.innerHTML = SEARCH_SVG_CLOSE;
+            setTimeout(() => searchInput.focus(), 150);
+          }
+        });
+
+        document.addEventListener('click', function(e) {
+          if (!searchContainer.contains(e.target)) {
+            searchContainer.classList.remove('is-open');
+            searchToggle.setAttribute('aria-expanded', 'false');
+            searchToggleSvg.innerHTML = SEARCH_SVG_MAGNIFIER;
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

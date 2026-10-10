@@ -84,11 +84,11 @@
     </section>
     <section>   
         <div class="container-fluid stupid-padding special-padding {{ @$onSearchPage ? 'mt-0' : ''}}">
-            <div class="row gx-4 mt-4 text-center g-0" id="sub-tag-tiles">
+            <div class="row gx-4 mt-4 g-0" id="sub-tag-tiles">
                 @foreach($products as $index => $product)
                 <div class="col-12 col-md-6 col-lg-3 hover-img --c{{Str::slug($product->category->id)}}">
                     <img src="{{asset('storage/uploads/products/'.@$product->featured_image)}}" alt="" class="img-fluid w-100">
-                    <p class="section-text2 fw-500 pt-4">{{$product->title}}</p>
+                    <p class="section-text2 fw-600 pt-4">{{$product->title}}</p>
                     <p class="section-text3 fs-1-1 fw-300 mt-n5 pt-2 mb-5">
                         @php 
                             foreach($product->variants as $variant){

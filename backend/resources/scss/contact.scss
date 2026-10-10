@@ -18,7 +18,10 @@
 }
 #contact_form input {
     text-rendering: auto;
-    color: fieldtext;
+    color: black;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
     letter-spacing: normal;
     word-spacing: normal;
     line-height: normal;
@@ -30,7 +33,6 @@
     appearance: auto;
     -webkit-rtl-ordering: logical;
     cursor: text;
-    background-color: field;
     margin: 0em;
     padding: 1px 2px;
     border-top-width:0px ;
@@ -47,8 +49,10 @@
 }
 
 #contact_form input::placeholder{
-    color: #726F6E;
-    font-weight: 500;
+    color: black;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
 }
 .contact{
     padding-top: 10% !important;

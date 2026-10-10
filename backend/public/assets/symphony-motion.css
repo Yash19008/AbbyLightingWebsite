@@ -1,0 +1,212 @@
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-press: 140ms;
+  --dur-hover: 200ms;
+  --dur-reveal: 500ms;
+  --stagger: 60ms;
+}
+
+/* Hero: a single, non-repeating settle. */
+.s-hero > img {
+  animation: symphony-hero-settle 700ms var(--ease-out) both;
+}
+
+.s-hero-copy h1,
+.s-hero-copy > p:last-child {
+  animation: symphony-hero-copy var(--dur-reveal) var(--ease-out) both;
+}
+
+.s-hero-copy > p:last-child { animation-delay: var(--stagger); }
+.s-hero h1 em { animation: symphony-fade var(--dur-reveal) var(--ease-out) calc(var(--stagger) * 2) both; }
+
+@keyframes symphony-hero-settle {
+  from { opacity: 0; transform: scale(1.04); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes symphony-hero-copy {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes symphony-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* One-time editorial scroll reveals. Hidden states only exist once JS is active. */
+.symphony-motion-enabled .motion-rise,
+.symphony-motion-enabled .s-products .decorative-card {
+  opacity: 0;
+  filter: none;
+  transform: translateY(20px);
+  transition: transform var(--dur-reveal) var(--ease-out) var(--motion-delay, 0ms), opacity var(--dur-reveal) var(--ease-out) var(--motion-delay, 0ms);
+}
+
+.symphony-motion-enabled .motion-rise.is-revealed,
+.symphony-motion-enabled .s-products .decorative-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.symphony-motion-enabled .motion-wipe {
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 600ms var(--ease-out) var(--motion-delay, 0ms), opacity 300ms var(--ease-out) var(--motion-delay, 0ms);
+}
+
+.symphony-motion-enabled .motion-wipe.is-revealed {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+}
+
+/* Interactive feedback. */
+.s-products .decorative-card.is-revealed,
+.s-view,
+.s-related a,
+.s-catalogue a,
+.s-carousel-arrow {
+  transition: transform var(--dur-hover) var(--ease-out), opacity var(--dur-hover) var(--ease-out);
+}
+
+.symphony-page a:active,
+.symphony-page button:active,
+.s-products .decorative-card:active {
+  transform: scale(0.98);
+  transition-duration: var(--dur-press);
+}
+
+.s-carousel-arrow:active { transform: translateY(-50%) scale(0.98); }
+
+.s-products .decorative-card-image,
+.s-look,
+.s-place,
+.s-tone-grid article,
+.s-related a {
+  overflow: hidden;
+}
+
+.s-products .decorative-product-image,
+.s-look img,
+.s-place img,
+.s-tone-grid img,
+.s-related img,
+.s-products .decorative-card-copy,
+.s-place h3,
+.s-related h3,
+.s-related p {
+  transition: transform var(--dur-hover) var(--ease-out), opacity var(--dur-hover) var(--ease-out);
+}
+
+/* Colour-family finish copy follows the image with a quiet beat. */
+.s-tone-grid article > div p {
+  transition: transform var(--dur-hover) var(--ease-out) var(--stagger), opacity var(--dur-hover) var(--ease-out) var(--stagger);
+}
+
+.s-parameter-grid small {
+  opacity: 0.78;
+  transition: opacity var(--dur-hover) var(--ease-out);
+}
+
+/* Diagram assembly: six short, explanatory sequences, all below one second. */
+.symphony-motion-enabled .score-group .spread-pattern i,
+.symphony-motion-enabled .score-group .drop-pattern i,
+.symphony-motion-enabled .score-group .drop-pattern::before {
+  opacity: 0;
+}
+
+.symphony-motion-enabled .score-group.is-revealed .spread-pattern i {
+  animation: symphony-dot-in 420ms var(--ease-out) both;
+}
+
+.symphony-motion-enabled .score-group.is-revealed .drop-pattern::before {
+  animation: symphony-line-in 300ms var(--ease-out) both;
+}
+
+.symphony-motion-enabled .score-group.is-revealed .drop-pattern i {
+  animation: symphony-drop-in 600ms var(--ease-in-out) both;
+}
+
+.score-pattern i:nth-child(2),
+.score-group.is-revealed .spread-pattern i:nth-child(2),
+.score-group.is-revealed .drop-pattern i:nth-child(2) { animation-delay: var(--stagger); }
+.score-group.is-revealed .spread-pattern i:nth-child(3),
+.score-group.is-revealed .drop-pattern i:nth-child(3) { animation-delay: calc(var(--stagger) * 2); }
+.score-group.is-revealed .spread-pattern i:nth-child(4) { animation-delay: calc(var(--stagger) * 3); }
+.score-group.is-revealed .spread-pattern i:nth-child(5) { animation-delay: calc(var(--stagger) * 4); }
+.score-group.is-revealed .spread-pattern i:nth-child(6) { animation-delay: calc(var(--stagger) * 5); }
+
+@keyframes symphony-dot-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes symphony-drop-in {
+  from { opacity: 0; transform: translateY(-14px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes symphony-line-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .s-parameter-grid article:hover { transform: translateY(-2px); }
+  .s-parameter-grid article:hover small { opacity: 1; }
+
+  .s-products .decorative-card:hover { transform: translateY(-4px); }
+  .s-products .decorative-card:hover .decorative-product-image { transform: scale(1.02); }
+  .s-products .decorative-card:hover .decorative-card-copy { transform: translateY(-3px); }
+
+  .s-look:hover img,
+  .s-place:hover img,
+  .s-tone-grid article:hover img,
+  .s-related a:hover img { transform: scale(1.03); }
+
+  .s-tone-grid article:hover > div p { opacity: 1; transform: translateY(-2px); }
+  .s-related a:hover h3,
+  .s-related a:hover p { transform: translate(3px, -3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s-hero > img,
+  .s-hero-copy h1,
+  .s-hero-copy > p:last-child,
+  .s-hero h1 em {
+    animation: symphony-fade 200ms var(--ease-out) both;
+  }
+
+  .symphony-motion-enabled .motion-rise,
+  .symphony-motion-enabled .motion-rise.is-revealed,
+  .symphony-motion-enabled .motion-wipe,
+  .symphony-motion-enabled .motion-wipe.is-revealed,
+  .symphony-motion-enabled .s-products .decorative-card,
+  .symphony-motion-enabled .s-products .decorative-card.is-revealed {
+    clip-path: none;
+    transform: none;
+    transition: opacity 200ms var(--ease-out);
+  }
+
+  .symphony-motion-enabled .score-group .spread-pattern i,
+  .symphony-motion-enabled .score-group .drop-pattern i,
+  .symphony-motion-enabled .score-group .drop-pattern::before {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+
+  .s-products .decorative-product-image,
+  .s-look img,
+  .s-place img,
+  .s-tone-grid img,
+  .s-related img,
+  .s-products .decorative-card-copy,
+  .s-place h3,
+  .s-related h3,
+  .s-related p {
+    transform: none;
+    transition: opacity var(--dur-hover) var(--ease-out);
+  }
+}

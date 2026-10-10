@@ -36,12 +36,7 @@ projects')
         </div>
     </div>
     <div class="col-12 col-lg-3 p-0">
-        <div id="see-how-it-works-wrapper" class="text-content mt-0">
-            <strong id="with_break"><a style="color: #4d4d4d" href="#smart-lighting-view-section">SEE HOW<br>IT
-                    WORKS</a></strong>
-            <strong id="without_break" class="my-5"><a style="color: #4d4d4d" href="#smart-lighting-view-section">SEE
-                    HOW IT WORKS</a></strong>
-        </div>
+       
     </div>
 </div>
 <div class="container-fluid p-0">

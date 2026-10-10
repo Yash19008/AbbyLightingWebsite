@@ -57,7 +57,7 @@
         <div class="container-fluid stupid-padding no-mobile-padding mt-5 bg-white">
             <div class="row py-5">
                 @foreach ($clients as $client)
-                <div class="col-6 col-md-3 col-lg-2 text-center">
+                <div class="col-6 col-md-3 col-lg-2">
                     <img src="/storage/uploads/clients/{{$client->path}}" class="img-fluid" alt="">
                 </div>
                 @endforeach

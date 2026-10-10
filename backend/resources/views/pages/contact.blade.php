@@ -92,7 +92,7 @@
                                 <a href="javscript:void()"
                                     onclick="event.preventDefault();googleCaptchaForms.submit('contact_form')"
                                     class="section-detail-text">Submit Form</a>
-                                <img src="img/icons/right-arrow.svg" width="10">
+                                <img src="img/icons/right-arrow.svg" width="7">
                             </div>
                         </div>
 
@@ -140,7 +140,7 @@
                             <p class="contact-section2-text">frontdesk@abbylighting.com<br>+91 9833 645 212</p>
                             {{-- <div class="mt-4">
                                 <a href="#" class="section-detail-text1">Get Directions</a>
-                                <img src="img/icons/right-arrow.svg" alt="" width=10>
+                                <img src="img/icons/right-arrow.svg" alt="" width=7>
                             </div> --}}
                         </div>
                     </div>
@@ -187,12 +187,12 @@
             <div class="col-12 col-lg-4 col-md-3 mb-4 mb-md-0">
                 <a href="#" class="section3-detail-text" data-bs-toggle="modal"
                     data-bs-target="#downloadCatalogModal">DOWNLOAD CATALOGUE</a>
-                <img src="img/icons/right-arrow.svg" alt="" width=10>
+                <img src="img/icons/right-arrow.svg" alt="" width=7>
             </div>
             <div class="col-12 col-lg-4 col-md-3 mb-4 mb-md-0">
                 <a href="https://www.youtube.com/watch?v=SPgaE-3jxEY" class="section3-detail-text"
                     target="_blank">FACTORY VIDEO</a>
-                <img src="img/icons/right-arrow.svg" alt="" width=10>
+                <img src="img/icons/right-arrow.svg" alt="" width=7>
             </div>
         </div>
     </div>
