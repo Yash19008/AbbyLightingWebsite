@@ -175,6 +175,7 @@ hr {
     @media (min-width: 1200px) {
         padding: 0 8.625rem 0 8.625rem;
         margin-top: 8.950625rem;
+
         &.special-padding {
             margin-top: 5.5rem;
         }
@@ -624,6 +625,7 @@ footer {
 
             .input-section {
                 position: relative;
+
                 .input_title {
                     position: absolute;
                     top: -6px;
@@ -636,6 +638,7 @@ footer {
                     text-align: center;
                 }
             }
+
             input {
                 background: transparent;
                 width: 100%;
@@ -717,4 +720,30 @@ footer {
         padding-left: 1rem !important;
         padding-right: 1rem !important;
     }
+}
+
+/* Global 5rem side padding for all Blade page containers and sections */
+.container,
+.container-fluid,
+.stupid-padding {
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
+}
+
+@media (max-width: 768px) {
+
+    .container,
+    .container-fluid,
+    .stupid-padding {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+/* Mobile dock bottom padding override for main-box */
+.main-box {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
 }

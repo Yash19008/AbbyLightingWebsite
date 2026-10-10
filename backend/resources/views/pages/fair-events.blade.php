@@ -28,7 +28,7 @@
     @include('partials.common.header-nextjs')
 
     {{-- Fair Events Page Content --}}
-<div class="px-lg-5 project-page">
+<div class=" project-page">
     <div class="container-fluid">
         <h1 class="section-title">{{@$title}}</h1>
         <div class="row">

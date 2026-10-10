@@ -39,8 +39,8 @@
                     <img src="{{asset('storage/uploads/banners/banner_image-career.jpg')}}" alt="" class="img-fluid">
                 @endif
             </div>
-            <div class="col-12 col-lg-6 md-5 p-3 p-md-5">
-                <div class="p-0 p-xl-5">
+            <div class="col-12 col-lg-6 md-5">
+                <div class="p-0 py-xl-5">
                     <h3 class="career-section-title pt-5">Work with us</h3>
                     <p class="section-career-text">
                         If you love light, Become one of us!

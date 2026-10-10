@@ -49,7 +49,7 @@
 
                 </div>
             </div>
-            <div class="col-12 col-lg-6 p-0">
+            <div class="col-12 col-lg-6 p-0 mt-20">
                 <a href="#" style="position: relative">
                     <img src="{{asset('img/about-us/Artboard2.png')}}" alt="" class="img-fluid">
                 </a>
@@ -59,7 +59,7 @@
     </div>
     <div class="container-fluid my-5">
         <div class="row">
-            <div class="col-12 col-lg-6 p-0 order-2 order-lg-1">
+            <div class="col-12 col-lg-6 p-0 order-2 order-lg-1 mt-20">
                 <a href="#" style="position: relative">
                     <img src="{{asset('img/about-us/Artboard3.png')}}" alt="" class="img-fluid">
                 </a>
@@ -89,7 +89,7 @@
 
                 </div>
             </div>
-            <div class="col-12 col-lg-6 p-0">
+            <div class="col-12 col-lg-6 p-0 mt-20">
                 <a href="#" style="position: relative">
                     <img src="{{asset('img/about-us/Artboard4.png')}}" alt="" class="img-fluid">
                 </a>
@@ -99,7 +99,7 @@
     </div>
     <div class="container-fluid my-5">
         <div class="row">
-            <div class="col-12 col-lg-6 p-0 order-2 order-lg-1">
+            <div class="col-12 col-lg-6 p-0 order-2 order-lg-1 mt-20">
                 <a href="#" style="position: relative">
                     <img src="{{asset('img/about-us/Artboard5.png')}}" alt="" class="img-fluid">
                 </a>
@@ -128,7 +128,7 @@
 
                 </div>
             </div>
-            <div class="col-12 col-lg-6 p-0">
+            <div class="col-12 col-lg-6 p-0 mt-20">
                 <a href="#" style="position: relative">
                     <img src="{{asset('img/about-us/Artboard6.png')}}" alt="" class="img-fluid">
                 </a>
@@ -138,7 +138,7 @@
     </div>
 
 </section>
-<div class="container-fluid p-0 mt-5">
+<div class="container-fluid p-0 mt-20">
     <div class="row">
         <div class="col-12">
             <img src="{{asset('img/about-us/Artboard7.png')}}" alt="" class="img-fluid w-100">

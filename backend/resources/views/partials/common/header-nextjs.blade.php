@@ -4,7 +4,9 @@
    NEXTJS HEADER - SCOPED & NAMESPACED CSS
    All classes prefixed with .nextjs-header- to prevent conflicts
    ================================================================== */
-
+/* .main-box {
+  padding-bottom: calc(108px + env(safe-area-inset-bottom)) !important;
+} */
 @media (min-width: 901px){
   .main-box .sitehead .mhead,
   .main-box .sitehead .m-arch>.mhead,
@@ -90,7 +92,15 @@
     -webkit-mask-image:url(/images/mobile-dock/more.png);
     mask-image:url(/images/mobile-dock/more.png);
   }
+  .main-box {
+  padding-bottom: calc(0px + env(safe-area-inset-bottom)) !important;
 }
+}
+
+
+
+/* Main Box Bottom Padding Override */
+
 
 /*!*****************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./public/assets/page-DNa-mY-1.css ***!

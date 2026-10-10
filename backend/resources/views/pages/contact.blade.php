@@ -42,14 +42,14 @@
                 @endif
             </div>
 
-            <div class="col-12 col-lg-6 col-md-12 md-5 p-3 p-md-5 contact-form">
-                <div class="p-0 p-xl-3">
+            <div class="col-12 col-lg-6 col-md-12 md-5 p-3 py-xl-5 contact-form">
+                <div class="p-0 py-xl-3">
                     <h3 class="contact-section2-title">Say hi, & we will get back to you shortly!</h3>
                     <p class="contact-section-text">Send us an email with your question or concerns. If you would like
                         to discuss your current or potential project with us, please complete the enquiry form provided
                         or contact the Studio directly at +91 9833645212.</p>
                 </div>
-                <div class="col-12 p-3 form-col">
+                <div class="col-12  form-col">
                     <form id="contact_form" action="{{ route('mail.contact.send') }}" method="post">
                         @csrf
                         <div class="row">
@@ -114,11 +114,11 @@
         <div class="row">
 
 
-            <div class="col-12 col-lg-6 col-md-6 md-5 section2 p-3 p-md-5">
+            <div class="col-12 col-lg-6 col-md-6 md-5 section2 p-3 py-xl-5">
                 <h3 class="contact-section2-title">Abby Lighting & Switchgear Ltd.</h3>
-                <div class="container-fluid">
+                <div class="" >
                     <div class="row">
-                        <div class="col-12 col-lg-6 col-md-6 ps-0">
+                        <div class="col-12 col-lg-6 col-md-6 ps-12">
                             <p class="contact-section2-subtitle mb-0">Corporate Office & Studio:</p>
                             <p class="contact-section2-text">802 A, Fortune Terraces, New Link Road, Opp City Mall,
                                 Andheri
@@ -128,14 +128,14 @@
                                 <img src="img/icons/right-arrow.svg" alt="" width=10>
                             </div> --}}
                         </div>
-                        <div class="col-12 col-lg-6 col-md-6 ps-0">
+                        <div class="col-12 col-lg-6 col-md-6 ps-12">
                             <p class="contact-section2-subtitle mb-0">Factory:</p>
                             <p class="contact-section2-text">70, Genesis Industrial Complex, Phase 1, Kolgaon, Palghar
                                 Boisar Road, Palghar 401404, Maharashtra</p>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-lg-6 col-md-6 ps-0">
+                        <div class="col-12 col-lg-6 col-md-6 ps-12">
                             <p class="contact-section2-subtitle mb-0">Technical Support</p>
                             <p class="contact-section2-text">frontdesk@abbylighting.com<br>+91 9833 645 212</p>
                             {{-- <div class="mt-4">

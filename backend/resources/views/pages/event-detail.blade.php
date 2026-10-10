@@ -1,6 +1,6 @@
 @extends('layout.web', ['theme' => 'light'])
 @section('page-content')
-<div class="px-lg-5 project-page">
+<div class="project-page">
     <div class="container-fluid">
         <h1 class="section-title pb-0">{{$event->name}}</h1>
         <div id="project_description">{!!@$event->description!!}</div>
