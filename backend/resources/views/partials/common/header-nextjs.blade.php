@@ -45,61 +45,535 @@
     height:20px;
   }
 }
+@media (min-width: 901px) and (max-width: 1400px) {
+  .main-box .sitehead .abby-search {
+    margin-top: 36px !important;
+  }
+}
 @media (max-width: 600px){
   .main-box .footer-social a[aria-label="Facebook"] svg{
     width:13px;
     height:13px;
   }
 }
-/* User-supplied mobile dock icon set */
-@media (max-width: 600px){
-  .main-box .halo-tab .halo-icon{
-    top:50%;
-    fill:none!important;
-    stroke:none!important;
-    background-color:currentColor;
-    -webkit-mask-position:center;
-    mask-position:center;
-    -webkit-mask-repeat:no-repeat;
-    mask-repeat:no-repeat;
-    -webkit-mask-size:contain;
-    mask-size:contain;
-  }
-  .main-box .halo-tab .halo-icon path{display:none}
-  .main-box #halo-tab-home .halo-icon{
-    width:17px;height:17px;
-    -webkit-mask-image:url(/images/mobile-dock/home.png);
-    mask-image:url(/images/mobile-dock/home.png);
-  }
-  .main-box #halo-tab-product .halo-icon,
-  .main-box #halo-tab-products .halo-icon{
-    width:15px;height:17px;
-    -webkit-mask-image:url(/images/mobile-dock/products.png);
-    mask-image:url(/images/mobile-dock/products.png);
-  }
-  .main-box #halo-tab-work .halo-icon{
-    width:19px;height:14px;
-    -webkit-mask-image:url(/images/mobile-dock/our-work.png);
-    mask-image:url(/images/mobile-dock/our-work.png);
-  }
-  .main-box #halo-tab-inspiration .halo-icon{
-    width:13px;height:18px;
-    -webkit-mask-image:url(/images/mobile-dock/inspiration.png);
-    mask-image:url(/images/mobile-dock/inspiration.png);
-  }
-  .main-box #halo-tab-more .halo-icon{
-    width:15px;height:13px;
-    -webkit-mask-image:url(/images/mobile-dock/more.png);
-    mask-image:url(/images/mobile-dock/more.png);
-  }
-  .main-box {
-  padding-bottom: calc(0px + env(safe-area-inset-bottom)) !important;
+/* Floating SVG Halo Dock Styles (Exact Next.js Copy) */
+.halo-nav-wrap {
+  --halo-accent: #f6c177;
+  --halo-accent-rgb: 246 193 119;
+  --halo-plate: #1a1c1d;
+  --halo-plate-highlight: #242728;
+  --halo-plate-shadow: #121415;
+  --halo-ink: #f6c177;
+  --halo-icon-off: #fff;
+  --halo-icon-on: #1a1c1d;
+  --halo-radius: 6px;
+  --halo-size: 56px;
+  --halo-y: 0px;
+  --halo-rise: 42px;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 11000;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: none;
+  will-change: transform, opacity;
+  width: min(460px, 100% - 24px);
+  font-family: Poppins, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  transition: transform .48s cubic-bezier(.22, 1, .36, 1), opacity .32s, visibility .32s;
+  position: fixed;
+  transform: translate(-50%);
 }
+
+.halo-nav-wrap.halo-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%) translateY(0);
+}
+
+.halo-nav-wrap.halo-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%) translateY(calc(100% + 42px));
+}
+
+.halo-nav {
+  border-radius: var(--halo-radius);
+  background: var(--halo-plate);
+  pointer-events: auto;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  width: 100%;
+  height: 76px;
+  position: relative;
+}
+
+.halo-nav.is-ready {
+  background: 0 0;
+}
+
+.halo-nav-shadow {
+  border-radius: var(--halo-radius);
+  background: var(--halo-plate);
+  box-shadow: 0 0 0 1px rgb(var(--halo-accent-rgb) / .2), 0 8px 20px -10px #00000094, 0 26px 44px -22px #0000009e;
+  position: absolute;
+  inset: 0%;
+}
+
+.halo-nav-skin {
+  filter: drop-shadow(0 6px 16px #00000024);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.halo-nav-plate {
+  fill: url(#haloPlateGradient);
+  stroke: url(#haloRimGradient);
+  stroke-width: 1px;
+}
+
+.halo-plate-highlight {
+  stop-color: var(--halo-plate-highlight);
+}
+
+.halo-plate-shadow {
+  stop-color: var(--halo-plate-shadow);
+}
+
+.halo-rim-strong {
+  stop-color: var(--halo-accent);
+  stop-opacity: .72;
+}
+
+.halo-rim-soft {
+  stop-color: var(--halo-accent);
+  stop-opacity: .18;
+}
+
+.halo-orb {
+  top: var(--halo-y);
+  width: var(--halo-size);
+  height: var(--halo-size);
+  margin: calc(var(--halo-size) / -2) 0 0 calc(var(--halo-size) / -2);
+  border-radius: var(--halo-radius);
+  background: linear-gradient(168deg, color-mix(in srgb, var(--halo-accent) 78%, #fff), var(--halo-accent) 64%);
+  box-shadow: 0 0 0 1px rgb(var(--halo-accent-rgb) / .32), 0 6px 12px -8px #0000006b, inset 0 0 0 1px #ffffff57;
+  will-change: transform;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity .18s;
+  position: absolute;
+  left: 0;
+}
+
+.halo-nav:not(.is-ready) .halo-orb,
+.halo-nav.is-idle .halo-orb {
+  opacity: 0;
+}
+
+.halo-tabs {
+  padding-inline: clamp(8px, 2.5%, 12px);
+  display: flex;
+  position: absolute;
+  inset: 0;
+}
+
+.halo-tab {
+  --halo-active: 0;
+  border-radius: var(--halo-radius);
+  min-width: 0;
+  height: 100%;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
+  flex: 1;
+  padding: 0;
+  display: block;
+  position: relative;
+}
+
+.halo-tab:not(:last-child):after {
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(#0000, #ffffff2e 18% 82%, #0000);
+  width: 1px;
+  position: absolute;
+  top: 22%;
+  bottom: 22%;
+  right: 0;
+}
+
+.halo-tab:focus-visible {
+  outline: 2px solid var(--halo-accent);
+  outline-offset: -3px;
+}
+
+.halo-icon {
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.5px !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  width: 24px;
+  height: 24px;
+  color: color-mix(in oklab, var(--halo-icon-off) calc((1 - var(--halo-active)) * 100%), var(--halo-icon-on));
+  transform: translate(-50%, -50%) translateY(calc(var(--halo-active) * var(--halo-rise) * -1));
+  will-change: transform;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block !important;
+}
+
+.halo-icon path {
+  display: block !important;
+}
+
+#halo-tab-home .halo-icon,
+#halo-tab-product .halo-icon,
+#halo-tab-products .halo-icon,
+#halo-tab-work .halo-icon,
+#halo-tab-inspiration .halo-icon,
+#halo-tab-more .halo-icon {
+  width: 22px;
+  height: 22px;
+  top: 50%;
+}
+
+.halo-label {
+  color: var(--halo-ink);
+  letter-spacing: .04em;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(calc((1 - var(--halo-active)) * 7px));
+  pointer-events: none;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  position: absolute;
+  bottom: 25px;
+  left: 0;
+  right: 0;
+}
+
+.halo-tab[aria-selected=true] .halo-label,
+.halo-nav.is-dragging .halo-label {
+  opacity: var(--halo-active);
+}
+
+@media (min-width: 901px) {
+  .halo-nav-wrap {
+    display: none !important;
+  }
 }
 
 
+
+/* Backdrop for Mobile Sheets */
+.custom-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.65);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  display: block;
+}
+
+.custom-sheet-backdrop.is-open {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Fullscreen Dropdown Drawer (Matches Next.js HeaderClient / Figma) */
+.pdrop-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #000000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0.25s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  color: #ffffff;
+  box-sizing: border-box;
+  display: block;
+}
+
+.pdrop-modal.is-open {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
+}
+
+.pdrop-container {
+  width: 100%;
+  min-height: 100%;
+  padding: 30px 6.45vw 100px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.pdrop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 24px;
+}
+
+.pdrop-logo img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  display: block;
+}
+
+.pdrop-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pdrop-search-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.pdrop-contact-btn {
+  background: #f6c177;
+  color: #111111 !important;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 8.58px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  width: 81.13px;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: 3px;
+  height: 32.43px;
+  text-decoration: none;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pdrop-body {
+  padding-top: 10px;
+  padding-right: 6px;
+}
+
+.pdrop-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 18px;
+  margin-bottom: 6px;
+}
+
+.pdrop-title {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.pdrop-circle-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+.pdrop-circle-close:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.pdrop-acc {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.pdrop-acc-toggle {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 16px 0;
+  color: #ffffff;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.pdrop-amber-text {
+  color: #f6c177 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pdrop-badge-new {
+  background: #f6c177;
+  color: #111111;
+  font-size: 8px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.pdrop-caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #ffffff;
+  opacity: 0.9;
+  flex-shrink: 0;
+  margin-right: 3px;
+}
+
+.pdrop-acc-content {
+  padding: 0 0 16px 0;
+}
+
+.pdrop-section-label {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 8.5px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: white;
+  text-transform: uppercase;
+  margin: 8px 0 12px 0;
+}
+
+.pdrop-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pdrop-list li a {
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  text-decoration: none;
+  transition: color 0.2s;
+  display: block;
+}
+
+.pdrop-list li a:hover {
+  color: #f6c177;
+}
+
+.pdrop-direct-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.pdrop-direct-row a {
+  display: block;
+  padding: 16px 0;
+  color: #ffffff;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.pdrop-direct-row a:hover {
+  color: #f6c177;
+}
+
+.pdrop-arrow-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.pdrop-arrow-row:last-child,
+.pdrop-arrow-row:last-of-type,
+.pdrop-direct-row:last-child,
+.pdrop-direct-row:last-of-type {
+  border-bottom: none !important;
+}
+
+.pdrop-arrow-row a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  color: #ffffff;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.pdrop-arrow-row a:hover {
+  color: #f6c177;
+}
+
+.pdrop-arrow {
+  color: #ffffff;
+  transition: transform 0.2s ease;
+}
+
+.pdrop-arrow-row a:hover .pdrop-arrow {
+  transform: translateX(4px);
+  color: #f6c177;
+}
 
 /* Main Box Bottom Padding Override */
+
 
 
 /*!*****************************************************************************************************************************************************************************************************************************************************************************!*\
@@ -228,6 +702,33 @@
   .main-box .sitehead .mgroup:focus-within>.mhead{
     color:#f6c177;
   }
+      .sitehead .msub {
+        color: #fff;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        font-family: Poppins, sans-serif;
+        font-size: 10px;
+        font-weight: 275;
+        line-height: 1.4;
+    }
+        .main-box header.sitehead .logo {
+        justify-content: left;
+        align-items: center;
+    }
+        .main-box header.sitehead .wrap {
+        width: 100%;
+        max-width: none;
+        height: 88px;
+        margin: 0;
+        padding-left: 6.45vw;
+        padding-right: 6.45vw;
+    }
+        .main-box .sitehead .nav-cta {
+      
+        margin-top: 32px;
+       
+    }
+
 }
 @media (max-width: 900px){
   .main-box .product-sheet .menu-close,
@@ -312,7 +813,7 @@
     grid-template-columns: 192px 1px 9px 370px 1px 34px 144px !important;
     align-items: start !important;
     width: 888px !important;
-    height: auto !important;
+    height: 100% !important;
     min-height: 227px !important;
     position: relative !important;
   }
@@ -372,7 +873,7 @@
   .main-box .sitehead .mgroup{
     border-radius: 1px !important;
     width: auto !important;
-    height: auto !important;
+    height: 100% !important;
     padding: 10px 14px !important;
     box-sizing: border-box !important;
     box-shadow: none !important;
@@ -459,6 +960,12 @@
     flex: 1 1 100%;
     max-width: 100%;
   }
+      #halo-tab-home .halo-icon, .main-box #halo-tab-home .halo-icon, #halo-tab-products .halo-icon, .main-box #halo-tab-products .halo-icon, #halo-tab-work .halo-icon, .main-box #halo-tab-work .halo-icon, #halo-tab-inspiration .halo-icon, .main-box #halo-tab-inspiration .halo-icon, #halo-tab-more .halo-icon, .main-box #halo-tab-more .halo-icon {
+        width: 15px !important;
+        height: 12px !important;
+        top: 50% !important;
+    }
+
 }
 
 
@@ -615,7 +1122,7 @@
     grid-template-columns: 192px 1px 9px 370px 1px 34px 144px !important;
     align-items: start !important;
     width: 888px !important;
-    height: auto !important;
+    height: 100% !important;
     min-height: 227px !important;
     position: relative !important;
   }
@@ -741,35 +1248,7 @@
   display: none;
 }
 
-@media (max-width: 900px) {
-  .custom-mobile-dock,
-  .main-box .custom-mobile-dock {
-    display: block !important;
-    position: fixed !important;
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
-    left: 50% !important;
-    transform: translate(-50%, calc(100% + 40px)) !important;
-    width: min(360px, calc(100vw - 28px)) !important;
-    z-index: 9999 !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.35s ease !important;
-  }
-
-  .custom-mobile-dock.is-visible,
-  .main-box .custom-mobile-dock.is-visible {
-    transform: translate(-50%, 0) !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-
-  .custom-mobile-dock.is-hidden,
-  .main-box .custom-mobile-dock.is-hidden {
-    transform: translate(-50%, calc(100% + 40px)) !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-
+@media (max-width: 1150px) {
   /* Mobile Header Search Icon Circle */
   .sitehead .right,
   .main-box .sitehead .right {
@@ -844,211 +1323,257 @@
     display: inline !important;
   }
 
-  .custom-sheet-backdrop,
-  .main-box .custom-sheet-backdrop {
-    display: block !important;
-  }
-
-  .pdrop-modal,
-  .main-box .pdrop-modal {
-    display: block !important;
-  }
-
-  .custom-dock-bar,
-  .main-box .custom-dock-bar {
-    background: #191919 !important;
-    border: 1.5px solid rgba(246, 193, 119, 0.55) !important;
-    border-radius: 6px !important;
-    height: 56px !important;
-    display: grid !important;
-    grid-template-columns: repeat(5, 1fr) !important;
-    align-items: stretch !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85) !important;
-    position: relative !important;
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    touch-action: none !important;
-    cursor: pointer !important;
-    box-sizing: border-box !important;
-  }
-
-  .custom-dock-bar:active,
-  .custom-dock-bar.is-dragging,
-  .main-box .custom-dock-bar:active,
-  .main-box .custom-dock-bar.is-dragging {
-    cursor: pointer !important;
-  }
-
-  .custom-dock-slider,
-  .main-box .custom-dock-slider {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 20% !important;
-    height: 100% !important;
-    pointer-events: none !important;
-    z-index: 5 !important;
-    transform: translateX(calc(var(--dock-index, 0) * 100%)) !important;
-    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease !important;
+  /* ==================================================================
+     NEXT.JS FLOATING HALO BOTTOM DOCK BAR
+     ================================================================== */
+  .halo-nav-wrap,
+  .main-box .halo-nav-wrap {
+    --halo-accent: #f6c177;
+    --halo-accent-rgb: 246 193 119;
+    --halo-plate: #1a1c1d;
+    --halo-plate-highlight: #242728;
+    --halo-plate-shadow: #121415;
+    --halo-ink: #f6c177;
+    --halo-icon-off: #fff;
+    --halo-icon-on: #1a1c1d;
+    --halo-radius: 6px;
+    --halo-size: 56px;
+    --halo-y: 0px;
+    --halo-rise: 42px;
+    left: 50% !important;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 5100 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
     will-change: transform, opacity !important;
-    cursor: pointer !important;
+    width: min(460px, calc(100% - 24px)) !important;
+    font-family: Poppins, ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+    transition: transform .48s cubic-bezier(.22, 1, .36, 1), opacity .32s, visibility .32s !important;
+    position: fixed !important;
+    transform: translate(-50%, 0) !important;
+    display: block !important;
+  }
+
+  /* Tablet viewports (601px - 1150px): full width with a little gap left and right */
+  @media (min-width: 601px) {
+    .halo-nav-wrap,
+    .main-box .halo-nav-wrap {
+      width: calc(100vw - 32px) !important;
+      max-width: 960px !important;
+    }
+  }
+
+  /* Phone viewports (<= 600px) */
+  @media (max-width: 600px) {
+    .halo-nav-wrap,
+    .main-box .halo-nav-wrap {
+      width: min(460px, calc(100vw - 24px)) !important;
+    }
+  }
+
+  .halo-nav-wrap.halo-visible,
+  .main-box .halo-nav-wrap.halo-visible {
     opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translate(-50%, 0) !important;
+    display: block !important;
   }
 
-  .custom-dock-slider.is-blank,
-  .main-box .custom-dock-slider.is-blank {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transform: translateX(calc(var(--dock-index, 0) * 100%)) translateY(14px) scale(0.75) !important;
+  .halo-nav-wrap.halo-hidden,
+  .main-box .halo-nav-wrap.halo-hidden {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translate(-50%, 0) !important;
+    display: block !important;
   }
 
-  .custom-dock-slider.is-dragging,
-  .main-box .custom-dock-slider.is-dragging {
-    transition: transform 0.06s ease-out, opacity 0.15s ease !important;
-    cursor: pointer !important;
-  }
-
-  .custom-dock-tab,
-  .main-box .custom-dock-tab {
-    position: relative !important;
-    background: transparent !important;
-    border: none !important;
-    outline: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    color: #ffffff !important;
+  .halo-nav,
+  .main-box .halo-nav {
+    border-radius: var(--halo-radius) !important;
+    background: var(--halo-plate) !important;
+    pointer-events: auto !important;
+    touch-action: pan-y !important;
     -webkit-tap-highlight-color: transparent !important;
-    z-index: 2 !important;
+    width: 100% !important;
+    height: 76px !important;
+    position: relative !important;
   }
 
-  .custom-dock-tab:not(:last-child)::after,
-  .main-box .custom-dock-tab:not(:last-child)::after {
-    content: "" !important;
+  .halo-nav.is-ready,
+  .main-box .halo-nav.is-ready {
+    background: transparent !important;
+  }
+
+  .halo-nav-shadow,
+  .main-box .halo-nav-shadow {
+    border-radius: var(--halo-radius) !important;
+    background: var(--halo-plate) !important;
+    box-shadow: 0 0 0 1px rgb(var(--halo-accent-rgb) / .2), 0 8px 20px -10px #00000094, 0 26px 44px -22px #0000009e !important;
     position: absolute !important;
-    right: 0 !important;
-    top: 14px !important;
-    bottom: 14px !important;
-    width: 1px !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    pointer-events: none !important;
+    inset: 0% 0% 0% !important;
   }
 
-  .custom-dock-icon,
-  .main-box .custom-dock-icon {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: #ffffff !important;
-    opacity: 0.95 !important;
-    transform: translateY(0) scale(1) !important;
-    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease !important;
+  .halo-nav-skin,
+  .main-box .halo-nav-skin {
+    filter: drop-shadow(0 6px 16px #00000024) !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    inset: 0 !important;
+    overflow: visible !important;
   }
 
-  .custom-dock-tab.is-active .custom-dock-icon,
-  .custom-dock-tab.is-active:hover .custom-dock-icon,
-  .main-box .custom-dock-tab.is-active .custom-dock-icon,
-  .main-box .custom-dock-tab.is-active:hover .custom-dock-icon {
-    display: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
+  .halo-nav-plate,
+  .main-box .halo-nav-plate {
+    fill: url(#haloPlateGradient) !important;
+    stroke: url(#haloRimGradient) !important;
+    stroke-width: 1.5px !important;
   }
 
-  .custom-dock-icon-product,
-  .main-box .custom-dock-icon-product {
-    padding-top: 4px !important;
+  .halo-plate-highlight {
+    stop-color: var(--halo-plate-highlight) !important;
   }
 
-  .custom-dock-tab:not(.is-active):hover .custom-dock-icon,
-  .main-box .custom-dock-tab:not(.is-active):hover .custom-dock-icon {
+  .halo-plate-shadow {
+    stop-color: var(--halo-plate-shadow) !important;
+  }
+
+  .halo-rim-strong {
+    stop-color: var(--halo-accent) !important;
+    stop-opacity: .72 !important;
+  }
+
+  .halo-rim-soft {
+    stop-color: var(--halo-accent) !important;
+    stop-opacity: .18 !important;
+  }
+
+  .halo-orb,
+  .main-box .halo-orb {
+    top: var(--halo-y) !important;
+    width: var(--halo-size) !important;
+    height: var(--halo-size) !important;
+    margin: calc(var(--halo-size) / -2) 0 0 calc(var(--halo-size) / -2) !important;
+    border-radius: var(--halo-radius) !important;
+    background: linear-gradient(168deg, color-mix(in srgb, var(--halo-accent) 78%, #fff), var(--halo-accent) 64%) !important;
+    box-shadow: 0 0 0 1px rgb(var(--halo-accent-rgb) / .32), 0 6px 12px -8px #0000006b, inset 0 0 0 1px #ffffff57 !important;
     opacity: 1 !important;
-    transform: scale(1.06) !important;
+    pointer-events: none !important;
+    will-change: transform !important;
+    position: absolute !important;
+    left: 0 !important;
   }
 
-  .custom-dock-notch,
-  .main-box .custom-dock-notch {
-    position: absolute !important;
-    top: -27px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 54px !important;
-    height: 38px !important;
-    background: #191919 !important;
-    border-bottom: none !important;
-    border-radius: 6px 6px 0 0 !important;
-    z-index: 1 !important;
+  .halo-nav:not(.is-ready) .halo-orb,
+  .halo-nav.is-idle .halo-orb,
+  .main-box .halo-nav:not(.is-ready) .halo-orb,
+  .main-box .halo-nav.is-idle .halo-orb {
+    opacity: 0 !important;
   }
 
-  .custom-dock-active-box,
-  .main-box .custom-dock-active-box {
-    position: absolute !important;
-    top: -22px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 44px !important;
-    height: 44px !important;
-    background: #f6c177 !important;
-    border-radius: 6px !important;
+  .halo-tabs,
+  .main-box .halo-tabs {
+    padding-inline: clamp(8px, 2.5%, 12px) !important;
     display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    z-index: 2 !important;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.65) !important;
-    animation: dockBoxPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-  }
-
-  @keyframes dockBoxPop {
-    0% {
-      transform: translateX(-50%) translateY(14px) scale(0.7);
-      opacity: 0.4;
-    }
-
-    100% {
-      transform: translateX(-50%) translateY(0) scale(1);
-      opacity: 1;
-    }
-  }
-
-  .custom-dock-active-box svg,
-  .main-box .custom-dock-active-box svg {
-    stroke: #111111 !important;
-  }
-
-  .custom-dock-label,
-  .main-box .custom-dock-label {
     position: absolute !important;
-    bottom: 10px !important;
+    inset: 0 !important;
+  }
+
+  .halo-tab,
+  .main-box .halo-tab {
+    --halo-active: 0;
+    border-radius: var(--halo-radius) !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    color: inherit !important;
+    cursor: pointer !important;
+    font: inherit !important;
+    background: transparent !important;
+    border: 0 !important;
+    flex: 1 !important;
+    padding: 0 !important;
+    display: block !important;
+    position: relative !important;
+  }
+
+  .halo-tab:not(:last-child):after,
+  .main-box .halo-tab:not(:last-child):after {
+    content: "" !important;
+    pointer-events: none !important;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.18) 18%, rgba(255, 255, 255, 0.18) 82%, transparent) !important;
+    width: 1px !important;
+    position: absolute !important;
+    top: 22% !important;
+    bottom: 22% !important;
+    right: 0 !important;
+  }
+
+  .halo-icon,
+  .main-box .halo-icon {
+    width: 24px !important;
+    height: 24px !important;
+    color: color-mix(in oklab, var(--halo-icon-off, #fff) calc((1 - var(--halo-active, 0)) * 100%), var(--halo-icon-on, #1a1c1d)) !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.5px !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    transform: translate(-50%, -50%) translateY(calc(var(--halo-active, 0) * var(--halo-rise, 42px) * -1)) !important;
+    will-change: transform !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+  }
+
+  #halo-tab-home .halo-icon, .main-box #halo-tab-home .halo-icon,
+  #halo-tab-products .halo-icon, .main-box #halo-tab-products .halo-icon,
+  #halo-tab-work .halo-icon, .main-box #halo-tab-work .halo-icon,
+  #halo-tab-inspiration .halo-icon, .main-box #halo-tab-inspiration .halo-icon,
+  #halo-tab-more .halo-icon, .main-box #halo-tab-more .halo-icon {
+    width: 22px !important;
+    height: 22px !important;
+    top: 50% !important;
+  }
+
+  .halo-label,
+  .main-box .halo-label {
+    color: var(--halo-ink) !important;
+    letter-spacing: .04em !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    opacity: var(--halo-active, 0) !important;
+    transform: translateY(calc((1 - var(--halo-active, 0)) * 7px)) !important;
+    pointer-events: none !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    position: absolute !important;
+    bottom: 25px !important;
     left: 0 !important;
     right: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-family: 'Poppins', 'Inter', sans-serif !important;
-    font-size: 8px !important;
-    font-weight: 600 !important;
-    color: #f6c177 !important;
-    text-align: center !important;
-    line-height: 1 !important;
-    white-space: nowrap !important;
-    z-index: 3 !important;
-    pointer-events: none !important;
-    animation: dockLabelIn 0.22s cubic-bezier(0.23, 1, 0.32, 1) !important;
   }
 
-  @keyframes dockLabelIn {
-    0% {
-      opacity: 0;
-      transform: translateY(4px) scale(0.9);
-    }
+  .halo-tab[aria-selected=true] .halo-label,
+  .halo-nav.is-dragging .halo-label,
+  .main-box .halo-tab[aria-selected=true] .halo-label,
+  .main-box .halo-nav.is-dragging .halo-label {
+    opacity: var(--halo-active, 0) !important;
+  }
 
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
+  @media (max-width: 400px) {
+    .halo-label,
+    .main-box .halo-label {
+      font-size: 7px !important;
+    }
+  }
+
+  @media (min-width: 1151px) {
+    .halo-nav-wrap,
+    .main-box .halo-nav-wrap {
+      display: none !important;
     }
   }
 
@@ -1063,13 +1588,17 @@
     z-index: 9990 !important;
     opacity: 0 !important;
     visibility: hidden !important;
+    pointer-events: none !important;
     transition: opacity 0.3s ease, visibility 0.3s ease !important;
+    display: block !important;
   }
 
   .custom-sheet-backdrop.is-open,
   .main-box .custom-sheet-backdrop.is-open {
+    display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
+    pointer-events: auto !important;
   }
 
   /* Fullscreen Dropdown Drawer */
@@ -1081,18 +1610,22 @@
     background: #000000 !important;
     opacity: 0 !important;
     visibility: hidden !important;
+    pointer-events: none !important;
     transform: translateY(100%) !important;
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0.25s ease !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
     color: #ffffff !important;
     box-sizing: border-box !important;
+    display: block !important;
   }
 
   .pdrop-modal.is-open,
   .main-box .pdrop-modal.is-open {
+    display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
+    pointer-events: auto !important;
     transform: translateY(0) !important;
   }
 
@@ -1387,7 +1920,15 @@
     transform: translateX(3px) !important;
   }
 }
+@media (max-width: 767px) {
+ 
+      #halo-tab-home .halo-icon, .main-box #halo-tab-home .halo-icon, #halo-tab-products .halo-icon, .main-box #halo-tab-products .halo-icon, #halo-tab-work .halo-icon, .main-box #halo-tab-work .halo-icon, #halo-tab-inspiration .halo-icon, .main-box #halo-tab-inspiration .halo-icon, #halo-tab-more .halo-icon, .main-box #halo-tab-more .halo-icon {
+        width: 15px !important;
+        height: 12px !important;
+        top: 50% !important;
+    }
 
+}
 /* ==================================================================
    SEARCH TOGGLE & DROPDOWN - EXACT NEXT.JS BEHAVIOR
    ================================================================== */
@@ -1396,12 +1937,12 @@
 .abby-search .abby-search-toggle,
 .main-box .abby-search .abby-search-toggle,
 .sitehead .right .abby-search-toggle {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  min-height: 32px !important;
-  border-radius: 50% !important;
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  /* border-radius: 50% !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important; */
   background: transparent !important;
   color: #ffffff !important;
   display: flex !important;
@@ -1425,8 +1966,8 @@
 .abby-search-toggle svg,
 .abby-search svg,
 .main-box .abby-search svg {
-  width: 15px !important;
-  height: 15px !important;
+  width: 18px !important;
+  height: 18px !important;
   fill: none !important;
   stroke: currentColor !important;
   stroke-width: 1.8 !important;
@@ -1456,6 +1997,56 @@
 .main-box .abby-search.is-open #closeIcon {
   display: block !important;
 }
+
+.abby-search.is-open #searchToggle,
+.abby-search.is-open .abby-search-toggle,
+.main-box .abby-search.is-open .abby-search-toggle {
+  right: 12px !important;
+}
+.main-box .abby-search-go {
+  top: -1px;
+}
+
+@media (max-width: 1400px) {
+   #searchToggle,
+  .main-box .abby-search-toggle {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    background: transparent !important;
+    color: #ffffff !important;
+    position: static !important;
+    transform: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .main-box .abby-search.is-open .abby-search-form {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+    .main-box .abby-search.is-open .abby-search-form {
+        opacity: 1;
+        width: auto;
+        transform: translateY(0)scale(1);
+    }
+        .main-box .abby-search-form {
+        position: fixed !important;
+        top: 86px !important;
+        left: 16px !important;
+        right: 16px !important;
+        width: calc(100% - 32px) !important;
+        height: 48px !important;
+        background: #1a1c1d !important;
+        border: 1px solid rgba(246, 193, 119, 0.35) !important;
+        border-radius: 4px !important;
+        z-index: 5050 !important;
+    }
+}
+
 
 @media (max-width: 900px) {
   .main-box .sitehead .right {
@@ -1539,6 +2130,12 @@
     z-index: 5050 !important;
     max-height: 280px !important;
     overflow-y: auto !important;
+  }
+@media (min-width: 901px) {
+  .main-box .abby-search {
+    flex: 0 0 41px !important;
+    width: 41px !important;
+    height: 18px !important;
   }
 }
 
@@ -1688,7 +2285,7 @@ body:not(.home-page) .sitehead {
                         aria-label="Open search"
                         aria-expanded="false"
                         id="searchToggle"
-                        style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.4); display: flex; align-items: center; justify-content: center; background: transparent; padding: 0; box-sizing: border-box;"
+                        style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: transparent; padding: 0; box-sizing: border-box;"
                     >
                         <svg viewBox="0 0 24 24" aria-hidden="true" id="searchIcon" style="width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8;">
                             <circle cx="10.7" cy="10.7" r="6.7"></circle>
@@ -1707,58 +2304,70 @@ body:not(.home-page) .sitehead {
         </div>
     </header>
 
-    <!-- Floating Bottom Dock (Mobile Only) -->
-    <nav class="custom-mobile-dock" id="mobileDock" aria-label="Mobile bottom navigation">
-        <div class="custom-dock-bar" id="dockBar" style="--dock-index: 0;">
-            <!-- Active Indicator (Notch + Amber Box + Label) -->
-            <div class="custom-dock-slider is-blank" id="dockSlider">
-                <div class="custom-dock-notch" aria-hidden="true"></div>
-                <div class="custom-dock-active-box" id="dockActiveBox"></div>
-                <span class="custom-dock-label" id="dockActiveLabel"></span>
-            </div>
-
-            <!-- 5 Grid Tabs -->
-            <button type="button" class="custom-dock-tab" data-tab="home" aria-label="Home">
-                <div class="custom-dock-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Floating Bottom Dock (Mobile & Tablet Floating SVG Halo Dock - Exact Next.js Copy) -->
+    <nav class="halo-nav-wrap halo-visible" id="mobileDock" aria-label="Mobile bottom navigation">
+        <div class="halo-nav is-ready" id="dockNav">
+            <span class="halo-nav-shadow" aria-hidden="true"></span>
+            <svg class="halo-nav-skin" id="dockSvg" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="haloPlateGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop class="halo-plate-highlight" offset="0"></stop>
+                        <stop class="halo-plate-shadow" offset="1"></stop>
+                    </linearGradient>
+                    <linearGradient id="haloRimGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop class="halo-rim-strong" offset="0"></stop>
+                        <stop class="halo-rim-soft" offset="1"></stop>
+                    </linearGradient>
+                    <linearGradient id="internalHaloPlateGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop class="halo-plate-highlight" offset="0"></stop>
+                        <stop class="halo-plate-shadow" offset="1"></stop>
+                    </linearGradient>
+                    <linearGradient id="internalHaloRimGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop class="halo-rim-strong" offset="0"></stop>
+                        <stop class="halo-rim-soft" offset="1"></stop>
+                    </linearGradient>
+                </defs>
+                <path class="halo-nav-plate" id="dockPlate"></path>
+            </svg>
+            <span class="halo-orb" id="dockOrb" aria-hidden="true"></span>
+            <div class="halo-tabs" role="tablist" aria-label="Page sections">
+                <button class="halo-tab halo-tab-btn" role="tab" type="button" id="halo-tab-home" data-tab="home" aria-label="Home">
+                    <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M3 11.5L12 4l9 7.5v7a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5v-7z" />
                     </svg>
-                </div>
-            </button>
-            <button type="button" class="custom-dock-tab" data-tab="products" aria-label="Products">
-                <div class="custom-dock-icon custom-dock-icon-product">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <span class="halo-label">Home</span>
+                </button>
+                <button class="halo-tab halo-tab-btn" role="tab" type="button" id="halo-tab-products" data-tab="products" aria-label="Products">
+                    <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
                         <line x1="12" y1="3" x2="12" y2="8" />
                         <path d="M5 15a7 7 0 0 1 14 0H5z" />
                         <path d="M10 15a2 2 0 0 0 4 0" />
                     </svg>
-                </div>
-            </button>
-            <button type="button" class="custom-dock-tab" data-tab="work" aria-label="Our works">
-                <div class="custom-dock-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <span class="halo-label">Products</span>
+                </button>
+                <button class="halo-tab halo-tab-btn" role="tab" type="button" id="halo-tab-work" data-tab="work" aria-label="Our Work">
+                    <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M4 6h4.5l2 2h8a1 1 0 0 1 1 1v1.5H3.5V7a1 1 0 0 1 1-1z" />
                         <path d="M2.5 10.5h18a1 1 0 0 1 1 1.2l-1.3 6.8a1 1 0 0 1-1 .8H4.2a1 1 0 0 1-1-.8L1.8 11.7a1 1 0 0 1 .7-1.2z" />
                     </svg>
-                </div>
-            </button>
-            <button type="button" class="custom-dock-tab" data-tab="inspiration" aria-label="Our inspiration">
-                <div class="custom-dock-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <span class="halo-label">Our Work</span>
+                </button>
+                <button class="halo-tab halo-tab-btn" role="tab" type="button" id="halo-tab-inspiration" data-tab="inspiration" aria-label="Inspiration">
+                    <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 2.2-1.2 3.8-2.2 5.1-.5.7-.8 1.4-.8 2.4H9.5c0-1-.3-1.7-.8-2.4-1-1.3-2.2-2.9-2.2-5.1z" />
                         <line x1="9" y1="20" x2="15" y2="20" />
                     </svg>
-                </div>
-            </button>
-            <button type="button" class="custom-dock-tab" data-tab="more" aria-label="More">
-                <div class="custom-dock-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <span class="halo-label">Inspiration</span>
+                </button>
+                <button class="halo-tab halo-tab-btn" role="tab" type="button" id="halo-tab-more" data-tab="more" aria-label="More">
+                    <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
                         <line x1="5" y1="8" x2="19" y2="8" />
                         <line x1="5" y1="12" x2="19" y2="12" />
                         <line x1="5" y1="16" x2="19" y2="16" />
                     </svg>
-                </div>
-            </button>
+                    <span class="halo-label">More</span>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -1976,12 +2585,14 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(err => console.log('Collections fetch skipped', err));
 
-    // 2. Mobile Dock & Drawer Navigation Logic
+    // 2. Mobile Floating SVG Halo Dock Physics Animation Logic (Exact Next.js HeaderClient.tsx Copy)
     const mobileDock = document.getElementById('mobileDock');
-    const dockBar = document.getElementById('dockBar');
-    const dockSlider = document.getElementById('dockSlider');
-    const dockActiveBox = document.getElementById('dockActiveBox');
-    const dockActiveLabel = document.getElementById('dockActiveLabel');
+    const navEl = document.getElementById('dockNav');
+    const svgEl = document.getElementById('dockSvg');
+    const plateEl = document.getElementById('dockPlate');
+    const orbEl = document.getElementById('dockOrb');
+    const tabs = Array.from(document.querySelectorAll('.halo-tab-btn'));
+
     const sheetBackdrop = document.getElementById('sheetBackdrop');
     const sheetModal = document.getElementById('sheetModal');
     const sheetProducts = document.getElementById('sheetProducts');
@@ -1989,112 +2600,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const sheetMore = document.getElementById('sheetMore');
     const closeBtns = document.querySelectorAll('.sheet-close-btn');
 
-    let activeTab = null;
+    function getRouteTab(path) {
+        if (path === '/' || path === '') return 'home';
+        if (path.includes('/products') || path.includes('/decorative') || path.includes('/collections') || path.includes('/catalogues')) return 'products';
+        if (path.includes('/projects') || path.includes('/clients')) return 'work';
+        if (path.includes('/inspiration') || path.includes('/blogs') || path.includes('/news')) return 'inspiration';
+        if (path.includes('/company') || path.includes('/contact') || path.includes('/about') || path.includes('/career') || path.includes('/policies') || path.includes('/privacy')) return 'more';
+        return 'home';
+    }
+
+    const currentPath = window.location.pathname;
+    let activeTab = getRouteTab(currentPath);
     let activeSheet = null;
-    let scrollTimeout = null;
+    let selectTabFn = null;
 
-    const TAB_DATA = {
-        home: {
-            index: 0,
-            label: 'Home',
-            icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5L12 4l9 7.5v7a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5v-7z" /></svg>'
-        },
-        products: {
-            index: 1,
-            label: 'Products',
-            icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="8" /><path d="M5 15a7 7 0 0 1 14 0H5z" /><path d="M10 15a2 2 0 0 0 4 0" /></svg>'
-        },
-        work: {
-            index: 2,
-            label: 'Our works',
-            icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h4.5l2 2h8a1 1 0 0 1 1 1v1.5H3.5V7a1 1 0 0 1 1-1z" /><path d="M2.5 10.5h18a1 1 0 0 1 1 1.2l-1.3 6.8a1 1 0 0 1-1 .8H4.2a1 1 0 0 1-1-.8L1.8 11.7a1 1 0 0 1 .7-1.2z" /></svg>'
-        },
-        inspiration: {
-            index: 3,
-            label: 'Our inspiration',
-            icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 2.2-1.2 3.8-2.2 5.1-.5.7-.8 1.4-.8 2.4H9.5c0-1-.3-1.7-.8-2.4-1-1.3-2.2-2.9-2.2-5.1z" /><line x1="9" y1="20" x2="15" y2="20" /></svg>'
-        },
-        more: {
-            index: 4,
-            label: 'More',
-            icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="8" x2="19" y2="8" /><line x1="5" y1="12" x2="19" y2="12" /><line x1="5" y1="16" x2="19" y2="16" /></svg>'
-        }
-    };
-
-    // Auto-detect page for tab
-    const pathname = window.location.pathname;
-    if (pathname.startsWith('/inspiration') || pathname.startsWith('/blogs')) {
-        activeTab = 'inspiration';
-    } else if (pathname.startsWith('/projects') || pathname.startsWith('/clients')) {
-        activeTab = 'work';
-    }
-
-    const tabButtons = document.querySelectorAll('.custom-dock-tab');
-
-    function renderActiveTab(tabId) {
-        if (!dockBar || !dockSlider) return;
-        tabButtons.forEach(btn => {
-            btn.classList.toggle('is-active', btn.getAttribute('data-tab') === tabId);
-        });
-        if (!tabId || !TAB_DATA[tabId]) {
-            dockSlider.classList.add('is-blank');
-            return;
-        }
-        const data = TAB_DATA[tabId];
-        dockBar.style.setProperty('--dock-index', data.index);
-        dockActiveBox.innerHTML = data.icon;
-        dockActiveLabel.textContent = data.label;
-        dockSlider.classList.remove('is-blank');
-    }
-
-    renderActiveTab(activeTab);
-
-    // Scroll & touch visibility for mobile dock
-    function showDockTemporarily() {
-        if (!mobileDock) return;
-        mobileDock.classList.add('is-visible');
-        mobileDock.classList.remove('is-hidden');
-        if (scrollTimeout) clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(function() {
-            if (!activeSheet) {
-                mobileDock.classList.remove('is-visible');
-                mobileDock.classList.add('is-hidden');
-            }
-        }, 1800);
-    }
-
-    if (mobileDock) {
-        window.addEventListener('scroll', showDockTemporarily, { passive: true });
-        window.addEventListener('touchmove', showDockTemporarily, { passive: true });
-        mobileDock.addEventListener('pointerenter', function() {
-            if (scrollTimeout) clearTimeout(scrollTimeout);
-            mobileDock.classList.add('is-visible');
-        });
-        mobileDock.addEventListener('pointerleave', function() {
-            showDockTemporarily();
-        });
-        // Initial glimpse on mobile load
-        setTimeout(showDockTemporarily, 600);
-    }
+    const TAB_INDEX_MAP = { home: 0, products: 1, work: 2, inspiration: 3, more: 4 };
 
     function openSheet(sheetName) {
         activeSheet = sheetName;
         document.body.style.overflow = 'hidden';
-        sheetBackdrop.classList.add('is-open');
-        sheetModal.classList.add('is-open');
-        sheetProducts.style.display = (sheetName === 'products') ? 'block' : 'none';
-        sheetWork.style.display = (sheetName === 'work') ? 'block' : 'none';
-        sheetMore.style.display = (sheetName === 'more') ? 'block' : 'none';
+        if (sheetBackdrop) {
+            sheetBackdrop.classList.add('is-open');
+        }
+        if (sheetModal) {
+            sheetModal.classList.add('is-open');
+        }
+        if (sheetProducts) sheetProducts.style.display = (sheetName === 'products') ? 'block' : 'none';
+        if (sheetWork) sheetWork.style.display = (sheetName === 'work') ? 'block' : 'none';
+        if (sheetMore) sheetMore.style.display = (sheetName === 'more') ? 'block' : 'none';
         if (mobileDock) {
-            mobileDock.classList.add('is-visible');
+            mobileDock.classList.add('halo-visible');
+            mobileDock.classList.remove('halo-hidden');
         }
     }
 
     function closeAllSheets() {
         activeSheet = null;
         document.body.style.overflow = '';
-        if (sheetBackdrop) sheetBackdrop.classList.remove('is-open');
-        if (sheetModal) sheetModal.classList.remove('is-open');
+        if (sheetBackdrop) {
+            sheetBackdrop.classList.remove('is-open');
+        }
+        if (sheetModal) {
+            sheetModal.classList.remove('is-open');
+        }
         if (sheetProducts) sheetProducts.style.display = 'none';
         if (sheetWork) sheetWork.style.display = 'none';
         if (sheetMore) sheetMore.style.display = 'none';
@@ -2102,33 +2650,324 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (sheetBackdrop) sheetBackdrop.addEventListener('click', closeAllSheets);
     closeBtns.forEach(btn => btn.addEventListener('click', closeAllSheets));
+    if (sheetModal) {
+        sheetModal.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', closeAllSheets);
+        });
+    }
 
-    // Tab buttons event
-    tabButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const tab = this.getAttribute('data-tab');
-            activeTab = tab;
-            renderActiveTab(tab);
+    if (navEl && svgEl && plateEl && orbEl && tabs.length) {
+        const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+        const dist = (a, b, c) => Math.sqrt(Math.max((a + b) ** 2 - (a - c) ** 2, 1));
+        const ease = (t) => t * t * (3 - 2 * t);
 
-            if (tab === 'home') {
+        const m = {
+            width: 0,
+            height: 0,
+            radius: 6,
+            beadDiameter: 56,
+            beadRadius: 34,
+            shoulderRadius: 12,
+            beadY: 0,
+            slots: [],
+            span: 80,
+        };
+
+        let currX = 0;
+        let targetX = 0;
+        let velX = 0;
+        let currentSlotIndex = -1;
+        let isPointerDragging = false;
+        let animId = 0;
+        let lastTime = 0;
+        let resizeTimer = 0;
+        let activePointerId = null;
+        let dragStartX = 0;
+        let isDragThresholdPassed = false;
+
+        const measure = () => {
+            const rect = navEl.getBoundingClientRect();
+            const w = Math.round(rect.width);
+            const h = Math.round(rect.height);
+            if (w < 40 || h < 30) return false;
+
+            m.slots = tabs.map((tab) => {
+                const tRect = tab.getBoundingClientRect();
+                return tRect.left - rect.left + tRect.width / 2;
+            });
+            m.span = m.slots.length > 1 ? m.slots[1] - m.slots[0] : w;
+            m.width = w;
+            m.height = h;
+            m.radius = clamp(h * 0.08, 5, 7);
+            m.beadY = 0;
+
+            let d = Math.min(h * 0.68, m.span * 0.78);
+            const s = m.slots[0] - m.radius - 6;
+
+            for (let i = 0; i < 3; i++) {
+                const e = dist(d * 0.22, d / 2 + 6, m.beadY);
+                if (e <= s) break;
+                d *= s / e;
+            }
+
+            m.beadDiameter = Math.max(Math.round(d), 30);
+            m.shoulderRadius = m.beadDiameter * 0.22;
+            m.beadRadius = m.beadDiameter / 2 + 6;
+            m.beadY = m.beadRadius * 0.2;
+
+            svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
+            navEl.style.setProperty('--halo-radius', `${m.radius.toFixed(1)}px`);
+            navEl.style.setProperty('--halo-size', `${m.beadDiameter}px`);
+            navEl.style.setProperty('--halo-y', `${m.beadY}px`);
+            navEl.style.setProperty('--halo-rise', `${(h / 2 - m.beadY).toFixed(1)}px`);
+            return true;
+        };
+
+        const buildIdlePath = () => {
+            const { width: w, height: h, radius: r } = m;
+            const str = (v) => v.toFixed(2);
+            return `M0 ${str(r)}A${str(r)} ${str(r)} 0 0 1 ${str(r)} 0L${str(w - r)} 0A${str(r)} ${str(r)} 0 0 1 ${str(w)} ${str(r)}L${str(w)} ${str(h - r)}A${str(r)} ${str(r)} 0 0 1 ${str(w - r)} ${str(h)}L${str(r)} ${str(h)}A${str(r)} ${str(r)} 0 0 1 0 ${str(h - r)}Z`;
+        };
+
+        const buildActivePath = (x, sLeft, sRight) => {
+            const { width: w, height: h, radius: r, beadRadius: br, beadY: by } = m;
+            const c = x - br;
+            const l = x + br;
+            const u = by - br;
+            const d = clamp(r + 2, 7, br * 0.34);
+            const f = clamp(c - sLeft, r, w - r);
+            const p = clamp(l + sRight, r, w - r);
+            const str = (v) => v.toFixed(2);
+
+            return `M0 ${str(r)}A${str(r)} ${str(r)} 0 0 1 ${str(r)} 0L${str(f)} 0C${str(c - sLeft * 0.42)} 0 ${str(c)} 0 ${str(c)} ${str(-d)}L${str(c)} ${str(u + d)}Q${str(c)} ${str(u)} ${str(c + d)} ${str(u)}L${str(l - d)} ${str(u)}Q${str(l)} ${str(u)} ${str(l)} ${str(u + d)}L${str(l)} ${str(-d)}C${str(l)} 0 ${str(l + sRight * 0.42)} 0 ${str(p)} 0L${str(w - r)} 0A${str(r)} ${str(r)} 0 0 1 ${str(w)} ${str(r)}L${str(w)} ${str(h - r)}A${str(r)} ${str(r)} 0 0 1 ${str(w - r)} ${str(h)}L${str(r)} ${str(h)}A${str(r)} ${str(r)} 0 0 1 0 ${str(h - r)}Z`;
+        };
+
+        const setIdle = () => {
+            plateEl.setAttribute('d', buildIdlePath());
+            navEl.classList.add('is-idle');
+            tabs.forEach((tab, i) => {
+                tab.setAttribute('aria-selected', 'false');
+                tab.tabIndex = i === 0 ? 0 : -1;
+                tab.style.setProperty('--halo-active', '0');
+            });
+        };
+
+        const renderState = () => {
+            const normV = clamp(velX / 1100, -1, 1) * (isPointerDragging ? 0.5 : 1);
+            const absV = Math.abs(normV);
+            const sLeft = clamp(m.shoulderRadius * (1 + 0.06 * absV + 0.4 * normV), m.shoulderRadius * 0.55, m.shoulderRadius * 2.1);
+            const sRight = clamp(m.shoulderRadius * (1 + 0.06 * absV - 0.4 * normV), m.shoulderRadius * 0.55, m.shoulderRadius * 2.1);
+
+            plateEl.setAttribute('d', buildActivePath(currX, sLeft, sRight));
+
+            const scaleS = 1 + 0.07 * absV;
+            orbEl.style.transform = `translate3d(${currX.toFixed(2)}px,0,0) scale(${scaleS.toFixed(3)},${(1 / scaleS).toFixed(3)})`;
+
+            tabs.forEach((tab, i) => {
+                const activeRatio = ease(clamp(1 - Math.abs(currX - m.slots[i]) / (m.span * 0.55), 0, 1));
+                tab.style.setProperty('--halo-active', activeRatio.toFixed(3));
+            });
+        };
+
+        const loopStep = (now) => {
+            animId = 0;
+            const dt = Math.min((now - lastTime) / 1000, 1 / 30);
+            lastTime = now;
+
+            const stiffness = isPointerDragging ? 900 : 142;
+            const damping = isPointerDragging ? 52 : 19.3;
+
+            let remaining = dt;
+            while (remaining > 0) {
+                const step = Math.min(remaining, 1 / 240);
+                velX += (-stiffness * (currX - targetX) - damping * velX) * step;
+                currX += velX * step;
+                remaining -= step;
+            }
+
+            renderState();
+
+            if (Math.abs(currX - targetX) > 0.05 || Math.abs(velX) > 0.6 || isPointerDragging) {
+                triggerPhysicsLoop();
+            } else {
+                currX = targetX;
+                velX = 0;
+                renderState();
+            }
+        };
+
+        const triggerPhysicsLoop = () => {
+            if (!animId) {
+                lastTime = performance.now();
+                animId = requestAnimationFrame(loopStep);
+            }
+        };
+
+        const animateToSlot = (pos) => {
+            targetX = pos;
+            if (prefersReducedMotion() && !isPointerDragging) {
+                currX = targetX;
+                velX = 0;
+                renderState();
+                return;
+            }
+            triggerPhysicsLoop();
+        };
+
+        const selectTab = (idx, options = {}) => {
+            const { focus = false, animate = true } = options;
+            if (idx == null || idx < 0 || !m.slots.length) {
+                currentSlotIndex = -1;
+                setIdle();
+                return;
+            }
+            const slotIdx = (idx + tabs.length) % tabs.length;
+            const isSame = currentSlotIndex === slotIdx;
+            currentSlotIndex = slotIdx;
+            navEl.classList.remove('is-idle');
+
+            tabs.forEach((tab, i) => {
+                tab.setAttribute('aria-selected', String(i === currentSlotIndex));
+                tab.tabIndex = i === currentSlotIndex ? 0 : -1;
+            });
+
+            if (focus) tabs[currentSlotIndex].focus();
+
+            if (animate) {
+                animateToSlot(m.slots[currentSlotIndex]);
+            } else if (!isSame || Math.abs(currX - m.slots[currentSlotIndex]) > 0.05) {
+                currX = targetX = m.slots[currentSlotIndex];
+                velX = 0;
+                renderState();
+            }
+        };
+
+        selectTabFn = selectTab;
+
+        // Handle pointer dragging
+        const handlePointerDown = (e) => {
+            if (e.button !== 0 && e.pointerType === 'mouse') return;
+            activePointerId = e.pointerId;
+            dragStartX = e.clientX;
+            isDragThresholdPassed = false;
+        };
+
+        const handlePointerMove = (e) => {
+            if (e.pointerId !== activePointerId) return;
+            if (!isPointerDragging && Math.abs(e.clientX - dragStartX) < 14) return;
+
+            if (!isPointerDragging) {
+                isPointerDragging = true;
+                isDragThresholdPassed = true;
+                navEl.classList.remove('is-idle');
+                navEl.classList.add('is-dragging');
+                if (navEl.setPointerCapture) {
+                    try { navEl.setPointerCapture(activePointerId); } catch(err) {}
+                }
+            }
+
+            e.preventDefault();
+            const rect = navEl.getBoundingClientRect();
+            targetX = clamp(e.clientX - rect.left, m.slots[0], m.slots[m.slots.length - 1]);
+            triggerPhysicsLoop();
+        };
+
+        const handlePointerUp = (e) => {
+            if (e.pointerId !== activePointerId) return;
+            activePointerId = null;
+
+            if (!isPointerDragging) return;
+            isPointerDragging = false;
+            navEl.classList.remove('is-dragging');
+
+            let bestIndex = 0;
+            let minDistance = Infinity;
+            m.slots.forEach((slotPos, i) => {
+                const distance = Math.abs(targetX - slotPos);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    bestIndex = i;
+                }
+            });
+
+            onTabSelected(bestIndex);
+            setTimeout(() => {
+                isDragThresholdPassed = false;
+            }, 0);
+        };
+
+        // Attach pointer listeners
+        navEl.addEventListener('pointerdown', handlePointerDown);
+        navEl.addEventListener('pointermove', handlePointerMove);
+        navEl.addEventListener('pointerup', handlePointerUp);
+        navEl.addEventListener('pointercancel', handlePointerUp);
+
+        // Tab click handlers & sheet toggle logic
+        function onTabSelected(idx) {
+            const tabBtn = tabs[idx];
+            if (!tabBtn) return;
+            const tabId = tabBtn.getAttribute('data-tab');
+            activeTab = tabId;
+            selectTab(idx, { animate: true });
+
+            if (tabId === 'home') {
                 closeAllSheets();
                 if (window.location.pathname === '/') {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else {
                     window.location.href = '/';
                 }
-            } else if (tab === 'inspiration') {
+            } else if (tabId === 'inspiration') {
                 closeAllSheets();
                 window.location.href = '/inspiration';
-            } else if (tab === 'products' || tab === 'work' || tab === 'more') {
-                if (activeSheet === tab) {
+            } else if (tabId === 'products' || tabId === 'work' || tabId === 'more') {
+                if (activeSheet === tabId) {
                     closeAllSheets();
                 } else {
-                    openSheet(tab);
+                    openSheet(tabId);
                 }
             }
+        }
+
+        tabs.forEach((tab, idx) => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                onTabSelected(idx);
+            });
         });
-    });
+
+        // Init measurement and initial placement
+        const updateLayout = (animate = false) => {
+            if (!measure()) {
+                setTimeout(() => updateLayout(animate), 50);
+                return;
+            }
+            const initialIdx = TAB_INDEX_MAP[activeTab] ?? -1;
+            if (initialIdx < 0) {
+                currX = targetX = velX = 0;
+                setIdle();
+            } else {
+                selectTab(initialIdx, { animate });
+            }
+            navEl.classList.add('is-ready');
+        };
+
+        updateLayout(false);
+        window.addEventListener('load', () => updateLayout(false));
+
+        if (window.ResizeObserver) {
+            const ro = new ResizeObserver(() => {
+                cancelAnimationFrame(resizeTimer);
+                resizeTimer = requestAnimationFrame(() => updateLayout(false));
+            });
+            ro.observe(navEl);
+        }
+
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => updateLayout(false));
+        }
+    }
 
     // Modal Architectural Accordion Toggle
     const modalArchToggle = document.getElementById('modalArchToggle');

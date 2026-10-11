@@ -7,12 +7,12 @@
 @section('description', 'Explore wireless lighting solutions with Abby Smart, and learn how to integrate it into your
 projects')
 @section('page-content')
-<div class="container-fluid p-0">
+
     <img src="{{ asset('img/smart-lighting/banner2.jpg') }}" alt="" class="img-fluid">
-</div>
+
+<div class="container-fluid p-0">
 <div class="row ms-0">
-    <div class="col-12 col-lg-1 p-0">
-    </div>
+   
     <div class="col-12 col-lg-4 p-0">
         <div class="text-content mt-5">
             Abby Lighting brings tech expertise to its old art of manufacturing luminaires. Wireless controls are no
@@ -35,16 +35,12 @@ projects')
             traditional automation.<br>
         </div>
     </div>
-    <div class="col-12 col-lg-3 p-0">
-       
-    </div>
-</div>
-<div class="container-fluid p-0">
-    <img src="{{ asset('img/smart-lighting/solution.png') }}" alt="" class="img-fluid">
+   
 </div>
 
-<div class="container-fluid p-0">
-    <div class="row px-md-4 px-2 my-5" id="smart-lighting-view-section">
+    <img src="{{ asset('img/smart-lighting/solution.png') }}" alt="" class="img-fluid">
+
+    <div class="row px-2 my-5" id="smart-lighting-view-section">
         <p id="tap-switches-text">With scene programming, one tap does it all—multiple lights adjust instantly to your
             preset dimness and color
             temperature. Effortlessly transform the ambience of any space to suit your mood or purpose. Tap the switches
@@ -99,11 +95,9 @@ projects')
         </div>
     </div>
     <div class="text-spacing"></div>
-</div>
 
 <div class="row ms-0">
-    <div class="col-12 col-lg-1 p-0">
-    </div>
+    
     <div class="col-12 col-lg-4 p-0">
         <div class="text-content mt-5">
             <div class="mb-4 features-text">Features</div>
@@ -125,18 +119,15 @@ projects')
             temperature
         </div>
     </div>
-    <div class="col-12 col-lg-3 p-0">
-    </div>
-</div>
-
-<div class="container-fluid p-0 mt-3">
+<div>
+<div class="p-0 mt-3">
     <img src="{{ asset('img/smart-lighting/flow-3.jpg') }}" alt="" class="img-fluid">
 </div>
-
+<div class="container-fluid p-0">
+<div class="p-0">
 <div class="row ms-0">
-    <div class="col-12 col-lg-1 p-0">
-    </div>
-    <div class="col-12 col-lg-9 p-0">
+   
+    <div class="col-12 col-lg-12 p-0">
         <p id="youtube-heading-line" class="text-content">Watch <strong>Warm Dim lighting</strong> in action - with the
             lights dimming to a
             soft
@@ -151,10 +142,9 @@ projects')
 
     </div>
 </div>
-
+            
 <div class="row ms-0 mt-5">
-    <div class="col-12 col-lg-1 p-0">
-    </div>
+    
     <div class="col-12 col-lg-10 p-0">
         <div class="text-content mt-5">
             <div class="mb-4 features-text">Automation with Sensors</div>
@@ -164,9 +154,9 @@ projects')
         </div>
     </div>
 </div>
-
+<div class="p-0">
 <div class="row ms-0 mt-5">
-    <div class="col-12 col-lg-1 p-0 ">
+    <div class="col-12 col-lg-12 p-0 ">
         <div class="text-content videotext ms-5 ps-2 mob-display">
             <strong>Motion Sensors</strong><br>
             Trigger a light when the motion is detected, and program the light to turn off/dim after
@@ -192,11 +182,11 @@ projects')
     </div>
 </div>
 
-
+            </div>
+<div class="p-0">          
 <div class="row ms-0 mt-7">
-    <div class="col-12 col-lg-1 p-0">
-    </div>
-    <div class="col-12 col-lg-5 p-0 relative">
+   
+    <div class="col-12 col-lg-6 p-0 relative">
         <div class="text-content videotext ms-5 ps-2">
             <strong>Daylight Sensors</strong><br>
             Make the most of areas blessed with daylight to ensure that lights brighten only when the amount of daylight
@@ -213,16 +203,9 @@ projects')
     </div>
 </div>
 
-
+</div>
 <div class="row ms-0 mt-7">
-    <div class="col-12 col-lg-1 p-0">
-        <div class="text-content videotext ms-5 ps-2 mob-display">
-            <strong>Occupancy Sensors</strong><br>
-            A novel new technology that detects human presence even in the absence of motion. Ideal
-            for use above a workstation or even in washrooms, where lights are required to be on only when in use and
-            can be dimmed down otherwise.
-        </div>
-    </div>
+    
     <div class="col-12 col-lg-6 p-0">
         <div class="videowrapper subtiles">
             <iframe src="https://www.youtube.com/embed/jXz2_mOUkNM?si=OE388_YjFhaWhaQK" title="Occupancy Sensors"
@@ -231,7 +214,8 @@ projects')
                 referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
     </div>
-    <div class="col-12 col-lg-5 p-0 relative mob-display-none">
+
+    <div class="col-12 col-lg-6 p-0 relative mob-display-none">
         <div class="text-content videotext ms-5 ps-2">
             <strong>Occupancy Sensors</strong><br>
             A novel new technology that detects human presence even in the absence of motion. Ideal
@@ -242,8 +226,7 @@ projects')
 </div>
 
 <div class="row ms-0 mt-5">
-    <div class="col-12 col-lg-1 p-0">
-    </div>
+  
     <div class="col-12 col-lg-10 p-0">
         <div class="text-content mt-5 wireless-control">
             <div class="mb-4 features-text">Wireless Controls</div>
@@ -253,13 +236,14 @@ projects')
         </div>
     </div>
 </div>
-
-<div class="container-fluid p-0 mt-5">
-    <img src="{{ asset('img/smart-lighting/controls-4.png') }}" alt="" class="img-fluid controls-image">
+            </div>
+<div class="p-0 mt-5">
+    <img src="{{ asset('img/smart-lighting/controls-4.png') }}" alt="" class="img-fluid ">
 </div>
-<div class="container-fluid p-0">
+<div class="p-0">
     <img src="{{ asset('img/smart-lighting/alive-4.jpg') }}" alt="" class="img-fluid">
 </div>
+
 @endsection
 
 @push('js')

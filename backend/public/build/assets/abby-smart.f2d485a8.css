@@ -138,14 +138,14 @@
 }
 
 #tap-switches-text {
-    font-size: 12px;
-    width: 90%;
-    text-align: left;
-    letter-spacing: 0px;
     color: black;
-    opacity: 1;
-    font-family: Poppins;
-    font-weight: 400;
+    font-size: 18px;
+    letter-spacing: 0rem;
+    line-height: 26.46px;
+    padding-right: 0rem;
+    font-weight: 400 !important;
+    font-family: 'inter', sans-serif !important;
+    padding-left: 0rem;
 }
 
 .features-text {
@@ -177,7 +177,7 @@
 }
 
 .videowrapper.subtiles {
-    width: 95%;
+    width: 98%;
     padding-bottom: 49.25%
 }
 

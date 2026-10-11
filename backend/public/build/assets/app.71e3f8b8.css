@@ -737,8 +737,8 @@ progress {
     flex-shrink: 0;
     width: 100%;
     max-width: 100%;
-    padding-right: calc(var(--bs-gutter-x) * .5);
-    padding-left: calc(var(--bs-gutter-x) * .5);
+    padding-right: calc(var(--bs-gutter-x) * .0);
+    padding-left: calc(var(--bs-gutter-x) * .0);
     margin-top: var(--bs-gutter-y)
 }
 
@@ -14252,8 +14252,8 @@ footer #subscribe-section .email-section #subscribe-input-info {
 
     max-width: 100% !important;
     width: 100% !important;
-    padding-left: 5rem !important;
-    padding-right: 5rem !important;
+    padding-left: 6.45vw !important;
+    padding-right: 6.45vw !important;
 }
 
 @media (max-width: 768px) {

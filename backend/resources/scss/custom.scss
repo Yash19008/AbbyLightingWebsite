@@ -2,6 +2,8 @@
 * {
     scrollbar-width: thin;
     scrollbar-color: gray transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Works on Chrome, Edge, and Safari */
