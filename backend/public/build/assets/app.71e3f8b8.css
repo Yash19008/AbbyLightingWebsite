@@ -13601,8 +13601,11 @@ hr {
 .stupid-padding .row {
     display: flex;
     align-items: center;
+    text-align: center;
 }
-
+.masonry-item {
+    padding: 10px;
+}
 .stupid-padding .img-fluid {
     width: 75% !important;
     margin-bottom: 20px;
