@@ -44,4 +44,12 @@
     .container {
         padding: 2rem !important
     }
+    .header {
+    color: black;
+    font-weight: 500;
+    font-size: 33px;
+    line-height: 2rem;
+    font-family: Poppins;
+    margin-top: 50px;
+}
 }

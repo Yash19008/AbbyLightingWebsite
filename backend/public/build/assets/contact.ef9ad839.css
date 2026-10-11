@@ -196,7 +196,12 @@
     .map-div {
         padding: 0
     }
-
+.contact-section2-title {
+ 
+    font-size: 22px;
+    line-height: 30px;
+   
+}
     .section3-text1 {
         font-size: 1.5rem
     }

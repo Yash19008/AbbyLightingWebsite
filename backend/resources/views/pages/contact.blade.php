@@ -48,7 +48,7 @@
 
                 </div>
 
-                <div class="col-12 col-lg-6 col-md-12 md-5  p-md-5 contact-form">
+                <div class="col-12 col-lg-6 col-md-12 md-5  contact-form">
                     <div class="p-0 ">
                         <h3 class="contact-section2-title">Say hi, & we will get back to you shortly!</h3>
                         <p class="contact-section-text">Send us an email with your question or concerns. If you would
@@ -57,7 +57,7 @@
                             provided
                             or contact the Studio directly at +91 9833645212.</p>
                     </div>
-                    <div class="col-12 p-3 form-col">
+                    <div class="col-12">
                         <form id="contact_form" action="{{ route('mail.contact.send') }}" method="post">
                             @csrf
                             <div class="row">

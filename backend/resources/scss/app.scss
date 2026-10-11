@@ -12,3 +12,13 @@ $custom-dark-gray: #808080;
 @import "~bootstrap/scss/bootstrap";
 @import "./custom";
 @import "./4k";
+
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.row > * {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}

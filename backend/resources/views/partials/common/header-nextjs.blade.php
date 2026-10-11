@@ -608,7 +608,7 @@
     border-radius: 2px;
     align-items: center;
     width: 40px;
-    height: 40px;
+    height: 50px;
     transition: width .38s cubic-bezier(.2, .75, .25, 1), opacity .18s;
     display: flex;
     position: absolute;
@@ -3501,11 +3501,12 @@
     .main-box .m-cta,
     .main-box .hero-slide .btn,
     .main-box .sitehead .nav-cta {
-      height: 38px;
-      min-height: 38px;
+      height: 32.43px;
+      min-height: 32.43px;
       padding-left: 16px;
       padding-right: 16px;
-      font-size: 13px
+      font-size: 9px;
+      width: 80.13px;
     }
   }
 
@@ -3767,6 +3768,11 @@
     width: 100%;
     height: 100%;
     display: grid
+  }
+
+  .icon-hola {
+    width: 17px !important;
+    height: 17px !important;
   }
 
   .main-box .project-placeholder:before {
@@ -7039,7 +7045,7 @@
     color: #fff;
     background: #1a1c1d;
     border: 1px solid #ffffff47;
-    border-radius: 2px;
+
     align-items: center;
     width: 40px;
     height: 40px;
@@ -10967,8 +10973,13 @@
     #halo-tab-more .halo-icon,
     .main-box #halo-tab-more .halo-icon {
       width: 15px !important;
-      height: 12px !important;
+      height: 18px !important;
       top: 50% !important;
+    }
+
+    .icon-hola {
+      width: 17px !important;
+      height: 17px !important;
     }
 
   }
@@ -11389,10 +11400,10 @@
 
     .halo-nav-wrap.halo-hidden,
     .main-box .halo-nav-wrap.halo-hidden {
-      opacity: 1 !important;
-      visibility: visible !important;
-      pointer-events: auto !important;
-      transform: translate(-50%, 0) !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transform: translate(-50%, calc(100% + 42px)) !important;
       display: block !important;
     }
 
@@ -11646,7 +11657,7 @@
     .main-box .pdrop-container {
       width: 100% !important;
       min-height: 100% !important;
-      padding: 24px 26px 100px !important;
+      padding: 30px 6.45vw 100px !important;
       box-sizing: border-box !important;
       display: flex !important;
       flex-direction: column !important;
@@ -11696,9 +11707,10 @@
       background: #f6c177 !important;
       color: #111111 !important;
       font-family: 'Poppins', 'Inter', sans-serif !important;
-      font-size: 11px !important;
-      font-weight: 600 !important;
-      letter-spacing: 0.08em !important;
+      font-size: 8.58px;
+      font-weight: 600;
+      letter-spacing: .08em;
+
       text-transform: uppercase !important;
       padding: 7px 16px !important;
       border-radius: 3px !important;
@@ -11947,7 +11959,7 @@
     #halo-tab-more .halo-icon,
     .main-box #halo-tab-more .halo-icon {
       width: 15px !important;
-      height: 12px !important;
+      height: 18px !important;
       top: 50% !important;
     }
 
@@ -12068,10 +12080,10 @@
       left: 16px !important;
       right: 16px !important;
       width: calc(100% - 32px) !important;
-      height: 48px !important;
+      height: 50px !important;
       background: #1a1c1d !important;
       border: 1px solid rgba(246, 193, 119, 0.35) !important;
-      border-radius: 4px !important;
+      border-radius: 0px !important;
       z-index: 5050 !important;
     }
   }
@@ -12117,8 +12129,8 @@
     }
 
     .main-box .abby-search svg {
-      width: 15px !important;
-      height: 15px !important;
+      width: 26px !important;
+      height: 26px !important;
       fill: none !important;
       stroke: currentColor !important;
       stroke-width: 1.8 !important;
@@ -12139,7 +12151,7 @@
       height: 48px !important;
       background: #1a1c1d !important;
       border: 1px solid rgba(246, 193, 119, 0.35) !important;
-      border-radius: 4px !important;
+      border-radius: 0px !important;
       z-index: 5050 !important;
     }
 
@@ -12319,15 +12331,15 @@
           </button>
         </div>
         <a href="/contact" class="nav-cta">
-          <span class="lbl-d">Get in Touch</span>
-          <span class="lbl-m">Contact</span>
+          <span class="lbl-d">Contact us</span>
+          <span class="lbl-m">Contact us</span>
         </a>
       </div>
     </div>
   </header>
 
   <!-- Floating Bottom Dock (Mobile & Tablet Floating SVG Halo Dock - Exact Next.js Copy) -->
-  <nav class="halo-nav-wrap halo-visible" id="mobileDock" aria-label="Mobile bottom navigation">
+  <nav class="halo-nav-wrap halo-hidden" id="mobileDock" aria-label="Mobile bottom navigation">
     <div class="halo-nav is-ready" id="dockNav">
       <span class="halo-nav-shadow" aria-hidden="true"></span>
       <svg class="halo-nav-skin" id="dockSvg" aria-hidden="true" focusable="false" preserveAspectRatio="none">
@@ -12355,14 +12367,14 @@
       <div class="halo-tabs" role="tablist" aria-label="Page sections">
         <button class="halo-tab halo-tab-btn" role="tab" type="button" id="halo-tab-home" data-tab="home"
           aria-label="Home">
-          <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="halo-icon icon-hola" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M3 11.5L12 4l9 7.5v7a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18.5v-7z" />
           </svg>
           <span class="halo-label">Home</span>
         </button>
         <button class="halo-tab halo-tab-btn" role="tab" type="button" id="halo-tab-products" data-tab="products"
           aria-label="Products">
-          <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="halo-icon icon-hola" viewBox="0 0 24 24" aria-hidden="true">
             <line x1="12" y1="3" x2="12" y2="8" />
             <path d="M5 15a7 7 0 0 1 14 0H5z" />
             <path d="M10 15a2 2 0 0 0 4 0" />
@@ -12371,7 +12383,7 @@
         </button>
         <button class="halo-tab halo-tab-btn" role="tab" type="button" id="halo-tab-work" data-tab="work"
           aria-label="Our Work">
-          <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="halo-icon icon-hola" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 6h4.5l2 2h8a1 1 0 0 1 1 1v1.5H3.5V7a1 1 0 0 1 1-1z" />
             <path
               d="M2.5 10.5h18a1 1 0 0 1 1 1.2l-1.3 6.8a1 1 0 0 1-1 .8H4.2a1 1 0 0 1-1-.8L1.8 11.7a1 1 0 0 1 .7-1.2z" />
@@ -12380,7 +12392,7 @@
         </button>
         <button class="halo-tab halo-tab-btn" role="tab" type="button" id="halo-tab-inspiration" data-tab="inspiration"
           aria-label="Inspiration">
-          <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="halo-icon icon-hola" viewBox="0 0 24 24" aria-hidden="true">
             <path
               d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 2.2-1.2 3.8-2.2 5.1-.5.7-.8 1.4-.8 2.4H9.5c0-1-.3-1.7-.8-2.4-1-1.3-2.2-2.9-2.2-5.1z" />
             <line x1="9" y1="20" x2="15" y2="20" />
@@ -12389,7 +12401,7 @@
         </button>
         <button class="halo-tab halo-tab-btn" role="tab" type="button" id="halo-tab-more" data-tab="more"
           aria-label="More">
-          <svg class="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="halo-icon icon-hola" viewBox="0 0 24 24" aria-hidden="true">
             <line x1="5" y1="8" x2="19" y2="8" />
             <line x1="5" y1="12" x2="19" y2="12" />
             <line x1="5" y1="16" x2="19" y2="16" />
@@ -12417,7 +12429,7 @@
               <path d="M21 21l-4.35-4.35" />
             </svg>
           </button>
-          <a href="/contact" class="pdrop-contact-btn">CONTACT</a>
+          <a href="/contact" class="pdrop-contact-btn">CONTACT US</a>
         </div>
       </div>
 
@@ -12655,9 +12667,60 @@
 
     const TAB_INDEX_MAP = { home: 0, products: 1, work: 2, inspiration: 3, more: 4 };
 
+    // Floating Dock (Bottom Bar) Upward/Downward Animation (Exact 1:1 match with Next.js)
+    let dockScrollTimeout = null;
+
+    function showDock() {
+      if (!mobileDock) return;
+      mobileDock.classList.remove('halo-hidden');
+      mobileDock.classList.add('halo-visible');
+    }
+
+    function hideDock() {
+      if (!mobileDock || activeSheet !== null) return;
+      mobileDock.classList.remove('halo-visible');
+      mobileDock.classList.add('halo-hidden');
+    }
+
+    function scheduleDockHide(delay = 1500) {
+      if (dockScrollTimeout) clearTimeout(dockScrollTimeout);
+      showDock();
+      dockScrollTimeout = setTimeout(() => {
+        hideDock();
+      }, delay);
+    }
+
+    // Initial page load: entrance animation smoothly slides UP from bottom to top
+    setTimeout(() => {
+      scheduleDockHide(2000);
+    }, 150);
+
+    // On scroll: slides UPWARD into view, auto-hides after 1.5s idle (same as Next.js)
+    window.addEventListener('scroll', () => {
+      scheduleDockHide(1500);
+    }, { passive: true });
+
+    // Pointer and touch interaction keeps dock visible
+    if (mobileDock) {
+      mobileDock.addEventListener('pointerenter', () => {
+        if (dockScrollTimeout) clearTimeout(dockScrollTimeout);
+        showDock();
+      });
+      mobileDock.addEventListener('pointerleave', () => {
+        if (activeSheet !== null) return;
+        scheduleDockHide(1500);
+      });
+      mobileDock.addEventListener('touchstart', () => {
+        if (dockScrollTimeout) clearTimeout(dockScrollTimeout);
+        showDock();
+      }, { passive: true });
+    }
+
     function openSheet(sheetName) {
       activeSheet = sheetName;
       document.body.style.overflow = 'hidden';
+      if (dockScrollTimeout) clearTimeout(dockScrollTimeout);
+      showDock();
       if (sheetBackdrop) {
         sheetBackdrop.classList.add('is-open');
       }
@@ -12667,10 +12730,6 @@
       if (sheetProducts) sheetProducts.style.display = (sheetName === 'products') ? 'block' : 'none';
       if (sheetWork) sheetWork.style.display = (sheetName === 'work') ? 'block' : 'none';
       if (sheetMore) sheetMore.style.display = (sheetName === 'more') ? 'block' : 'none';
-      if (mobileDock) {
-        mobileDock.classList.add('halo-visible');
-        mobileDock.classList.remove('halo-hidden');
-      }
     }
 
     function closeAllSheets() {
@@ -12685,6 +12744,7 @@
       if (sheetProducts) sheetProducts.style.display = 'none';
       if (sheetWork) sheetWork.style.display = 'none';
       if (sheetMore) sheetMore.style.display = 'none';
+      scheduleDockHide(1500);
     }
 
     if (sheetBackdrop) sheetBackdrop.addEventListener('click', closeAllSheets);
