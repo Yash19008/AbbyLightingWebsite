@@ -58,6 +58,16 @@
 
 
                         <div class="form-group row">
+                            <label for="is_featured" class="col-sm-3 control-label">Featured on Menu / Homepage</label>
+                            <div class="col-sm-6">
+                                <div class="custom-control custom-switch mt-1">
+                                    <input type="checkbox" class="custom-control-input" name="is_featured" id="is_featured" value="1" {{ (!empty($tag->is_featured) || old('is_featured') == '1') ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="is_featured"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <div class="offset-3 col-sm-8">
                                 <button type="submit" class="btn btn-dark ">Save</button>
                             </div>

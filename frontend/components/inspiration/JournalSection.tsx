@@ -209,7 +209,7 @@ export default function JournalSection() {
     return (
       <section className="journal-section">
         <div className="insp-shell" style={{ textAlign: "center", padding: "120px 20px" }}>
-          <h2 className="section-title">Guides, trends &amp; stories</h2>
+          <h2 className="section-title">The Lighting Journal</h2>
           <p style={{ marginTop: "20px", color: "#888", fontSize: "1.1rem" }}>
             No stories available at the moment.
           </p>
@@ -222,7 +222,7 @@ export default function JournalSection() {
     <section className="journal-section">
       <div className="insp-shell">
         <div className="journal-head">
-          <h2 className="section-title">Guides, trends &amp; stories</h2>
+          <h2 className="section-title">The Lighting Journal</h2>
 
           <div className="journal-actions">
             {/* Filter By */}

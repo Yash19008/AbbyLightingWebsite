@@ -52,7 +52,7 @@ const TABS: TabItem[] = [
   },
   {
     id: "work",
-    label: "Our works",
+    label: "Our Work",
     activeIcon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 6h4.5l2 2h8a1 1 0 0 1 1 1v1.5H3.5V7a1 1 0 0 1 1-1z" />
@@ -68,7 +68,7 @@ const TABS: TabItem[] = [
   },
   {
     id: "inspiration",
-    label: "Our inspiration",
+    label: "inspiration",
     activeIcon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <path d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 2.2-1.2 3.8-2.2 5.1-.5.7-.8 1.4-.8 2.4H9.5c0-1-.3-1.7-.8-2.4-1-1.3-2.2-2.9-2.2-5.1z" />
@@ -119,7 +119,7 @@ export default function HeaderClient() {
   React.useEffect(() => {
     async function fetchMenuData() {
       try {
-        
+
         const [archRes, decRes, colRes, menuRes] = await Promise.all([
           fetch(`${API_URL}/categories`, { cache: 'no-store' }),
           fetch(`${API_URL}/dec-categories`, { cache: 'no-store' }),
@@ -729,6 +729,25 @@ export default function HeaderClient() {
     setIsDockVisible(true);
   };
 
+  const handleNavClick = (e: React.MouseEvent<HTMLElement>) => {
+    const target = e.target as HTMLElement;
+    const link = target.closest("a");
+    if (!link) return;
+
+    link.blur();
+    if (document.activeElement && typeof (document.activeElement as HTMLElement).blur === "function") {
+      (document.activeElement as HTMLElement).blur();
+    }
+
+    const parentDropdown = link.closest(".has-mega, .has-drop");
+    if (parentDropdown) {
+      parentDropdown.classList.add("menu-force-closed");
+      setTimeout(() => {
+        parentDropdown.classList.remove("menu-force-closed");
+      }, 350);
+    }
+  };
+
   return (
     <>
       <header className={`sitehead ${isScrolled ? 'scrolled' : ''}`}>
@@ -736,9 +755,9 @@ export default function HeaderClient() {
           <Link href="/" className="logo" aria-label="Abby Lighting home">
             <img className="logo-asset" src="/images/abby-logo.png" alt="Abby Lighting" />
           </Link>
-          <nav aria-label="Primary navigation">
+          <nav aria-label="Primary navigation" onClick={handleNavClick}>
             <ul>
-              <li className="has-mega">
+              <li className="has-mega" onMouseLeave={(e) => e.currentTarget.classList.remove("menu-force-closed")}>
                 <a className="link" href="/products">
                   Product<span className="caret"></span>
                 </a>
@@ -756,7 +775,9 @@ export default function HeaderClient() {
                     <div className={`mega-grid ${menuItems.length > 0 ? 'mega-grid-dynamic' : ''}`}>
                       {/* ARCHITECTURAL - Dynamic */}
                       <div className="mgroup m-arch">
-                        <div className="mhead">Architectural</div>
+                        <Link href="/products" className="mhead">
+                          Architectural
+                        </Link>
                         <div className="msub">Browse by category</div>
                         <ul>
                           {isMenuLoading ? (
@@ -768,7 +789,7 @@ export default function HeaderClient() {
                           ) : architecturalCategories.length > 0 ? (
                             architecturalCategories.map((category) => (
                               <li key={category.id}>
-                                <a href={category.uri ? category.uri : `/products?category=${category.slug || ''}`}>
+                                <a href={category.uri ? category.uri : (category.slug ? `/products/category/${category.slug}` : '/products')}>
                                   {category.title || category.name}
                                 </a>
                               </li>
@@ -781,9 +802,9 @@ export default function HeaderClient() {
 
                       {/* DECORATIVE - Dynamic */}
                       <div className="mgroup m-dec">
-                        <div className="mhead">
+                        <Link href="/decorative-lights" className="mhead">
                           Decorative <span className="mnew">NEW</span>
-                        </div>
+                        </Link>
                         <div className="mcols">
                           <div>
                             <div className="msub">Browse by category</div>
@@ -797,7 +818,7 @@ export default function HeaderClient() {
                               ) : decorativeCategories.length > 0 ? (
                                 decorativeCategories.map((cat) => (
                                   <li key={cat.id || cat.slug || cat.name}>
-                                    <Link href={`/decorative-products?category=${cat.slug || cat.name}`}>
+                                    <Link href={`/decorative-lights?category=${cat.slug || cat.name}`}>
                                       {cat.name}
                                     </Link>
                                   </li>
@@ -830,7 +851,7 @@ export default function HeaderClient() {
                       </div>
 
                       <div className="msep lg"></div>
-                      <div 
+                      <div
                         className="m-worlds"
                         style={menuItems.length > 0 ? {
                           width: 'max-content',
@@ -863,7 +884,7 @@ export default function HeaderClient() {
                   </div>
                 </div>
               </li>
-              <li className="has-drop">
+              <li className="has-drop" onMouseLeave={(e) => e.currentTarget.classList.remove("menu-force-closed")}>
                 <Link className="link" href="/projects">
                   Our Work<span className="caret"></span>
                 </Link>
@@ -875,7 +896,7 @@ export default function HeaderClient() {
               <li>
                 <Link className="link" href="/inspiration">Inspiration</Link>
               </li>
-              <li className="has-drop">
+              <li className="has-drop" onMouseLeave={(e) => e.currentTarget.classList.remove("menu-force-closed")}>
                 <Link className="link" href="/company">
                   More<span className="caret"></span>
                 </Link>
@@ -890,7 +911,19 @@ export default function HeaderClient() {
           </nav>
           <div className="right">
             <div ref={searchRef} className={`abby-search ${isSearchOpen ? 'is-open' : ''}`}>
-              <form className="abby-search-form" role="search">
+              <form
+                className="abby-search-form"
+                role="search"
+                action="/search"
+                method="GET"
+                onSubmit={(e) => {
+                  const q = searchInputRef.current?.value.trim();
+                  if (!q) {
+                    e.preventDefault();
+                    searchInputRef.current?.focus();
+                  }
+                }}
+              >
                 <span className="abby-search-leading">
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <circle cx="10.7" cy="10.7" r="6.7"></circle>
@@ -900,12 +933,13 @@ export default function HeaderClient() {
                 <input
                   ref={searchInputRef}
                   type="search"
+                  name="q"
                   placeholder="Search for products, collections and more"
                   aria-label="Search Abby Lighting"
                   autoComplete="off"
                   defaultValue=""
                 />
-                <button className="abby-search-go" type="submit" aria-label="Submit search" disabled>
+                <button className="abby-search-go" type="submit" aria-label="Submit search">
                   →
                 </button>
               </form>
@@ -936,70 +970,6 @@ export default function HeaderClient() {
         </div>
       </header>
 
-      {/* Floating Bottom Dock (Mobile & Tablet Floating SVG Halo Dock) */}
-      <nav
-        className={`halo-nav-wrap ${isDockVisible || activeSheet !== null ? 'halo-visible' : 'halo-hidden'}`}
-        aria-label="Mobile bottom navigation"
-        onPointerEnter={handleDockPointerEnter}
-        onPointerLeave={handleDockPointerLeave}
-        onTouchStart={handleDockPointerEnter}
-      >
-        <div ref={dockNavRef} className="halo-nav is-ready">
-          <span className="halo-nav-shadow" aria-hidden="true" />
-          <svg
-            ref={dockSvgRef}
-            className="halo-nav-skin"
-            aria-hidden="true"
-            focusable="false"
-            preserveAspectRatio="none"
-          >
-            <defs>
-              <linearGradient id="internalHaloPlateGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop className="halo-plate-highlight" offset="0" />
-                <stop className="halo-plate-shadow" offset="1" />
-              </linearGradient>
-              <linearGradient id="internalHaloRimGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop className="halo-rim-strong" offset="0" />
-                <stop className="halo-rim-soft" offset="1" />
-              </linearGradient>
-            </defs>
-            <path ref={dockPlateRef} className="halo-nav-plate" />
-          </svg>
-          <span ref={dockOrbRef} className="halo-orb" aria-hidden="true" />
-          <div className="halo-tabs" role="tablist" aria-label="Page sections">
-            {TABS.map((tab, idx) => {
-              const isActive = currentVisibleTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  className="halo-tab"
-                  role="tab"
-                  type="button"
-                  id={`halo-tab-${tab.id}`}
-                  aria-selected={isActive}
-                  tabIndex={idx === 0 ? 0 : -1}
-                  onClick={() => {
-                    setHoveredTab(null);
-                    handleTabClick(tab.id);
-                  }}
-                  onPointerEnter={(e) => {
-                    handleDockPointerEnter();
-                    if (!isDraggingRef.current && e.pointerType !== "touch") {
-                      setHoveredTab(tab.id);
-                    }
-                  }}
-                  aria-label={tab.label}
-                >
-                  <svg className="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    {isActive ? tab.activeIcon : tab.idleIcon}
-                  </svg>
-                  <span className="halo-label">{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </nav>
 
       {/* Backdrop for Mobile Sheets */}
       <div
@@ -1028,9 +998,16 @@ export default function HeaderClient() {
                   <path d="M21 21l-4.35-4.35" />
                 </svg>
               </button>
-              <a href="/contact" onClick={closeSheet} className="pdrop-contact-btn">
+              <button
+                type="button"
+                onClick={() => {
+                  closeSheet();
+                  setIsContactModalOpen(true);
+                }}
+                className="pdrop-contact-btn"
+              >
                 CONTACT US
-              </a>
+              </button>
             </div>
           </div>
 
@@ -1054,24 +1031,33 @@ export default function HeaderClient() {
 
               {/* 1. Architectural Accordion */}
               <div className={`pdrop-acc ${productAccordion === 'arch' ? 'is-open' : ''}`}>
-                <button
-                  type="button"
-                  className="pdrop-acc-toggle"
-                  onClick={() => setProductAccordion(prev => prev === 'arch' ? null : 'arch')}
-                >
-                  <span className={productAccordion === 'arch' ? 'pdrop-amber-text' : ''}>Architectural</span>
-                  <span className="pdrop-caret">
-                    {productAccordion === 'arch' ? (
-                      <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
-                        <polygon points="0,7 11,7 5.5,0" />
-                      </svg>
-                    ) : (
-                      <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
-                        <polygon points="0,0 11,0 5.5,7" />
-                      </svg>
-                    )}
-                  </span>
-                </button>
+                <div className="pdrop-acc-toggle">
+                  <Link
+                    href="/products"
+                    onClick={closeSheet}
+                    className={`pdrop-acc-heading ${productAccordion === 'arch' ? 'pdrop-amber-text' : ''}`}
+                  >
+                    Architectural
+                  </Link>
+                  <button
+                    type="button"
+                    className="pdrop-caret-btn"
+                    onClick={() => setProductAccordion(prev => prev === 'arch' ? null : 'arch')}
+                    aria-label="Toggle Architectural categories"
+                  >
+                    <span className="pdrop-caret">
+                      {productAccordion === 'arch' ? (
+                        <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
+                          <polygon points="0,7 11,7 5.5,0" />
+                        </svg>
+                      ) : (
+                        <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
+                          <polygon points="0,0 11,0 5.5,7" />
+                        </svg>
+                      )}
+                    </span>
+                  </button>
+                </div>
                 {productAccordion === 'arch' && (
                   <div className="pdrop-acc-content">
                     <div className="pdrop-section-label">BROWSE BY CATEGORY</div>
@@ -1080,7 +1066,7 @@ export default function HeaderClient() {
                         architecturalCategories.map(cat => (
                           <li key={cat.id}>
                             <a
-                              href={cat.uri || `/products?category=${cat.slug || ''}`}
+                              href={cat.uri || (cat.slug ? `/products/category/${cat.slug}` : '/products')}
                               onClick={closeSheet}
                             >
                               {cat.title || cat.name}
@@ -1089,11 +1075,11 @@ export default function HeaderClient() {
                         ))
                       ) : (
                         <>
-                          <li><a href="/products" onClick={closeSheet}>Spots &amp; Accents</a></li>
-                          <li><a href="/products" onClick={closeSheet}>Downlights</a></li>
-                          <li><a href="/products" onClick={closeSheet}>Profiles</a></li>
-                          <li><a href="/products" onClick={closeSheet}>Track Lights</a></li>
-                          <li><a href="/products" onClick={closeSheet}>Washers &amp; Grazers</a></li>
+                          <li><a href="/products/category/spots-&-accents" onClick={closeSheet}>Spots &amp; Accents</a></li>
+                          <li><a href="/products/category/downlights" onClick={closeSheet}>Downlights</a></li>
+                          <li><a href="/products/category/profiles" onClick={closeSheet}>Profiles</a></li>
+                          <li><a href="/products/category/track-lights" onClick={closeSheet}>Track Lights</a></li>
+                          <li><a href="/products/category/washers-grazers" onClick={closeSheet}>Washers &amp; Grazers</a></li>
                         </>
                       )}
                     </ul>
@@ -1103,26 +1089,33 @@ export default function HeaderClient() {
 
               {/* 2. Decorative Accordion */}
               <div className={`pdrop-acc ${productAccordion === 'dec' ? 'is-open' : ''}`}>
-                <button
-                  type="button"
-                  className="pdrop-acc-toggle"
-                  onClick={() => setProductAccordion(prev => prev === 'dec' ? null : 'dec')}
-                >
-                  <span className={productAccordion === 'dec' ? 'pdrop-amber-text' : ''}>
+                <div className="pdrop-acc-toggle">
+                  <Link
+                    href="/decorative-lights"
+                    onClick={closeSheet}
+                    className={`pdrop-acc-heading ${productAccordion === 'dec' ? 'pdrop-amber-text' : ''}`}
+                  >
                     Decorative <span className="mnew" style={{ marginLeft: 6, fontSize: '0.65rem', padding: '1px 5px', color: 'black', borderRadius: 3 }}>NEW</span>
-                  </span>
-                  <span className="pdrop-caret">
-                    {productAccordion === 'dec' ? (
-                      <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
-                        <polygon points="0,7 11,7 5.5,0" />
-                      </svg>
-                    ) : (
-                      <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
-                        <polygon points="0,0 11,0 5.5,7" />
-                      </svg>
-                    )}
-                  </span>
-                </button>
+                  </Link>
+                  <button
+                    type="button"
+                    className="pdrop-caret-btn"
+                    onClick={() => setProductAccordion(prev => prev === 'dec' ? null : 'dec')}
+                    aria-label="Toggle Decorative categories"
+                  >
+                    <span className="pdrop-caret">
+                      {productAccordion === 'dec' ? (
+                        <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
+                          <polygon points="0,7 11,7 5.5,0" />
+                        </svg>
+                      ) : (
+                        <svg width="14" height="36" viewBox="0 0 11 7" fill="currentColor">
+                          <polygon points="0,0 11,0 5.5,7" />
+                        </svg>
+                      )}
+                    </span>
+                  </button>
+                </div>
                 {productAccordion === 'dec' && (
                   <div className="pdrop-acc-content">
                     <div className="pdrop-section-label">BROWSE BY CATEGORY</div>
@@ -1131,7 +1124,7 @@ export default function HeaderClient() {
                         decorativeCategories.map(cat => (
                           <li key={cat.id || cat.slug || cat.name}>
                             <Link
-                              href={`/decorative-products?category=${cat.slug || cat.name}`}
+                              href={`/decorative-lights?category=${cat.slug || cat.name}`}
                               onClick={closeSheet}
                             >
                               {cat.name}
@@ -1140,11 +1133,11 @@ export default function HeaderClient() {
                         ))
                       ) : (
                         <>
-                          <li><Link href="/decorative-products?category=chandelier" onClick={closeSheet}>Chandelier</Link></li>
-                          <li><Link href="/decorative-products?category=pendant-lights" onClick={closeSheet}>Pendant Lights</Link></li>
-                          <li><Link href="/decorative-products?category=wall-lights" onClick={closeSheet}>Wall Lights</Link></li>
-                          <li><Link href="/decorative-products?category=floor-lamps" onClick={closeSheet}>Floor Lamps</Link></li>
-                          <li><Link href="/decorative-products?category=table-lamps" onClick={closeSheet}>Table Lamps</Link></li>
+                          <li><Link href="/decorative-lights?category=chandelier" onClick={closeSheet}>Chandelier</Link></li>
+                          <li><Link href="/decorative-lights?category=pendant-lights" onClick={closeSheet}>Pendant Lights</Link></li>
+                          <li><Link href="/decorative-lights?category=wall-lights" onClick={closeSheet}>Wall Lights</Link></li>
+                          <li><Link href="/decorative-lights?category=floor-lamps" onClick={closeSheet}>Floor Lamps</Link></li>
+                          <li><Link href="/decorative-lights?category=table-lamps" onClick={closeSheet}>Table Lamps</Link></li>
                         </>
                       )}
                     </ul>
@@ -1256,13 +1249,19 @@ export default function HeaderClient() {
                 </a>
               </div>
               <div className="pdrop-arrow-row">
-                <a href="/contact" onClick={closeSheet}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeSheet();
+                    setIsContactModalOpen(true);
+                  }}
+                >
                   <span>Contact</span>
                   <svg className="pdrop-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="3" y1="12" x2="20" y2="12" />
                     <polyline points="14 6 20 12 14 18" />
                   </svg>
-                </a>
+                </button>
               </div>
               <div className="pdrop-arrow-row">
                 <a href="/policies" onClick={closeSheet}>
@@ -1277,6 +1276,72 @@ export default function HeaderClient() {
           )}
         </div>
       </div>
+
+      {/* Floating Bottom Dock (Mobile & Tablet Floating SVG Halo Dock) */}
+      <nav
+        className={`halo-nav-wrap ${isDockVisible || activeSheet !== null ? 'halo-visible' : 'halo-hidden'}`}
+        aria-label="Mobile bottom navigation"
+        onPointerEnter={handleDockPointerEnter}
+        onPointerLeave={handleDockPointerLeave}
+        onTouchStart={handleDockPointerEnter}
+      >
+        <div ref={dockNavRef} className="halo-nav is-ready">
+          <span className="halo-nav-shadow" aria-hidden="true" />
+          <svg
+            ref={dockSvgRef}
+            className="halo-nav-skin"
+            aria-hidden="true"
+            focusable="false"
+            preserveAspectRatio="none"
+          >
+            <defs>
+              <linearGradient id="internalHaloPlateGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop className="halo-plate-highlight" offset="0" />
+                <stop className="halo-plate-shadow" offset="1" />
+              </linearGradient>
+              <linearGradient id="internalHaloRimGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop className="halo-rim-strong" offset="0" />
+                <stop className="halo-rim-soft" offset="1" />
+              </linearGradient>
+            </defs>
+            <path ref={dockPlateRef} className="halo-nav-plate" />
+          </svg>
+          <span ref={dockOrbRef} className="halo-orb" aria-hidden="true" />
+          <div className="halo-tabs" role="tablist" aria-label="Page sections">
+            {TABS.map((tab, idx) => {
+              const isActive = currentVisibleTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  className="halo-tab"
+                  role="tab"
+                  type="button"
+                  id={`halo-tab-${tab.id}`}
+                  aria-selected={isActive}
+                  tabIndex={idx === 0 ? 0 : -1}
+                  onClick={() => {
+                    setHoveredTab(null);
+                    handleTabClick(tab.id);
+                  }}
+                  onPointerEnter={(e) => {
+                    handleDockPointerEnter();
+                    if (!isDraggingRef.current && e.pointerType !== "touch") {
+                      setHoveredTab(tab.id);
+                    }
+                  }}
+                  aria-label={tab.label}
+                >
+                  <svg className="halo-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    {isActive ? tab.activeIcon : tab.idleIcon}
+                  </svg>
+                  <span className="halo-label">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </nav>
+
       <SharedInquiryModal
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}

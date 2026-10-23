@@ -1408,16 +1408,41 @@
                             animation: 150,
                             onEnd: function(evt) {
                                 var tbody = $(evt.item).closest('tbody');
+                                var section = tbody.attr('data-section') || tbody.data('section') || (tbody.attr('id') === 'spec-tbody-dimensions' ? 'dimensions' : 'basic_specifications');
                                 var orders = {};
-                                tbody.find('tr').each(function(i) {
-                                    orders[$(this).data('id')] = i + 1;
+                                var ids = [];
+                                tbody.children('tr').each(function(i) {
+                                    var id = $(this).attr('data-id');
+                                    if (id !== undefined && id !== null && id !== '') {
+                                        orders[id] = i + 1;
+                                        ids.push(id);
+                                    }
                                 });
                                 $.ajax({
-                                    url: '{{ url('admin/decorative-products/' . $product->id . '/specs/reorder') }}',
+                                    url: '{{ route('decorative_product_admin.specs.reorder', $product->id) }}',
                                     method: 'POST',
                                     data: {
                                         _token: '{{ csrf_token() }}',
-                                        orders: orders
+                                        section: section,
+                                        orders: orders,
+                                        ids: ids
+                                    },
+                                    success: function(res) {
+                                        if (res && res.success) {
+                                            if (typeof toastr !== 'undefined') {
+                                                toastr.success('Specifications reordered');
+                                            }
+                                        } else {
+                                            if (typeof toastr !== 'undefined') {
+                                                toastr.error('Failed to reorder specifications');
+                                            }
+                                        }
+                                    },
+                                    error: function(xhr) {
+                                        console.error('Spec reorder error:', xhr);
+                                        if (typeof toastr !== 'undefined') {
+                                            toastr.error('Failed to reorder specifications');
+                                        }
                                     }
                                 });
                             }

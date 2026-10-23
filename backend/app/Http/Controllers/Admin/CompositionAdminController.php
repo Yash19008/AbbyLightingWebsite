@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\Common_function;
-use App\Models\AuditLog;
 use App\Models\Composition;
 use App\Models\CompositionCategory;
 use App\Models\Decorative\DecProduct;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Collection;
 
 class CompositionAdminController extends Controller

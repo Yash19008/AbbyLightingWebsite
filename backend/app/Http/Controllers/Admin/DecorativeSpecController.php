@@ -14,9 +14,8 @@ class DecorativeSpecController extends Controller
     {
         $rows = DecProductSpecRow::with('attribute')
             ->where('product_id', $productId)
-            ->orderBy('section')
-            ->orderBy('size_id')
             ->orderBy('order', 'asc')
+            ->orderBy('id', 'asc')
             ->get()
             ->map(function($row) {
                 $row->label = $row->attribute ? $row->attribute->name : '';
@@ -24,7 +23,7 @@ class DecorativeSpecController extends Controller
             });
 
         // Group into basic_specifications and dimensions (grouped by size_id)
-        $basic = $rows->where('section', 'basic_specifications')->values();
+        $basic = $rows->where('section', 'basic_specifications')->sortBy('order')->values();
         
         $dimensionsRaw = $rows->where('section', 'dimensions');
         $dimensionsGrouped = [];
@@ -34,10 +33,12 @@ class DecorativeSpecController extends Controller
                 $dimensionsGrouped[$attrId] = [
                     'dec_spec_attribute_id' => $attrId,
                     'label' => $row->label,
-                    'order' => $row->order,
+                    'order' => (int) ($row->order ?? 0),
                     'values' => [],
                     'id' => $attrId // using attrId as unique row identifier for dimensions
                 ];
+            } else if ($row->order && empty($dimensionsGrouped[$attrId]['order'])) {
+                $dimensionsGrouped[$attrId]['order'] = (int) $row->order;
             }
             $dimensionsGrouped[$attrId]['values'][$row->size_id] = [
                 'id' => $row->id,
@@ -48,6 +49,9 @@ class DecorativeSpecController extends Controller
         $dimensions = array_values($dimensionsGrouped);
         // Sort by order
         usort($dimensions, function($a, $b) {
+            if ($a['order'] === $b['order']) {
+                return $a['id'] <=> $b['id'];
+            }
             return $a['order'] <=> $b['order'];
         });
 
@@ -148,13 +152,19 @@ class DecorativeSpecController extends Controller
             $attrId = $id;
             $values = $request->values ?? [];
 
+            // Preserve existing order before deleting
+            $existingOrder = DecProductSpecRow::where('product_id', $productId)
+                ->where('section', 'dimensions')
+                ->where('dec_spec_attribute_id', $attrId)
+                ->value('order');
+
             // Delete existing rows for this attribute
             DecProductSpecRow::where('product_id', $productId)
                 ->where('section', 'dimensions')
                 ->where('dec_spec_attribute_id', $attrId)
                 ->delete();
 
-            $maxOrder = DecProductSpecRow::where('product_id', $productId)->where('section', 'dimensions')->max('order') ?? 0;
+            $order = $existingOrder !== null ? (int)$existingOrder : ((DecProductSpecRow::where('product_id', $productId)->where('section', 'dimensions')->max('order') ?? 0) + 1);
             
             $createdRows = [];
             $firstRow = null;
@@ -174,7 +184,7 @@ class DecorativeSpecController extends Controller
                     'dec_spec_attribute_id' => $request->dec_spec_attribute_id,
                     'value'      => $val,
                     'value_type' => $request->value_type ?? 'text',
-                    'order'      => $maxOrder + 1,
+                    'order'      => $order,
                 ]);
                 $row->load('attribute');
                 $row->label = $row->attribute ? $row->attribute->name : '';
@@ -188,7 +198,7 @@ class DecorativeSpecController extends Controller
                     'id' => $request->dec_spec_attribute_id,
                     'dec_spec_attribute_id' => $request->dec_spec_attribute_id,
                     'label' => $firstRow ? $firstRow->label : '',
-                    'order' => $maxOrder + 1,
+                    'order' => $order,
                     'values' => $createdRows
                 ]
             ]);
@@ -234,18 +244,59 @@ class DecorativeSpecController extends Controller
 
     public function reorder(Request $request, $productId)
     {
-        $orders = $request->orders; // [id => order]
-        
-        if (is_array($orders)) {
-            foreach ($orders as $id => $order) {
-                DecProductSpecRow::where('id', $id)
-                    ->where('product_id', $productId)
-                    ->update(['order' => $order]);
+        $section = $request->section;
+        $orders = $request->orders; // [id => order] or list of IDs
+        $ids = $request->ids;       // List of IDs in order
+
+        // If ids list is provided, convert to map [id => order]
+        if (!empty($ids) && is_array($ids)) {
+            $orders = [];
+            foreach ($ids as $index => $id) {
+                $orders[$id] = $index + 1;
             }
-            return response()->json(['success' => true]);
         }
 
-        return response()->json(['success' => false], 400);
+        if (is_array($orders) && !empty($orders)) {
+            \DB::transaction(function () use ($orders, $productId, $section) {
+                if ($section === 'dimensions') {
+                    foreach ($orders as $attrId => $order) {
+                        DecProductSpecRow::where('product_id', $productId)
+                            ->where('section', 'dimensions')
+                            ->where('dec_spec_attribute_id', $attrId)
+                            ->update(['order' => (int)$order]);
+                    }
+                } else if ($section === 'basic_specifications') {
+                    foreach ($orders as $id => $order) {
+                        DecProductSpecRow::where('product_id', $productId)
+                            ->where('section', 'basic_specifications')
+                            ->where('id', $id)
+                            ->update(['order' => (int)$order]);
+                    }
+                } else {
+                    // Fallback if section is not specified
+                    foreach ($orders as $id => $order) {
+                        $affected = DecProductSpecRow::where('product_id', $productId)
+                            ->where('section', 'basic_specifications')
+                            ->where('id', $id)
+                            ->update(['order' => (int)$order]);
+
+                        if ($affected === 0) {
+                            DecProductSpecRow::where('product_id', $productId)
+                                ->where('section', 'dimensions')
+                                ->where('dec_spec_attribute_id', $id)
+                                ->update(['order' => (int)$order]);
+                        }
+                    }
+                }
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Specifications reordered successfully'
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'No order data provided.'], 400);
     }
 
     public function copyFromProduct(Request $request, $productId)
@@ -259,7 +310,10 @@ class DecorativeSpecController extends Controller
             return response()->json(['success' => false, 'message' => 'Invalid source product.'], 403);
         }
 
-        $sourceRows = DecProductSpecRow::where('product_id', $sourceProductId)->get();
+        $sourceRows = DecProductSpecRow::where('product_id', $sourceProductId)
+            ->orderBy('order', 'asc')
+            ->orderBy('id', 'asc')
+            ->get();
 
         if ($sourceRows->isEmpty()) {
             return response()->json(['success' => false, 'message' => 'Source product has no specifications.']);

@@ -9,7 +9,6 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Http\Request;
-use DB;
 
 class ResetPasswordAdminController extends Controller
 {

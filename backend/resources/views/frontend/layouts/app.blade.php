@@ -51,6 +51,27 @@
     {{-- Google Recaptcha --}}
     <script src="https://www.google.com/recaptcha/api.js?onload=recaptchaOnloadCallback&render=explicit" async defer></script>
     
+    <style>
+        /* Pure black header, mega-panel, and dropdowns */
+        header.sitehead,
+        .sitehead,
+        .main-box header.sitehead,
+        #mainHeader,
+        .main-box .mega,
+        .main-box .mega-panel,
+        .main-box .sitehead .mega,
+        .main-box .sitehead .mega-panel,
+        .mega,
+        .mega-panel,
+        .main-box .drop,
+        .main-box .sitehead .drop,
+        .main-box .sitehead nav > ul > li .drop,
+        .drop,
+        .pdrop-modal {
+            background: #000000 !important;
+            background-color: #000000 !important;
+        }
+    </style>
     @stack('styles')
 </head>
 <body class="{{ Request::is('/') ? 'home-page' : '' }}">

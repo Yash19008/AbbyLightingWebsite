@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 
 class ClientAdminController extends Controller
 {
+    protected $main_module;
+    protected $currentDateTime;
+
     public function __construct()
     {
         // $this->middleware('admin');
@@ -45,6 +48,7 @@ class ClientAdminController extends Controller
         // CHECK SERVER SIDE VALIDATION
         $this->validate($request, $validation_array, $rules);
         $values = [
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'created_at' => $this->currentDateTime,
             'created_by' => Auth::guard('admin')->user()->id,
         ];
@@ -63,6 +67,7 @@ class ClientAdminController extends Controller
 
         $newData = [
             'path' => $file ? $fileNamePhoto : NULL,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'created_at' => $this->currentDateTime,
             'created_by' => Auth::guard('admin')->user()->id,
         ];
@@ -96,15 +101,19 @@ class ClientAdminController extends Controller
         $oldClient = Client::where('id', $id)->first();
         $oldData =  [
             'path' => ($oldClient->path != '') ? $oldClient->path : NULL,
-            'created_by' => $oldClient->created_by,
-            'created_at' => $oldClient->created_at
+            'is_featured' => $oldClient ? $oldClient->is_featured : 0,
+            'created_by' => $oldClient ? $oldClient->created_by : null,
+            'created_at' => $oldClient ? $oldClient->created_at : null
         ];
+        $oldDataArr = json_encode($oldData);
+
         $this->validate($request, [
             'file' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:5120',
         ]);
 
         // UPDATE ARRAY
         $update_array = array(
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'updated_by' => Auth::guard('admin')->user()->id,
             'updated_at' => $this->currentDateTime,
         );
@@ -122,7 +131,8 @@ class ClientAdminController extends Controller
             ->update($update_array);
 
         $newData =  [
-            'path' => ($request->path != '') ? $request->path : NULL,
+            'path' => ($request->path != '') ? $request->path : ($oldClient->path ?? NULL),
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'updated_by' => Auth::guard('admin')->user()->id,
             'updated_at' => $this->currentDateTime,
         ];

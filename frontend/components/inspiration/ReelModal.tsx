@@ -72,7 +72,7 @@ export default function ReelModal({ isOpen, reel, onClose }: ReelModalProps) {
           ) : embedUrl ? (
             <iframe
               src={embedUrl}
-              title={reel.title || "Watch & Shop Reel"}
+              title={reel.title || "Watch & Learn Reel"}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               className="reel-iframe-player"

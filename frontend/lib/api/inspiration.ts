@@ -7,6 +7,8 @@ export interface InspirationHeroData {
   title: string;
   title_highlight?: string | null;
   background_image?: string | null;
+  image_tablet?: string | null;
+  image_mobile?: string | null;
   is_active: boolean;
   breadcrumb_parent_text?: string | null;
   breadcrumb_parent_link?: string | null;

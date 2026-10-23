@@ -194,7 +194,7 @@ export default function ProductInfo({
         </svg>{" "}
         <span>
           Need help?{" "}
-          <a href="https://wa.me/919833645212" target="_blank" rel="noopener noreferrer">
+          <a href="https://wa.me/917304623220" target="_blank" rel="noopener noreferrer">
             Talk to us on WhatsApp
           </a>
         </span>

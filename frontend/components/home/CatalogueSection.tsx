@@ -52,11 +52,21 @@ export default function CatalogueSection({ data }: CatalogueSectionProps) {
   return (
     <section className="image-cta">
       {data.background_image_url && (
-        <img
-          className="catalogue-media section-parallax-media"
-          src={data.background_image_url}
-          alt={data.title || "Abby Lighting Catalogue"}
-        />
+        <picture className="catalogue-media section-parallax-media">
+          {data.image_mobile_url ? (
+            <source media="(max-width: 640px)" srcSet={data.image_mobile_url} />
+          ) : data.image_tablet_url ? (
+            <source media="(max-width: 640px)" srcSet={data.image_tablet_url} />
+          ) : null}
+          {data.image_tablet_url ? (
+            <source media="(max-width: 1024px)" srcSet={data.image_tablet_url} />
+          ) : null}
+          <img
+            className="catalogue-media section-parallax-media"
+            src={data.background_image_url}
+            alt={data.title || "Abby Lighting Catalogue"}
+          />
+        </picture>
       )}
       <div className="copy reveal" suppressHydrationWarning>
         <h2>

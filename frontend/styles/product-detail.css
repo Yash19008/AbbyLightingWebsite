@@ -545,7 +545,23 @@
 
 .product-page .spec-table-container {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.product-page .spec-table-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.product-page .spec-table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.product-page .spec-table-container::-webkit-scrollbar-thumb {
+  background: #c8c8c8;
+  border-radius: 2px;
 }
 
 .product-page .spec-comparison-table {
@@ -592,6 +608,33 @@
 .product-page .spec-table .spec-value span,
 .product-page .spec-table .spec-value div {
   white-space: pre-line;
+}
+
+.product-page .spec-chips,
+.product-page span.spec-chips {
+  display: inline-flex !important;
+  align-items: baseline !important;
+  white-space: nowrap !important;
+  flex-wrap: nowrap !important;
+  vertical-align: middle;
+}
+
+.product-page .spec-chip {
+  display: inline-flex !important;
+  align-items: baseline !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.product-page .spec-chip-sep {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.product-page .spec-chip-code {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
 .product-page .spec-size-value {
@@ -773,591 +816,7 @@
   right: 0
 }
 
-/* Enquiry Modal */
-.figma-enquiry {
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  background: rgba(0, 0, 0, 0.65);
-  display: grid;
-  place-items: center;
-  padding: 24px;
-}
-
-.figma-enquiry-card {
-  position: relative;
-  width: min(760px, 100%);
-  max-height: calc(100vh - 48px);
-  overflow-y: auto;
-  background: #fff;
-  padding: 53px 76px 49px;
-  box-shadow: 0 18px 65px rgba(0, 0, 0, 0.26);
-  z-index: 2;
-}
-
-.figma-enquiry-close {
-  position: absolute;
-  right: 20px;
-  top: 16px;
-  border: 0;
-  background: transparent;
-  font-family: 'Inter', sans-serif;
-  font-weight: 300;
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-  color: #111;
-}
-
-.figma-enquiry h2 {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 22px;
-  line-height: 1.2;
-  color: #111;
-}
-
-.figma-enquiry-lead {
-  margin: 14px 0 36px;
-  color: rgba(0, 0, 0, 0.58);
-  font-family: 'Poppins', sans-serif;
-  font-weight: 300;
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.figma-enquiry-form {
-  width: 100%;
-}
-
-.figma-enquiry-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 17px;
-}
-
-.figma-enquiry-field {
-  position: relative;
-}
-
-.figma-enquiry-field.full {
-  grid-column: 1 / -1;
-}
-
-.figma-enquiry-field label {
-  position: absolute;
-  z-index: 1;
-  left: 17px;
-  top: 15px;
-  color: #545454;
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 1.3;
-  pointer-events: none;
-  transition: opacity 120ms ease;
-}
-
-.figma-enquiry-field input,
-.figma-enquiry-field textarea {
-  width: 100%;
-  border: 1px solid #111;
-  border-radius: 0;
-  background: #fff;
-  padding: 10px 16px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 1.4;
-  color: #111;
-  outline: 0;
-  box-sizing: border-box;
-}
-
-.figma-enquiry-field input {
-  height: 47px;
-}
-
-.figma-enquiry-field input.read-only-product {
-  background: #fbfbfb;
-  font-weight: 500;
-  color: #111;
-}
-
-.figma-enquiry-field textarea {
-  min-height: 114px;
-  padding-top: 36px;
-  resize: vertical;
-}
-
-.figma-enquiry-field textarea::placeholder {
-  color: rgba(84, 84, 84, 0.45);
-}
-
-.figma-enquiry-field.filled label,
-.figma-enquiry-field:focus-within label {
-  opacity: 0 !important;
-}
-
-.figma-enquiry-field input:focus,
-.figma-enquiry-field textarea:focus {
-  border-color: #000;
-  box-shadow: 0 0 0 1px #000;
-}
-
-.figma-enquiry-field.phone-field-wrap {
-  position: relative;
-  display: flex;
-  align-items: stretch;
-}
-
-.figma-enquiry-field.phone-field-wrap label {
-  left: 78px;
-}
-
-.figma-enquiry-field.phone-field-wrap input {
-  border-left: 1px solid #111;
-  border-radius: 0;
-  flex: 1;
-}
-
-/* Custom Dropdown Select inside Figma Enquiry */
-.figma-enquiry .download-select-wrap {
-  position: relative;
-  width: 100%;
-}
-
-.figma-enquiry .download-select-trigger {
-  width: 100%;
-  height: 47px;
-  border: 1px solid #111;
-  border-radius: 0;
-  background: #fff;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  outline: 0;
-  box-sizing: border-box;
-  text-align: left;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
-}
-
-.figma-enquiry .download-select-trigger:focus,
-.figma-enquiry .download-select-trigger.is-open {
-  border-color: #000;
-  box-shadow: 0 0 0 1px #000;
-}
-
-.figma-enquiry .download-select-label {
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 1.4;
-  color: #111111;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.figma-enquiry .download-select-label.is-placeholder {
-  color: #545454;
-  font-size: 12px;
-}
-
-.figma-enquiry .download-select-arrow {
-  flex-shrink: 0;
-  margin-left: 8px;
-  transition: transform 180ms ease;
-}
-
-.figma-enquiry .download-select-arrow.is-open {
-  transform: rotate(180deg);
-}
-
-.figma-enquiry .download-select-menu {
-  position: absolute;
-  top: calc(100% + 1px);
-  left: 0;
-  right: 0;
-  background: #ffffff;
-  border: 1px solid #dcdcdc;
-  border-radius: 0;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
-  z-index: 100;
-  max-height: 220px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.figma-enquiry .download-select-option {
-  width: 100%;
-  padding: 12px 16px;
-  background: #ffffff;
-  border: 0;
-  border-bottom: 1px solid #f0f0f0;
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 1.4;
-  color: #111111;
-  text-align: left;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: background-color 120ms ease, color 120ms ease;
-}
-
-.figma-enquiry .download-select-option:last-child {
-  border-bottom: 0;
-}
-
-.figma-enquiry .download-select-option:hover {
-  background-color: #f7f7f7;
-}
-
-.figma-enquiry .download-select-option.is-selected {
-  background-color: #f0f0f0;
-  font-weight: 500;
-}
-
-/* Phone Country Selector inside Figma Enquiry */
-.figma-enquiry .phone-country-select-container {
-  position: relative;
-  flex-shrink: 0;
-  z-index: 10;
-}
-
-.figma-enquiry .phone-country-trigger {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 48px;
-  padding: 0 12px;
-  background: #fff;
-  border: 1px solid #111;
-  border-right: 0;
-  border-radius: 0;
-  cursor: pointer;
-  transition: background-color 150ms ease;
-  box-sizing: border-box;
-}
-
-.figma-enquiry .phone-country-trigger:hover {
-  background: #fbfbfb;
-}
-
-.figma-enquiry .country-flag-img {
-  width: 24px;
-  height: 16px;
-  object-fit: cover;
-  border-radius: 2px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  display: block;
-}
-
-.figma-enquiry .country-chevron-icon {
-  transition: transform 180ms ease;
-  display: block;
-}
-
-.figma-enquiry .country-chevron-icon.is-open {
-  transform: rotate(180deg);
-}
-
-.figma-enquiry .phone-country-dropdown {
-  position: absolute;
-  top: calc(100% + 2px);
-  left: 0;
-  width: 270px;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.figma-enquiry .phone-country-search-wrap {
-  padding: 8px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #eee;
-}
-
-.figma-enquiry .phone-country-search-input {
-  width: 100% !important;
-  height: 34px !important;
-  padding: 0 10px !important;
-  font-size: 12px !important;
-  font-family: 'Poppins', sans-serif !important;
-  border: 1px solid #ddd !important;
-  border-radius: 3px !important;
-  outline: none !important;
-  background: #fff !important;
-}
-
-.figma-enquiry .phone-country-search-input:focus {
-  border-color: #999 !important;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05) !important;
-}
-
-.figma-enquiry .phone-country-list {
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.figma-enquiry .phone-country-empty {
-  padding: 16px 12px;
-  text-align: center;
-  font-size: 12px;
-  color: #888;
-  font-family: 'Poppins', sans-serif;
-}
-
-.figma-enquiry .phone-country-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px 12px;
-  border: 0;
-  border-bottom: 1px solid #f0f0f0;
-  background: #fff;
-  cursor: pointer;
-  text-align: left;
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  color: #333;
-  transition: background-color 120ms ease;
-}
-
-.figma-enquiry .phone-country-option:last-child {
-  border-bottom: 0;
-}
-
-.figma-enquiry .phone-country-option:hover {
-  background: #f5f5f5;
-  color: #111;
-}
-
-.figma-enquiry .phone-country-option.is-selected {
-  background: #f0f4f8;
-  font-weight: 600;
-  color: #111;
-}
-
-.figma-enquiry .country-flag-img-option {
-  width: 20px;
-  height: 14px;
-  object-fit: cover;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
-.figma-enquiry .country-name-text {
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.figma-enquiry .country-dial-code {
-  font-size: 12px;
-  color: #777;
-  flex-shrink: 0;
-}
-
-/* Captcha inside Figma Enquiry */
-.figma-captcha-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 11px;
-  width: 185px;
-  height: 47px;
-  margin: 16px 0 0;
-  padding: 0 10px;
-  border: 1px solid #dcdcdc;
-  box-shadow: 0 1px 3.4px rgba(0, 0, 0, 0.15);
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 11px;
-  line-height: 1;
-  background: #fff;
-  cursor: pointer;
-}
-
-.figma-enquiry .download-captcha-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.figma-enquiry .download-captcha-badge {
-  display: flex;
-  align-items: center;
-}
-
-.figma-enquiry .download-captcha input {
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border: 1.5px solid #999;
-  border-radius: 2px;
-  cursor: pointer;
-  margin: 0;
-}
-
-.figma-enquiry .download-captcha input:checked {
-  background: #e5a95d;
-  box-shadow: inset 0 0 0 3px #fff;
-}
-
-.figma-enquiry-submit {
-  display: block;
-  width: 225px;
-  height: 38px;
-  margin: 25px auto 0;
-  border: 0;
-  border-radius: 2px;
-  background: #e5a95d;
-  color: #111;
-  text-transform: uppercase;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 1;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: transform 140ms ease, background-color 180ms ease, box-shadow 180ms ease;
-  box-shadow: 0 2px 8px rgba(229, 169, 93, 0.3);
-}
-
-.figma-enquiry-submit:hover {
-  background: #df9e4d;
-  box-shadow: 0 4px 12px rgba(229, 169, 93, 0.4);
-}
-
-.figma-enquiry-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.figma-enquiry-consent {
-  text-align: center;
-  color: #888;
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  margin-top: 18px;
-}
-
-.figma-enquiry-consent em {
-  color: #111;
-  font-weight: 600;
-  font-style: normal;
-}
-
-/* Thank You Card for Enquiry Modal */
-.figma-enquiry-card-thankyou {
-  width: min(760px, 100%) !important;
-  height: 760px !important;
-  min-height: min(760px, calc(100vh - 48px)) !important;
-  max-height: calc(100vh - 48px) !important;
-  padding: 53px 76px 49px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  text-align: center;
-  box-sizing: border-box !important;
-}
-
-.figma-enquiry-thankyou-card {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin: auto 0;
-}
-
-.figma-enquiry-thankyou-icon {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: #f3b469;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 28px;
-  box-shadow: 0 4px 18px rgba(243, 180, 105, 0.4);
-}
-
-.figma-enquiry-thankyou-icon svg {
-  width: 26px;
-  height: 26px;
-  stroke: #111111;
-  stroke-width: 2.8;
-}
-
-.figma-enquiry-thankyou-title {
-  margin: 0 0 16px !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-weight: 700 !important;
-  font-size: 32px !important;
-  line-height: 1.25 !important;
-  letter-spacing: -0.02em !important;
-  color: #111111 !important;
-  text-align: center !important;
-}
-
-.figma-enquiry-thankyou-desc {
-  margin: 0 auto 38px !important;
-  max-width: 420px;
-  font-family: 'Inter', sans-serif !important;
-  font-weight: 400 !important;
-  font-size: 14.5px !important;
-  line-height: 1.6 !important;
-  color: #555555 !important;
-  text-align: center !important;
-}
-
-.figma-enquiry-thankyou-btn {
-  width: 200px;
-  height: 46px;
-  border: 0;
-  border-radius: 2px;
-  background: #f3b469;
-  color: #111111;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 180ms ease, transform 140ms ease, box-shadow 180ms ease;
-  box-shadow: 0 3px 12px rgba(243, 180, 105, 0.4);
-}
-
-.figma-enquiry-thankyou-btn:hover {
-  background: #e5a454;
-  box-shadow: 0 5px 16px rgba(243, 180, 105, 0.5);
-  transform: translateY(-1px);
-}
-
-.figma-enquiry-thankyou-btn:active {
-  transform: translateY(0);
-}
-
+/* Enquiry Modal styles moved to shared-inquiry.css to ensure responsive behavior */
 /* Lightbox Modal */
 .figma-lightbox {
   position: fixed;
@@ -1665,7 +1124,7 @@
   .product-page .combination-swatches {
     grid-template-columns: repeat(5, 45px) !important;
     gap: 0 5px !important;
-    margin-left: -13px
+    margin-left: 0
   }
 
   .product-page .combination-swatches button,
@@ -1788,9 +1247,19 @@
     margin-top: 24px !important
   }
 
-  .product-page .spec-accordion button {
-    font-size: 15px !important;
-    padding: 18px 0 !important
+  .product-page .spec-accordion button,
+  .product-page .spec-accordion button span,
+  .product-page .spec-grid>details summary,
+  .product-page .spec-grid>details summary span,
+  .product-page .spec-grid details summary,
+  .product-page .spec-grid details summary span {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 17px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    letter-spacing: normal !important;
+    color: #1a1c1d !important;
+    padding: 18px 0 !important;
   }
 
   .product-page .spec-body p,
@@ -1798,7 +1267,7 @@
     grid-template-columns: 127px 1fr !important;
     gap: 12px !important;
     font-size: 11px !important;
-    padding: 12px 0 !important
+    padding: 0 !important
   }
 
   .product-page .spec-body .figma-spec-note {
@@ -1811,11 +1280,6 @@
   .spec-body .spec-item-row:nth-child(n+7):nth-child(-n+11) {
     grid-template-columns: 127px 1fr !important;
 
-  }
-
-  .product-page .spec-grid>details summary {
-    padding: 18px 0 !important;
-    font-size: 15px !important
   }
 
   .product-page .download-row {
@@ -1986,14 +1450,23 @@
 
 
 
-  .product-page .spec-accordion button {
+  .product-page .spec-accordion button,
+  .product-page .spec-accordion button span,
+  .product-page .spec-grid>details summary,
+  .product-page .spec-grid>details summary span,
+  .product-page .spec-grid details summary,
+  .product-page .spec-grid details summary span {
+    font-family: 'Inter', sans-serif !important;
     font-size: 17px !important;
     font-weight: 600 !important;
+    line-height: 1.3 !important;
+    letter-spacing: normal !important;
     padding: 18px 0 !important;
     color: #1a1c1d !important;
   }
 
-  .product-page .spec-accordion button i {
+  .product-page .spec-accordion button i,
+  .product-page .spec-grid>details summary::after {
     font-style: normal !important;
     font-size: 20px !important;
     font-weight: 300 !important;
@@ -2002,12 +1475,35 @@
 
   .product-page .spec-table-container {
     width: 100% !important;
-    overflow-x: visible !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 8px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #c8c8c8 #f1f1f1 !important;
   }
 
+  .product-page .spec-table-container::-webkit-scrollbar {
+    height: 4px !important;
+  }
+
+  .product-page .spec-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+    border-radius: 2px !important;
+  }
+
+  .product-page .spec-table-container::-webkit-scrollbar-thumb {
+    background: #c8c8c8 !important;
+    border-radius: 2px !important;
+  }
+
+  .product-page .spec-table-container .spec-table,
   .product-page .spec-table {
+    min-width: 500px !important;
     width: 100% !important;
-    font-size: 13px !important;
+    font-size: 13.5px !important;
   }
 
   .product-page .spec-table td {
@@ -2021,21 +1517,51 @@
   }
 
   .product-page .spec-table .spec-label {
-    width: 38% !important;
-    min-width: 110px !important;
-    max-width: 140px !important;
-    padding-right: 12px !important;
-    font-size: 12.5px !important;
-    font-weight: 400 !important;
-    color: #767676 !important;
+    width: 170px !important;
+    min-width: 150px !important;
+    max-width: 200px !important;
+    padding-right: 18px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #666666 !important;
     line-height: 1.45 !important;
+    white-space: normal !important;
   }
 
   .product-page .spec-table .spec-value {
-    font-size: 13px !important;
+    min-width: 300px !important;
+    font-size: 13.5px !important;
     font-weight: 400 !important;
     color: #1a1c1d !important;
     line-height: 1.45 !important;
+    white-space: normal !important;
+    padding-right: 16px !important;
+  }
+
+  .product-page .spec-chips,
+  .product-page span.spec-chips {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    white-space: nowrap !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .product-page .spec-chip {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .product-page .spec-chip-sep {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .product-page .spec-chip-code {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
 
   .product-page .spec-body .figma-spec-note {
@@ -2086,11 +1612,6 @@
     font-size: 14px !important;
     font-weight: 600 !important;
     color: #1a1c1d !important;
-  }
-
-  .product-page .spec-grid>details summary {
-    padding: 18px 0 !important;
-    font-size: 15px !important
   }
 
   .product-page .download-row {
@@ -2454,8 +1975,16 @@
     margin-bottom: 24px !important;
   }
 
-  .product-page .spec-accordion button {
+  .product-page .spec-accordion button,
+  .product-page .spec-accordion button span,
+  .product-page .spec-grid>details summary,
+  .product-page .spec-grid>details summary span,
+  .product-page .spec-grid details summary,
+  .product-page .spec-grid details summary span {
+    font-family: 'Inter', sans-serif !important;
     font-size: 17px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
     padding: 20px 0 !important;
   }
 
@@ -2534,240 +2063,6 @@
 
   .product-page .related-arrow {
     display: none !important;
-  }
-}
-
-/* ==========================================================================
-   Product Enquiry Modal Mobile Responsiveness (<= 767px)
-   ========================================================================== */
-@media (max-width: 767px) {
-  .figma-enquiry {
-    padding: 20px 16px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .figma-enquiry-card {
-    width: 100% !important;
-    max-width: 440px !important;
-    height: auto !important;
-    max-height: calc(100dvh - 36px) !important;
-    padding: 28px 20px 24px !important;
-    border-radius: 20px !important;
-    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.3) !important;
-    position: relative !important;
-    overflow-y: auto !important;
-    background: #ffffff !important;
-  }
-
-  .figma-enquiry-close {
-    position: absolute !important;
-    top: 16px !important;
-    right: 16px !important;
-    width: 28px !important;
-    height: 28px !important;
-    border-radius: 50% !important;
-    background: #f0f0f0 !important;
-    color: #555555 !important;
-    font-size: 18px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    line-height: 1 !important;
-    border: 0 !important;
-    cursor: pointer !important;
-    z-index: 10 !important;
-  }
-
-  .figma-enquiry h2 {
-    font-size: 20px !important;
-    font-weight: 600 !important;
-    padding-right: 36px !important;
-    margin: 0 0 8px 0 !important;
-  }
-
-  .figma-enquiry-lead {
-    margin: 0 0 18px 0 !important;
-    font-size: 12px !important;
-    line-height: 1.45 !important;
-    color: rgba(0, 0, 0, 0.6) !important;
-  }
-
-  .figma-enquiry-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-  }
-
-  .figma-enquiry-field input,
-  .figma-enquiry-field .download-select-trigger,
-  .figma-enquiry-field .phone-country-trigger {
-    height: 44px !important;
-    border: 1px solid #dcdcdc !important;
-    border-radius: 8px !important;
-    font-size: 13px !important;
-  }
-
-  .figma-enquiry-field input {
-    padding: 0 14px !important;
-  }
-
-  .figma-enquiry-field label {
-    left: 14px !important;
-    top: 14px !important;
-    font-size: 12px !important;
-    color: #555555 !important;
-  }
-
-  .figma-enquiry-field.phone-field-wrap {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-  }
-
-  .figma-enquiry-field.phone-field-wrap .phone-country-select-container {
-    flex-shrink: 0 !important;
-  }
-
-  .figma-enquiry-field.phone-field-wrap .phone-country-trigger {
-    border-right: 1px solid #dcdcdc !important;
-    padding: 0 10px !important;
-  }
-
-  .figma-enquiry-field.phone-field-wrap input {
-    border-left: 1px solid #dcdcdc !important;
-    border-radius: 8px !important;
-    flex: 1 !important;
-  }
-
-  .figma-enquiry-field.phone-field-wrap label {
-    left: 88px !important;
-    top: 14px !important;
-  }
-
-  .figma-enquiry-field textarea {
-    border: 1px solid #dcdcdc !important;
-    border-radius: 8px !important;
-    min-height: 85px !important;
-    padding: 12px 14px !important;
-    font-size: 12.5px !important;
-  }
-
-  .figma-enquiry-field.message label {
-    position: static !important;
-    display: block !important;
-    margin-bottom: 6px !important;
-    font-size: 12px !important;
-    font-weight: 500 !important;
-    color: #333333 !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-
-  .figma-captcha-box {
-    width: 100% !important;
-    height: 48px !important;
-    border: 1px solid #dcdcdc !important;
-    border-radius: 8px !important;
-    background: #ffffff !important;
-    padding: 0 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    box-shadow: none !important;
-    margin-top: 10px !important;
-  }
-
-  .figma-enquiry-submit {
-    width: 100% !important;
-    height: 46px !important;
-    border-radius: 8px !important;
-    background: #f3b469 !important;
-    color: #111111 !important;
-    font-family: 'Poppins', sans-serif !important;
-    font-weight: 700 !important;
-    font-size: 13px !important;
-    letter-spacing: 0.04em !important;
-    text-transform: uppercase !important;
-    margin-top: 10px !important;
-    border: 0 !important;
-    box-shadow: none !important;
-  }
-
-  .figma-enquiry-consent {
-    font-size: 10px !important;
-    color: #888888 !important;
-    text-align: center !important;
-    margin-top: 8px !important;
-    line-height: 1.45 !important;
-  }
-
-  .figma-enquiry-card-thankyou {
-    width: min(390px, calc(100vw - 40px)) !important;
-    height: auto !important;
-    min-height: unset !important;
-    max-height: 90vh !important;
-    padding: 40px 24px 32px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 18px !important;
-    margin: auto !important;
-    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.35) !important;
-    position: relative !important;
-  }
-
-  .figma-enquiry-card-thankyou .figma-enquiry-close {
-    position: absolute !important;
-    top: 14px !important;
-    right: 16px !important;
-    font-size: 24px !important;
-    color: #888 !important;
-    z-index: 10 !important;
-  }
-
-  .figma-enquiry-card-thankyou .figma-enquiry-thankyou-icon {
-    width: 56px !important;
-    height: 56px !important;
-    margin: 0 auto 20px !important;
-    background: #f3b469 !important;
-  }
-
-  .figma-enquiry-card-thankyou .figma-enquiry-thankyou-icon svg {
-    width: 22px !important;
-    height: 22px !important;
-    stroke-width: 2.6 !important;
-  }
-
-  .figma-enquiry-card-thankyou .figma-enquiry-thankyou-title {
-    font-size: 23px !important;
-    font-weight: 700 !important;
-    line-height: 1.28 !important;
-    margin: 0 auto 14px !important;
-    max-width: 260px !important;
-    color: #111111 !important;
-  }
-
-  .figma-enquiry-card-thankyou .figma-enquiry-thankyou-desc {
-    font-size: 13.5px !important;
-    line-height: 1.55 !important;
-    color: #555555 !important;
-    max-width: 290px !important;
-    margin: 0 auto 28px !important;
-  }
-
-  .figma-enquiry-card-thankyou .figma-enquiry-thankyou-btn {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 48px !important;
-    border-radius: 10px !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.04em !important;
-    background: #f3b469 !important;
-    box-shadow: none !important;
   }
 }
 

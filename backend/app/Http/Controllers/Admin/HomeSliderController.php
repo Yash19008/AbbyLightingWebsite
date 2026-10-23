@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\HomeSlider;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Storage;
 
 class HomeSliderController extends Controller
 {

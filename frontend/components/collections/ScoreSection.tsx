@@ -14,8 +14,8 @@ export default function ScoreSection() {
   return (
     <section className="s-section s-score">
       <div className="s-head">
-        <h2>Spread & Drop</h2>
-        <p>Two axes of composition — how fixtures are distributed across the ceiling, and how they fall.</p>
+        <h2>The Art of Arrangement</h2>
+        <p>The beauty lies in how you bring the pieces together. Play with their position across the ceiling and the heights at which they hang to create compositions that feel balanced, dynamic or beautifully unexpected.</p>
       </div>
       <div className="s-score-grid">
         <article className="score-group">

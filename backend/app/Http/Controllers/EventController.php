@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Event;
 
 class EventController extends Controller
 {
-    public function __construct()
-    {
-    }
-
     public function index()
     {
         $data = array('title' => "Fairs & Events");

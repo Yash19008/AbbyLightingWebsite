@@ -2,6 +2,7 @@ export interface Client {
   id: number;
   path: string;
   image_url: string | null;
+  is_featured?: boolean;
   created_at: string;
   updated_at: string;
 }

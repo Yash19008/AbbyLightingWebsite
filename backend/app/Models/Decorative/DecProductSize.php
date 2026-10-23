@@ -19,6 +19,6 @@ class DecProductSize extends Model
 
     public function specRows()
     {
-        return $this->hasMany(DecProductSpecRow::class, 'size_id')->orderBy('order');
+        return $this->hasMany(DecProductSpecRow::class, 'size_id')->orderBy('order', 'asc')->orderBy('id', 'asc');
     }
 }

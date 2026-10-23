@@ -7,6 +7,7 @@ use App\Models\Decorative\DecProduct;
 use App\Models\Collection;
 use App\Models\Decorative\DecCategory;
 use App\Models\ColorMaster;
+use App\Helpers\Common_function;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -27,7 +28,8 @@ class DecorativeProductController extends Controller
         }
 
         $products = $query->orderBy('order', 'asc')->paginate(20);
-        return view('admin.decorative.index', compact('products'));
+        $tbl = Common_function::encrypt('dec_products');
+        return view('admin.decorative.index', compact('products', 'tbl'));
     }
 
     public function create()
@@ -54,6 +56,7 @@ class DecorativeProductController extends Controller
             'description' => $request->description,
             'status' => $request->status ?? 'draft',
             'is_featured' => $request->has('is_featured') ? 1 : 0,
+            'show_as_new_arrival' => $request->has('show_as_new_arrival') ? 1 : 0,
         ]);
 
         if ($request->hasFile('featured_image')) {
@@ -110,6 +113,7 @@ class DecorativeProductController extends Controller
             'description' => $request->description,
             'status' => $request->status ?? 'draft',
             'is_featured' => $request->has('is_featured') ? 1 : 0,
+            'show_as_new_arrival' => $request->has('show_as_new_arrival') ? 1 : 0,
         ]);
 
         if ($request->hasFile('featured_image')) {
@@ -189,7 +193,10 @@ class DecorativeProductController extends Controller
             $sizeMap[$size->id] = $newSize->id;
         }
 
-        $originalSpecs = \App\Models\Decorative\DecProductSpecRow::where('product_id', $original->id)->get();
+        $originalSpecs = \App\Models\Decorative\DecProductSpecRow::where('product_id', $original->id)
+            ->orderBy('order', 'asc')
+            ->orderBy('id', 'asc')
+            ->get();
         foreach ($originalSpecs as $spec) {
             $newSpec = $spec->replicate();
             $newSpec->product_id = $newProduct->id;

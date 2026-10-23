@@ -6,25 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('compositions', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
             $table->string('kicker')->nullable();
-            $table->string('category')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->string('image')->nullable();
             $table->boolean('is_showcase')->default(0);
             $table->timestamps();
+
+            $table->foreign('category_id')->references('id')->on('composition_categories')->nullOnDelete();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('compositions');

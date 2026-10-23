@@ -14,15 +14,25 @@ document.addEventListener('DOMContentLoaded', () => {
             itemSelector: '.masonry-item',
             percentPosition: true,
             masonry: {
-                itemSelector: '.masonry-item',
                 columnWidth: '.masonry-sizer',
-                percentPosition: true,
-                horizontalSize: true
             }
         });
+        window.msnryInstance = msnry;
 
-        imagesLoaded(tiles).on('progress', function () {
+        const imgLoad = imagesLoaded(tiles);
+        imgLoad.on('progress', function () {
             msnry.layout();
+        });
+        imgLoad.on('always', function () {
+            msnry.layout();
+        });
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (msnry) msnry.layout();
+            }, 100);
         });
 
         // Apply default filter (if provided) on first load

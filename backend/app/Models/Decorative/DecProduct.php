@@ -41,7 +41,7 @@ class DecProduct extends Model
 
     public function specRows()
     {
-        return $this->hasMany(DecProductSpecRow::class, 'product_id')->whereNull('size_id')->orderBy('order', 'asc');
+        return $this->hasMany(DecProductSpecRow::class, 'product_id')->whereNull('size_id')->orderBy('order', 'asc')->orderBy('id', 'asc');
     }
 
     public function relatedProducts()

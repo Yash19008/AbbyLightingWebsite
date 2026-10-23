@@ -33,6 +33,12 @@ class HomeCatalogueSectionApiController extends Controller
                 'background_image_url' => $section->background_image 
                     ? asset('storage/' . $section->background_image) 
                     : null,
+                'image_tablet_url' => $section->image_tablet 
+                    ? asset('storage/' . $section->image_tablet) 
+                    : null,
+                'image_mobile_url' => $section->image_mobile 
+                    ? asset('storage/' . $section->image_mobile) 
+                    : null,
                 'is_active' => $section->is_active === 'yes',
             ];
 

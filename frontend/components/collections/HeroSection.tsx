@@ -1,7 +1,6 @@
 'use client';
 
 import { CollectionHeroSection } from '@/types/collection';
-import Image from 'next/image';
 import Link from 'next/link';
 
 interface HeroSectionProps {
@@ -10,18 +9,23 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ heroSection, collectionName }: HeroSectionProps) {
+  const desktopImg = heroSection?.background_image;
+  const tabletImg = heroSection?.image_tablet || desktopImg;
+  const mobileImg = heroSection?.image_mobile || tabletImg || desktopImg;
+
   return (
     <section className="s-hero">
-      {/* Background Image */}
-      {heroSection?.background_image && (
-        <Image
-          src={heroSection.background_image}
-          alt={`${collectionName} Hero`}
-          fill
-          priority
-          className="s-hero-image"
-          style={{ objectFit: 'cover' }}
-        />
+      {/* Responsive Background Image */}
+      {desktopImg && (
+        <picture className="s-hero-picture">
+          {mobileImg && <source media="(max-width: 640px)" srcSet={mobileImg} />}
+          {tabletImg && <source media="(max-width: 1024px)" srcSet={tabletImg} />}
+          <img
+            src={desktopImg}
+            alt={`${collectionName} Hero`}
+            className="s-hero-image"
+          />
+        </picture>
       )}
       
       {/* Shade overlay */}
@@ -31,7 +35,7 @@ export default function HeroSection({ heroSection, collectionName }: HeroSection
       <nav className="site-breadcrumb site-breadcrumb--on-dark s-crumb" aria-label="Breadcrumb">
         <Link href="/">Home</Link>
         &nbsp;&nbsp;/&nbsp;&nbsp;
-        <Link href={heroSection?.breadcrumb_parent_link || '/decorative-products'}>
+        <Link href={heroSection?.breadcrumb_parent_link || '/decorative-lights'}>
           {heroSection?.breadcrumb_parent_text || 'Decorative'}
         </Link>
         &nbsp;&nbsp;/&nbsp;&nbsp;

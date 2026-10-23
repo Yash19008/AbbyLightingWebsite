@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\MenuItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MenuApiController extends Controller
 {
     public function index(Request $request)
     {
         try {
-            $query = \App\Models\MenuItem::with('children')->whereNull('parent_id')->active()->ordered();
+            $query = MenuItem::with('children')->whereNull('parent_id')->active()->ordered();
             
             if ($request->has('location')) {
                 $query->where('location', $request->get('location'));
@@ -21,7 +23,7 @@ class MenuApiController extends Controller
                 'data' => $query->get()
             ]);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('MenuApiController::index — ' . $e->getMessage());
+            Log::error('MenuApiController::index - ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load menu items'

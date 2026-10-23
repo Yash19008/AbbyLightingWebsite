@@ -94,6 +94,11 @@ class MenuItemAdminController extends Controller
             ]);
         }
 
+        \Illuminate\Support\Facades\Cache::forget('header_ssr_mega_items');
+        \Illuminate\Support\Facades\Cache::forget('footer_ssr_col_1');
+        \Illuminate\Support\Facades\Cache::forget('footer_ssr_col_2');
+        \Illuminate\Support\Facades\Cache::forget('footer_ssr_col_3');
+
         return response()->json(['success' => true]);
     }
 }

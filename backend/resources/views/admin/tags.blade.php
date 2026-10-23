@@ -35,12 +35,13 @@
                                     <thead>
                                     <tr>
                                         <th style="width: 50px" class="text-left">ID</th>
-                                        <th width="25%" class="text-center">Image</th>
-                                        <th width="25%" class="text-center">Display Name</th>
-                                        <th width="25%" class="text-center">Name</th>
-                                        <th width="25%" class="text-center">Slug</th>
-                                        <th width="20%" class="text-center">Show Categories</th>
-                                        <th width="25%" class="text-center"><a>Action<i class="ml-1"></i></a></th>
+                                        <th width="15%" class="text-center">Image</th>
+                                        <th width="20%" class="text-center">Display Name</th>
+                                        <th width="15%" class="text-center">Name</th>
+                                        <th width="15%" class="text-center">Slug</th>
+                                        <th width="15%" class="text-center">Show Categories</th>
+                                        <th width="10%" class="text-center">Featured</th>
+                                        <th width="10%" class="text-center"><a>Action<i class="ml-1"></i></a></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -67,6 +68,12 @@
                                                 <div class="custom-control custom-switch text-center">
                                                     <input type="checkbox" class="custom-control-input knob switch" data-col="{{$col}}" id="customSwitch2{{$row->id}}" {{ $row->show_categories ? 'Checked' : '' }}>
                                                     <label class="custom-control-label" for="customSwitch2{{$row->id}}"></label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="custom-control custom-switch text-center">
+                                                    <input type="checkbox" class="custom-control-input knob switch" data-col="{{$col_featured}}" id="customSwitchFeatured{{$row->id}}" {{ $row->is_featured ? 'Checked' : '' }}>
+                                                    <label class="custom-control-label" for="customSwitchFeatured{{$row->id}}"></label>
                                                 </div>
                                             </td>
                                             <td class="text-center list-action actBtn-td">

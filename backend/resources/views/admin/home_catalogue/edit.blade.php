@@ -82,25 +82,56 @@
                         </div>
                     </div>
 
-                    <!-- Background Image -->
+                    <!-- Background Images Header -->
                     <div class="form-group row">
-                        <label for="background_image" class="col-sm-3 control-label">Background / Book Image</label>
+                        <label class="col-sm-3 control-label font-weight-bold text-uppercase text-secondary">
+                            <i class="ft-image mr-1"></i> Section Images
+                        </label>
                         <div class="col-sm-6">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <input type="file" name="background_image" id="imagefile" accept="image/*" class="file-input">
-                                </div>
-                                <input type="text" class="form-control" disabled id="disabled_file_path" placeholder="Upload Image" value="{{ @$section->background_image }}">
-                                <div class="input-group-append">
-                                    <button class="file-input-browse btn btn-dark" type="button"><i class="glyphicon glyphicon-search"></i> Browse</button>
-                                </div>
-                            </div>
-                            <small class="form-text text-muted">Recommended: High quality image (JPEG, PNG, WebP). If not uploaded, default image will be displayed.</small>
-                            
+                            <small class="text-muted">Upload optimized images for each device screen size. Tablet and mobile will fall back to desktop image if not provided.</small>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Image -->
+                    <div class="form-group row">
+                        <label for="background_image" class="col-sm-3 control-label">Desktop Image <small class="text-muted">(Min 1920x600px)</small></label>
+                        <div class="col-sm-6">
+                            <input type="file" name="background_image" id="background_image" accept="image/*" class="form-control-file border p-1 rounded">
+                            <small class="form-text text-muted">Recommended: High quality landscape image (JPEG, PNG, WebP).</small>
                             @if(!empty($section->background_image))
-                            <div class="mt-3">
-                                <p><strong>Current Custom Image:</strong></p>
-                                <img style="max-width:300px;height:auto;border-radius:4px;border:1px solid #ddd;" src="/storage/{{ $section->background_image }}" alt="Current Background">
+                            <div class="mt-2 p-1 border rounded bg-light">
+                                <small class="font-weight-bold text-muted d-block mb-1">Current Desktop Image:</small>
+                                <img style="max-width:280px;height:auto;border-radius:4px;border:1px solid #ddd;" src="/storage/{{ $section->background_image }}" alt="Current Desktop Image">
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Tablet Image -->
+                    <div class="form-group row">
+                        <label for="image_tablet" class="col-sm-3 control-label">Tablet Image <small class="text-muted">(Min 1024x600px)</small></label>
+                        <div class="col-sm-6">
+                            <input type="file" name="image_tablet" id="image_tablet" accept="image/*" class="form-control-file border p-1 rounded">
+                            <small class="form-text text-muted">Optional: Displayed on screens up to 1024px width.</small>
+                            @if(!empty($section->image_tablet))
+                            <div class="mt-2 p-1 border rounded bg-light">
+                                <small class="font-weight-bold text-muted d-block mb-1">Current Tablet Image:</small>
+                                <img style="max-width:280px;height:auto;border-radius:4px;border:1px solid #ddd;" src="/storage/{{ $section->image_tablet }}" alt="Current Tablet Image">
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Mobile Image -->
+                    <div class="form-group row">
+                        <label for="image_mobile" class="col-sm-3 control-label">Mobile Image <small class="text-muted">(Min 768x600px)</small></label>
+                        <div class="col-sm-6">
+                            <input type="file" name="image_mobile" id="image_mobile" accept="image/*" class="form-control-file border p-1 rounded">
+                            <small class="form-text text-muted">Optional: Displayed on mobile screens up to 640px width.</small>
+                            @if(!empty($section->image_mobile))
+                            <div class="mt-2 p-1 border rounded bg-light">
+                                <small class="font-weight-bold text-muted d-block mb-1">Current Mobile Image:</small>
+                                <img style="max-width:280px;height:auto;border-radius:4px;border:1px solid #ddd;" src="/storage/{{ $section->image_mobile }}" alt="Current Mobile Image">
                             </div>
                             @endif
                         </div>

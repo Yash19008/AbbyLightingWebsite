@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import LookModal, { LookItem, ProductUsedItem } from "./LookModal";
-
-
+import { getShowcaseCompositions } from "@/lib/api/compositions";
 
 interface CompositionItem {
+  id?: number | string;
   title: string;
   kicker?: string;
   category?: string;
@@ -14,16 +14,45 @@ interface CompositionItem {
   products?: ProductUsedItem[];
 }
 
-interface Props {
-  compositions?: CompositionItem[];
+interface PaginationInfo {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+  has_more: boolean;
 }
 
-export default function LooksInPlaceSection({ compositions = [] }: Props) {
+interface Props {
+  compositions?: CompositionItem[];
+  initialPagination?: PaginationInfo | null;
+  initialCategories?: string[];
+}
+
+export default function LooksInPlaceSection({
+  compositions: initialCompositions = [],
+  initialPagination = null,
+  initialCategories = [],
+}: Props) {
+  const [compositionsList, setCompositionsList] = useState<CompositionItem[]>(initialCompositions);
   const [selectedRoom, setSelectedRoom] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(8);
+  const [page, setPage] = useState(initialPagination?.current_page || 1);
+  const [hasMore, setHasMore] = useState<boolean>(
+    initialPagination ? initialPagination.has_more : initialCompositions.length >= 8
+  );
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [activeLookIndex, setActiveLookIndex] = useState<number | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
+
+  // Sync if initialCompositions change
+  useEffect(() => {
+    setCompositionsList(initialCompositions);
+    if (initialPagination) {
+      setHasMore(initialPagination.has_more);
+      setPage(initialPagination.current_page);
+    }
+  }, [initialCompositions, initialPagination]);
 
   // Close filter dropdown on outside click
   useEffect(() => {
@@ -40,8 +69,16 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
     const catsMap = new Map<string, string>();
     catsMap.set("all", "All");
 
-    if (compositions && compositions.length > 0) {
-      compositions.forEach(c => {
+    if (initialCategories && initialCategories.length > 0) {
+      initialCategories.forEach((cat) => {
+        if (cat) {
+          catsMap.set(cat.toLowerCase(), cat);
+        }
+      });
+    }
+
+    if (compositionsList && compositionsList.length > 0) {
+      compositionsList.forEach((c) => {
         if (c.category) {
           const id = c.category.toLowerCase();
           if (!catsMap.has(id)) {
@@ -52,32 +89,63 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
     }
 
     return Array.from(catsMap.entries()).map(([id, label]) => ({ id, label }));
-  }, [compositions]);
+  }, [initialCategories, compositionsList]);
 
-  const mappedLooks: LookItem[] = compositions && compositions.length > 0
-    ? compositions.map((c: CompositionItem) => ({
-      title: c.title || c.kicker || "",
-      kicker: [c.kicker, c.category, c.collection].filter(Boolean).join(' · ') || c.kicker || c.category || "",
-      room: c.category ? c.category.toLowerCase() : "all",
-      image: c.image || "/images/placeholder.svg",
-      productsUsed: c.products || []
-    }))
-    : [];
+  const mappedLooks: LookItem[] = compositionsList.map((c: CompositionItem) => ({
+    title: c.title || c.kicker || "",
+    kicker: [c.kicker, c.category, c.collection].filter(Boolean).join(" · ") || c.kicker || c.category || "",
+    room: c.category ? c.category.toLowerCase() : "all",
+    image: c.image || "/images/placeholder.svg",
+    productsUsed: c.products || [],
+  }));
 
-  const filteredLooks = mappedLooks.filter(
-    (item) => selectedRoom === "all" || item.room === selectedRoom
-  );
-
-  const displayedLooks = filteredLooks.slice(0, visibleCount);
-
-  const handleRoomSelect = (roomId: string) => {
+  const handleRoomSelect = async (roomId: string) => {
     setSelectedRoom(roomId);
     setIsFilterOpen(false);
-    setVisibleCount(8);
+    setIsFiltering(true);
+    setPage(1);
+
+    try {
+      const res = await getShowcaseCompositions({
+        page: 1,
+        per_page: 8,
+        category: roomId === "all" ? undefined : roomId,
+      });
+
+      if (res.success && Array.isArray(res.data)) {
+        setCompositionsList(res.data);
+        setHasMore(res.pagination?.has_more ?? false);
+      }
+    } catch (err) {
+      console.error("Error filtering showcase compositions:", err);
+    } finally {
+      setIsFiltering(false);
+    }
   };
 
-  const handleViewMore = () => {
-    setVisibleCount((prev) => Math.min(prev + 8, filteredLooks.length));
+  const handleViewMore = async () => {
+    if (isLoadingMore || !hasMore) return;
+    try {
+      setIsLoadingMore(true);
+      const nextPage = page + 1;
+      const res = await getShowcaseCompositions({
+        page: nextPage,
+        per_page: 8,
+        category: selectedRoom === "all" ? undefined : selectedRoom,
+      });
+
+      if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+        setCompositionsList((prev) => [...prev, ...res.data]);
+        setPage(nextPage);
+        setHasMore(res.pagination?.has_more ?? false);
+      } else {
+        setHasMore(false);
+      }
+    } catch (err) {
+      console.error("Error loading more showcase compositions:", err);
+    } finally {
+      setIsLoadingMore(false);
+    }
   };
 
   return (
@@ -85,15 +153,15 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
       <div className="insp-shell">
         <div className="looks-head">
           <div>
-            <h2 className="section-title">See light in place</h2>
+            <h2 className="section-title">Picture the Possibilities</h2>
             <p className="section-deck">
-              Real spaces, styled with Abby — filter by room and find the pieces to recreate the look.
+              See how our products can become part of your space and bring it to life.
             </p>
           </div>
           <div className="filter-wrap" ref={filterRef}>
             <button
               type="button"
-              className={`filter-button ${isFilterOpen ? 'is-open' : ''}`}
+              className={`filter-button ${isFilterOpen ? "is-open" : ""}`}
               onClick={() => setIsFilterOpen(!isFilterOpen)}
               aria-expanded={isFilterOpen}
             >
@@ -119,9 +187,9 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
           </div>
         </div>
 
-        <div className="looks-grid">
-          {filteredLooks.length > 0 ? (
-            displayedLooks.map((item, index) => (
+        <div className="looks-grid" style={{ opacity: isFiltering ? 0.6 : 1 }}>
+          {mappedLooks.length > 0 ? (
+            mappedLooks.map((item, index) => (
               <button
                 key={`${item.title}-${index}`}
                 type="button"
@@ -149,30 +217,31 @@ export default function LooksInPlaceSection({ compositions = [] }: Props) {
           )}
         </div>
 
-        {visibleCount < filteredLooks.length && (
+        {hasMore && (
           <button
             type="button"
             className="view-more looks-view-more"
             onClick={handleViewMore}
+            disabled={isLoadingMore}
           >
-            View more
+            {isLoadingMore ? "Loading…" : "View more"}
           </button>
         )}
       </div>
 
       <LookModal
         isOpen={activeLookIndex !== null}
-        look={activeLookIndex !== null ? displayedLooks[activeLookIndex] : null}
+        look={activeLookIndex !== null ? mappedLooks[activeLookIndex] : null}
         onClose={() => setActiveLookIndex(null)}
         hasPrev={activeLookIndex !== null && activeLookIndex > 0}
-        hasNext={activeLookIndex !== null && activeLookIndex < displayedLooks.length - 1}
+        hasNext={activeLookIndex !== null && activeLookIndex < mappedLooks.length - 1}
         onPrev={() => {
           if (activeLookIndex !== null && activeLookIndex > 0) {
             setActiveLookIndex(activeLookIndex - 1);
           }
         }}
         onNext={() => {
-          if (activeLookIndex !== null && activeLookIndex < displayedLooks.length - 1) {
+          if (activeLookIndex !== null && activeLookIndex < mappedLooks.length - 1) {
             setActiveLookIndex(activeLookIndex + 1);
           }
         }}

@@ -19,7 +19,7 @@ class CatalogueController extends Controller
         $main_module = 'Catalogues';
         $tbl = Common_function::encrypt('catalogues');
 
-        $query = Catalogue::with('category')->withCount('downloads')->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
+        $query = Catalogue::with('category')->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
 
         if ($request->filled('category_id')) {
             $query->where('catalogue_category_id', $request->category_id);

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use App\Helpers\Common_function;
 use App\Models\Project;
 use App\Models\ProjectSubTag;
@@ -14,7 +13,6 @@ use App\Models\AuditLog;
 use App\Models\SubTagProjectImage;
 use Carbon\Carbon;
 use DataTables;
-use DB;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\ExportProject;
 

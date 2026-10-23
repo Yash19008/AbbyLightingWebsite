@@ -38,7 +38,7 @@ export default function TonesSectionDynamic({ tonesSection }: TonesSectionProps)
     );
     const prevIndex = Math.max(current - 1, 0);
     const target = cards[prevIndex] as HTMLElement;
-    
+
     if (target) {
       container.scrollTo({
         left: target.offsetLeft,
@@ -56,7 +56,7 @@ export default function TonesSectionDynamic({ tonesSection }: TonesSectionProps)
     );
     const nextIndex = Math.min(current + 1, cards.length - 1);
     const target = cards[nextIndex] as HTMLElement;
-    
+
     if (target) {
       container.scrollTo({
         left: target.offsetLeft,

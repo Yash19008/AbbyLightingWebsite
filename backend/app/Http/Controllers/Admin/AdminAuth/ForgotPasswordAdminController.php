@@ -8,13 +8,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\PasswordReset;
-use DB;
 use App\Mail\ForgotMail;
-
-use App\Helpers\Common_function;
 
 class ForgotPasswordAdminController extends Controller
 {

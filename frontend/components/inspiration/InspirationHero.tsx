@@ -14,13 +14,21 @@ export default function InspirationHero({ heroSection }: InspirationHeroProps) {
 
   const title = heroSection?.title || "Ideas, stories & inspiration";
   const titleHighlight = heroSection?.title_highlight;
-  const bgImage = heroSection?.background_image;
+  const desktopImg = heroSection?.background_image || "/images/ins.png";
+  const tabletImg = heroSection?.image_tablet || desktopImg;
+  const mobileImg = heroSection?.image_mobile || tabletImg || desktopImg;
 
   return (
-    <section 
-      className="insp-hero"
-      style={bgImage ? { backgroundImage: `url('${bgImage}')` } : undefined}
-    >
+    <section className="insp-hero">
+      <picture className="insp-hero-picture">
+        {mobileImg && <source media="(max-width: 640px)" srcSet={mobileImg} />}
+        {tabletImg && <source media="(max-width: 1024px)" srcSet={tabletImg} />}
+        <img
+          src={desktopImg}
+          alt={title || "Inspiration"}
+          className="insp-hero-img"
+        />
+      </picture>
       <nav className="site-breadcrumb site-breadcrumb--on-dark insp-hero-breadcrumb" aria-label="Breadcrumb">
         <Link href="/">Home</Link>
         &nbsp;&nbsp;/&nbsp;&nbsp;

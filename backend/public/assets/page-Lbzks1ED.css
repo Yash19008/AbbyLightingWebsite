@@ -257,7 +257,7 @@
     }
 
     .abby-search.is-open .abby-search-toggle {
-        transform: translateY(-50%) translateX(-20px) rotate(90deg);
+        transform: translateY(-50%) translateX(0px) rotate(90deg);
     }
 
     .abby-search svg {

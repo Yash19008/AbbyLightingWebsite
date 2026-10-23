@@ -232,7 +232,7 @@ export default function NewArrivalsSection({ categories = [] }: NewArrivalsSecti
                     } as React.CSSProperties}
                     href={product.parent_category === 'Architectural' 
                       ? `/products/${product.sub_tag_slug || product.slug}` 
-                      : (product.slug ? `/product-detail/${product.slug}` : "/#contact")}
+                      : (product.slug ? `/decorative-lights/${product.slug}` : "/#contact")}
                   >
                     <div
                       className="photo"

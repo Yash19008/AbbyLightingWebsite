@@ -14,6 +14,7 @@ interface CustomFormSelectProps {
   onChange: (name: string, value: string) => void;
   required?: boolean;
   className?: string;
+  error?: React.ReactNode;
 }
 
 export default function CustomFormSelect({
@@ -24,6 +25,7 @@ export default function CustomFormSelect({
   options,
   onChange,
   className = "",
+  error,
 }: CustomFormSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -105,6 +107,7 @@ export default function CustomFormSelect({
           </div>
         )}
       </div>
+      {error}
     </div>
   );
 }

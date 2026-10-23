@@ -2,6 +2,8 @@
 
 export interface CollectionHeroSection {
   background_image: string | null;
+  image_tablet?: string | null;
+  image_mobile?: string | null;
   title_prefix: string;
   title_highlight: string;
   description: string;
@@ -95,6 +97,8 @@ export interface PlacesSection {
 
 export interface CatalogueSection {
   background_image: string | null;
+  image_tablet?: string | null;
+  image_mobile?: string | null;
   title: string;
   title_highlight: string | null;
   button_text: string | null;

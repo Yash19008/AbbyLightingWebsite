@@ -85,3 +85,14 @@ export interface DecProductDetail {
   galleries: DecGallery[];
   related_products: DecRelatedProduct[];
 }
+
+export interface DecorativeHeroData {
+  id?: number;
+  heading: string;
+  styled_heading?: string | null;
+  description?: string | null;
+  image_desktop?: string | null;
+  image_tablet?: string | null;
+  image_mobile?: string | null;
+  is_active?: boolean;
+}

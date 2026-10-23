@@ -785,16 +785,24 @@
                             animation: 150,
                             onEnd: function(evt) {
                                 var tbody = $(evt.item).closest('tbody');
+                                var section = tbody.attr('data-section') || tbody.data('section') || (tbody.attr('id') === 'spec-tbody-dimensions' ? 'dimensions' : 'basic_specifications');
                                 var orders = {};
-                                tbody.find('tr').each(function(i) {
-                                    orders[$(this).data('id')] = i + 1;
+                                var ids = [];
+                                tbody.children('tr').each(function(i) {
+                                    var id = $(this).attr('data-id');
+                                    if (id !== undefined && id !== null && id !== '') {
+                                        orders[id] = i + 1;
+                                        ids.push(id);
+                                    }
                                 });
                                 $.ajax({
                                     url: '"BLADE"',
                                     method: 'POST',
                                     data: {
                                         _token: '"BLADE"',
-                                        orders: orders
+                                        section: section,
+                                        orders: orders,
+                                        ids: ids
                                     }
                                 });
                             }

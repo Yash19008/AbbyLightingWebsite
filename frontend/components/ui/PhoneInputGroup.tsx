@@ -11,6 +11,7 @@ interface PhoneInputGroupProps {
   selectedCountry: Country;
   onCountryChange: (country: Country) => void;
   className?: string;
+  error?: React.ReactNode;
 }
 
 export default function PhoneInputGroup({
@@ -23,6 +24,7 @@ export default function PhoneInputGroup({
   selectedCountry,
   onCountryChange,
   className = "download-field",
+  error,
 }: PhoneInputGroupProps) {
   const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
@@ -50,7 +52,13 @@ export default function PhoneInputGroup({
   }, []);
 
   return (
-    <div className={`${className} phone-field-wrap ${value ? "filled" : ""} ${countryDropdownOpen ? "dropdown-open" : ""}`} style={{ zIndex: countryDropdownOpen ? 70 : 1 }}>
+    <div
+      className={`${className} ${error ? "has-error" : ""}`}
+      style={{ zIndex: countryDropdownOpen ? 70 : 1 }}
+    >
+      <div
+        className={`phone-field-wrap ${value ? "filled" : ""} ${countryDropdownOpen ? "dropdown-open" : ""}`}
+      >
       <div className="phone-country-select-container" ref={countryRef}>
         <button
           type="button"
@@ -133,6 +141,8 @@ export default function PhoneInputGroup({
         autoComplete="tel"
         required={required}
       />
+      </div>
+      {error}
     </div>
   );
 }

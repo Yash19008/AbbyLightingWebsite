@@ -17,7 +17,6 @@ use App\Http\Controllers\Admin\FamilyAdminController;
 use App\Http\Controllers\Admin\TagAdminController;
 use App\Http\Controllers\Admin\SubTagAdminController;
 use App\Http\Controllers\Admin\ProductAdminController;
-use App\Http\Controllers\Admin\CatalogDownloadAdminController;
 use App\Http\Controllers\Admin\ProjectAdminController;
 use App\Http\Controllers\Admin\UploadCSVAdminController;
 use App\Http\Controllers\Admin\CompositionAdminController;
@@ -67,9 +66,7 @@ use App\Http\Controllers\DataCollectionController;
 
 Route::controller(WebsiteHomeController::class)->group(function () {
     Route::get('/', 'index')->name('pages.home');
-    Route::get('subscribe-newsletter', 'subscribe')->name('subscribe');
     Route::get('verify_email/{any}', 'verify_email')->name('verify_email');
-    Route::post('/catalog-download-user-form', 'catalogDownloadUserForm')->name('catalog-download-user-form');
 });
 
 
@@ -140,7 +137,7 @@ Route::get('privacy-policy', function () {
     return view('pages.privacy-policy');
 })->name('page.privacy-policy');
 
-// catalog-download-user-form moved to WebsiteHomeController block
+// catalogues moved to WebsiteHomeController block
 
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/', [LoginAdminController::class, 'showLoginForm'])->name('login_admin_main');
@@ -238,19 +235,23 @@ Route::group(['prefix' => 'admin'], function () {
             Route::delete('/{id}', [\App\Http\Controllers\Admin\DecorativeSpecAttributeController::class, 'destroy'])->name('decorative_spec_attributes_admin.delete');
         });
 
+        Route::group(['prefix' => 'decorative-hero'], function () {
+            Route::get('/', [\App\Http\Controllers\Admin\DecorativeHeroSectionController::class, 'edit'])->name('admin.decorative_hero.edit');
+            Route::put('/', [\App\Http\Controllers\Admin\DecorativeHeroSectionController::class, 'update'])->name('admin.decorative_hero.update');
+        });
+
         /********************CONTACT FORMS********************/
         Route::controller(ContactFormAdminController::class)->group(function () {
             Route::get('/contact-forms', 'index')->name('contact_form_admin');
             Route::post('/contact-forms/upload-banner', 'uploadBanner')->name('contact_form_admin.upload');
             Route::get('/contact-forms/list', 'list')->name('contact_form_admin.list');
-            Route::get('/subscriptions', 'subscriptions')->name('subscriptions_admin');
-            Route::get('/subscriptions/list', 'subscriptions_list')->name('subscriptions_admin.list');
         });
 
                 /********************INQUIRIES********************/
         Route::controller(InquiryAdminController::class)->group(function () {
             Route::get('/inquiries', 'index')->name('inquiries_admin');
             Route::get('/inquiries/list', 'list')->name('inquiries_admin.list');
+            Route::get('/inquiries/export', 'export')->name('inquiries_admin.export');
             Route::delete('/inquiries/delete/{id}', 'destroy')->name('inquiries_admin.delete');
         });
 
@@ -263,7 +264,6 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/insert', 'insert')->name('category_admin.insert');
             Route::post('/update/{any}', 'update')->name('category_admin.update');
             Route::get('/information/{any}', 'information')->name('category_admin.information');
-            Route::post('/toggleFeatured', 'toggleFeatured')->name('category_admin.toggleFeatured');
         });
 
         /********************FAMILIES********************/
@@ -311,14 +311,6 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/product/duplicate/{id}', 'duplicate')->name('product_admin.duplicate');
         });
 
-
-        /********************CATALOG DOWNLOADS********************/
-        Route::controller(CatalogDownloadAdminController::class)->prefix('catalog')->group(function () {
-            Route::get('/', 'index')->name('catalog_admin');
-            Route::get('/list', 'list')->name('catalog_admin.list');
-            Route::delete('/delete/{id}', 'destroy')->name('catalog_admin.destroy');
-            Route::post('/upload-catalog', 'uploadCatalog')->name('catalog_admin.upload'); // Note: previously /upload-catalog, keeping as /catalog/upload-catalog would change URL, wait. Original was Route::post('/upload-catalog', ...) which is not prefixed by /catalog. Let me not use prefix here to be safe.
-        });
 
         /********************COMPOSITIONS********************/
         Route::controller(CompositionAdminController::class)->prefix('compositions')->group(function () {
@@ -518,7 +510,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::put('/update', 'update')->name('admin.inspiration_hero.update');
         });
 
-        /********************WATCH & SHOP (REELS)********************/
+        /********************Watch & Learn (REELS)********************/
         Route::controller(App\Http\Controllers\Admin\WatchAndShopController::class)->prefix('watch-and-shops')->group(function () {
             Route::get('/', 'index')->name('admin.watch_and_shops.index');
             Route::get('/add', 'add')->name('admin.watch_and_shops.add');
@@ -589,11 +581,6 @@ Route::group(['prefix' => 'admin'], function () {
         // Compositions Section
         Route::controller(CollectionCompositionController::class)->prefix('collections')->group(function () {
             Route::post('/{collection}/compositions-section', 'storeCompositionsSection')->name('admin.collections.store-compositions');
-            Route::get('/{collection}/composition-items/add', 'addCompositionItem')->name('admin.collections.composition-items.add');
-            Route::post('/{collection}/composition-items', 'storeCompositionItem')->name('admin.collections.composition-items.store');
-            Route::get('/{collection}/composition-items/{item}/edit', 'editCompositionItem')->name('admin.collections.composition-items.edit');
-            Route::put('/{collection}/composition-items/{item}', 'updateCompositionItem')->name('admin.collections.composition-items.update');
-            Route::delete('/{collection}/composition-items/{item}', 'deleteCompositionItem')->name('admin.collections.composition-items.delete');
         });
 
         // Products Section

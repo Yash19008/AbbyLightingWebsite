@@ -141,6 +141,17 @@
                         </div>
                     </div>
 
+                    <div class="form-group row">
+                        <label for="show_as_new_arrival" class="col-sm-2 control-label">Show in New Arrival</label>
+                        <div class="col-sm-6">
+                            <div class="custom-control custom-switch mt-1">
+                                <input type="checkbox" class="custom-control-input" id="show_as_new_arrival" name="show_as_new_arrival" value="1" {{ @$product->show_as_new_arrival ? 'checked' : '' }}>
+                                <label class="custom-control-label" for="show_as_new_arrival">Show in New Arrival</label>
+                            </div>
+                            <small class="text-muted">If enabled, this product will appear in the New Arrivals section on the homepage.</small>
+                        </div>
+                    </div>
+
 
                     <div class="form-group row">
                         <label for="inputName" class="col-sm-2 control-label">Banner Images</label>

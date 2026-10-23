@@ -3,17 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
-
-    public function __construct()
-    {
-    }
-
     public function index()
     {
         $data = array('title' => "Our Projects");
@@ -79,7 +73,6 @@ class ProjectController extends Controller
 
         $data['prev'] = $prev;
         $data['next'] = $next;
-       // dd($data);
         return view('pages.project-detail', $data);
     }
 }

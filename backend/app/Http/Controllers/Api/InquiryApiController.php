@@ -51,6 +51,27 @@ class InquiryApiController extends Controller
                 'message' => $request->message,
             ]);
 
+            try {
+                $contactEmail = config('mail.contact_email');
+                if ($contactEmail) {
+                    \Illuminate\Support\Facades\Mail::to($contactEmail)->send(new \App\Mail\Contact([
+                        'full_name' => $request->name,
+                        'name' => $request->name,
+                        'company' => $request->company,
+                        'email' => $request->email,
+                        'phone' => $request->phone,
+                        'city' => $request->city,
+                        'role' => $request->role,
+                        'position' => $request->role,
+                        'i_message' => $request->message,
+                        'message' => $request->message,
+                        'type' => $request->type,
+                    ]));
+                }
+            } catch (\Throwable $mailEx) {
+                \Illuminate\Support\Facades\Log::warning('Inquiry email notification failed: ' . $mailEx->getMessage());
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Inquiry submitted successfully.',

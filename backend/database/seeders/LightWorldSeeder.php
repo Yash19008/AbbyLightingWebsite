@@ -23,7 +23,7 @@ class LightWorldSeeder extends Seeder
             ],
             [
                 'name' => 'Decorative',
-                'link' => '/decorative-products',
+                'link' => '/decorative-lights',
                 'light_of_image' => '/images/world-decorative-off.png',
                 'light_on_image' => '/images/world-decorative-on.png',
                 'sort_order' => 2,

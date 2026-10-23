@@ -147,9 +147,12 @@
                     {{-- ══════════════════════════════════════
                          SECTION: DECORATIVE PRODUCTS (NEW)
                          ══════════════════════════════════════ --}}
-                    <li class="nav-item has-sub {{ (str_starts_with(Route::currentRouteName() ?? '', 'decorative_product_admin') || str_starts_with(Route::currentRouteName() ?? '', 'decorative_category_admin') || str_starts_with(Route::currentRouteName() ?? '', 'decorative_spec_attributes_admin')) ? 'open' : '' }}">
+                    <li class="nav-item has-sub {{ (str_starts_with(Route::currentRouteName() ?? '', 'decorative_product_admin') || str_starts_with(Route::currentRouteName() ?? '', 'decorative_category_admin') || str_starts_with(Route::currentRouteName() ?? '', 'decorative_spec_attributes_admin') || str_starts_with(Route::currentRouteName() ?? '', 'admin.decorative_hero')) ? 'open' : '' }}">
                         <a href="#"><i class="ft-feather"></i><span class="menu-title">Decorative</span></a>
                         <ul class="menu-content">
+                            <li class="{{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.decorative_hero')) ? 'active' : '' }}">
+                                <a class="menu-item" href="{{ route('admin.decorative_hero.edit') }}"><i class="ft-image" style="font-size:11px;margin-right:4px;"></i> Hero Banner</a>
+                            </li>
                             <li class="{{ (str_starts_with(Route::currentRouteName() ?? '', 'decorative_category_admin')) ? 'active' : '' }}">
                                 <a class="menu-item" href="{{ route('decorative_category_admin') }}"><i class="ft-list" style="font-size:11px;margin-right:4px;"></i> Categories</a>
                             </li>
@@ -235,19 +238,8 @@
                     {{-- ══════════════════════════════════════
                          SECTION: INQUIRIES
                          ══════════════════════════════════════ --}}
-                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['Inquiries', 'Contact Form', 'Catalog', 'Subscriptions'])) ? 'open' : '' }}">
-                        <a href="#"><i class="ft-mail"></i><span class="menu-title">Inquiries</span></a>
-                        <ul class="menu-content">
-                            <li class="{{ (in_array(@$main_module, ['Inquiries', 'Contact Form'])) ? 'active' : '' }}">
-                                <a class="menu-item" href="{{ route('inquiries_admin') }}"><i class="ft-message-circle" style="font-size:11px;margin-right:4px;"></i> Inquiries</a>
-                            </li>
-                            <li class="{{ (@$main_module == 'Catalog') ? 'active' : '' }}">
-                                <a class="menu-item" href="{{ route('catalog_admin') }}"><i class="ft-download" style="font-size:11px;margin-right:4px;"></i> Catalog Downloads</a>
-                            </li>
-                            <li class="{{ (@$main_module == 'Subscriptions') ? 'active' : '' }}">
-                                <a class="menu-item" href="{{ route('subscriptions_admin') }}"><i class="ft-bell" style="font-size:11px;margin-right:4px;"></i> Subscriptions</a>
-                            </li>
-                        </ul>
+                    <li class="nav-item {{ (in_array(@$main_module, ['Inquiries', 'Contact Form']) || str_starts_with(Route::currentRouteName() ?? '', 'inquiries_admin')) ? 'active' : '' }}">
+                        <a href="{{ route('inquiries_admin') }}"><i class="ft-mail"></i><span class="menu-title">Inquiries</span></a>
                     </li>
 
                     {{-- ══════════════════════════════════════

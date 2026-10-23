@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { CatalogueSection as CatalogueSectionType } from '@/types/collection';
 
@@ -7,7 +6,9 @@ interface Props {
 }
 
 export default function CatalogueSection({ catalogueSection }: Props) {
-  const bgImage = catalogueSection?.background_image || '/images/symphony/catalogue.png';
+  const desktopImg = catalogueSection?.background_image || '/images/symphony/catalogue.png';
+  const tabletImg = catalogueSection?.image_tablet || desktopImg;
+  const mobileImg = catalogueSection?.image_mobile || tabletImg || desktopImg;
   const title = catalogueSection?.title || 'See the whole';
   const titleHighlight = catalogueSection?.title_highlight || 'collection.';
   const btnText = catalogueSection?.button_text || 'Download catalogue';
@@ -15,12 +16,15 @@ export default function CatalogueSection({ catalogueSection }: Props) {
 
   return (
     <section className="s-catalogue">
-      <Image
-        src={bgImage}
-        alt="Catalogue background"
-        fill
-        style={{ objectFit: 'cover' }}
-      />
+      <picture className="s-catalogue-picture">
+        {mobileImg && <source media="(max-width: 640px)" srcSet={mobileImg} />}
+        {tabletImg && <source media="(max-width: 1024px)" srcSet={tabletImg} />}
+        <img
+          src={desktopImg}
+          alt="Catalogue background"
+          className="s-catalogue-image"
+        />
+      </picture>
       <div>
         <h2>
           {title} {titleHighlight && <em>{titleHighlight}</em>}

@@ -9,6 +9,7 @@ use App\Models\Inquiry;
 use App\Rules\GoogleCaptcha;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class DataCollectionController extends Controller
 {
@@ -22,8 +23,7 @@ class DataCollectionController extends Controller
             Inquiry::create(Arr::except(request()->all(), 'g-recaptcha-response'));
             Mail::to(config('mail.contact_email'))->send(new Contact(request()->all()));
         } catch (\Exception $e) {
-            \Log::error('Error in sending mail - contact');
-            \Log::error($e);
+            Log::error('Error in sending mail - contact: ' . $e->getMessage(), ['exception' => $e]);
         }
         return redirect()->route('page.contact')->with('success', 'Thank you for contacting us.');
     }
@@ -38,8 +38,7 @@ class DataCollectionController extends Controller
             Inquiry::create(Arr::except(request()->all(), 'g-recaptcha-response'));
             Mail::to(config('mail.contact_email'))->send(new Product(request()->all()));
         } catch (\Exception $e) {
-            \Log::error('Error in sending mail - Inquiry');
-            \Log::error($e);
+            Log::error('Error in sending mail - Inquiry: ' . $e->getMessage(), ['exception' => $e]);
         }
         return response()->json(['success' => true]);
     }

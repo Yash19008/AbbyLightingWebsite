@@ -20,21 +20,34 @@ class NewArrivalsApiController extends Controller
             $result = [];
             $tabId = 1;
 
-            // 1. Fetch Featured Architectural Categories
-            $featuredArchCategories = \App\Models\Category::where('is_featured', 1)
-                ->where('is_active', 'yes')
-                ->orderBy('title', 'asc')
+            // 1. Fetch Featured Architectural Tags that have active new arrival products
+            $archTags = \App\Models\Tag::where('is_active', 'yes')
+                ->where('is_featured', 1)
+                ->orderBy('id', 'asc')
                 ->get();
 
-            foreach ($featuredArchCategories as $cat) {
-                // Fetch products for this category
+            foreach ($archTags as $tag) {
+                // Get sub-tag IDs associated with this tag
+                $subTagIds = \App\Models\SubTagMapping::where('tag_id', $tag->id)->pluck('sub_tag_id')->toArray();
+
+                if (empty($subTagIds)) {
+                    continue;
+                }
+
+                $tagTitle = $tag->display_name ?: $tag->name;
+
                 $products = ProductMaster::where('is_active', 'yes')
-                    ->where('category_id', $cat->id)
+                    ->where('show_as_new_arrival', 1)
+                    ->where(function ($q) use ($subTagIds) {
+                        foreach ($subTagIds as $stid) {
+                            $q->orWhereRaw('FIND_IN_SET(?, sub_tag_ids)', [$stid]);
+                        }
+                    })
                     ->with('variants')
                     ->latest()
                     ->take(12)
                     ->get()
-                    ->map(function ($p) use ($cat) {
+                    ->map(function ($p) use ($tag, $tagTitle) {
                         $imageUrl = null;
                         if ($p->featured_image) {
                             if (str_starts_with($p->featured_image, 'http')) {
@@ -70,7 +83,7 @@ class NewArrivalsApiController extends Controller
                             'name' => $p->title,
                             'slug' => $p->slug,
                             'sub_tag_slug' => $subTagSlug,
-                            'category' => $cat->title,
+                            'category' => $tagTitle,
                             'parent_category' => 'Architectural',
                             'image_url' => $imageUrl,
                             'price' => null,
@@ -81,20 +94,21 @@ class NewArrivalsApiController extends Controller
                 if ($products->isNotEmpty()) {
                     $result[] = [
                         'id' => $tabId++,
-                        'name' => $cat->title,
-                        'slug' => $cat->slug,
+                        'name' => $tagTitle,
+                        'slug' => $tag->slug,
                         'products' => $products->all(),
                     ];
                 }
             }
 
-            // 2. Fetch Featured Decorative Categories
-            $featuredDecCategories = \App\Models\Decorative\DecCategory::where('is_featured', 1)
+            // 2. Fetch Featured Decorative Categories that have published new arrival products
+            $decCategories = \App\Models\Decorative\DecCategory::where('is_featured', 1)
                 ->orderBy('name', 'asc')
                 ->get();
 
-            foreach ($featuredDecCategories as $cat) {
+            foreach ($decCategories as $cat) {
                 $products = DecProduct::where('status', 'published')
+                    ->where('show_as_new_arrival', 1)
                     ->where('category_id', $cat->id)
                     ->with(['colors'])
                     ->orderBy('order', 'asc')

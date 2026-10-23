@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Helpers\Common_function;
 use App\Models\User;
-use App\Models\AuditLog;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
-use DataTables;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileAdminController extends Controller

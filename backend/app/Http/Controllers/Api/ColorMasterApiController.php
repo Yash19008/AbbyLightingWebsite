@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ColorMaster;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ColorMasterApiController extends Controller
 {
@@ -31,7 +32,7 @@ class ColorMasterApiController extends Controller
                 'data' => $colors
             ]);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('ColorMasterApiController::index — ' . $e->getMessage());
+            Log::error('ColorMasterApiController::index - ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch colors',
@@ -59,7 +60,7 @@ class ColorMasterApiController extends Controller
                 'message' => 'Color not found',
             ], 404);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('ColorMasterApiController::show — ' . $e->getMessage());
+            Log::error('ColorMasterApiController::show - ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch color',
@@ -83,7 +84,7 @@ class ColorMasterApiController extends Controller
                 'data' => $colors
             ]);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('ColorMasterApiController::byCategory — ' . $e->getMessage());
+            Log::error('ColorMasterApiController::byCategory - ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch colors by category',
@@ -107,7 +108,7 @@ class ColorMasterApiController extends Controller
                 'data' => $categories
             ]);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('ColorMasterApiController::categories — ' . $e->getMessage());
+            Log::error('ColorMasterApiController::categories - ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch color categories',

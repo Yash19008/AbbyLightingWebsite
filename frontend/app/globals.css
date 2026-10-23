@@ -714,8 +714,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 140px;
-  height: 60px;
+  width: 150px;
+  height: 100px;
   opacity: 0.85;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
@@ -750,19 +750,27 @@ body {
   }
 
   .mtrack .client-logo {
-    width: clamp(62px, 21.5vw, 82px) !important;
-    height: 38px !important;
-    flex: 0 0 clamp(62px, 21.5vw, 82px) !important;
+    /* width: clamp(62px, 21.5vw, 82px) !important; */
+    height: 70px !important;
+    /* flex: 0 0 clamp(62px, 21.5vw, 82px) !important; */
   }
 
   .mtrack .client-logo img {
-    max-height: 20px !important;
+    max-height: 70px !important;
   }
 }
 
 /* ==========================================================================
    Custom Mobile Floating Bottom Dock (Matches Figma Design)
    ========================================================================== */
+.halo-nav-wrap {
+  z-index: 11000 !important;
+}
+
+.figma-enquiry {
+  z-index: 12000 !important;
+}
+
 .halo-nav-wrap,
 .pdrop-modal,
 .custom-sheet-backdrop {
@@ -791,6 +799,7 @@ body {
 @media (max-width: 1150px) {
   .halo-nav-wrap {
     display: block !important;
+    z-index: 11000 !important;
   }
 
   /* Tablet viewports (601px - 1024px): full width with a little gap left and right */
@@ -804,12 +813,15 @@ body {
   .halo-nav-wrap.halo-visible {
     transform: translate(-50%, 0) !important;
     opacity: 1 !important;
+    visibility: visible !important;
     pointer-events: auto !important;
+    z-index: 11000 !important;
   }
 
   .halo-nav-wrap.halo-hidden {
     transform: translate(-50%, calc(100% + 42px)) !important;
     opacity: 0 !important;
+    visibility: hidden !important;
     pointer-events: none !important;
   }
 
@@ -1109,7 +1121,7 @@ body {
   .pdrop-container {
     width: 100%;
     min-height: 100%;
-    padding: 30px 6.45vw 100px;
+    padding: 30px 6.45vw 120px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -1157,8 +1169,9 @@ body {
     font-size: 8.58px;
     font-weight: 600;
     letter-spacing: 0.08em;
-    width: 81.13px;
+    /* width: 81.13px; */
     text-transform: uppercase;
+    border: none;
     padding: 7px 16px;
     border-radius: 3px;
     height: 32.43px;
@@ -1230,6 +1243,50 @@ body {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+  }
+
+  a.mhead,
+  .sitehead a.mhead {
+    text-decoration: none !important;
+    cursor: pointer;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.25s ease;
+  }
+
+  a.mhead:hover,
+  .sitehead a.mhead:hover {
+    color: #f6c177 !important;
+    text-decoration: none !important;
+  }
+
+  .pdrop-acc-heading {
+    text-decoration: none !important;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .pdrop-acc-heading:hover {
+    color: #f6c177 !important;
+    text-decoration: none !important;
+  }
+
+  .pdrop-caret-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .pdrop-amber-text {
@@ -1330,24 +1387,32 @@ body {
     border-bottom: none !important;
   }
 
-  .pdrop-arrow-row a {
+  .pdrop-arrow-row a,
+  .pdrop-arrow-row button {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
     padding: 16px 0;
     color: #ffffff;
     font-family: 'Poppins', 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
     transition: color 0.2s;
   }
 
-  .pdrop-arrow-row a:hover {
+  .pdrop-arrow-row a:hover,
+  .pdrop-arrow-row button:hover {
     color: #f6c177;
   }
 
-  .pdrop-arrow-row a .pdrop-arrow {
+  .pdrop-arrow-row a .pdrop-arrow,
+  .pdrop-arrow-row button .pdrop-arrow {
     color: #ffffff;
     stroke: #ffffff;
     width: 24px;
@@ -1361,7 +1426,8 @@ body {
     margin-right: 3px;
   }
 
-  .pdrop-arrow-row a:hover .pdrop-arrow {
+  .pdrop-arrow-row a:hover .pdrop-arrow,
+  .pdrop-arrow-row button:hover .pdrop-arrow {
     stroke: #f6c177;
     transform: translateX(3px);
   }
@@ -1489,9 +1555,9 @@ body {
     padding-bottom: 0px !important;
   }
 
-  .s-hero-copy {
+  /* .s-hero-copy {
     padding: 100px 6.45vw !important;
-  }
+  } */
 
   .s-catalogue>div {
     left: 6.45vw !important;
@@ -1733,65 +1799,71 @@ body {
 }
 
 /* ==========================================================================
-   Footer Social Icons (PNG Images for Desktop and Mobile)
+   Footer Social Icons (Consistent, Symmetric, Premium)
    ========================================================================== */
+.footer-social {
+  display: flex !important;
+  align-items: center !important;
+  gap: 24px !important;
+}
+
+.footer-social a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease, transform 0.2s ease, opacity 0.2s ease !important;
+}
+
+.footer-social a:hover {
+  color: #f6c177 !important;
+  transform: translateY(-2px) !important;
+  opacity: 1 !important;
+}
+
 .footer-social-icon {
   display: flex !important;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-}
-
-.footer-social-img {
-  width: 27px;
-  height: 32px;
-  object-fit: contain;
-  display: block;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.footer-facebook {
+  align-items: center !important;
+  justify-content: center !important;
   width: 22px !important;
-  height: 37px !important;
-
+  height: 22px !important;
 }
 
-.footer-youtube {
-  width: 32px !important;
-  height: 38px !important;
-
-}
-
-.footer-social a:hover .footer-social-img {
-  opacity: 0.8;
-  transform: scale(1.08);
+.footer-social svg {
+  width: 20px !important;
+  height: 20px !important;
+  display: block !important;
+  fill: currentColor !important;
+  transition: inherit !important;
 }
 
 @media (max-width: 900px) {
   .footer-social {
     display: flex !important;
     align-items: center !important;
-    gap: 24px !important;
+    gap: 20px !important;
   }
 
   .footer-social a {
-    display: flex !important;
+    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: auto !important;
-    height: auto !important;
+    width: 28px !important;
+    height: 28px !important;
     text-decoration: none !important;
   }
 
   .footer-social-icon {
-    width: 24px !important;
-    height: 24px !important;
-  }
-
-  .footer-social-img {
     width: 22px !important;
     height: 22px !important;
+  }
+
+  .footer-social svg {
+    width: 20px !important;
+    height: 20px !important;
   }
 }
 
@@ -2155,7 +2227,7 @@ footer#contact {
   }
 }
 
-/* Watch & Shop / Reels Slider Styling - Edge-to-Edge Cards with Standard Slider Gaps */
+/* Watch & Learn / Reels Slider Styling - Edge-to-Edge Cards with Standard Slider Gaps */
 .reel-track-wrap {
   position: relative;
   width: 100%;
@@ -2375,7 +2447,103 @@ footer#contact {
 
 /* Skeleton Loading Animation */
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: .5; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .5;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Client Logos Marquee Configuration */
+.mtrack {
+  animation-duration: var(--marquee-duration, 42s) !important;
+  will-change: transform;
+}
+
+@keyframes marq {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee:hover .mtrack,
+.mtrack:hover {
+  animation-play-state: paused !important;
+}
+
+/* Responsive Catalogue Section Media */
+picture.catalogue-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: block;
+}
+
+picture.catalogue-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Hide composition cards subheading in mobile view */
+@media (max-width: 768px) {
+
+  .inspiration-page .look-copy strong,
+  .look-card .look-copy strong,
+  .s-look span,
+  .s-look-subheading,
+  .s-inspire .s-look span {
+    display: none !important;
+  }
+
+  .inspiration-page .look-copy span {
+    margin-bottom: 0 !important;
+  }
+
+  .s-look>div p {
+    margin-bottom: 0 !important;
+    transform: translateY(0) !important;
+  }
+}
+
+/* Force immediate closure of mega/drop menus upon clicking an item */
+.sitehead .has-mega.menu-force-closed .mega,
+.has-mega.menu-force-closed .mega,
+.sitehead .has-drop.menu-force-closed .drop,
+.has-drop.menu-force-closed .drop {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.sitehead .has-mega.menu-force-closed .mega-panel,
+.has-mega.menu-force-closed .mega-panel {
+  -webkit-clip-path: inset(0 0 100% 0) !important;
+  clip-path: inset(0 0 100% 0) !important;
+}
+
+.sitehead .has-drop.menu-force-closed .drop,
+.has-drop.menu-force-closed .drop {
+  -webkit-clip-path: inset(0 0 100% 0) !important;
+  clip-path: inset(0 0 100% 0) !important;
+}
+
+.sitehead .has-mega.menu-force-closed>a.link .caret,
+.sitehead .has-drop.menu-force-closed>a.link .caret,
+.has-mega.menu-force-closed>a.link .caret,
+.has-drop.menu-force-closed>a.link .caret {
+  color: inherit !important;
 }

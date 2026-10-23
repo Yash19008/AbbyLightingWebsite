@@ -46,6 +46,26 @@
     @stack('css')
     
     <style>
+        /* Pure black header, mega-panel, and dropdowns */
+        header.sitehead,
+        .sitehead,
+        .main-box header.sitehead,
+        #mainHeader,
+        .main-box .mega,
+        .main-box .mega-panel,
+        .main-box .sitehead .mega,
+        .main-box .sitehead .mega-panel,
+        .mega,
+        .mega-panel,
+        .main-box .drop,
+        .main-box .sitehead .drop,
+        .main-box .sitehead nav > ul > li .drop,
+        .drop,
+        .pdrop-modal {
+            background: #000000 !important;
+            background-color: #000000 !important;
+        }
+
         /* Add padding to body to account for fixed Next.js header (82px) */
         body {
             padding-top: 82px;
@@ -67,14 +87,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 
-    {{-- Footer scripts - Combined to avoid window.onload conflicts --}}
+    {{-- Footer scripts --}}
     <script>
-    // Wait for DOM to be ready
     document.addEventListener('DOMContentLoaded', function() {
-        // Modal reset handlers
         const productEnquiryModal = document.getElementById("productEnquiryModal");
-        const downloadCatalogModal = document.getElementById("downloadCatalogModal");
-        
         if (productEnquiryModal) {
             productEnquiryModal.addEventListener("hide.bs.modal", () => {
                 const form = document.getElementById("product_inquiry");
@@ -83,26 +99,8 @@
                 if (msg) msg.classList.add("d-none");
             });
         }
-        
-        if (downloadCatalogModal) {
-            downloadCatalogModal.addEventListener("hide.bs.modal", () => {
-                const form = document.getElementById("downloadCatalogModalForm");
-                if (form) form.reset();
-            });
-        }
-
-        // Search icon mobile (if exists)
-        const searchIconMobile = document.getElementById("search-icon-mobile");
-        if (searchIconMobile) {
-            searchIconMobile.addEventListener("click", function() {
-                const searchInput = document.getElementById("search-input-mobile");
-                if (searchInput) {
-                    const display = searchInput.style.display;
-                    searchInput.style.display = display == 'block' ? 'none' : 'block';
-                }
-            });
-        }
     });
+
 
     // Product Inquiry Form
     window.submitInquiry = function() {
@@ -194,7 +192,7 @@
                 return false;
             });
             grecaptcha.render(recaptchaWidgetId, {
-                'sitekey': '6Lf9pMgpAAAAALMPOL0I0ZDi9he4KKDCRcepVuBY',
+                'sitekey': "{{ config('google_captcha.site_key', env('GOOGLE_CAPTCHA_SITE_KEY')) }}",
                 'callback': captchaVerified,
                 'expired-callback': captchaExpired
             });

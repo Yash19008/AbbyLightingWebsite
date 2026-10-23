@@ -2,34 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\Tag;
-use App\Models\SubTag;
+use App\Models\Category;
+use App\Models\Icon;
+use App\Models\ProductAttribute;
 use App\Models\ProductMaster;
 use App\Models\ProductVariant;
-use App\Models\ProductAttribute;
-use App\Models\SubTagProjectImage;
-use App\Models\Icon;
-use Illuminate\Support\Facades\DB;
-use Symfony\Component\Process\Process;
-use App\Models\Category;
+use App\Models\SubTag;
 use App\Models\SubTagMapping;
-use Response;
+use App\Models\SubTagProjectImage;
+use App\Models\Tag;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
+use App\Models\Decorative\DecProduct;
+use App\Models\Collection;
+use App\Models\Project;
+use App\Models\Catalogue;
+use App\Models\Blog;
+use Illuminate\Support\Str;
 use Spatie\Browsershot\Browsershot;
+use Symfony\Component\Process\Process;
 
 class ProductController extends Controller
 {
     public function subTags(Request $request, $tag_id = null)
     {
-        if ($tag_id && $tag_id != 'All') {
-            $tag = Tag::find($tag_id);
-            $data = array('title' => $tag->display_name);
-            $data['subTags'] = SubTag::where('tag_id', $tag_id)->where('is_active', 'yes')->orderBy('display_name', 'ASC')->get();
-        } else {
-            $data = array('title' => 'All');
-            $data['subTags'] = SubTag::where('is_active', 'yes')->orderBy('display_name', 'ASC')->get();
-        }
+        $data = array('title' => 'All');
+        $data['subTags'] = SubTag::where('is_active', 'yes')->orderBy('display_name', 'ASC')->get();
         foreach ($data['subTags'] as $subTag) {
             $subTag['tags'] = SubTagMapping::where('sub_tag_id', $subTag->id)->pluck('tag_id')->toArray();
         }
@@ -37,6 +36,14 @@ class ProductController extends Controller
         $data['tag_id'] = $tag_id;
         $data['categories'] = Category::where('is_active', 'yes')->get();
         $data['default_data_filter'] = '';
+
+        if ($tag_id && $tag_id != 'All') {
+            $tag = Tag::find($tag_id);
+            if ($tag) {
+                $data['title'] = $tag->display_name;
+                $data['default_data_filter'] = $tag->id;
+            }
+        }
         return view('pages.sub-tags', $data);
     }
 
@@ -48,13 +55,16 @@ class ProductController extends Controller
             $subTag['tags'] = SubTagMapping::where('sub_tag_id', $subTag->id)->pluck('tag_id')->toArray();
         }
         $data['tags'] = Tag::where('is_active', 'yes')->get();
-        $data['tag_id'] = NULL;
+        $data['tag_id'] = null;
         $data['categories'] = Category::where('is_active', 'yes')->get();
         $data['default_data_filter'] = '';
-        if ($filter !== null && $filter !== 'null') {
+        if ($filter !== null && $filter !== 'null' && strtolower($filter) !== 'all') {
             foreach ($data['tags'] as $tag) {
                 if ($this->getSlugWithout($tag->slug) == $this->getSlugWithout($filter)) {
                     $data['default_data_filter'] = $tag->id;
+                    $data['tag_id'] = $tag->id;
+                    $data['title'] = $tag->display_name;
+                    break;
                 }
             }
         }
@@ -71,7 +81,20 @@ class ProductController extends Controller
 
     public function products($slug)
     {
-        $sub_tag = SubTag::where('slug', $slug)->with('linkedSubTags')->firstOrFail();
+        $sub_tag = SubTag::where('slug', $slug)->with('linkedSubTags')->first();
+        if (!$sub_tag) {
+            $productMaster = ProductMaster::where('slug', $slug)->first();
+            if ($productMaster && $productMaster->sub_tag_ids) {
+                $firstSubTagId = (int) trim(explode(',', $productMaster->sub_tag_ids)[0] ?? '');
+                if ($firstSubTagId) {
+                    $sub_tag = SubTag::find($firstSubTagId);
+                    if ($sub_tag) {
+                        return redirect('/products/' . $sub_tag->slug);
+                    }
+                }
+            }
+            abort(404);
+        }
         $sub_tag_id = $sub_tag->id;
         $tagIds = SubTagMapping::where('sub_tag_id', $sub_tag->id)->pluck('tag_id')->toArray();
         $show_categories_count = Tag::whereIn('id', $tagIds)->where('show_categories', 1)->count();
@@ -118,68 +141,279 @@ class ProductController extends Controller
 
     public function search(Request $request, $category = null)
     {
-        if (!$request->filled('q') && !$category) {
-            return redirect("/");
-        }
-        // $sub_tag = SubTag::find($sub_tag_id);
-        $data = array('title' => "Searching \"$request->q\"");
-        /* $data['subTag'] = $sub_tag; */
-        $query = ProductMaster::with('variants', 'category')
-            ->where('is_active', 'yes')
-            ->whereRaw("REPLACE(`title`, ' ' ,'') LIKE ?", ['%'.str_replace(' ', '', $request->q).'%'])
-            ->orderBy(DB::raw(
-                "REPLACE(title,RIGHT(title,LOCATE(' ',REVERSE(title))),'')"
-            ))
-            ->orderBy(DB::raw(
-                "CAST(SUBSTRING_INDEX(title, ' ', -1) AS SIGNED)"
-            ))
-            ->orderBy('title')
-            ->orderBy('id');
-
+        // 1. Backwards compatibility for /category/{any} route
         if ($category) {
             $visible_tags = Tag::where('show_categories', 1)->pluck('id')->toArray();
             $visible_sub_tags = SubTagMapping::whereIn('tag_id', $visible_tags)->pluck('sub_tag_id')->toArray();
             $visible_sub_tags = implode('|', $visible_sub_tags);
 
+            $data = [];
             $data['new_categories'] = Category::where('is_active', 'yes')->get();
-            $category = Category::where('slug', $category)->first();
-            $category_title = ucwords(strtolower($category->title));
-            $data['title'] = "Showing results for : \"$category_title\"";
-            $query = $query->where('category_id', $category->id);
-            $query = $query->whereRaw("CONCAT(',', `sub_tag_ids`, ',')  REGEXP ',(" . $visible_sub_tags . "),' ");
-            $products = $query->get();
-            $data['products'] = $products;
-
-            // $visible_tags = Tag::where('show_categories', 1)->get()->pluck('id');
-            // $visible_sub_tags = SubTag::whereIn('tag_id', $visible_tags)->get()->pluck('id');
-            // $data['products'] = [];
-            // foreach ($products as $product) {
-            //     $isPresent = false;
-            //     try {
-            //         $sub_tag_ids = explode(',', $product->sub_tag_ids);
-            //         foreach ($sub_tag_ids as $sub_tag_id) {
-            //             foreach ($visible_sub_tags as $visible_sub_tag) {
-            //                 if ($visible_sub_tag == $sub_tag_id) {
-            //                     $isPresent = true;
-            //                 }
-            //             }
-            //         }
-            //     } catch (\Exception $e) {
-            //         $isPresent = true;
-            //         \Log::error("Error in search by category");
-            //         \Log::error($e);
-            //     }
-            //     if ($isPresent) {
-            //         $data['products'][] = $product;
-            //     }
-            // }
-        } else {
-            $query = $query->whereRaw("REPLACE(`title`, ' ' ,'') LIKE ?", ['%'.str_replace(' ', '', $request->q).'%']);
-            $data['products'] = $query->get();
+            $categoryModel = Category::where('slug', $category)->first();
+            if ($categoryModel) {
+                $category_title = ucwords(strtolower($categoryModel->title));
+                $data['title'] = "Showing results for : \"$category_title\"";
+                $query = ProductMaster::with('variants', 'category')
+                    ->where('is_active', 'yes')
+                    ->where('category_id', $categoryModel->id)
+                    ->whereRaw("CONCAT(',', `sub_tag_ids`, ',') REGEXP ',(" . $visible_sub_tags . "),' ")
+                    ->orderBy('title')
+                    ->orderBy('id');
+                $data['products'] = $query->get();
+            } else {
+                $data['title'] = "Showing results";
+                $data['products'] = collect();
+            }
+            $data['onSearchPage'] = true;
+            return view('pages.products', $data);
         }
 
-        $data['onSearchPage'] = true;
-        return view('pages.products', $data);
+        $q = trim((string) $request->input('q', ''));
+        $perPage = 8;
+
+        // 2. AJAX Load More for a specific category
+        if ($request->ajax() || $request->input('action') === 'load_more' || $request->wantsJson()) {
+            $catKey = (string) $request->input('category', '');
+            $page = max(1, (int) $request->input('page', 2));
+
+            $queries = $this->buildSearchQueries($q);
+            if (!isset($queries[$catKey])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid category specified.'
+                ], 400);
+            }
+
+            $catConfig = $queries[$catKey];
+            $total = (clone $catConfig['query'])->count();
+            $items = $catConfig['query']->forPage($page, $perPage)->get();
+
+            $html = '';
+            foreach ($items as $item) {
+                $html .= view($catConfig['card_view'], ['item' => $item])->render();
+            }
+
+            $loadedSoFar = ($page - 1) * $perPage + $items->count();
+            $remaining = max(0, $total - $loadedSoFar);
+            $hasMore = $remaining > 0;
+
+            return response()->json([
+                'success' => true,
+                'category' => $catKey,
+                'html' => $html,
+                'items_count' => $items->count(),
+                'remaining' => $remaining,
+                'has_more' => $hasMore,
+                'next_page' => $page + 1,
+            ]);
+        }
+
+        // 3. Full Search Page Load
+        $queries = $this->buildSearchQueries($q);
+        $categoriesData = [];
+
+        foreach ($queries as $key => $catConfig) {
+            $total = (clone $catConfig['query'])->count();
+            $items = $total > 0 ? $catConfig['query']->forPage(1, $perPage)->get() : collect();
+
+            $categoriesData[$key] = [
+                'key' => $key,
+                'name' => $catConfig['name'],
+                'total' => $total,
+                'items' => $items,
+                'card_view' => $catConfig['card_view'],
+                'has_more' => $total > $perPage,
+                'remaining' => max(0, $total - $perPage),
+                'next_page' => 2,
+            ];
+        }
+
+        $totalResults = array_sum(array_column($categoriesData, 'total'));
+
+        return view('pages.search', [
+            'q' => $q,
+            'title' => !empty($q) ? "Search: \"$q\"" : "Search",
+            'categories' => $categoriesData,
+            'totalResults' => $totalResults,
+        ]);
+    }
+
+    /**
+     * Build categorized search queries across all dynamic elements.
+     */
+    protected function buildSearchQueries(string $q): array
+    {
+        $clean = str_replace(' ', '', $q);
+
+        // 1. Architectural Products (SubTags - representing product families on /products/{slug})
+        $tagSubTagIds = [];
+        $prodSubTagIds = [];
+
+        if ($q !== '') {
+            $matchingTagIds = Tag::where(function ($tq) use ($q, $clean) {
+                $tq->where('name', 'LIKE', '%' . $q . '%')
+                    ->orWhere('display_name', 'LIKE', '%' . $q . '%')
+                    ->orWhereRaw("REPLACE(`name`, ' ', '') LIKE ?", ['%' . $clean . '%']);
+            })->pluck('id')->toArray();
+
+            if (!empty($matchingTagIds)) {
+                $tagSubTagIds = SubTagMapping::whereIn('tag_id', $matchingTagIds)->pluck('sub_tag_id')->toArray();
+            }
+
+            // Products whose title or variant matches $q
+            $matchingProducts = ProductMaster::where('is_active', 'yes')
+                ->where(function ($pq) use ($q, $clean) {
+                    $pq->where('title', 'LIKE', '%' . $q . '%')
+                        ->orWhereRaw("REPLACE(`title`, ' ', '') LIKE ?", ['%' . $clean . '%'])
+                        ->orWhereHas('category', function ($cq) use ($q) {
+                            $cq->where('title', 'LIKE', '%' . $q . '%');
+                        })
+                        ->orWhereHas('variants', function ($vq) use ($q, $clean) {
+                            $vq->where('variant_name', 'LIKE', '%' . $q . '%')
+                                ->orWhere('slug', 'LIKE', '%' . $q . '%')
+                                ->orWhereRaw("REPLACE(`variant_name`, ' ', '') LIKE ?", ['%' . $clean . '%']);
+                        });
+                })->pluck('sub_tag_ids')->toArray();
+
+            foreach ($matchingProducts as $subIds) {
+                if ($subIds) {
+                    foreach (explode(',', $subIds) as $sId) {
+                        $sId = trim($sId);
+                        if ($sId !== '') {
+                            $prodSubTagIds[] = (int) $sId;
+                        }
+                    }
+                }
+            }
+        }
+
+        $allMatchedSubTagIds = array_unique(array_merge($tagSubTagIds, $prodSubTagIds));
+
+        $archQ = SubTag::with(['subTagMappings.tag'])
+            ->where('is_active', 'yes');
+
+        if ($q !== '') {
+            $archQ->where(function ($sq) use ($q, $clean, $allMatchedSubTagIds) {
+                $sq->where('name', 'LIKE', '%' . $q . '%')
+                    ->orWhere('display_name', 'LIKE', '%' . $q . '%')
+                    ->orWhereRaw("REPLACE(`name`, ' ', '') LIKE ?", ['%' . $clean . '%'])
+                    ->orWhere('slug', 'LIKE', '%' . $q . '%');
+
+                if (!empty($allMatchedSubTagIds)) {
+                    $sq->orWhereIn('id', $allMatchedSubTagIds);
+                }
+            });
+        }
+        $archQ->orderBy('display_name', 'asc');
+
+        // 2. Decorative Products
+        $decQ = DecProduct::with(['category', 'collection', 'colors'])
+            ->where('status', 'published');
+        if ($q !== '') {
+            $decQ->where(function ($sub) use ($q, $clean) {
+                $sub->where('name', 'LIKE', '%' . $q . '%')
+                    ->orWhereRaw("REPLACE(`name`, ' ', '') LIKE ?", ['%' . $clean . '%'])
+                    ->orWhere('short_description', 'LIKE', '%' . $q . '%')
+                    ->orWhere('description', 'LIKE', '%' . $q . '%')
+                    ->orWhereHas('category', function ($cq) use ($q) {
+                        $cq->where('name', 'LIKE', '%' . $q . '%');
+                    })
+                    ->orWhereHas('collection', function ($cq) use ($q) {
+                        $cq->where('name', 'LIKE', '%' . $q . '%');
+                    });
+            });
+        }
+        $decQ->orderBy('order', 'asc')->orderBy('id', 'desc');
+
+        // 3. Collections
+        $colQ = Collection::where('is_active', true);
+        if ($q !== '') {
+            $colQ->where(function ($sub) use ($q, $clean) {
+                $sub->where('name', 'LIKE', '%' . $q . '%')
+                    ->orWhereRaw("REPLACE(`name`, ' ', '') LIKE ?", ['%' . $clean . '%'])
+                    ->orWhere('short_description', 'LIKE', '%' . $q . '%')
+                    ->orWhere('description', 'LIKE', '%' . $q . '%');
+            });
+        }
+        $colQ->orderBy('order', 'asc')->orderBy('id', 'asc');
+
+        // 4. Projects
+        $projQ = Project::with('projectImages')
+            ->where('is_active', 'yes');
+        if ($q !== '') {
+            $projQ->where(function ($sub) use ($q, $clean) {
+                $sub->where('name', 'LIKE', '%' . $q . '%')
+                    ->orWhereRaw("REPLACE(`name`, ' ', '') LIKE ?", ['%' . $clean . '%'])
+                    ->orWhere('location', 'LIKE', '%' . $q . '%')
+                    ->orWhere('type', 'LIKE', '%' . $q . '%')
+                    ->orWhere('description', 'LIKE', '%' . $q . '%');
+            });
+        }
+        $projQ->orderBy('sequence', 'asc')->orderBy('id', 'desc');
+
+        // 5. Catalogues
+        $catQ = Catalogue::with('category')
+            ->where('status', 'active');
+        if ($q !== '') {
+            $catQ->where(function ($sub) use ($q, $clean) {
+                $sub->where('title', 'LIKE', '%' . $q . '%')
+                    ->orWhereRaw("REPLACE(`title`, ' ', '') LIKE ?", ['%' . $clean . '%'])
+                    ->orWhere('description', 'LIKE', '%' . $q . '%')
+                    ->orWhereHas('category', function ($cq) use ($q) {
+                        $cq->where('name', 'LIKE', '%' . $q . '%');
+                    });
+            });
+        }
+        $catQ->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
+
+        // 6. Stories & Inspiration Blogs
+        $blogQ = Blog::with('category')
+            ->where('status', 'published');
+        if ($q !== '') {
+            $blogQ->where(function ($sub) use ($q, $clean) {
+                $sub->where('title', 'LIKE', '%' . $q . '%')
+                    ->orWhereRaw("REPLACE(`title`, ' ', '') LIKE ?", ['%' . $clean . '%'])
+                    ->orWhere('dek', 'LIKE', '%' . $q . '%')
+                    ->orWhere('content', 'LIKE', '%' . $q . '%')
+                    ->orWhereHas('category', function ($cq) use ($q) {
+                        $cq->where('name', 'LIKE', '%' . $q . '%');
+                    });
+            });
+        }
+        $blogQ->orderBy('published_at', 'desc')->orderBy('id', 'desc');
+
+        return [
+            'architectural' => [
+                'name' => 'Architectural Lighting',
+                'query' => $archQ,
+                'card_view' => 'partials.search.card-architectural',
+            ],
+            'decorative' => [
+                'name' => 'Decorative Lighting',
+                'query' => $decQ,
+                'card_view' => 'partials.search.card-decorative',
+            ],
+            'collections' => [
+                'name' => 'Collections',
+                'query' => $colQ,
+                'card_view' => 'partials.search.card-collection',
+            ],
+            'projects' => [
+                'name' => 'Projects & Case Studies',
+                'query' => $projQ,
+                'card_view' => 'partials.search.card-project',
+            ],
+            'catalogues' => [
+                'name' => 'Catalogues & Downloads',
+                'query' => $catQ,
+                'card_view' => 'partials.search.card-catalogue',
+            ],
+            'blogs' => [
+                'name' => 'Stories & Inspiration',
+                'query' => $blogQ,
+                'card_view' => 'partials.search.card-blog',
+            ],
+        ];
     }
 
     private function getProductDetails($variant_id)

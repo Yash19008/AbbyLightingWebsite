@@ -10,5 +10,17 @@ class Client extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable  = ['path', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_by', 'deleted_at'];
+    protected $fillable  = ['path', 'is_featured', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_by', 'deleted_at'];
+
+    protected $casts = [
+        'is_featured' => 'boolean',
+    ];
+
+    /**
+     * Scope query to only featured clients.
+     */
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', 1);
+    }
 }

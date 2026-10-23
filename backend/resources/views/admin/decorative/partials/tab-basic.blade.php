@@ -67,12 +67,19 @@
                                                 <option value="archived" {{ (isset($product) && $product->status == 'archived') ? 'selected' : '' }}>Archived</option>
                                             </select>
                                         </div>
-                                        <div class="form-group mb-0">
+                                        <div class="form-group mb-2">
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" id="is_featured" name="is_featured" value="1" {{ (isset($product) && $product->is_featured) ? 'checked' : '' }}>
                                                 <label class="custom-control-label font-weight-bold" for="is_featured">Show in Collection</label>
                                             </div>
                                             <small class="text-muted d-block mt-1">If enabled, this product will be highlighted inside its collection.</small>
+                                        </div>
+                                        <div class="form-group mb-0">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="show_as_new_arrival" name="show_as_new_arrival" value="1" {{ (isset($product) && $product->show_as_new_arrival) ? 'checked' : '' }}>
+                                                <label class="custom-control-label font-weight-bold" for="show_as_new_arrival">Show in New Arrival</label>
+                                            </div>
+                                            <small class="text-muted d-block mt-1">If enabled, this product will appear in the New Arrivals section on the homepage.</small>
                                         </div>
                                     </div>
                                 </div>

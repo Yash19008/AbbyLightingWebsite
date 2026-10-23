@@ -132,9 +132,14 @@
   }
 
   .s-look>div p {
-    margin-bottom: 3px;
-    font-size: 9px;
-    transform: translateY(12px);
+    margin-bottom: 0 !important;
+    font-size: 10px;
+    transform: translateY(0) !important;
+  }
+
+  .s-look>div span,
+  .s-look .s-look-subheading {
+    display: none !important;
   }
 }
 

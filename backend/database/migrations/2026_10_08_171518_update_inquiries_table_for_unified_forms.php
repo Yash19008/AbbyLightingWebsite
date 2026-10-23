@@ -6,36 +6,51 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('inquiries', function (Blueprint $table) {
-            $table->string('type')->default('general')->after('id');
-            $table->string('reference')->nullable()->after('type');
-            $table->renameColumn('full_name', 'name');
-            $table->renameColumn('position', 'role');
-            $table->renameColumn('i_message', 'message');
-            $table->dropColumn(['country', 'website', 'profession', 'interested_in', 'industry_of_interest']);
+            if (!Schema::hasColumn('inquiries', 'type')) {
+                $table->string('type')->default('general')->after('id');
+            }
+            if (!Schema::hasColumn('inquiries', 'reference')) {
+                $table->string('reference')->nullable()->after('type');
+            }
+
+            if (Schema::hasColumn('inquiries', 'full_name')) {
+                $table->renameColumn('full_name', 'name');
+            }
+            if (Schema::hasColumn('inquiries', 'position')) {
+                $table->renameColumn('position', 'role');
+            }
+            if (Schema::hasColumn('inquiries', 'i_message')) {
+                $table->renameColumn('i_message', 'message');
+            }
+
+            // Drop deprecated legacy columns safely
+            $legacyDrop = ['country', 'website', 'profession', 'interested_in', 'industry_of_interest', 'is_active', 'created_by', 'updated_by', 'deleted_by'];
+            foreach ($legacyDrop as $col) {
+                if (Schema::hasColumn('inquiries', $col)) {
+                    $table->dropColumn($col);
+                }
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('inquiries', function (Blueprint $table) {
-            $table->dropColumn(['type', 'reference']);
-            $table->renameColumn('name', 'full_name');
-            $table->renameColumn('role', 'position');
-            $table->renameColumn('message', 'i_message');
-            $table->text('country')->nullable();
-            $table->text('website')->nullable();
-            $table->text('profession')->nullable();
-            $table->text('interested_in')->nullable();
-            $table->text('industry_of_interest')->nullable();
+            if (Schema::hasColumn('inquiries', 'type')) {
+                $table->dropColumn(['type', 'reference']);
+            }
+            if (Schema::hasColumn('inquiries', 'name')) {
+                $table->renameColumn('name', 'full_name');
+            }
+            if (Schema::hasColumn('inquiries', 'role')) {
+                $table->renameColumn('role', 'position');
+            }
+            if (Schema::hasColumn('inquiries', 'message')) {
+                $table->renameColumn('message', 'i_message');
+            }
         });
     }
 };

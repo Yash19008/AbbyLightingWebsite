@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\Common_function;
 use App\Models\AuditLog;
-use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use App\Models\CategoryImages;
 use DataTables;
@@ -53,14 +52,6 @@ class CategoryAdminController extends Controller
                             </div>
                     ';
                 })
-                ->addColumn('featured', function ($row) {
-                    $is_featured = $row->is_featured == 1 ? "Checked" : "";
-                    return '<div class="custom-control custom-switch text-center">
-                                <input type="checkbox" class="custom-control-input featured_switch" data-id="' . $row->id . '" id="featuredSwitch' . $row->id . '" ' . $is_featured . '>
-                                <label class="custom-control-label" for="featuredSwitch' . $row->id . '"></label>
-                            </div>
-                    ';
-                })
                 ->addColumn('action', function ($row) {
                     $actions_html = '<div class="text-center list-action actBtn-td">
                                         <a href="' . route('category_admin.edit', $row->id) . '" class="mx-1" data-toggle="tooltip" title="Edit"><i class="ft-edit-2 font-medium-3 mr-2"></i></a>
@@ -69,7 +60,7 @@ class CategoryAdminController extends Controller
                                     </div>';
                     return $actions_html;
                 })
-                ->rawColumns(['title','status','featured','action'])
+                ->rawColumns(['title','status','action'])
                 ->make(true);
         }
     }
@@ -98,7 +89,6 @@ class CategoryAdminController extends Controller
             'slug' => ($request->slug != '') ? $request->slug : NULL,
             'sheet_title'=>$request->sheet_title,
             'in_menu'=>$request->in_menu,
-            'is_featured'=>$request->has('is_featured') ? 1 : 0,
             'created_at'=>$this->currentDateTime,
             'created_by'=>Auth::guard('admin')->user()->id,
         ];
@@ -150,7 +140,6 @@ class CategoryAdminController extends Controller
             'slug' => ($request->slug != '') ? $request->slug : NULL,
             'sheet_title'=>$request->sheet_title,
             'in_menu'=>$request->in_menu,
-            'is_featured'=>$request->has('is_featured') ? 1 : 0,
             'created_at'=>$this->currentDateTime,
             'created_by'=>Auth::guard('admin')->user()->id,
         ];
@@ -188,7 +177,6 @@ class CategoryAdminController extends Controller
             'sheet_title'=>$oldCategory->sheet_title,
             'in_menu'=>$oldCategory->in_menu,
             'is_active'=>$oldCategory->is_active,
-            'is_featured'=>$oldCategory->is_featured,
             'created_by'=> $oldCategory->created_by,
             'created_at'=>$oldCategory->created_at
         ];
@@ -208,7 +196,6 @@ class CategoryAdminController extends Controller
             'uri'=>$request->uri,
             'sheet_title'=>$request->sheet_title,
             'in_menu'=>$request->in_menu,
-            'is_featured'=>$request->has('is_featured') ? 1 : 0,
             'updated_by'=>Auth::guard('admin')->user()->id,
             'updated_at' => $this->currentDateTime,            
         );
@@ -264,7 +251,6 @@ class CategoryAdminController extends Controller
             'sheet_title'=>$request->sheet_title,
             'slug' => ($request->slug != '') ? $request->slug : NULL,
             'in_menu'=>$request->in_menu,
-            'is_featured'=>$request->has('is_featured') ? 1 : 0,
             'updated_by'=>Auth::guard('admin')->user()->id,
             'updated_at' => $this->currentDateTime,             
         ];
@@ -296,16 +282,5 @@ class CategoryAdminController extends Controller
         } else {
             return redirect(route('category_admin'));
         }
-    }
-
-    public function toggleFeatured(Request $request)
-    {
-        $category = Category::find($request->id);
-        if ($category) {
-            $category->is_featured = $request->status;
-            $category->save();
-            return response()->json(['success' => true]);
-        }
-        return response()->json(['success' => false]);
     }
 }

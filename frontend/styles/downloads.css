@@ -1321,15 +1321,6 @@ body:has(.downloads-page) .sitehead {
     gap: 12px !important;
   }
 
-  .download-field input,
-  .download-select-trigger,
-  .phone-country-trigger {
-    height: 44px !important;
-    border: 1px solid #dcdcdc !important;
-    border-radius: 8px !important;
-    font-size: 13px !important;
-  }
-
   .download-field input {
     padding: 0 14px !important;
   }

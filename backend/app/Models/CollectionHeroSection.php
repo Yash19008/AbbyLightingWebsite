@@ -13,6 +13,8 @@ class CollectionHeroSection extends Model
     protected $fillable = [
         'collection_id',
         'background_image',
+        'image_tablet',
+        'image_mobile',
         'title_prefix',
         'title_highlight',
         'description',
@@ -49,5 +51,31 @@ class CollectionHeroSection extends Model
 
         // Otherwise, generate storage URL
         return Storage::url($this->background_image);
+    }
+
+    public function getImageTabletUrlAttribute(): ?string
+    {
+        if (!$this->image_tablet) {
+            return null;
+        }
+
+        if (filter_var($this->image_tablet, FILTER_VALIDATE_URL)) {
+            return $this->image_tablet;
+        }
+
+        return Storage::url($this->image_tablet);
+    }
+
+    public function getImageMobileUrlAttribute(): ?string
+    {
+        if (!$this->image_mobile) {
+            return null;
+        }
+
+        if (filter_var($this->image_mobile, FILTER_VALIDATE_URL)) {
+            return $this->image_mobile;
+        }
+
+        return Storage::url($this->image_mobile);
     }
 }

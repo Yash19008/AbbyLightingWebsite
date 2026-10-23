@@ -6,18 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function up(): void
     {
         Schema::create('manufacturing_section', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 255)->comment('Main heading e.g., Built on Manufacturing Excellence');
-            $table->string('title_highlight', 100)->nullable()->comment('Highlighted/italic part of title');
-            $table->text('description')->nullable()->comment('Section description/paragraph');
+            $table->string('title', 255)->comment('Main heading');
+            $table->string('title_highlight', 100)->nullable()->comment('Highlighted part of title');
+            $table->text('description')->nullable()->comment('Section description');
             $table->string('button_text', 100)->nullable()->comment('CTA button text');
             $table->string('button_link', 255)->nullable()->comment('Button URL/link');
             $table->string('background_image', 255)->nullable()->comment('Background image path');
@@ -28,12 +23,7 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('manufacturing_section');
     }

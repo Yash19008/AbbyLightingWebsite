@@ -29,11 +29,4 @@ class CollectionCompositionsSection extends Model
         return $this->belongsTo(Collection::class);
     }
 
-    /**
-     * Relationship: Compositions section has many items
-     */
-    public function items()
-    {
-        return $this->hasMany(CollectionCompositionItem::class, 'compositions_section_id')->orderBy('order');
-    }
 }

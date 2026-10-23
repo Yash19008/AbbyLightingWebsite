@@ -17,4 +17,9 @@ class SubTagMapping extends Model
     {
         return $this->belongsTo('App\Models\Tag');
     }
+
+    public function subTag()
+    {
+        return $this->belongsTo('App\Models\SubTag', 'sub_tag_id');
+    }
 }

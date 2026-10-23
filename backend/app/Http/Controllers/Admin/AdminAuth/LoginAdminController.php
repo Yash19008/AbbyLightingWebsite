@@ -3,19 +3,12 @@
 namespace App\Http\Controllers\Admin\AdminAuth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
-use Hesto\MultiAuth\Traits\LogsoutGuard;
 use Illuminate\Http\Request;
-use Session;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
 use App\Models\User;
 
 class LoginAdminController extends Controller
 {
-   // use AuthenticatesUsers;
 
     /**
      * Where to redirect users after login / registration.
@@ -64,7 +57,6 @@ class LoginAdminController extends Controller
     }
 
     public function login(Request $request){
-       //print_r($request->all());exit;
         if (Auth::guard('admin')->check()) {
             return redirect('admin/inquiries');
         }    

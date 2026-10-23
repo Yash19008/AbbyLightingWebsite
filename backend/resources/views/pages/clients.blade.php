@@ -22,7 +22,7 @@
     <style>
         /* Add padding to body to account for fixed Next.js header */
         body {
-            padding-top: 95px;
+            padding-top: 80px;
         }
     </style>
 </head>
@@ -34,10 +34,11 @@
     {{-- Clients Page Content --}}
     <div class="project-category">
         <div class="container-fluid p-0">
-            @if(App\Models\Setting::getValue('CLIENT_BANNER_IMAGE', false))
-                <img src="{{App\Models\Setting::getValue('CLIENT_BANNER_IMAGE')}}" alt="" class="img-fluid">
+            @if (App\Models\Setting::getValue('CLIENT_BANNER_IMAGE', false))
+                <img src="{{ App\Models\Setting::getValue('CLIENT_BANNER_IMAGE') }}" alt="" class="img-fluid">
             @else
-                <img src="{{ asset('storage/uploads/banners/banner_image-clients.jpg') }}" alt="" class="img-fluid">
+                <img src="{{ asset('storage/uploads/banners/banner_image-clients.jpg') }}" alt=""
+                    class="img-fluid">
             @endif
         </div>
 
@@ -64,7 +65,7 @@
                 <div class="row py-5">
                     @foreach ($clients as $client)
                         <div class="col-6 col-md-3 col-lg-2">
-                            <img src="/storage/uploads/clients/{{$client->path}}" class="img-fluid" alt="">
+                            <img src="/storage/uploads/clients/{{ $client->path }}" class="img-fluid" alt="">
                         </div>
                     @endforeach
                 </div>
@@ -80,7 +81,7 @@
 
     {{-- Footer scripts --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Modal reset handlers
             const productEnquiryModal = document.getElementById("productEnquiryModal");
             const downloadCatalogModal = document.getElementById("downloadCatalogModal");
@@ -103,7 +104,7 @@
         });
 
         // Product Inquiry Form
-        window.submitInquiry = function () {
+        window.submitInquiry = function() {
             document.getElementById("productEnquiryFormSubmit").click();
 
             const formElement = document.getElementById("product_inquiry");
@@ -124,12 +125,12 @@
             document.getElementById("submit_button").classList.add("d-none");
 
             fetch('/product-inquiry', {
-                method: 'POST',
-                headers: {
-                    '_token': "{{ csrf_token() }}",
-                },
-                body: formData
-            })
+                    method: 'POST',
+                    headers: {
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    body: formData
+                })
                 .then(response => {
                     if (!response.ok) {
                         document.getElementById("submitted_msg").classList.add("d-none");
@@ -157,7 +158,7 @@
         }
 
         // Google reCAPTCHA Forms Handler
-        const googleCaptchaForms = (function () {
+        const googleCaptchaForms = (function() {
             const captchaIndex = {
                 contact_form: -1,
                 product_inquiry: -1,
@@ -165,34 +166,34 @@
             }
             let currentIndex = -1;
 
-            const init = function () {
+            const init = function() {
                 loadCaptcha('recaptchaWidgetId');
                 loadCaptcha('productInquiriesWidget');
                 loadCaptcha('productCatalogWidget');
             }
 
-            const captchaVerified = function () {
+            const captchaVerified = function() {
                 document.querySelectorAll('.captcha_error').forEach(element => {
                     element.classList.add('d-none');
                     element.classList.remove('d-block');
                 });
             }
 
-            const captchaExpired = function () {
+            const captchaExpired = function() {
                 grecaptcha.reset();
             }
 
-            const loadCaptcha = function (recaptchaWidgetId) {
+            const loadCaptcha = function(recaptchaWidgetId) {
                 if (!document.getElementById(recaptchaWidgetId)) {
                     return;
                 }
                 const formElement = document.getElementById(recaptchaWidgetId).closest('form');
-                formElement.addEventListener('submit', function (event) {
+                formElement.addEventListener('submit', function(event) {
                     event.preventDefault();
                     return false;
                 });
                 grecaptcha.render(recaptchaWidgetId, {
-                    'sitekey': '6Lf9pMgpAAAAALMPOL0I0ZDi9he4KKDCRcepVuBY',
+                    'sitekey': "{{ config('google_captcha.site_key', env('GOOGLE_CAPTCHA_SITE_KEY')) }}",
                     'callback': captchaVerified,
                     'expired-callback': captchaExpired
                 });
@@ -200,7 +201,7 @@
                 captchaIndex[formElement.id] = ++currentIndex;
             }
 
-            const submit = function (formId) {
+            const submit = function(formId) {
                 const index = captchaIndex[formId];
                 const res = true;
 
@@ -214,7 +215,7 @@
                 }
             }
 
-            const submitForm = function (formId) {
+            const submitForm = function(formId) {
                 if (formId === 'product_inquiry') {
                     submitInquiry();
                     return;
@@ -256,7 +257,7 @@
                     });
                 document.getElementById("all-set-section").style.display = 'block';
                 document.getElementById("input-btn-section").style.display = 'none';
-                document.querySelectorAll('.input-section').forEach(function (el) {
+                document.querySelectorAll('.input-section').forEach(function(el) {
                     el.style.display = 'none';
                 });
             } else {
@@ -276,7 +277,10 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-48B9N75V8M"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
         gtag('js', new Date());
         gtag('config', 'G-48B9N75V8M');
     </script>

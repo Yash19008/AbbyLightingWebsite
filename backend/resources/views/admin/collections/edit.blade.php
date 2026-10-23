@@ -259,19 +259,70 @@
                                     
                                     <div class="row">
                                         <div class="col-md-8">
-                                            <!-- Background Image -->
-                                            <div class="form-group">
-                                                <label for="background_image">Background Image</label>
-                                                @if($collection->heroSection && $collection->heroSection->background_image)
-                                                    <div class="mb-2">
-                                                        <img src="{{ $collection->heroSection->background_image_url }}" 
-                                                             alt="Current background" 
-                                                             style="max-width: 100%; height: 200px; object-fit: cover; border-radius: 4px;">
+                                            <!-- Responsive Images -->
+                                            <div class="row mb-3">
+                                                <!-- Desktop Background Image -->
+                                                <div class="col-md-4">
+                                                    <div class="card h-100 bg-light border">
+                                                        <div class="card-body p-3">
+                                                            <label class="font-weight-bold" for="background_image">
+                                                                <i class="fas fa-desktop text-primary mr-1"></i> Desktop Image
+                                                            </label>
+                                                            @if($collection->heroSection && $collection->heroSection->background_image)
+                                                                <div class="mb-2">
+                                                                    <img src="{{ $collection->heroSection->background_image_url }}" 
+                                                                         alt="Current background" 
+                                                                         style="max-width: 100%; height: 130px; object-fit: cover; border-radius: 4px;">
+                                                                </div>
+                                                            @endif
+                                                            <input type="file" class="form-control-file" id="background_image" 
+                                                                   name="background_image" accept="image/*">
+                                                            <small class="form-text text-info"><i class="fas fa-info-circle"></i> 1920 × 600 px. Max 5MB.</small>
+                                                        </div>
                                                     </div>
-                                                @endif
-                                                <input type="file" class="form-control-file" id="background_image" 
-                                                       name="background_image" accept="image/*">
-                                                <small class="form-text text-info"><i class="fas fa-info-circle"></i> <strong>Recommended Size:</strong> 1920 × 600 px (Landscape / 16:5 ratio). Max 5MB.</small>
+                                                </div>
+
+                                                <!-- Tablet Background Image -->
+                                                <div class="col-md-4">
+                                                    <div class="card h-100 bg-light border">
+                                                        <div class="card-body p-3">
+                                                            <label class="font-weight-bold" for="image_tablet">
+                                                                <i class="fas fa-tablet-alt text-info mr-1"></i> Tablet Image (Optional)
+                                                            </label>
+                                                            @if($collection->heroSection && $collection->heroSection->image_tablet)
+                                                                <div class="mb-2">
+                                                                    <img src="{{ $collection->heroSection->image_tablet_url }}" 
+                                                                         alt="Current tablet background" 
+                                                                         style="max-width: 100%; height: 130px; object-fit: cover; border-radius: 4px;">
+                                                                </div>
+                                                            @endif
+                                                            <input type="file" class="form-control-file" id="image_tablet" 
+                                                                   name="image_tablet" accept="image/*">
+                                                            <small class="form-text text-muted">1024 × 600 px. Falls back to Desktop.</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Mobile Background Image -->
+                                                <div class="col-md-4">
+                                                    <div class="card h-100 bg-light border">
+                                                        <div class="card-body p-3">
+                                                            <label class="font-weight-bold" for="image_mobile">
+                                                                <i class="fas fa-mobile-alt text-success mr-1"></i> Mobile Image (Optional)
+                                                            </label>
+                                                            @if($collection->heroSection && $collection->heroSection->image_mobile)
+                                                                <div class="mb-2">
+                                                                    <img src="{{ $collection->heroSection->image_mobile_url }}" 
+                                                                         alt="Current mobile background" 
+                                                                         style="max-width: 100%; height: 130px; object-fit: cover; border-radius: 4px;">
+                                                                </div>
+                                                            @endif
+                                                            <input type="file" class="form-control-file" id="image_mobile" 
+                                                                   name="image_mobile" accept="image/*">
+                                                            <small class="form-text text-muted">640 × 600 px. Falls back to Tablet/Desktop.</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <!-- Title Prefix -->
@@ -859,58 +910,123 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-md-8">
-                                                    <div class="row">
-                                                        <div class="col-md-12 mb-3">
-                                                            <label for="cat_title">Title <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" id="cat_title" name="title" 
-                                                                   value="{{ old('title', $collection->catalogueSection->title ?? 'See the whole') }}" 
-                                                                   required placeholder="e.g. See the whole">
-                                                            <small class="text-muted">The regular text part of the heading.</small>
-                                                        </div>
-                                                        <div class="col-md-12 mb-3">
-                                                            <label for="cat_title_highlight">Title Highlight (Italic)</label>
-                                                            <input type="text" class="form-control" id="cat_title_highlight" name="title_highlight" 
-                                                                   value="{{ old('title_highlight', $collection->catalogueSection->title_highlight ?? 'collection.') }}" 
-                                                                   placeholder="e.g. collection.">
-                                                            <small class="text-muted">The emphasized text part of the heading.</small>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="cat_btn_text">Button Text</label>
-                                                            <input type="text" class="form-control" id="cat_btn_text" name="button_text" 
-                                                                   value="{{ old('button_text', $collection->catalogueSection->button_text ?? 'Download catalogue') }}" 
-                                                                   placeholder="e.g. Download catalogue">
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="cat_btn_link">Button Link</label>
-                                                            <input type="text" class="form-control" id="cat_btn_link" name="button_link" 
-                                                                   value="{{ old('button_link', $collection->catalogueSection->button_link ?? '/catalogues') }}" 
-                                                                   placeholder="e.g. /catalogues">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="cat_title">Title <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="cat_title" name="title" 
+                                                           value="{{ old('title', $collection->catalogueSection->title ?? 'See the whole') }}" 
+                                                           required placeholder="e.g. See the whole">
+                                                    <small class="text-muted">The regular text part of the heading.</small>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="cat_title_highlight">Title Highlight (Italic)</label>
+                                                    <input type="text" class="form-control" id="cat_title_highlight" name="title_highlight" 
+                                                           value="{{ old('title_highlight', $collection->catalogueSection->title_highlight ?? 'collection.') }}" 
+                                                           placeholder="e.g. collection.">
+                                                    <small class="text-muted">The emphasized text part of the heading.</small>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="cat_btn_text">Button Text</label>
+                                                    <input type="text" class="form-control" id="cat_btn_text" name="button_text" 
+                                                           value="{{ old('button_text', $collection->catalogueSection->button_text ?? 'Download catalogue') }}" 
+                                                           placeholder="e.g. Download catalogue">
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="cat_btn_link">Button Link</label>
+                                                    <input type="text" class="form-control" id="cat_btn_link" name="button_link" 
+                                                           value="{{ old('button_link', $collection->catalogueSection->button_link ?? '/catalogues') }}" 
+                                                           placeholder="e.g. /catalogues">
+                                                </div>
+                                            </div>
+
+                                            <!-- Catalogue Responsive Images -->
+                                            <div class="row mt-2 mb-3">
+                                                <!-- Desktop Image -->
+                                                <div class="col-md-4">
+                                                    <div class="card h-100 bg-light border">
+                                                        <div class="card-body p-3 text-center">
+                                                            <label class="font-weight-bold d-block text-left" for="cat_bg_image">
+                                                                <i class="fas fa-desktop text-primary mr-1"></i> Desktop Image
+                                                            </label>
+                                                            <div class="mt-2 mb-3">
+                                                                @if(isset($collection->catalogueSection) && $collection->catalogueSection->background_image)
+                                                                    <img src="{{ $collection->catalogueSection->background_image_url }}" 
+                                                                         alt="Current Desktop Image" class="img-thumbnail" style="max-height: 120px; object-fit: cover;">
+                                                                @else
+                                                                    <div class="bg-white border rounded d-flex align-items-center justify-content-center text-muted" 
+                                                                         style="height: 120px;">
+                                                                        <div class="text-center">
+                                                                            <i class="fas fa-image fa-2x mb-2 text-muted"></i><br>
+                                                                            <small>No image uploaded</small>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                            <div class="custom-file mb-2 text-left">
+                                                                <input type="file" class="custom-file-input" id="cat_bg_image" name="background_image" accept="image/*">
+                                                                <label class="custom-file-label text-truncate" for="cat_bg_image">Choose file</label>
+                                                            </div>
+                                                            <small class="text-muted d-block text-left">1920x800px. Max: 5MB</small>
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <!-- Tablet Image -->
                                                 <div class="col-md-4">
-                                                    <div class="form-group border-left pl-4 h-100">
-                                                        <label>Background Image</label>
-                                                        <div class="mt-2 mb-3 text-center">
-                                                            @if(isset($collection->catalogueSection) && $collection->catalogueSection->background_image)
-                                                                <img src="{{ asset('storage/' . $collection->catalogueSection->background_image) }}" 
-                                                                     alt="Current Image" class="img-thumbnail" style="max-height: 150px; object-fit: cover;">
-                                                            @else
-                                                                <div class="bg-light border rounded d-flex align-items-center justify-content-center text-muted" 
-                                                                     style="height: 150px;">
-                                                                    <div class="text-center">
-                                                                        <i class="fas fa-image fa-2x mb-2"></i><br>
-                                                                        <small>No image uploaded</small>
+                                                    <div class="card h-100 bg-light border">
+                                                        <div class="card-body p-3 text-center">
+                                                            <label class="font-weight-bold d-block text-left" for="cat_image_tablet">
+                                                                <i class="fas fa-tablet-alt text-info mr-1"></i> Tablet Image (Optional)
+                                                             </label>
+                                                            <div class="mt-2 mb-3">
+                                                                @if(isset($collection->catalogueSection) && $collection->catalogueSection->image_tablet)
+                                                                    <img src="{{ $collection->catalogueSection->image_tablet_url }}" 
+                                                                         alt="Current Tablet Image" class="img-thumbnail" style="max-height: 120px; object-fit: cover;">
+                                                                @else
+                                                                    <div class="bg-white border rounded d-flex align-items-center justify-content-center text-muted" 
+                                                                         style="height: 120px;">
+                                                                        <div class="text-center">
+                                                                            <i class="fas fa-tablet-alt fa-2x mb-2 text-muted"></i><br>
+                                                                            <small>Falls back to Desktop</small>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            @endif
+                                                                @endif
+                                                            </div>
+                                                            <div class="custom-file mb-2 text-left">
+                                                                <input type="file" class="custom-file-input" id="cat_image_tablet" name="image_tablet" accept="image/*">
+                                                                <label class="custom-file-label text-truncate" for="cat_image_tablet">Choose file</label>
+                                                            </div>
+                                                            <small class="text-muted d-block text-left">1024x800px. Max: 5MB</small>
                                                         </div>
-                                                        <div class="custom-file mb-2">
-                                                            <input type="file" class="custom-file-input" id="cat_bg_image" name="background_image" accept="image/*">
-                                                            <label class="custom-file-label" for="cat_bg_image">Choose file</label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Mobile Image -->
+                                                <div class="col-md-4">
+                                                    <div class="card h-100 bg-light border">
+                                                        <div class="card-body p-3 text-center">
+                                                            <label class="font-weight-bold d-block text-left" for="cat_image_mobile">
+                                                                <i class="fas fa-mobile-alt text-success mr-1"></i> Mobile Image (Optional)
+                                                            </label>
+                                                            <div class="mt-2 mb-3">
+                                                                @if(isset($collection->catalogueSection) && $collection->catalogueSection->image_mobile)
+                                                                    <img src="{{ $collection->catalogueSection->image_mobile_url }}" 
+                                                                         alt="Current Mobile Image" class="img-thumbnail" style="max-height: 120px; object-fit: cover;">
+                                                                @else
+                                                                    <div class="bg-white border rounded d-flex align-items-center justify-content-center text-muted" 
+                                                                         style="height: 120px;">
+                                                                        <div class="text-center">
+                                                                            <i class="fas fa-mobile-alt fa-2x mb-2 text-muted"></i><br>
+                                                                            <small>Falls back to Tablet/Desktop</small>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                            <div class="custom-file mb-2 text-left">
+                                                                <input type="file" class="custom-file-input" id="cat_image_mobile" name="image_mobile" accept="image/*">
+                                                                <label class="custom-file-label text-truncate" for="cat_image_mobile">Choose file</label>
+                                                            </div>
+                                                            <small class="text-muted d-block text-left">640x800px. Max: 5MB</small>
                                                         </div>
-                                                        <small class="text-muted d-block">Recommended size: 1920x800px. Max size: 2MB</small>
                                                     </div>
                                                 </div>
                                             </div>

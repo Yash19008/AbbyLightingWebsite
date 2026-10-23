@@ -516,11 +516,12 @@
 
     .s-look p {
         font-size: 10px;
-        margin-bottom: 3px
+        margin-bottom: 0;
     }
 
-    .s-look span {
-        font-size: 8px
+    .s-look span,
+    .s-look .s-look-subheading {
+        display: none !important;
     }
 
     .s-products .decorative-grid {

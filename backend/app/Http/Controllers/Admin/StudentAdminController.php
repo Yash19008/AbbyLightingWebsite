@@ -8,10 +8,6 @@ use App\Helpers\Common_function;
 use App\Models\User;
 use App\Models\City;
 use App\Models\State;
-use Carbon\Carbon;
-use DataTables;
-use DB;
-use Illuminate\Support\Facades\Auth;
 
 class StudentAdminController extends Controller
 {
@@ -124,8 +120,7 @@ class StudentAdminController extends Controller
 
             $insert_array['photo'] = $fileNamePhoto;
         }
-       // echo '<pre>';print_r($insert_array);echo '</pre>';exit();
-        
+
         User::insert($insert_array);      
 
         return redirect('/admin/students')->withInput()->withSuccess('Student has been added successfully.');

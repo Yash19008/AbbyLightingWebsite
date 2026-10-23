@@ -9,11 +9,60 @@
             <i class="ft-message-square mr-1"></i> Inquiries
         </h4>
     </div>
+    <div class="col-6 col-md-6 text-right">
+        <button type="button" id="btnExportInquiries" class="btn btn-success shadow-sm font-weight-bold">
+            <i class="ft-download mr-1"></i> Export to Excel
+        </button>
+    </div>
 </div>
 @stop
 
 @section('content')
 <div class="row">
+    <!-- Filter Toolbar Card -->
+    <div class="col-12 mb-3">
+        <div class="card shadow-sm border-0 mb-0">
+            <div class="card-body py-3 px-3">
+                <form id="inquiryFilterForm" class="row align-items-end">
+                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                        <label class="font-weight-bold text-muted small mb-1 d-block">
+                            <i class="ft-calendar mr-1"></i> From Date
+                        </label>
+                        <input type="date" id="filter_start_date" name="start_date" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                        <label class="font-weight-bold text-muted small mb-1 d-block">
+                            <i class="ft-calendar mr-1"></i> To Date
+                        </label>
+                        <input type="date" id="filter_end_date" name="end_date" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                        <label class="font-weight-bold text-muted small mb-1 d-block">
+                            <i class="ft-layers mr-1"></i> Page Filter
+                        </label>
+                        <select id="filter_page" name="type" class="form-control form-control-sm">
+                            <option value="all">All Pages</option>
+                            @if(isset($pageTypes))
+                                @foreach($pageTypes as $val => $label)
+                                    <option value="{{ $val }}">{{ $label }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 text-md-right text-left">
+                        <button type="button" id="btnApplyFilter" class="btn btn-primary btn-sm px-3 mr-1">
+                            <i class="ft-filter mr-1"></i> Filter
+                        </button>
+                        <button type="button" id="btnResetFilter" class="btn btn-outline-secondary btn-sm px-2">
+                            <i class="ft-rotate-ccw mr-1"></i> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <div class="card-body">
@@ -119,6 +168,12 @@
         </div>
     </div>
 </div>
+
+<form id="exports_form" action="{{ route('inquiries_admin.export') }}" method="GET" style="display:none;">
+    <input type="hidden" name="start_date" id="export_start_date">
+    <input type="hidden" name="end_date" id="export_end_date">
+    <input type="hidden" name="type" id="export_type">
+</form>
 @stop
 
 @section('extra_js')
@@ -235,7 +290,14 @@
         var table = $('#inquiriesTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('inquiries_admin.list') }}",
+            ajax: {
+                url: "{{ route('inquiries_admin.list') }}",
+                data: function (d) {
+                    d.start_date = $('#filter_start_date').val();
+                    d.end_date = $('#filter_end_date').val();
+                    d.type = $('#filter_page').val();
+                }
+            },
             columns: columns,
             searching: true,
             pageLength: 10,
@@ -244,6 +306,35 @@
             language: {
                 emptyTable: "No inquiries recorded yet."
             }
+        });
+
+        // Date Range & Page Filter Handlers
+        $('#btnApplyFilter').on('click', function () {
+            table.ajax.reload();
+        });
+
+        $('#filter_page').on('change', function () {
+            table.ajax.reload();
+        });
+
+        $('#filter_start_date, #filter_end_date').on('change', function () {
+            table.ajax.reload();
+        });
+
+        $('#btnResetFilter').on('click', function () {
+            $('#filter_start_date').val('');
+            $('#filter_end_date').val('');
+            $('#filter_page').val('all');
+            table.ajax.reload();
+        });
+
+        // Export Handler
+        $(document).on('click', '#btnExportInquiries, .btn-export-inquiries', function (e) {
+            e.preventDefault();
+            $('#export_start_date').val($('#filter_start_date').val());
+            $('#export_end_date').val($('#filter_end_date').val());
+            $('#export_type').val($('#filter_page').val());
+            $('#exports_form').submit();
         });
 
         // Apply column footer search

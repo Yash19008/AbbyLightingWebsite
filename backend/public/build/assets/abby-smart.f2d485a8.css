@@ -10,7 +10,6 @@
 
 .text-content>strong {
     color: black;
-    font-size: 26px;
     font-weight: 600;
     font-family: 'Poppins', sans-serif;
 }
@@ -31,12 +30,13 @@
 }
 
 .text-content.wireless-control {
-    width: 85%
+    width: 100%;
+    padding: 0px !important;
 }
 
 @media (max-width: 992px) {
     .text-content {
-      
+
         font-size: 1.125rem
     }
 
@@ -142,10 +142,8 @@
     font-size: 18px;
     letter-spacing: 0rem;
     line-height: 26.46px;
-    padding-right: 0rem;
     font-weight: 400 !important;
     font-family: 'inter', sans-serif !important;
-    padding-left: 0rem;
 }
 
 .features-text {
@@ -157,7 +155,7 @@
 
 #youtube-heading-line {
     font-size: 18px;
-    width: 90%;
+    width: 85%;
     text-align: left;
     letter-spacing: 0px;
     color: black;

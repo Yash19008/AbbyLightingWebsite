@@ -66,26 +66,27 @@ function ProductCard({ p }: { p: ProductUsedItem }) {
   );
 
   const TitleContent = <h4 className="product-card-title">{p.name}</h4>;
+  const productLink = p.link ? p.link.replace('/product-detail/', '/decorative-lights/') : null;
 
   return (
     <article className="product-card" style={{ display: 'flex', flexDirection: 'column' }}>
-      {p.link ? (
-        <Link href={p.link} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+      {productLink ? (
+        <Link href={productLink} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
           {ImageContent}
         </Link>
       ) : (
         ImageContent
       )}
-      
+
       <div className="product-card-info">
-        {p.link ? (
-          <Link href={p.link} style={{ textDecoration: 'none', color: 'inherit' }}>
+        {productLink ? (
+          <Link href={productLink} style={{ textDecoration: 'none', color: 'inherit' }}>
             {TitleContent}
           </Link>
         ) : (
           TitleContent
         )}
-        
+
         <span className="product-card-type">{p.type}</span>
 
         {p.variants && p.variants.length > 0 ? (
@@ -94,15 +95,15 @@ function ProductCard({ p }: { p: ProductUsedItem }) {
               <span
                 key={vIdx}
                 className={`color-dot ${selectedVariant === v ? 'is-active' : ''}`}
-                style={{ 
-                  background: v.color, 
-                  width: '20px', 
-                  height: '20px', 
+                style={{
+                  background: v.color,
+                  width: '20px',
+                  height: '20px',
                   borderRadius: '50%',
                   display: 'inline-block',
                   cursor: 'pointer',
                   border: '1px solid rgba(0,0,0,0.1)',
-                  outline: selectedVariant === v ? '1.5px solid #111' : 'none', 
+                  outline: selectedVariant === v ? '1.5px solid #111' : 'none',
                   outlineOffset: '2px',
                   transition: 'outline 0.2s'
                 }}
@@ -126,10 +127,10 @@ function ProductCard({ p }: { p: ProductUsedItem }) {
               <span
                 key={cIdx}
                 className="color-dot"
-                style={{ 
+                style={{
                   background: colorHex,
-                  width: '20px', 
-                  height: '20px', 
+                  width: '20px',
+                  height: '20px',
                   borderRadius: '50%',
                   display: 'inline-block',
                   border: '1px solid rgba(0,0,0,0.1)'
@@ -155,9 +156,9 @@ function ProductCard({ p }: { p: ProductUsedItem }) {
   );
 }
 
-export default function LookModal({ 
-  isOpen, 
-  look, 
+export default function LookModal({
+  isOpen,
+  look,
   onClose,
   onPrev,
   onNext,

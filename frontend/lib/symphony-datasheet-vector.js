@@ -79,29 +79,29 @@ const readProductData = () => {
         specOptionHtml[normalKey] = options.map((_, index) => {
           const clone = optionNodes[index]?.cloneNode(true);
           if (clone) {
-              clone.querySelectorAll('.spec-code').forEach(code => code.remove());
-              clone.querySelectorAll('.spec-chip-code').forEach(code => code.style.color = '#888888');
+            clone.querySelectorAll('.spec-code').forEach(code => code.remove());
+            clone.querySelectorAll('.spec-chip-code').forEach(code => code.style.color = '#888888');
           }
           return clone ? clone.innerHTML : null;
         });
       } else {
         const inlineCode = valueNode.querySelector('.spec-code, .spec-chip-code')?.textContent?.trim();
         if (inlineCode) {
-           specOptionCodes[normalKey] = [];
-           for (let i = 0; i < 20; i++) specOptionCodes[normalKey].push(inlineCode);
+          specOptionCodes[normalKey] = [];
+          for (let i = 0; i < 20; i++) specOptionCodes[normalKey].push(inlineCode);
         }
         const firstChip = valueNode.querySelector('.spec-chip');
         if (firstChip) {
-            newRow.isChips = true;
-            newRow.chipNodes = [...valueNode.querySelectorAll('.spec-chip')].map(c => {
-                const clone = c.cloneNode(true);
-                clone.querySelectorAll('.spec-code').forEach(code => code.remove());
-                clone.querySelectorAll('.spec-chip-code').forEach(code => code.style.color = '#888888');
-                return clone.innerHTML.replace(/>\s+</g, '><').replace(/<br\s*\/?>/gi, '\n');
-            });
-            const cloneVal = firstChip.cloneNode(true);
-            cloneVal.querySelector('.spec-chip-code')?.remove();
-            specOptions[normalKey] = [cloneVal.textContent.trim()];
+          newRow.isChips = true;
+          newRow.chipNodes = [...valueNode.querySelectorAll('.spec-chip')].map(c => {
+            const clone = c.cloneNode(true);
+            clone.querySelectorAll('.spec-code').forEach(code => code.remove());
+            clone.querySelectorAll('.spec-chip-code').forEach(code => code.style.color = '#888888');
+            return clone.innerHTML.replace(/>\s+</g, '><').replace(/<br\s*\/?>/gi, '\n');
+          });
+          const cloneVal = firstChip.cloneNode(true);
+          cloneVal.querySelector('.spec-chip-code')?.remove();
+          specOptions[normalKey] = [cloneVal.textContent.trim()];
         }
       }
     }
@@ -187,8 +187,8 @@ const loadJpeg = async (src, options = {}) => {
 };
 
 class PageCanvas {
-  constructor() { 
-    this.ops = []; 
+  constructor() {
+    this.ops = [];
     const c = document.createElement('canvas');
     this.ctx = c.getContext('2d');
   }
@@ -317,7 +317,7 @@ const footer = canvas => {
   canvas.stroke(0, 0, 0); canvas.lineWidth(0.45); canvas.line(41, 742, 554, 742);
   canvas.wrapped('Abby Lighting & Switchgear Limited 802 A, Fortune Terraces, New Link Road, Opp City Mall, Andheri West, Mumbai - 400053, India.', 41, 756, 155, 5.5, 'F1', [.45, .45, .45], 6.6);
   canvas.wrapped('Abby reserves the right to discontinue any product from its collection at any time whatsoever and without prior notice', 220, 756, 158, 5.5, 'F1', [.45, .45, .45], 6.6);
-  canvas.wrapped('frontdesk@abbylighting.com,  +91 9833645212  www.abbylighting.com', 422, 756, 132, 5.5, 'F1', [.45, .45, .45], 6.6);
+  canvas.wrapped('frontdesk@abbylighting.com,  +91 7304623220  www.abbylighting.com', 422, 756, 132, 5.5, 'F1', [.45, .45, .45], 6.6);
 };
 
 const pageFrame = canvas => {
@@ -347,21 +347,21 @@ export const buildPageOne = (data, product, drawing) => {
   pageFrame(canvas);
   canvas.text((data.pdfTitle || data.product).toUpperCase(), 50, 106, 15, 'F2');
   canvas.stroke(0, 0, 0); canvas.lineWidth(.4); canvas.line(50, 118, 556, 118);
-  
+
   if (product) {
     let pWidth = 176;
     let pHeight = 176 / (product.width / product.height);
     if (pHeight > 127) { pHeight = 127; pWidth = 127 * (product.width / product.height); }
     canvas.image('Product', 46 + (176 - pWidth) / 2, 138 + (127 - pHeight) / 2, pWidth, pHeight);
   }
-  
+
   if (drawing) {
     let dWidth = 264;
     let dHeight = 264 / (drawing.width / drawing.height);
     if (dHeight > 127) { dHeight = 127; dWidth = 127 * (drawing.width / drawing.height); }
     canvas.image('Drawing', 274 + (264 - dWidth) / 2, 138 + (127 - dHeight) / 2, dWidth, dHeight);
   }
-  
+
   canvas.text('Specifications', 46, 286, 7.1, 'F2');
   let y = 307;
   let inBox = false;
@@ -380,21 +380,21 @@ export const buildPageOne = (data, product, drawing) => {
         const htmls = data.specOptionHtml?.[row.normalKey] || [];
         canvas.text(row.key, 54, rowY, 5.8, 'F1', [.45, .45, .45]);
         options.slice(0, 5).forEach((value, optionIndex) => {
-            const html = htmls[optionIndex];
-            if (html && html.includes('spec-chip')) {
-                // Remove spaces and newlines between tags so richWrapped renders it cleanly
-                const cleanHtml = html.replace(/>\s+</g, '><').replace(/<br\s*\/?>/gi, '\n')
-                                      .replace(/<span[^>]*class="[^"]*spec-chip-sep[^"]*"[^>]*>.*?<\/span>/gi, '&nbsp;&nbsp;&nbsp;&nbsp;');
-                canvas.richWrapped(cleanHtml, 166 + optionIndex * 78, rowY, 76, 5.8, 'F1', [0, 0, 0], 7.2);
-            } else {
-                textWithCode(canvas, value, codes[optionIndex], 166 + optionIndex * 78, rowY, 5.8);
-            }
+          const html = htmls[optionIndex];
+          if (html && html.includes('spec-chip')) {
+            // Remove spaces and newlines between tags so richWrapped renders it cleanly
+            const cleanHtml = html.replace(/>\s+</g, '><').replace(/<br\s*\/?>/gi, '\n')
+              .replace(/<span[^>]*class="[^"]*spec-chip-sep[^"]*"[^>]*>.*?<\/span>/gi, '&nbsp;&nbsp;&nbsp;&nbsp;');
+            canvas.richWrapped(cleanHtml, 166 + optionIndex * 78, rowY, 76, 5.8, 'F1', [0, 0, 0], 7.2);
+          } else {
+            textWithCode(canvas, value, codes[optionIndex], 166 + optionIndex * 78, rowY, 5.8);
+          }
         });
-        if (index < boxRows.length - 1) { 
-          canvas.stroke(.88, .88, .88); 
-          canvas.lineWidth(.3); 
+        if (index < boxRows.length - 1) {
+          canvas.stroke(.88, .88, .88);
+          canvas.lineWidth(.3);
           const lineY = boxTop + (index + 1) * rowHeight;
-          canvas.line(54, lineY, 540, lineY); 
+          canvas.line(54, lineY, 540, lineY);
         }
       });
       y = boxTop + boxHeight + 14;
@@ -424,13 +424,13 @@ export const buildPageOne = (data, product, drawing) => {
 
       let valueHeight = 0;
       if (row.isChips && row.chipNodes && row.chipNodes.length > 0) {
-          // Join chips with invisible text to force a precise, reliable gap
-          const joinedHtml = row.chipNodes.join('<span style="color: #ffffff">______</span>');
-          valueHeight = canvas.richWrapped(joinedHtml, 166, y, 382, 5.8, 'F1', [0, 0, 0], 7.2);
+        // Join chips with invisible text to force a precise, reliable gap
+        const joinedHtml = row.chipNodes.join('<span style="color: #ffffff">______</span>');
+        valueHeight = canvas.richWrapped(joinedHtml, 166, y, 382, 5.8, 'F1', [0, 0, 0], 7.2);
       } else {
-          valueHeight = canvas.richWrapped(row.displayValue, 166, y, 382, 5.8, 'F1', [0, 0, 0], 7.2);
+        valueHeight = canvas.richWrapped(row.displayValue, 166, y, 382, 5.8, 'F1', [0, 0, 0], 7.2);
       }
-      
+
       const lastValueBaseline = valueHeight > 7.2 ? valueHeight - 7.2 : 0;
 
       let noteHeight = 0;

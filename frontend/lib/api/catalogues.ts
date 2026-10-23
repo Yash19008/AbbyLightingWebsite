@@ -119,35 +119,3 @@ export async function getCatalogues(params?: {
   }
 }
 
-export interface CatalogDownloadPayload {
-  name: string;
-  email: string;
-  phone?: string;
-  mobile?: string;
-  city?: string;
-  company?: string;
-  role?: string;
-  message?: string;
-  catalogue_name?: string;
-  catalogue_id?: number;
-}
-
-export async function submitCatalogDownload(payload: CatalogDownloadPayload): Promise<{ success: boolean; message?: string }> {
-  try {
-    const response = await fetch(`${API_URL}/catalog-downloads`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error submitting catalogue download lead:', error);
-    return { success: false, message: 'Failed to submit form. Please try again.' };
-  }
-}
-

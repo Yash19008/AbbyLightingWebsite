@@ -7,6 +7,7 @@ const url = new URL(apiUrl);
 const nextConfig: NextConfig = {
   // Removed 'output: export' to enable SSR and API calls
   // Use standalone mode for production deployment
+  output: 'standalone',
 
   images: {
     unoptimized: process.env.NODE_ENV === 'development',
@@ -35,6 +36,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'uatabby.bandmusic.in',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'abbylighting.com',
         pathname: '/**',
       },
@@ -44,6 +50,25 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  async redirects() {
+    return [
+      {
+        source: '/calculator',
+        destination: '/light-calculator',
+        permanent: true,
+      },
+      {
+        source: '/decorative-products',
+        destination: '/decorative-lights',
+        permanent: true,
+      },
+      {
+        source: '/product-detail/:slug',
+        destination: '/decorative-lights/:slug',
+        permanent: true,
+      },
+    ];
   },
 };
 

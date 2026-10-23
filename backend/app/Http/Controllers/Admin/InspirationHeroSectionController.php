@@ -54,18 +54,32 @@ class InspirationHeroSectionController extends Controller
             'title' => 'required|string|max:255',
             'title_highlight' => 'nullable|string|max:255',
             'background_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
+            'image_tablet' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
+            'image_mobile' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
         ]);
 
-        // Handle background image upload
+        // Handle desktop image upload
         if ($request->hasFile('background_image')) {
-            // Delete old image if exists
             if ($section->background_image && Storage::disk('public')->exists($section->background_image)) {
                 Storage::disk('public')->delete($section->background_image);
             }
+            $section->background_image = $request->file('background_image')->store('uploads/inspiration', 'public');
+        }
 
-            // Store new image
-            $imagePath = $request->file('background_image')->store('uploads/inspiration', 'public');
-            $section->background_image = $imagePath;
+        // Handle tablet image upload
+        if ($request->hasFile('image_tablet')) {
+            if ($section->image_tablet && Storage::disk('public')->exists($section->image_tablet)) {
+                Storage::disk('public')->delete($section->image_tablet);
+            }
+            $section->image_tablet = $request->file('image_tablet')->store('uploads/inspiration', 'public');
+        }
+
+        // Handle mobile image upload
+        if ($request->hasFile('image_mobile')) {
+            if ($section->image_mobile && Storage::disk('public')->exists($section->image_mobile)) {
+                Storage::disk('public')->delete($section->image_mobile);
+            }
+            $section->image_mobile = $request->file('image_mobile')->store('uploads/inspiration', 'public');
         }
 
         // Update fields

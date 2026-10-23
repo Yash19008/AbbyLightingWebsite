@@ -23,13 +23,15 @@ use App\Http\Controllers\Api\WatchAndShopApiController;
 use App\Http\Controllers\Api\CompositionApiController;
 use App\Http\Controllers\Api\CatalogueApiController;
 use App\Http\Controllers\Api\InspirationHeroSectionApiController;
+use App\Http\Controllers\Api\DecorativeHeroSectionApiController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Categories (Architectural)
+// Categories (Architectural / Tags)
 Route::get('/categories', [CategoryApiController::class, 'index']);
+Route::get('/tags', [CategoryApiController::class, 'index']);
 
 // Clients
 Route::controller(ClientApiController::class)->group(function () {
@@ -73,6 +75,9 @@ Route::controller(DecorativeProductApiController::class)->group(function () {
     Route::get('/dec-products/{slug}', 'show');
 });
 
+// Decorative Hero Banner
+Route::get('/decorative-hero', [DecorativeHeroSectionApiController::class, 'index']);
+
 // Collections
 Route::controller(MenuApiController::class)->group(function () {
     Route::get('/menu-items', 'index');
@@ -103,7 +108,7 @@ Route::controller(BlogApiController::class)->group(function () {
     Route::get('/blogs/{slug}', 'show');
 });
 
-// Watch & Shop
+// Watch & Learn
 Route::get('/watch-and-shops', [WatchAndShopApiController::class, 'index']);
 
 // Inspiration Hero Banner

@@ -126,9 +126,9 @@ export default function WatchAndShopSection() {
   return (
     <section className="reels-section">
       <div className="insp-shell">
-        <h2 className="section-title">Watch &amp; shop</h2>
+        <h2 className="section-title">Lighting, Explained</h2>
         <p className="section-deck">
-          Play our latest Instagram reels right here — tap a reel to watch without leaving the site.
+          Explore lighting through practical tips, product demonstrations and expert insights.
         </p>
         <div className="reel-track-wrap" style={{ position: "relative", width: "100%" }}>
           {/* Desktop Left Arrow */}
@@ -214,7 +214,7 @@ export default function WatchAndShopSection() {
                   ) : embed ? (
                     <iframe
                       src={embed}
-                      title={reel.title || "Watch & Shop Reel"}
+                      title={reel.title || "Watch & Learn Reel"}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                       className="reel-inline-iframe"

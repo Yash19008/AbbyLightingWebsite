@@ -15,12 +15,12 @@ class WatchAndShopController extends Controller
 
     public function __construct()
     {
-        $this->main_module = 'Watch & Shop';
+        $this->main_module = 'Watch & Learn';
     }
 
     public function index(Request $request)
     {
-        $title = "Watch & Shop (Reels & Videos)";
+        $title = "Watch & Learn (Reels & Videos)";
         $main_module = $this->main_module;
         $tbl = Common_function::encrypt('watch_and_shops');
         
@@ -38,7 +38,7 @@ class WatchAndShopController extends Controller
 
     public function add()
     {
-        $title = "Add Watch & Shop Video";
+        $title = "Add Watch & Learn Video";
         $main_module = $this->main_module;
         $item = new WatchAndShop();
 
@@ -90,13 +90,13 @@ class WatchAndShopController extends Controller
             'is_active' => $request->has('is_active'),
         ]);
 
-        return redirect()->route('admin.watch_and_shops.index')->with('success', 'Watch & Shop item created successfully.');
+        return redirect()->route('admin.watch_and_shops.index')->with('success', 'Watch & Learn item created successfully.');
     }
 
     public function edit($id)
     {
         $item = WatchAndShop::findOrFail($id);
-        $title = "Edit Watch & Shop Video";
+        $title = "Edit Watch & Learn Video";
         $main_module = $this->main_module;
 
         return view('admin.watch_and_shops.edit', [
@@ -161,7 +161,7 @@ class WatchAndShopController extends Controller
             'is_active' => $request->has('is_active'),
         ]);
 
-        return redirect()->route('admin.watch_and_shops.index')->with('success', 'Watch & Shop item updated successfully.');
+        return redirect()->route('admin.watch_and_shops.index')->with('success', 'Watch & Learn item updated successfully.');
     }
 
     public function delete($id)
@@ -178,6 +178,6 @@ class WatchAndShopController extends Controller
 
         $item->delete();
 
-        return redirect()->route('admin.watch_and_shops.index')->with('success', 'Watch & Shop item deleted successfully.');
+        return redirect()->route('admin.watch_and_shops.index')->with('success', 'Watch & Learn item deleted successfully.');
     }
 }

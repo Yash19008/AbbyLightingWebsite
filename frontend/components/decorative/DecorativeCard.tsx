@@ -147,7 +147,7 @@ export default function DecorativeCard({ product, order, filterDelay, isGlobalLi
         >
           <Link
             className="decorative-card-main-link"
-            href={`/product-detail/${product.slug}`}
+            href={`/decorative-lights/${product.slug}`}
             aria-label={`View ${product.name}`}
             onClick={handleLinkClick}
           >

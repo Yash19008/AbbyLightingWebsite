@@ -1531,8 +1531,9 @@
 
     .product-enquire:hover,
     .product-enquire:focus-visible {
-        color: #111;
-        background: #f6c177
+        color: #111 !important;
+        background: #f6c177 !important;
+        font-weight: 500;
     }
 
     .related-section,

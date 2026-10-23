@@ -23,7 +23,7 @@
     <style>
         /* Add padding to body to account for fixed Next.js header */
         body {
-            padding-top: 95px;
+            padding-top: 80px;
         }
     </style>
 </head>
@@ -35,17 +35,19 @@
     {{-- Career Page Content --}}
 
     <section class="main-body">
-        <div class="container-fluid">
+        <div class="container-fluid p-0">
             <div class="row">
                 <div class="col-12 col-lg-6 p-0">
-                    @if(App\Models\Setting::getValue('CAREER_BANNER_IMAGE', false))
-                        <img src="{{App\Models\Setting::getValue('CAREER_BANNER_IMAGE')}}" alt="" class="img-fluid">
+                    @if (App\Models\Setting::getValue('CAREER_BANNER_IMAGE', false))
+                        <img src="{{ App\Models\Setting::getValue('CAREER_BANNER_IMAGE') }}" alt=""
+                            class="img-fluid">
                     @else
-                        <img src="{{asset('storage/uploads/banners/banner_image-career.jpg')}}" alt="" class="img-fluid">
+                        <img src="{{ asset('storage/uploads/banners/banner_image-career.jpg') }}" alt=""
+                            class="img-fluid">
                     @endif
                 </div>
                 <div class="col-12 col-lg-6 md-5">
-                    <div class="p-0 py-xl-5">
+                    <div class="p-0 p-xl-5">
                         <h3 class="career-section-title">Work with us</h3>
                         <p class="section-career-text">
                             If you love light, Become one of us!
@@ -66,7 +68,7 @@
         </div>
     </section>
 
-    <div class="container-fluid mt-5">
+    <div class="container mt-5">
         <h4 class="career-job-title">JOB OPENINGS</h4>
         <div class="row mb-5">
             @forelse ($openings as $opening)
@@ -83,7 +85,7 @@
                             <i aria-hidden="true" class="fas fa-angle-right"></i>
                         </div>
                         <div class="d-none long-description">
-                            {!!$opening->description!!}
+                            {!! $opening->description !!}
                         </div>
                     </div>
                 </div>
@@ -104,7 +106,7 @@
 
     {{-- Page specific scripts --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Modal reset handlers
             const productEnquiryModal = document.getElementById("productEnquiryModal");
             const downloadCatalogModal = document.getElementById("downloadCatalogModal");
@@ -126,16 +128,18 @@
             }
 
             // Job description modal handler
-            document.querySelectorAll(".more-details").forEach(function (element) {
-                element.addEventListener('click', function () {
-                    let desc = this.parentElement.parentElement.querySelector(".long-description").innerHTML;
-                    document.querySelector("#jobDescriptionModal").querySelector(".modal-body").innerHTML = desc;
+            document.querySelectorAll(".more-details").forEach(function(element) {
+                element.addEventListener('click', function() {
+                    let desc = this.parentElement.parentElement.querySelector(".long-description")
+                        .innerHTML;
+                    document.querySelector("#jobDescriptionModal").querySelector(".modal-body")
+                        .innerHTML = desc;
                 });
             });
         });
 
         // Product Inquiry Form
-        window.submitInquiry = function () {
+        window.submitInquiry = function() {
             document.getElementById("productEnquiryFormSubmit").click();
 
             const formElement = document.getElementById("product_inquiry");
@@ -156,12 +160,12 @@
             document.getElementById("submit_button").classList.add("d-none");
 
             fetch('/product-inquiry', {
-                method: 'POST',
-                headers: {
-                    '_token': "{{ csrf_token() }}",
-                },
-                body: formData
-            })
+                    method: 'POST',
+                    headers: {
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    body: formData
+                })
                 .then(response => {
                     if (!response.ok) {
                         document.getElementById("submitted_msg").classList.add("d-none");
@@ -189,7 +193,7 @@
         }
 
         // Google reCAPTCHA Forms Handler
-        const googleCaptchaForms = (function () {
+        const googleCaptchaForms = (function() {
             const captchaIndex = {
                 contact_form: -1,
                 product_inquiry: -1,
@@ -197,34 +201,34 @@
             }
             let currentIndex = -1;
 
-            const init = function () {
+            const init = function() {
                 loadCaptcha('recaptchaWidgetId');
                 loadCaptcha('productInquiriesWidget');
                 loadCaptcha('productCatalogWidget');
             }
 
-            const captchaVerified = function () {
+            const captchaVerified = function() {
                 document.querySelectorAll('.captcha_error').forEach(element => {
                     element.classList.add('d-none');
                     element.classList.remove('d-block');
                 });
             }
 
-            const captchaExpired = function () {
+            const captchaExpired = function() {
                 grecaptcha.reset();
             }
 
-            const loadCaptcha = function (recaptchaWidgetId) {
+            const loadCaptcha = function(recaptchaWidgetId) {
                 if (!document.getElementById(recaptchaWidgetId)) {
                     return;
                 }
                 const formElement = document.getElementById(recaptchaWidgetId).closest('form');
-                formElement.addEventListener('submit', function (event) {
+                formElement.addEventListener('submit', function(event) {
                     event.preventDefault();
                     return false;
                 });
                 grecaptcha.render(recaptchaWidgetId, {
-                    'sitekey': '6Lf9pMgpAAAAALMPOL0I0ZDi9he4KKDCRcepVuBY',
+                    'sitekey': "{{ config('google_captcha.site_key', env('GOOGLE_CAPTCHA_SITE_KEY')) }}",
                     'callback': captchaVerified,
                     'expired-callback': captchaExpired
                 });
@@ -232,7 +236,7 @@
                 captchaIndex[formElement.id] = ++currentIndex;
             }
 
-            const submit = function (formId) {
+            const submit = function(formId) {
                 const index = captchaIndex[formId];
                 const res = true;
 
@@ -246,7 +250,7 @@
                 }
             }
 
-            const submitForm = function (formId) {
+            const submitForm = function(formId) {
                 if (formId === 'product_inquiry') {
                     submitInquiry();
                     return;
@@ -288,7 +292,7 @@
                     });
                 document.getElementById("all-set-section").style.display = 'block';
                 document.getElementById("input-btn-section").style.display = 'none';
-                document.querySelectorAll('.input-section').forEach(function (el) {
+                document.querySelectorAll('.input-section').forEach(function(el) {
                     el.style.display = 'none';
                 });
             } else {
@@ -308,7 +312,10 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-48B9N75V8M"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
         gtag('js', new Date());
         gtag('config', 'G-48B9N75V8M');
     </script>

@@ -21,7 +21,7 @@ export async function getWatchAndShops(): Promise<WatchAndShopItem[]> {
     const json: WatchAndShopResponse = await response.json();
     return json.data || [];
   } catch (error) {
-    console.error('Error fetching watch & shop items:', error);
+    console.error('Error fetching Watch & Learn items:', error);
     return [];
   }
 }

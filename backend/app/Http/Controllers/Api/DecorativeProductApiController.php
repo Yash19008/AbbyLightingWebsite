@@ -74,7 +74,7 @@ class DecorativeProductApiController extends Controller
                 $query->orderBy('order', 'asc');
             }
 
-            $perPage = min((int) $request->get('per_page', 8), 50);
+            $perPage = min((int) $request->get('per_page', 9), 50);
             $products = $query->paginate($perPage);
 
             $products->getCollection()->transform(function ($product) {
@@ -375,7 +375,7 @@ class DecorativeProductApiController extends Controller
                 'message' => 'Decorative product not found',
             ], 404);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('DecorativeProductApiController::show � ' . $e->getMessage());
+            Log::error('DecorativeProductApiController::show - ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch decorative product',
@@ -461,7 +461,7 @@ class DecorativeProductApiController extends Controller
                 'message' => 'Decorative product not found',
             ], 404);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('DecorativeProductApiController::relatedProducts � ' . $e->getMessage());
+            Log::error('DecorativeProductApiController::relatedProducts - ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch related decorative products',

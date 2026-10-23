@@ -17,17 +17,23 @@ export const metadata: Metadata = {
 
 export default async function InspirationPage() {
   const [compositionsRes, heroRes] = await Promise.all([
-    getShowcaseCompositions(),
+    getShowcaseCompositions({ page: 1, per_page: 8 }),
     getInspirationHero(),
   ]);
 
   const compositions = compositionsRes.data || [];
+  const pagination = compositionsRes.pagination || null;
+  const categories = compositionsRes.categories || [];
   const heroSection = heroRes.data || null;
 
   return (
     <div className="inspiration-page">
       <InspirationHero heroSection={heroSection} />
-      <LooksInPlaceSection compositions={compositions} />
+      <LooksInPlaceSection
+        compositions={compositions}
+        initialPagination={pagination}
+        initialCategories={categories}
+      />
       <WatchAndShopSection />
       <JournalSection />
     </div>

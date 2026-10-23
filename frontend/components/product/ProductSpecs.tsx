@@ -43,13 +43,13 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
     try {
       const chips: { value: string; code?: string | null }[] = JSON.parse(jsonValue);
       return (
-        <span className="spec-chips">
+        <span className="spec-chips" style={{ whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'baseline', flexWrap: 'nowrap' }}>
           {chips.map((chip, i) => (
             <React.Fragment key={i}>
-              {i > 0 && <span className="spec-chip-sep" style={{ margin: '0 12px' }}>&nbsp;</span>}
-              <span className="spec-chip">
+              {i > 0 && <span className="spec-chip-sep" style={{ margin: '0 12px', whiteSpace: 'nowrap', flexShrink: 0 }}>&nbsp;</span>}
+              <span className="spec-chip" style={{ whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'baseline', flexShrink: 0 }}>
                 {chip.value}
-                {chip.code && <sup className="spec-chip-code" style={{ color: '#C0C0C0', marginLeft: '2px', fontWeight: '500' }}>{chip.code}</sup>}
+                {chip.code && <sup className="spec-chip-code" style={{ color: '#C0C0C0', marginLeft: '2px', fontWeight: '500', whiteSpace: 'nowrap', flexShrink: 0 }}>{chip.code}</sup>}
               </span>
             </React.Fragment>
           ))}
@@ -198,7 +198,7 @@ export default function ProductSpecs({ specRows, allSizes, installationGuide, ca
 
         {/* Downloads */}
         <details open={openSections['downloads']} onToggle={(e) => setOpenSections(prev => ({ ...prev, downloads: (e.target as HTMLDetailsElement).open }))}>
-          <summary>Downloads</summary>
+          <summary><span>Downloads</span></summary>
           <div className="download-row">
             <button
               id="download-tds-btn"

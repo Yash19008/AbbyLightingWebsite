@@ -58,12 +58,11 @@
                                                 <td><strong>{{ $category->name }}</strong></td>
                                                 <td>{{ $category->slug }}</td>
                                                 <td>{{ $category->products_count }}</td>
-                                                <td>
-                                                    @if($category->is_featured)
-                                                        <span class="badge badge-success">Featured</span>
-                                                    @else
-                                                        <span class="badge badge-secondary">No</span>
-                                                    @endif
+                                                <td class="text-center">
+                                                    <div class="custom-control custom-switch text-center">
+                                                        <input type="checkbox" class="custom-control-input knob switch" data-col="{{ $col_featured }}" id="customSwitchFeatured{{ $category->id }}" {{ $category->is_featured ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="customSwitchFeatured{{ $category->id }}"></label>
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     <a href="{{ route('decorative_category_admin.edit', $category->id) }}" class="btn btn-sm btn-outline-primary mb-1" title="Edit">
@@ -76,7 +75,7 @@
                                             </tr>
                                             @empty
                                             <tr>
-                                                <td colspan="5" class="text-center py-4">
+                                                <td colspan="6" class="text-center py-4">
                                                     <i class="ft-inbox font-large-1 text-muted mb-1 d-block"></i>
                                                     <p class="text-muted">No decorative categories found.</p>
                                                 </td>
@@ -85,9 +84,15 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <input type="hidden" id="hdn" value="{{ $tbl }}">
                                 
-                                <div class="mt-2 d-flex justify-content-end">
-                                    {{ $categories->appends(request()->query())->links() }}
+                                <div class="mt-3 pt-2 border-top d-flex flex-column flex-md-row justify-content-between align-items-center">
+                                    <div class="mb-2 mb-md-0 text-muted small">
+                                        Showing <strong>{{ $categories->firstItem() ?? ($categories->total() > 0 ? 1 : 0) }}</strong> to <strong>{{ $categories->lastItem() ?? $categories->count() }}</strong> of <strong>{{ $categories->total() }}</strong> {{ \Illuminate\Support\Str::plural('category', $categories->total()) }}
+                                    </div>
+                                    <div class="pagination-wrapper">
+                                        {{ $categories->appends(request()->query())->links('vendor.pagination.bootstrap-4') }}
+                                    </div>
                                 </div>
                             </div>
                         </div>

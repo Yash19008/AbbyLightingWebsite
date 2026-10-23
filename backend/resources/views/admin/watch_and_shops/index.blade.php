@@ -1,6 +1,6 @@
 @extends('admin.page')
 
-@section('title', $title ?? 'Watch & Shop')
+@section('title', $title ?? 'Watch & Learn')
 
 @section('content_header')
 <div class="row">

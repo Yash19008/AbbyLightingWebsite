@@ -129,3 +129,82 @@ table#productImages-table, table#varientImages-table, table#iesFiles-table, tabl
 .select2-search__field {
     width: 100% !important;
 }
+
+/* =========================================================
+   Pagination Styles for Admin Panel
+   ========================================================= */
+.pagination-wrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.pagination {
+    display: flex !important;
+    padding-left: 0 !important;
+    list-style: none !important;
+    border-radius: 0.35rem !important;
+    margin: 0 !important;
+}
+
+.page-item {
+    margin: 0 2px;
+}
+
+.page-item .page-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 0.55rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #495057;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem !important;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    line-height: 1;
+}
+
+.page-item:first-child .page-link,
+.page-item:last-child .page-link {
+    border-radius: 0.25rem !important;
+}
+
+.page-item.active .page-link {
+    z-index: 3;
+    color: #ffffff !important;
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.25);
+    font-weight: 600;
+}
+
+.page-item.disabled .page-link {
+    color: #adb5bd !important;
+    pointer-events: none;
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6 !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.page-item:not(.active):not(.disabled) .page-link:hover {
+    color: #0056b3;
+    background-color: #e9ecef;
+    border-color: #dae0e5;
+}
+
+/* Guard against distorted unstyled SVGs in any paginator template */
+nav[role="navigation"] svg {
+    width: 1rem !important;
+    height: 1rem !important;
+    max-width: 16px !important;
+    max-height: 16px !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+

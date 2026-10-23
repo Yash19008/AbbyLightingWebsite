@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Inquiry;
 use App\Helpers\Common_function;
 use Yajra\DataTables\Facades\DataTables;
+use App\Exports\ExportInquiry;
+use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InquiryAdminController extends Controller
 {
@@ -22,6 +25,20 @@ class InquiryAdminController extends Controller
     {
         $data = array('title' => "Inquiries", 'main_module' => $this->main_module);
         $data['tbl'] = Common_function::encrypt('inquiries');
+
+        $pages = [
+            'general' => 'Contact Us',
+            'calculator' => 'Light Calculator',
+            'catalogue' => 'Catalogues',
+            'product' => 'Product',
+        ];
+        $dbTypes = Inquiry::distinct()->whereNotNull('type')->pluck('type')->toArray();
+        foreach ($dbTypes as $t) {
+            if (!isset($pages[$t])) {
+                $pages[$t] = $this->getPageName($t);
+            }
+        }
+        $data['pageTypes'] = $pages;
 
         return view('admin.inquiries', $data);
     }
@@ -54,6 +71,19 @@ class InquiryAdminController extends Controller
     {
         if ($request->ajax()) {
             $query = Inquiry::query()->latest();
+
+            if ($request->filled('type') && $request->type !== 'all') {
+                $query->where('type', $request->type);
+            }
+
+            if ($request->filled('start_date')) {
+                $query->whereDate('created_at', '>=', $request->start_date);
+            }
+
+            if ($request->filled('end_date')) {
+                $query->whereDate('created_at', '<=', $request->end_date);
+            }
+
             return Datatables::eloquent($query)
                 ->addIndexColumn()
                 ->setRowId(function ($row) {
@@ -147,6 +177,32 @@ class InquiryAdminController extends Controller
                 })
                 ->make(true);
         }
+    }
+
+    public function export(Request $request)
+    {
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
+
+        $query = Inquiry::query()->latest();
+
+        if ($request->filled('type') && $request->type !== 'all') {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $inquiries = $query->get();
+        $now = Carbon::now()->format('d-m-Y_H-i-s');
+        $export = new ExportInquiry($inquiries);
+
+        return \Excel::download($export, 'inquiries_' . $now . '.xlsx');
     }
 
     public function destroy($id)

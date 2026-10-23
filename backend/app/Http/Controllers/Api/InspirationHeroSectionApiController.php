@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\InspirationHeroSection;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class InspirationHeroSectionApiController extends Controller
@@ -42,6 +41,8 @@ class InspirationHeroSectionApiController extends Controller
                     'breadcrumb_parent_link' => $section->breadcrumb_parent_link ?? '/',
                     'breadcrumb_current_text' => $section->breadcrumb_current_text ?? 'Inspiration',
                     'background_image' => $section->background_image ? asset('storage/' . $section->background_image) : null,
+                    'image_tablet' => $section->image_tablet ? asset('storage/' . $section->image_tablet) : null,
+                    'image_mobile' => $section->image_mobile ? asset('storage/' . $section->image_mobile) : null,
                     'is_active' => (bool) $section->is_active,
                 ]
             ]);

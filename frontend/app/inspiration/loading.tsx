@@ -40,7 +40,7 @@ export default function InspirationLoading() {
           </div>
         </div>
 
-        {/* ─── Watch & Shop Skeleton ─── */}
+        {/* ─── Watch & Learn Skeleton ─── */}
         <div className="insp-skel-section">
           <div className="insp-skel-head-simple">
             <div className="insp-skel-block insp-skel-title" />

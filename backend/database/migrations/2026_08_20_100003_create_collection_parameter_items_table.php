@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('collection_parameter_items', function (Blueprint $table) {
@@ -17,15 +14,14 @@ return new class extends Migration
             $table->string('small_text', 100)->nullable();
             $table->string('title');
             $table->text('description');
+            $table->string('bg_color')->nullable();
+            $table->string('hover_bg_color')->nullable();
             $table->integer('order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('collection_parameter_items');

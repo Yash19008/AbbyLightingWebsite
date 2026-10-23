@@ -30,13 +30,27 @@
 .inspiration-page .insp-hero {
   height: 575px;
   position: relative;
+  overflow: hidden;
   color: #fff;
   background-color: #222;
-  background-image: url('/images/ins.png');
-  background-position: center 38%;
-  background-size: cover;
-  background-repeat: no-repeat;
   margin-top: 0;
+}
+
+.inspiration-page .insp-hero-picture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: block;
+}
+
+.inspiration-page .insp-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
+  display: block;
 }
 
 .inspiration-page .insp-hero::after {
@@ -44,6 +58,8 @@
   position: absolute;
   inset: -13px 35% 0 0;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0));
+  z-index: 1;
+  pointer-events: none;
 }
 
 .inspiration-page .insp-hero-breadcrumb {
@@ -360,7 +376,7 @@
   color: #fff;
 }
 
-/* Reels / Watch & Shop Section */
+/* Reels / Watch & Learn Section */
 .inspiration-page .reels-section {
   padding: 80px 0 0px;
 }
@@ -1154,14 +1170,11 @@
     font-style: italic;
     font-weight: 500;
     transform: translateY(0);
+    margin-bottom: 0;
   }
 
   .inspiration-page .look-copy strong {
-    font-size: 10px;
-    font-style: normal;
-    font-weight: 300;
-    opacity: 1;
-    transform: translateY(0);
+    display: none !important;
   }
 
   .inspiration-page .reels-section {

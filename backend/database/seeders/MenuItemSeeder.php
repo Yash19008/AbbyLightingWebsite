@@ -23,8 +23,9 @@ class MenuItemSeeder extends Seeder
         // 2. Footer Column 1
         $productsGroup = \App\Models\MenuItem::create(['title' => 'Products', 'url' => '/', 'location' => 'footer_col_1', 'type' => 'group', 'order' => 1]);
         \App\Models\MenuItem::create(['title' => 'Architectural', 'url' => '/products', 'location' => 'footer_col_1', 'type' => 'link', 'parent_id' => $productsGroup->id, 'order' => 1]);
-        \App\Models\MenuItem::create(['title' => 'Outdoor', 'url' => '/#worlds', 'location' => 'footer_col_1', 'type' => 'link', 'parent_id' => $productsGroup->id, 'order' => 2]);
-        \App\Models\MenuItem::create(['title' => 'Smart Lighting', 'url' => '/abby-smart', 'location' => 'footer_col_1', 'type' => 'link', 'parent_id' => $productsGroup->id, 'order' => 3]);
+        \App\Models\MenuItem::create(['title' => 'Decorative', 'url' => '/decorative-products', 'location' => 'footer_col_1', 'type' => 'link', 'parent_id' => $productsGroup->id, 'order' => 2]);
+        \App\Models\MenuItem::create(['title' => 'Outdoor', 'url' => '/#worlds', 'location' => 'footer_col_1', 'type' => 'link', 'parent_id' => $productsGroup->id, 'order' => 3]);
+        \App\Models\MenuItem::create(['title' => 'Smart Lighting', 'url' => '/abby-smart', 'location' => 'footer_col_1', 'type' => 'link', 'parent_id' => $productsGroup->id, 'order' => 4]);
 
         $workGroup = \App\Models\MenuItem::create(['title' => 'Our Work', 'url' => '/', 'location' => 'footer_col_1', 'type' => 'group', 'order' => 2]);
         \App\Models\MenuItem::create(['title' => 'Clients', 'url' => '/clients', 'location' => 'footer_col_1', 'type' => 'link', 'parent_id' => $workGroup->id, 'order' => 1]);

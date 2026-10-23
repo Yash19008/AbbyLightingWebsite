@@ -166,6 +166,7 @@ class ProductAdminController extends Controller
             'category_id' => $request->category_id,
             'icons' => $request->icons ? $icons : NULL,
             'optional_icons' => $request->optional_icons ? $optional_icons : NULL,
+            'show_as_new_arrival' => $request->has('show_as_new_arrival') ? 1 : 0,
             'created_at' => $this->currentDateTime,
             'created_by' => Auth::guard('admin')->user()->id,
         ];
@@ -252,7 +253,6 @@ class ProductAdminController extends Controller
         $data['attr'] = GroupAttributeMaster::where('is_active', 'yes')->orderBy('id', 'asc')->get();
         /* GROUP ATTRIBUTE MASTER HAVING ALL ATTRIBUTES NAMES..AND PRODUCT ATTRIBUTES HAVING ATTRIBUTES VALUES PRODUCT WISE. */
         $data['outerjoin'] = ProductAttribute::where('product_attributes.is_active', 'yes')->leftJoin('group_attribute_masters', 'group_attribute_masters.id', '=', 'product_attributes.attribute_id')->leftJoin('group_masters', 'group_masters.id', '=', 'group_attribute_masters.group_id')->where('product_id', $id)->orderBy('group_id', 'asc')->orderBy('group_attribute_masters.id', 'asc')->get();
-       // dd($data['outerjoin']);
         $data['tags'] = SubTag::where('is_active', 'yes')->get();
         $data['productImages'] = ProductImage::where('product_id', $id)->where('is_active', 'yes')->get();
         return view('admin.product_edit', $data);
@@ -288,21 +288,9 @@ class ProductAdminController extends Controller
         foreach ($data['attr'] as $key => $value) {
             $valuee = null;
             $key = $value->id;
-            \Log::info("=======START=======");
-            \Log::info($key);
-            \Log::info($request['attribute_id_' . $key]);
             if (!empty($request['attribute_id_' . $key]) && !empty($request['attribute_id_' . $key][0])) {
                 $valuee = join(",", $request['attribute_id_' . $key]);
             }
-            \Log::info(!empty($request['attribute_id_' . $key]) && !empty($request['attribute_id_' . $key][0]));
-            \Log::info($valuee);
-            \Log::info([
-                'product_id' => $id,
-                'attribute_id' => $value->id,
-                'value' => $valuee,
-                'is_active' => 'yes'
-            ]);
-            \Log::info("========END========");
             $prodAttVal = [
                 'product_id' => $id,
                 'attribute_id' => $value->id,
@@ -328,6 +316,7 @@ class ProductAdminController extends Controller
             'sub_tag_ids' => $request->sub_tag_ids ? $sub_tag_ids : NULL,
             'icons' => $request->icons ? $icons : NULL,
             'optional_icons' => $request->optional_icons ? $optional_icons : NULL,
+            'show_as_new_arrival' => $request->has('show_as_new_arrival') ? 1 : 0,
             'updated_by' => Auth::guard('admin')->user()->id,
             'updated_at' => $this->currentDateTime,
         );
@@ -450,8 +439,6 @@ class ProductAdminController extends Controller
                 $iesFile->file_name = $str;
             }
         }
-
-        \Log::info($data['variant']);
 
         $data['tbl'] = Common_function::encrypt('product_variants');
         if (!empty($data['product'])) {
@@ -600,7 +587,6 @@ class ProductAdminController extends Controller
         DB::table($tbl)->where('id', $id)->update(['deleted_at' => Carbon::now(), 'is_active' => 'no', 'deleted_by' => Auth::guard('admin')->user()->id]);
 
         return response()->json(['code' => '1']);
-        exit;
     }
     public function edit_variant(Request $request)
     {

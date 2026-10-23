@@ -6,25 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up()
+    public function up(): void
     {
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('type')->default('link'); // 'link' or 'group'
             $table->string('title');
             $table->string('url')->default('/');
             $table->string('location'); // header_mega, footer_products, footer_work, footer_col_1, footer_col_2, footer_col_3
             $table->unsignedSmallInteger('order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
+
+            $table->foreign('parent_id')->references('id')->on('menu_items')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('menu_items');

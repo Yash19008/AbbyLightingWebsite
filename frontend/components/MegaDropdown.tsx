@@ -12,24 +12,26 @@ export default async function MegaDropdown() {
         <div className="mega-grid">
           {/* ARCHITECTURAL - Dynamic */}
           <div className="mgroup m-arch">
-            <div className="mhead">Architectural</div>
+            <Link href="/products" className="mhead">
+              Architectural
+            </Link>
             <div className="msub">Browse by category</div>
             <ul>
               {architecturalCategories.length > 0 ? (
                 architecturalCategories.map((category) => (
                   <li key={category.id}>
-                    <Link href={category.uri ? category.uri : `/products?category=${category.slug || ''}`}>
+                    <Link href={category.uri || (category.slug ? `/products/category/${category.slug}` : '/products')}>
                       {category.title || category.name}
                     </Link>
                   </li>
                 ))
               ) : (
                 <>
-                  <li><Link href="/products">Spots &amp; Accents</Link></li>
-                  <li><Link href="/products">Downlights</Link></li>
-                  <li><Link href="/products">Profiles</Link></li>
-                  <li><Link href="/products">Track Lights</Link></li>
-                  <li><Link href="/products">Washers &amp; Grazers</Link></li>
+                  <li><Link href="/products/category/spots-&-accents">Spots &amp; Accents</Link></li>
+                  <li><Link href="/products/category/downlights">Downlights</Link></li>
+                  <li><Link href="/products/category/profiles">Profiles</Link></li>
+                  <li><Link href="/products/category/track-lights">Track Lights</Link></li>
+                  <li><Link href="/products/category/washers-grazers">Washers &amp; Grazers</Link></li>
                 </>
               )}
             </ul>
@@ -39,18 +41,18 @@ export default async function MegaDropdown() {
 
           {/* DECORATIVE */}
           <div className="mgroup m-dec">
-            <div className="mhead">
+            <Link href="/decorative-lights" className="mhead">
               Decorative <span className="mnew">NEW</span>
-            </div>
+            </Link>
             <div className="mcols">
               <div>
                 <div className="msub">Browse by category</div>
                 <ul>
-                  <li><Link href="/decorative-products?category=chandelier">Chandelier</Link></li>
-                  <li><Link href="/decorative-products?category=pendant-lights">Pendant Lights</Link></li>
-                  <li><Link href="/decorative-products?category=wall-lights">Wall Lights</Link></li>
-                  <li><Link href="/decorative-products?category=floor-lamps">Floor Lamps</Link></li>
-                  <li><Link href="/decorative-products?category=table-lamps">Table Lamps</Link></li>
+                  <li><Link href="/decorative-lights?category=chandelier">Chandelier</Link></li>
+                  <li><Link href="/decorative-lights?category=pendant-lights">Pendant Lights</Link></li>
+                  <li><Link href="/decorative-lights?category=wall-lights">Wall Lights</Link></li>
+                  <li><Link href="/decorative-lights?category=floor-lamps">Floor Lamps</Link></li>
+                  <li><Link href="/decorative-lights?category=table-lamps">Table Lamps</Link></li>
                 </ul>
               </div>
               <div className="msep sm"></div>

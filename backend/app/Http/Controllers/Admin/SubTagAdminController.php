@@ -478,6 +478,6 @@ class SubTagAdminController extends Controller
 
     public function destroySubtagImage(Request $request, SubTag $sub_tag)
     {
-        dd($sub_tag);
+        return redirect()->back();
     }
 }

@@ -8,6 +8,9 @@ export interface CategoryItem {
   title?: string;
   slug?: string;
   uri?: string;
+  url?: string;
+  is_featured?: boolean;
+  image_url?: string;
 }
 
 export async function getArchitecturalCategories(): Promise<CategoryItem[]> {

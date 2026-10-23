@@ -46,4 +46,25 @@ class SubTag extends Model
     {
         return $this->linkedSubTags->pluck('display_name')->implode(', ');
     }
+
+    /**
+     * SubTag mappings for this subtag
+     */
+    public function subTagMappings()
+    {
+        return $this->hasMany(SubTagMapping::class, 'sub_tag_id');
+    }
+
+    /**
+     * Tags associated with this subtag via mappings
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(
+            Tag::class,
+            'sub_tag_mappings',
+            'sub_tag_id',
+            'tag_id'
+        );
+    }
 }

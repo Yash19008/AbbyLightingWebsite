@@ -56,12 +56,13 @@
                                                 <th>Collection</th>
                                                 <th>Category</th>
                                                 <th>Status</th>
+                                                <th class="text-center" width="130">New Arrival</th>
                                                 <th width="150">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse($products as $product)
-                                            <tr>
+                                            <tr id="data-{{ $product->id }}" class="data">
                                                 <td>
                                                     @if($product->featured_image)
                                                         <img src="{{ asset('storage/uploads/decorative/' . $product->featured_image) }}" alt="" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">
@@ -86,6 +87,16 @@
                                                         <span class="badge badge-warning">Draft</span>
                                                     @endif
                                                 </td>
+                                                <td class="text-center">
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox" 
+                                                               class="custom-control-input knob switch" 
+                                                               data-col="{{ \App\Helpers\Common_function::encrypt('show_as_new_arrival') }}" 
+                                                               id="customSwitchNewArrival{{ $product->id }}" 
+                                                               {{ $product->show_as_new_arrival ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="customSwitchNewArrival{{ $product->id }}"></label>
+                                                    </div>
+                                                </td>
                                                 <td>
                                                     <a href="{{ route('decorative_product_admin.edit', $product->id) }}" class="btn btn-sm btn-outline-primary mb-1" title="Edit">
                                                         <i class="ft-edit"></i> Edit
@@ -100,7 +111,7 @@
                                             </tr>
                                             @empty
                                             <tr>
-                                                <td colspan="6" class="text-center py-4">
+                                                <td colspan="7" class="text-center py-4">
                                                     <i class="ft-inbox font-large-1 text-muted mb-1 d-block"></i>
                                                     <p class="text-muted">No decorative products found.</p>
                                                 </td>
@@ -109,9 +120,15 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <input type="hidden" id="hdn" value="{{ $tbl }}">
                                 
-                                <div class="mt-2 d-flex justify-content-end">
-                                    {{ $products->appends(request()->query())->links() }}
+                                <div class="mt-3 pt-2 border-top d-flex flex-column flex-md-row justify-content-between align-items-center">
+                                    <div class="mb-2 mb-md-0 text-muted small">
+                                        Showing <strong>{{ $products->firstItem() ?? ($products->total() > 0 ? 1 : 0) }}</strong> to <strong>{{ $products->lastItem() ?? $products->count() }}</strong> of <strong>{{ $products->total() }}</strong> {{ \Illuminate\Support\Str::plural('product', $products->total()) }}
+                                    </div>
+                                    <div class="pagination-wrapper">
+                                        {{ $products->appends(request()->query())->links('vendor.pagination.bootstrap-4') }}
+                                    </div>
                                 </div>
                             </div>
                         </div>

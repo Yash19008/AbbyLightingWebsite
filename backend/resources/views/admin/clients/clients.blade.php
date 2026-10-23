@@ -44,6 +44,7 @@
                                     <th class="text-center" style="width: 80px;">ID</th>
                                     <th class="text-center" style="width: 120px;">IMAGE</th>
                                     <th>FILE NAME</th>
+                                    <th class="text-center" style="width: 160px;">FEATURED (HOMEPAGE)</th>
                                     <th class="text-center" style="width: 140px;">CREATED AT</th>
                                     <th class="text-center" style="width: 120px; min-width: 120px;">ACTION</th>
                                 </tr>
@@ -60,6 +61,15 @@
                                     <td class="align-middle">
                                         <span class="text-dark font-weight-bold">{{ $row->path }}</span>
                                     </td>
+                                    <td class="text-center align-middle">
+                                        <div class="custom-control custom-switch text-center">
+                                            <input type="checkbox" class="custom-control-input knob switch" 
+                                                   data-col="{{ \App\Helpers\Common_function::encrypt('is_featured') }}" 
+                                                   id="customSwitchFeatured{{ $row->id }}" 
+                                                   {{ $row->is_featured ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="customSwitchFeatured{{ $row->id }}"></label>
+                                        </div>
+                                    </td>
                                     <td class="text-center align-middle text-muted">
                                         {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d M, Y') : '-' }}
                                     </td>
@@ -75,6 +85,7 @@
                                     <th class="text-center">ID</th>
                                     <th class="text-center">Image</th>
                                     <th>File Name</th>
+                                    <th class="text-center">Featured</th>
                                     <th class="text-center">Created At</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -118,7 +129,7 @@
 $(document).ready(function() {
     $('#clients-table tfoot th').each(function () {
         var title = $(this).text().trim();
-        if (title !== 'Action' && title !== 'ACTION' && title !== 'Image' && title !== 'IMAGE') {
+        if (title !== 'Action' && title !== 'ACTION' && title !== 'Image' && title !== 'IMAGE' && title !== 'Featured' && title !== 'FEATURED') {
             $(this).html('<input type="text" placeholder="Search ' + title + '" />');
         } else {
             $(this).html('');
@@ -131,7 +142,7 @@ $(document).ready(function() {
         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
         order: [[0, "desc"]],
         columnDefs: [
-            { targets: [1, 4], orderable: false }
+            { targets: [1, 3, 5], orderable: false }
         ]
     });
 

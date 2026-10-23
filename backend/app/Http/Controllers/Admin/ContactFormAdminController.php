@@ -4,14 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use App\Models\Inquiry;
-use App\Models\Subscription;
 use Carbon\Carbon;
 use App\Helpers\Common_function;
 use DataTables;
-use DB;
-use Illuminate\Support\Facades\Auth;
 
 class ContactFormAdminController extends Controller
 {
@@ -74,64 +70,4 @@ class ContactFormAdminController extends Controller
         }
     }
 
-    public function subscriptions(Request $request)
-    {
-        $data = array('title' => "Subscriptions", 'main_module' => 'Subscriptions');
-        $data['search'] = $request->input('search');
-        $data['results'] = new Subscription;
-
-        if ($data['search'] != '') {
-            \Log::info($data['search']);
-            // $data['results'] = $data['results']->where(function ($query) use ($data) {
-            //     $query->where('full_name', 'LIKE', '%' . $data['search'] . '%');
-            // });
-        }
-        $data['results'] =  $data['results']->orderBy('id', 'DESC')->paginate(10); //config('custom_config.settings.admin_pagination_limit')
-        // $data['tbl'] =  Crypt::encryptString('inquiries');
-        $data['tbl'] = Common_function::encrypt('inquiries');
-
-        return view('admin.subscriptions', $data); //inquiry
-    }
-
-
-    public function subscriptions_list(Request $request)
-    {
-        if ($request->ajax()) {
-            $data = Subscription::latest()->get();
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->setRowId(function ($row) {
-                    return 'data-' . $row->id;
-                })
-                ->setRowClass(function ($row) {
-                    return 'data';
-                })
-                ->addColumn('name', function ($row) {
-                    return $row->name;
-                })
-                ->addColumn('email', function ($row) {
-                    return $row->email;
-                })
-                ->addColumn('created_at', function ($row) {
-                    if ($row->created_at) {
-                        return date("d M Y H:i", strtotime($row->created_at));
-                    }
-                    return '';
-                })
-                ->addColumn('created_at_row', function ($row) {
-                    return $row->created_at;
-                })
-                ->addColumn('verified_at', function ($row) {
-                    if ($row->verified_at) {
-                        return date("d M Y H:i", strtotime($row->verified_at));
-                    }
-                    return '';
-                })
-                ->addColumn('verified_at_row', function ($row) {
-                    return $row->verified_at;
-                })
-                ->rawColumns(['name', 'email', 'verified_at'])
-                ->make(true);
-        }
-    }
 }

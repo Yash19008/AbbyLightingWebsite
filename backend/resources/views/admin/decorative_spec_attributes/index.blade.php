@@ -74,8 +74,13 @@
                                     </table>
                                 </div>
                                 
-                                <div class="mt-2 d-flex justify-content-end">
-                                    {{ $attributes->appends(request()->query())->links() }}
+                                <div class="mt-3 pt-2 border-top d-flex flex-column flex-md-row justify-content-between align-items-center">
+                                    <div class="mb-2 mb-md-0 text-muted small">
+                                        Showing <strong>{{ $attributes->firstItem() ?? ($attributes->total() > 0 ? 1 : 0) }}</strong> to <strong>{{ $attributes->lastItem() ?? $attributes->count() }}</strong> of <strong>{{ $attributes->total() }}</strong> {{ \Illuminate\Support\Str::plural('attribute', $attributes->total()) }}
+                                    </div>
+                                    <div class="pagination-wrapper">
+                                        {{ $attributes->appends(request()->query())->links('vendor.pagination.bootstrap-4') }}
+                                    </div>
                                 </div>
                             </div>
                         </div>

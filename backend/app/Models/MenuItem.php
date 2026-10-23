@@ -22,4 +22,17 @@ class MenuItem extends Model
     {
         return $query->orderBy('order', 'asc');
     }
+
+    protected static function booted()
+    {
+        $clearCache = function () {
+            \Illuminate\Support\Facades\Cache::forget('header_ssr_mega_items');
+            \Illuminate\Support\Facades\Cache::forget('footer_ssr_col_1');
+            \Illuminate\Support\Facades\Cache::forget('footer_ssr_col_2');
+            \Illuminate\Support\Facades\Cache::forget('footer_ssr_col_3');
+        };
+
+        static::saved($clearCache);
+        static::deleted($clearCache);
+    }
 }

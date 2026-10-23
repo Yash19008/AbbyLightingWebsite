@@ -23,9 +23,52 @@ interface SharedInquiryModalProps {
 type SubmitState = "idle" | "submitting" | "success" | "error";
 
 const CITY_OPTIONS: CustomSelectOption[] = [
-  { value: "Bengaluru", label: "Bengaluru" },
+  { value: "Agra", label: "Agra" },
+  { value: "Ahmedabad", label: "Ahmedabad" },
+  { value: "Amritsar", label: "Amritsar" },
+  { value: "Bhopal", label: "Bhopal" },
+  { value: "Bhubaneswar", label: "Bhubaneswar" },
+  { value: "Chandigarh", label: "Chandigarh" },
+  { value: "Chennai", label: "Chennai" },
+  { value: "Coimbatore", label: "Coimbatore" },
+  { value: "Dehradun", label: "Dehradun" },
   { value: "Delhi", label: "Delhi" },
+  { value: "Faridabad", label: "Faridabad" },
+  { value: "Ghaziabad", label: "Ghaziabad" },
+  { value: "Gurugram", label: "Gurugram" },
+  { value: "Guwahati", label: "Guwahati" },
+  { value: "Hyderabad", label: "Hyderabad" },
+  { value: "Indore", label: "Indore" },
+  { value: "Jaipur", label: "Jaipur" },
+  { value: "Jalandhar", label: "Jalandhar" },
+  { value: "Jamshedpur", label: "Jamshedpur" },
+  { value: "Jodhpur", label: "Jodhpur" },
+  { value: "Kanpur", label: "Kanpur" },
+  { value: "Kochi", label: "Kochi" },
+  { value: "Kolkata", label: "Kolkata" },
+  { value: "Lucknow", label: "Lucknow" },
+  { value: "Ludhiana", label: "Ludhiana" },
+  { value: "Madurai", label: "Madurai" },
+  { value: "Mangaluru", label: "Mangaluru" },
   { value: "Mumbai", label: "Mumbai" },
+  { value: "Mysuru", label: "Mysuru" },
+  { value: "Nagpur", label: "Nagpur" },
+  { value: "Nashik", label: "Nashik" },
+  { value: "Navi Mumbai", label: "Navi Mumbai" },
+  { value: "Noida", label: "Noida" },
+  { value: "Patna", label: "Patna" },
+  { value: "Pune", label: "Pune" },
+  { value: "Raipur", label: "Raipur" },
+  { value: "Rajkot", label: "Rajkot" },
+  { value: "Ranchi", label: "Ranchi" },
+  { value: "Surat", label: "Surat" },
+  { value: "Thane", label: "Thane" },
+  { value: "Thiruvananthapuram", label: "Thiruvananthapuram" },
+  { value: "Udaipur", label: "Udaipur" },
+  { value: "Vadodara", label: "Vadodara" },
+  { value: "Varanasi", label: "Varanasi" },
+  { value: "Vijayawada", label: "Vijayawada" },
+  { value: "Visakhapatnam", label: "Visakhapatnam" },
   { value: "Other", label: "Other" },
 ];
 
@@ -295,8 +338,8 @@ export default function SharedInquiryModal({
                   onChange={handleFormChange}
                   selectedCountry={selectedCountry}
                   onCountryChange={setSelectedCountry}
+                  error={renderError("phone")}
                 />
-                {renderError("phone")}
 
                 <div className={`figma-enquiry-field ${formData.email ? "filled" : ""}`}>
                   <label htmlFor="enquiry-email">Enter Email id*</label>
@@ -320,9 +363,8 @@ export default function SharedInquiryModal({
                   options={CITY_OPTIONS}
                   onChange={handleSelectChange}
                   required
+                  error={renderError("city")}
                 />
-                {renderError("role")}
-                {renderError("city")}
 
                 <div className={`figma-enquiry-field ${formData.company ? "filled" : ""}`}>
                   <label htmlFor="enquiry-company">Enter Company / Firm Name</label>
@@ -345,6 +387,7 @@ export default function SharedInquiryModal({
                   onChange={handleSelectChange}
                   className="full"
                   required
+                  error={renderError("role")}
                 />
 
                 <div className={`figma-enquiry-field full message ${formData.message ? "filled" : ""}`}>
@@ -354,7 +397,6 @@ export default function SharedInquiryModal({
                     name="message"
                     value={formData.message}
                     onChange={handleFormChange}
-                    placeholder="Tell us more"
                   />
                   {renderError("message")}
                 </div>

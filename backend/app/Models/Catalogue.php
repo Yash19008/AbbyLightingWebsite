@@ -25,14 +25,6 @@ class Catalogue extends Model
         return $this->belongsTo(CatalogueCategory::class, 'catalogue_category_id');
     }
 
-    /**
-     * Relationship with CatalogDownload leads
-     */
-    public function downloads()
-    {
-        return $this->hasMany(CatalogDownload::class, 'catalogue_id');
-    }
-
 
     /**
      * Scope for active catalogues

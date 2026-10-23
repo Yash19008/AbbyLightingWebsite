@@ -15,6 +15,8 @@ class Composition extends Model
         'image',
         'is_showcase',
         'category_id', // Added category_id
+        'sort_order',
+        'is_active',
     ];
 
     public function category_rel()

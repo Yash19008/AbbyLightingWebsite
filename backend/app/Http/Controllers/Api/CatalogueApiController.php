@@ -164,58 +164,6 @@ class CatalogueApiController extends Controller
         }
     }
 
-    public function storeDownloadLead(Request $request)
-    {
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|max:255',
-                'phone' => 'nullable|string|max:100',
-                'mobile' => 'nullable|string|max:100',
-                'city' => 'nullable|string|max:255',
-                'company' => 'nullable|string|max:255',
-                'role' => 'nullable|string|max:255',
-                'message' => 'nullable|string',
-                'catalogue_name' => 'nullable|string|max:255',
-                'catalogue_id' => 'nullable|integer',
-            ]);
-
-            $mobile = $validated['phone'] ?? $validated['mobile'] ?? null;
-            
-            $lead = \App\Models\CatalogDownload::create([
-                'catalogue_name' => $validated['catalogue_name'] ?? null,
-                'catalogue_id' => $validated['catalogue_id'] ?? null,
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'mobile' => $mobile,
-                'city' => $validated['city'] ?? null,
-                'company' => $validated['company'] ?? null,
-                'role' => $validated['role'] ?? null,
-                'message' => $validated['message'] ?? null,
-                'is_active' => 'yes',
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Your request has been submitted successfully.',
-                'data' => [
-                    'id' => $lead->id
-                ],
-            ], 201);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'errors' => $e->errors(),
-                'message' => 'Validation failed: ' . collect($e->errors())->first()[0],
-            ], 422);
-        } catch (\Exception $e) {
-            Log::error('CatalogueApiController::storeDownloadLead — ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to save download record.',
-            ], 500);
-        }
-    }
 
     public function downloadPdf($id)
     {

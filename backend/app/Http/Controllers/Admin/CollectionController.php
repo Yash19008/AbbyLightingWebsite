@@ -4,11 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Collection;
-use App\Models\CollectionParameterItem;
-use App\Models\CollectionCompositionItem;
-use App\Models\CollectionToneFamily;
-use App\Models\CollectionPlaceItem;
-use App\Models\ColorMaster;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -73,7 +68,7 @@ class CollectionController extends Controller
      */
     public function edit(Collection $collection)
     {
-        $collection->load('heroSection', 'parametersSection.items', 'compositionsSection.items', 'productsSection', 'tonesSection.families.colors', 'placesSection.items', 'catalogueSection', 'spreadDropSection');
+        $collection->load('heroSection', 'parametersSection.items', 'compositionsSection', 'productsSection', 'tonesSection.families.colors', 'placesSection.items', 'catalogueSection', 'spreadDropSection');
         return view('admin.collections.edit', compact('collection'));
     }
 
@@ -127,12 +122,13 @@ class CollectionController extends Controller
         $collection->load([
             'heroSection',
             'parametersSection.items',
-            'compositionsSection.items',
+            'compositionsSection',
             'tonesSection.families.colors',
             'placesSection.items',
             'catalogueSection',
             'spreadDropSection',
-            'productsSection'
+            'productsSection',
+            'compositions'
         ]);
 
         $newCollection = $collection->replicate();
@@ -163,12 +159,10 @@ class CollectionController extends Controller
             $newCompositions = $collection->compositionsSection->replicate();
             $newCompositions->collection_id = $newCollection->id;
             $newCompositions->save();
+        }
 
-            foreach ($collection->compositionsSection->items as $item) {
-                $newItem = $item->replicate();
-                $newItem->compositions_section_id = $newCompositions->id;
-                $newItem->save();
-            }
+        if ($collection->compositions && $collection->compositions->isNotEmpty()) {
+            $newCollection->compositions()->sync($collection->compositions->pluck('id'));
         }
 
         if ($collection->tonesSection) {
@@ -243,6 +237,8 @@ class CollectionController extends Controller
     {
         $validated = $request->validate([
             'background_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image_tablet' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image_mobile' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'title_prefix' => 'nullable|string|max:255',
             'title_highlight' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -251,7 +247,7 @@ class CollectionController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        // Handle image upload
+        // Handle desktop image upload
         if ($request->hasFile('background_image')) {
             // Delete old image if exists
             if ($collection->heroSection && $collection->heroSection->background_image) {
@@ -260,6 +256,26 @@ class CollectionController extends Controller
 
             $path = $request->file('background_image')->store('collections/hero', 'public');
             $validated['background_image'] = $path;
+        }
+
+        // Handle tablet image upload
+        if ($request->hasFile('image_tablet')) {
+            if ($collection->heroSection && $collection->heroSection->image_tablet) {
+                Storage::delete($collection->heroSection->image_tablet);
+            }
+
+            $path = $request->file('image_tablet')->store('collections/hero', 'public');
+            $validated['image_tablet'] = $path;
+        }
+
+        // Handle mobile image upload
+        if ($request->hasFile('image_mobile')) {
+            if ($collection->heroSection && $collection->heroSection->image_mobile) {
+                Storage::delete($collection->heroSection->image_mobile);
+            }
+
+            $path = $request->file('image_mobile')->store('collections/hero', 'public');
+            $validated['image_mobile'] = $path;
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -416,7 +432,9 @@ class CollectionController extends Controller
             'button_text' => 'nullable|string|max:100',
             'button_link' => 'nullable|string|max:255',
             'is_active' => 'boolean',
-            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+            'background_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
+            'image_tablet' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
+            'image_mobile' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
         ]);
 
         $data = [
@@ -428,7 +446,24 @@ class CollectionController extends Controller
         ];
 
         if ($request->hasFile('background_image')) {
+            if ($collection->catalogueSection && $collection->catalogueSection->background_image) {
+                Storage::delete($collection->catalogueSection->background_image);
+            }
             $data['background_image'] = $request->file('background_image')->store('collections/catalogue', 'public');
+        }
+
+        if ($request->hasFile('image_tablet')) {
+            if ($collection->catalogueSection && $collection->catalogueSection->image_tablet) {
+                Storage::delete($collection->catalogueSection->image_tablet);
+            }
+            $data['image_tablet'] = $request->file('image_tablet')->store('collections/catalogue', 'public');
+        }
+
+        if ($request->hasFile('image_mobile')) {
+            if ($collection->catalogueSection && $collection->catalogueSection->image_mobile) {
+                Storage::delete($collection->catalogueSection->image_mobile);
+            }
+            $data['image_mobile'] = $request->file('image_mobile')->store('collections/catalogue', 'public');
         }
 
         $collection->catalogueSection()->updateOrCreate(

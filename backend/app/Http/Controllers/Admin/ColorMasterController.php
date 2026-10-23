@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ColorMaster;
-use App\Helpers\Common_function;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 

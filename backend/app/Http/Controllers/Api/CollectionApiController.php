@@ -67,9 +67,6 @@ class CollectionApiController extends Controller
                 'parametersSection.items' => function ($query) {
                     $query->where('is_active', true)->orderBy('order');
                 },
-                'compositionsSection.items' => function ($query) {
-                    $query->where('is_active', true)->orderBy('order');
-                },
                 'compositions.category_rel',
                 'compositions.products.category',
                 'compositions.products.collection',
@@ -152,6 +149,12 @@ class CollectionApiController extends Controller
             'hero_section' => $collection->heroSection && $collection->heroSection->is_active ? [
                 'background_image' => $collection->heroSection->background_image 
                     ? asset('storage/' . $collection->heroSection->background_image) 
+                    : null,
+                'image_tablet' => $collection->heroSection->image_tablet 
+                    ? asset('storage/' . $collection->heroSection->image_tablet) 
+                    : null,
+                'image_mobile' => $collection->heroSection->image_mobile 
+                    ? asset('storage/' . $collection->heroSection->image_mobile) 
                     : null,
                 'title_prefix' => $collection->heroSection->title_prefix,
                 'title_highlight' => $collection->heroSection->title_highlight,
@@ -244,7 +247,7 @@ class CollectionApiController extends Controller
                                 'colors' => $seenColors,
                                 'variants' => $variants,
                                 'collection' => $product->collection ? $product->collection->name : null,
-                                'link' => '/product-detail/' . $product->slug,
+                                'link' => '/decorative-lights/' . $product->slug,
                             ];
                         });
 
@@ -257,17 +260,7 @@ class CollectionApiController extends Controller
                             'collection' => $collection->name ?? '',
                             'products' => $productsUsed
                         ];
-                    })
-                    : ($collection->compositionsSection->items ? $collection->compositionsSection->items->map(function ($item) use ($collection) {
-                        return [
-                            'id' => $item->id,
-                            'image' => $item->image_url ?? ($item->image ? asset('storage/' . $item->image) : ''),
-                            'title' => $item->products ?? '',
-                            'category' => '',
-                            'kicker' => $item->description ?? '',
-                            'collection' => $collection->name ?? '',
-                        ];
-                    }) : []),
+                    }) : [],
             ] : null,
             
             // Tones Section
@@ -298,6 +291,12 @@ class CollectionApiController extends Controller
                 'background_image' => $collection->catalogueSection->background_image 
                     ? asset('storage/' . $collection->catalogueSection->background_image) 
                     : null,
+                'image_tablet' => $collection->catalogueSection->image_tablet 
+                    ? asset('storage/' . $collection->catalogueSection->image_tablet) 
+                    : null,
+                'image_mobile' => $collection->catalogueSection->image_mobile 
+                    ? asset('storage/' . $collection->catalogueSection->image_mobile) 
+                    : null,
                 'title' => $collection->catalogueSection->title,
                 'title_highlight' => $collection->catalogueSection->title_highlight,
                 'button_text' => $collection->catalogueSection->button_text,
@@ -305,6 +304,8 @@ class CollectionApiController extends Controller
                 'is_active' => $collection->catalogueSection->is_active,
             ] : [
                 'background_image' => null,
+                'image_tablet' => null,
+                'image_mobile' => null,
                 'title' => 'See the whole',
                 'title_highlight' => 'collection.',
                 'button_text' => 'Download catalogue',

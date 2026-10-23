@@ -107,20 +107,20 @@ export default function ParametersSectionDynamic({ parametersSection, collection
               onMouseEnter={
                 cardHoverBg
                   ? (e) => {
-                      (e.currentTarget as HTMLElement).style.backgroundColor = cardHoverBg;
-                    }
+                    (e.currentTarget as HTMLElement).style.backgroundColor = cardHoverBg;
+                  }
                   : undefined
               }
               onMouseLeave={
                 cardBg
                   ? (e) => {
-                      (e.currentTarget as HTMLElement).style.backgroundColor = cardBg;
-                    }
+                    (e.currentTarget as HTMLElement).style.backgroundColor = cardBg;
+                  }
                   : cardHoverBg
-                  ? (e) => {
+                    ? (e) => {
                       (e.currentTarget as HTMLElement).style.backgroundColor = '';
                     }
-                  : undefined
+                    : undefined
               }
             >
               <small>{param.small_text}</small>

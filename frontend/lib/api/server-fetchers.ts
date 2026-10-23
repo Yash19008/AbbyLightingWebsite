@@ -18,12 +18,13 @@ import type { LightWorld } from "@/types/light-world";
 
 /**
  * Fetch clients
- * Revalidate: 3600s (1 hour) - client list is stable
+ * By default queries featured client logos for homepage display with 60s revalidation.
  */
-export async function fetchClients(): Promise<Client[]> {
+export async function fetchClients(featured: boolean = true): Promise<Client[]> {
   try {
-    const response = await fetch(`${API_URL}/clients`, {
-      next: { revalidate: 3600 }
+    const url = `${API_URL}/clients${featured ? '?featured=1' : ''}`;
+    const response = await fetch(url, {
+      next: { revalidate: 60 }
     });
 
     if (!response.ok) {

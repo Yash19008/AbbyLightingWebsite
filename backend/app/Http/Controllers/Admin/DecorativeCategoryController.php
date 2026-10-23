@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Common_function;
 use App\Http\Controllers\Controller;
 use App\Models\Decorative\DecCategory;
 use Illuminate\Http\Request;
@@ -20,7 +21,9 @@ class DecorativeCategoryController extends Controller
         }
 
         $categories = $query->orderBy('name', 'asc')->paginate(20);
-        return view('admin.decorative_categories.index', compact('categories'));
+        $tbl = Common_function::encrypt('dec_categories');
+        $col_featured = Common_function::encrypt('is_featured');
+        return view('admin.decorative_categories.index', compact('categories', 'tbl', 'col_featured'));
     }
 
     public function create()

@@ -35,14 +35,13 @@
                 <div class="row">
                     <div class="col-sm-12">
                         @include('admin.include.notification')
-                        <table class="table data-table table-bordered" data-order='[[ 7, "asc" ]]' id="catalogues-table" style="width:100%">
+                        <table class="table data-table table-bordered" data-order='[[ 6, "asc" ]]' id="catalogues-table" style="width:100%">
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 70px;">COVER</th>
                                     <th>TITLE</th>
                                     <th class="text-center" style="width: 130px;">CATEGORY</th>
                                     <th class="text-center" style="width: 100px;">PDF</th>
-                                    <th class="text-center" style="width: 90px;">LEADS</th>
                                     <th class="text-center" style="width: 90px;">FEATURED</th>
                                     <th class="text-center" style="width: 90px;">STATUS</th>
                                     <th class="text-center" style="width: 80px;">SEQUENCE</th>
@@ -85,15 +84,6 @@
                                         @endif
                                     </td>
                                     <td class="text-center align-middle">
-                                        @if($cat->downloads_count > 0)
-                                            <a href="{{ route('catalog_admin') }}" class="badge badge-success" style="font-size: 11px; padding: 4px 8px; text-decoration: none;" title="View {{ $cat->downloads_count }} download leads">
-                                                <i class="ft-download mr-1"></i> {{ $cat->downloads_count }}
-                                            </a>
-                                        @else
-                                            <span class="badge badge-light border text-muted" style="font-size: 11px; padding: 3px 6px;">0</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center align-middle">
                                         <div class="custom-control custom-switch text-center">
                                             <input type="checkbox" class="custom-control-input knob switch" data-col="{{ \App\Helpers\Common_function::encrypt('is_featured') }}" id="customSwitchFeatured{{ $cat->id }}" {{ $cat->is_featured ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="customSwitchFeatured{{ $cat->id }}"></label>
@@ -127,7 +117,6 @@
                                     <th>Title</th>
                                     <th class="text-center">Category</th>
                                     <th class="text-center">PDF</th>
-                                    <th class="text-center">Leads</th>
                                     <th class="text-center">Featured</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Sequence</th>
@@ -184,9 +173,9 @@ $(document).ready(function() {
         searching: true,
         pageLength: 10,
         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        order: [[7, "asc"]],
+        order: [[6, "asc"]],
         columnDefs: [
-            { targets: [0, 3, 8], orderable: false }
+            { targets: [0, 3, 7], orderable: false }
         ]
     });
 

@@ -3,35 +3,43 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CategoryApiController extends Controller
 {
     /**
-     * Get architectural categories for menu / dropdown
+     * Get architectural categories (Tags) for menu / dropdown
      */
     public function index(Request $request)
     {
         try {
-            $query = Category::where('is_active', 'yes');
+            $query = Tag::where('is_active', 'yes');
 
-            if (!$request->has('all')) {
-                $query->where('in_menu', 'yes');
+            // Default behavior: filter by is_featured unless ?all=1 is explicitly requested
+            if (!$request->boolean('all')) {
+                $query->where('is_featured', 1);
             }
 
             $categories = $query->orderBy('id', 'ASC')
                 ->get()
-                ->map(function ($category) {
+                ->map(function ($tag) {
+                    $slug = $tag->slug ?? '';
+                    $title = $tag->display_name ?: $tag->name;
+                    $url = '/products/category/' . $slug;
+
                     return [
-                        'id' => $category->id,
-                        'title' => $category->title,
-                        'name' => $category->title,
-                        'slug' => $category->slug,
-                        'uri' => $category->uri,
-                        'in_menu' => $category->in_menu,
-                        'is_active' => $category->is_active,
-                        'image_url' => $category->featured_image ? asset('storage/uploads/categories/' . $category->featured_image) : null,
+                        'id' => $tag->id,
+                        'title' => $title,
+                        'name' => $title,
+                        'slug' => $slug,
+                        'uri' => $url,
+                        'url' => $url,
+                        'is_featured' => (bool)$tag->is_featured,
+                        'show_categories' => (bool)$tag->show_categories,
+                        'is_active' => $tag->is_active,
+                        'image_url' => $tag->image ? asset('storage/uploads/tags/' . $tag->image) : null,
                     ];
                 });
 
@@ -40,10 +48,12 @@ class CategoryApiController extends Controller
                 'data' => $categories,
             ], 200);
         } catch (\Exception $e) {
+            Log::error('CategoryApiController::index — ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch categories',
-                            ], 500);
+            ], 500);
         }
     }
 }
+

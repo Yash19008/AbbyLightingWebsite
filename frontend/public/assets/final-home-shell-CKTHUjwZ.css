@@ -2225,11 +2225,11 @@ footer#contact {
   .sitehead .search {
     width: 18px;
     height: 18px;
-    margin-top: 43px
+    margin-top: 43px;
   }
 
   .sitehead .abby-search {
-    margin-top: 43px
+    margin-top: 42px;
   }
 
   .sitehead .nav-cta {
@@ -3332,7 +3332,7 @@ footer#contact {
   opacity: 0;
   transform: translateY(calc((1 - var(--halo-active)) * 7px));
   pointer-events: none;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   line-height: 1;
   position: absolute;
@@ -3388,9 +3388,9 @@ footer#contact {
     height: 22px
   }
 
-  .halo-label {
+  /* .halo-label {
     font-size: 7px
-  }
+  } */
 }
 
 @media (width<=340px) {

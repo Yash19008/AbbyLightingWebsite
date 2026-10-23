@@ -6,10 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\Common_function;
 use App\Models\AuditLog;
-use Illuminate\Support\Facades\DB;
-use App\Models\Category;
 use App\Models\Tag;
-use DataTables;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,6 +34,7 @@ class TagAdminController extends Controller
         $data['results'] =  $data['results']->orderBy('id','DESC')->paginate(10);//config('custom_config.settings.admin_pagination_limit')
         $data['tbl'] = Common_function::encrypt('tags');
         $data['col'] = Common_function::encrypt('show_categories');
+        $data['col_featured'] = Common_function::encrypt('is_featured');
       
         $data['results']->appends(['search'=>$data['search']]);
         return view('admin.tags',$data);
@@ -65,6 +63,7 @@ class TagAdminController extends Controller
             'display_name' =>  $request->display_name,
             'name' => $request->name ,
             'slug' => ($request->slug != '') ? $request->slug : NULL,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'is_active'=>'yes',
             'created_at'=>$this->currentDateTime,
             'created_by'=>Auth::guard('admin')->user()->id,
@@ -85,6 +84,7 @@ class TagAdminController extends Controller
         $newData =[
             'name' => $request->name ,
             'slug' => ($request->slug != '') ? $request->slug : NULL,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'is_active'=>'yes',
             'image'=> $file ? $fileNamePhoto : NULL,
             'created_at'=>$this->currentDateTime,
@@ -136,6 +136,7 @@ class TagAdminController extends Controller
             'display_name' => ($request->display_name != '') ? $request->display_name : NULL,
             'name' => ($request->name != '') ? $request->name : NULL,
             'slug' => ($request->slug != '') ? $request->slug : NULL,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'updated_by'=>Auth::guard('admin')->user()->id,
             'updated_at' => $this->currentDateTime,            
         );
@@ -157,6 +158,7 @@ class TagAdminController extends Controller
             'name' => ($request->name != '') ? $request->name : NULL,
             'image' => ($request->image != '') ? $request->image : NULL,
             'slug' => ($request->slug != '') ? $request->slug : NULL,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
             'updated_by'=>Auth::guard('admin')->user()->id,
             'updated_at' => $this->currentDateTime,            
         ];

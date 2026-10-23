@@ -38,11 +38,4 @@ class ProductMaster extends Model
     {
         return $this->hasMany('App\Models\ProductAttribute', 'product_id');
     }
-
-    public function collections()
-    {
-        return $this->belongsToMany('App\Models\Collection', 'collection_products', 'product_id', 'collection_id')->withTimestamps();
-    }
-
-
 }
