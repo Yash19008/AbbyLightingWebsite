@@ -1,13 +1,12 @@
+import type { Metadata } from 'next';
 import { redirect, notFound } from 'next/navigation';
 import { getCollections } from '@/lib/api/collections';
+import { buildPageMetadata } from '@/lib/seo/meta-config';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export const metadata = {
-  title: 'Collections | Abby Lighting',
-  description: 'Explore decorative and architectural lighting collections from Abby Lighting.',
-};
+export const metadata: Metadata = buildPageMetadata('collections');
 
 export default async function CollectionsPage() {
   try {

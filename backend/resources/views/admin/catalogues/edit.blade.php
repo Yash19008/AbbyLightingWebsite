@@ -61,8 +61,9 @@
                         </div>
 
                         <div class="col-md-3 form-group">
-                            <label for="sort_order" class="font-weight-bold">Sort Order</label>
-                            <input type="number" name="sort_order" id="sort_order" class="form-control" value="{{ old('sort_order', $catalogue->sort_order) }}" min="0">
+                            <label for="sort_order" class="font-weight-bold">Sequence (Sort Order)</label>
+                            <input type="number" name="sort_order" id="sort_order" class="form-control" value="{{ old('sort_order', $catalogue->sort_order) }}" min="1">
+                            <small class="form-text text-muted">If another item has this sequence, both items will automatically swap positions.</small>
                         </div>
 
                         <div class="col-md-3 form-group">

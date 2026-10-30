@@ -580,7 +580,7 @@
                                                 <div class="col-md-6 mb-3">
                                                     <label for="prod_view_more_text">View More Button Text</label>
                                                     <input type="text" class="form-control" id="prod_view_more_text" name="view_more_text" 
-                                                           value="{{ old('view_more_text', $collection->productsSection->view_more_text ?? 'View all') }}">
+                                                           value="{{ old('view_more_text', $collection->productsSection->view_more_text ?? 'VIEW MORE') }}">
                                                 </div>
                                                 <div class="col-md-12 mb-3">
                                                     <label for="prod_subtitle">Subtitle</label>

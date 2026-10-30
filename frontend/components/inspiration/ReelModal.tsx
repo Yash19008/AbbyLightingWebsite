@@ -24,9 +24,9 @@ export default function ReelModal({ isOpen, reel, onClose }: ReelModalProps) {
     if (!reel || !reel.video_url) return null;
 
     if (reel.video_type === "youtube") {
-      const match = reel.video_url.match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|embed\/|watch\?v=))([\w-]{11})/);
+      const match = reel.video_url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|shorts\/|live\/|v\/|watch\?(?:.*&)?v=))([\w-]{11})/);
       if (match && match[1]) {
-        return `https://www.youtube.com/embed/${match[1]}?autoplay=1&rel=0&modestbranding=1`;
+        return `https://www.youtube-nocookie.com/embed/${match[1]}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1`;
       }
       return reel.video_url;
     }
@@ -71,6 +71,7 @@ export default function ReelModal({ isOpen, reel, onClose }: ReelModalProps) {
             />
           ) : embedUrl ? (
             <iframe
+              referrerPolicy="strict-origin-when-cross-origin"
               src={embedUrl}
               title={reel.title || "Watch & Learn Reel"}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

@@ -51,7 +51,7 @@ function renderTitle(title?: string | null, highlight?: string | null) {
  * Converts YouTube, Vimeo, or generic video URLs to a playable embed URL
  */
 function getEmbedUrl(url?: string | null): string {
-  if (!url) return "https://www.youtube.com/embed/SPgaE-3jxEY?autoplay=1&rel=0";
+  if (!url) return "https://www.youtube-nocookie.com/embed/SPgaE-3jxEY?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1";
   const trimmed = url.trim();
 
   // YouTube URL matching (handles youtu.be, youtube.com/watch, embed, shorts, live, etc.)
@@ -59,7 +59,7 @@ function getEmbedUrl(url?: string | null): string {
     /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|shorts\/|live\/|v\/|watch\?(?:.*&)?v=))([\w-]{11})/
   );
   if (ytMatch && ytMatch[1]) {
-    return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&rel=0&modestbranding=1`;
+    return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1`;
   }
 
   // Vimeo URL matching
@@ -146,6 +146,7 @@ export default function ManufacturingSection({ data }: ManufacturingSectionProps
             />
           ) : (
             <iframe
+              referrerPolicy="strict-origin-when-cross-origin"
               src={embedUrl}
               title={data.title || "Abby Lighting manufacturing"}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"

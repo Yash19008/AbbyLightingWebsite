@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getCollection, getCollections } from '@/lib/api/collections';
 import HeroSection from '@/components/collections/HeroSection';
@@ -9,6 +10,7 @@ import ScoreSection from '@/components/collections/ScoreSection';
 import PlacesSectionDynamic from '@/components/collections/PlacesSectionDynamic';
 import CatalogueSection from '@/components/collections/CatalogueSection';
 import RelatedCollections from '@/components/collections/RelatedCollections';
+import { buildPageMetadata } from '@/lib/seo/meta-config';
 import '../../../styles/collections.css';
 
 export const dynamic = 'force-dynamic';
@@ -18,6 +20,40 @@ interface CollectionPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata({ params }: CollectionPageProps): Promise<Metadata> {
+  try {
+    const { slug } = await params;
+    const response = await getCollection(slug);
+    const collection = response?.data;
+
+    if (!collection) {
+      return buildPageMetadata('collectionsDetailDefault', {
+        title: 'Collection Not Found | Abby Lighting',
+        description: 'The requested lighting collection could not be found.',
+        noindex: true,
+      });
+    }
+
+    const title = collection.meta_title || `${collection.name} Collection | Abby Lighting`;
+    const description =
+      collection.meta_description ||
+      collection.hero_section?.description ||
+      `Explore the ${collection.name} modular architectural and decorative lighting collection by Abby Lighting.`;
+    const canonical = `/collections/${slug}`;
+
+    return buildPageMetadata('collectionsDetailDefault', {
+      title,
+      description,
+      canonical,
+    });
+  } catch {
+    return buildPageMetadata('collectionsDetailDefault', {
+      title: 'Collection | Abby Lighting',
+      noindex: true,
+    });
+  }
 }
 
 export default async function CollectionPage({ params }: CollectionPageProps) {
@@ -86,7 +122,8 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         {collection.places_section && (
           <PlacesSectionDynamic placesSection={collection.places_section} />
         )}
-        
+
+        {/* Catalogue Section - Dynamic if data exists */}
         {collection.catalogue_section?.is_active && (
           <CatalogueSection catalogueSection={collection.catalogue_section} />
         )}
@@ -96,25 +133,5 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
   } catch (error) {
     console.error('Error loading collection:', error);
     notFound();
-  }
-}
-
-// Generate metadata for SEO
-export async function generateMetadata({ params }: CollectionPageProps) {
-  try {
-    // Await params (Next.js 15 requirement)
-    const { slug } = await params;
-    const response = await getCollection(slug);
-    const collection = response.data;
-
-    return {
-      title: collection.meta_title || `${collection.name} | Abby Lighting`,
-      description: collection.meta_description || collection.description,
-    };
-  } catch {
-    return {
-      title: 'Collection Not Found',
-      description: 'The requested collection could not be found.',
-    };
   }
 }

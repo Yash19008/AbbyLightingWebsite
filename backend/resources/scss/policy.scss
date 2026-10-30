@@ -32,7 +32,7 @@
     color: #726F6E;
     font-size: 0.8rem;
     letter-spacing: toRem(1.2);
-    line-height: 1rem;
+    line-height: 1.45rem;
     margin-top: 1rem !important;
 }
 
@@ -45,5 +45,118 @@
 
     @media only screen and (max-width: 600px) {
         padding: 2rem !important;
+    }
+}
+
+/* Rich Text & Semantic HTML styling for dynamic policy content */
+.policy-page-content {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    color: #726F6E;
+
+    h1, .header {
+        color: #1A1A1A;
+        font-weight: 500;
+        font-size: toRem(48);
+        line-height: toRem(58);
+        letter-spacing: toRem(1.5);
+        margin-bottom: 1.5rem;
+
+        @media (max-width: 768px) {
+            font-size: toRem(34);
+            line-height: toRem(42);
+        }
+    }
+
+    h2, h3, .sub-header {
+        color: #726F6E;
+        font-size: toRem(26);
+        line-height: toRem(36);
+        letter-spacing: toRem(0.9);
+        font-weight: 600;
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+
+        @media (max-width: 768px) {
+            font-size: toRem(20);
+            line-height: toRem(28);
+        }
+    }
+
+    h4, h5, h6 {
+        color: #1A1A1A;
+        font-weight: 600;
+        font-size: toRem(18);
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    p, .text-content {
+        color: #726F6E;
+        font-size: 0.85rem;
+        letter-spacing: toRem(1.1);
+        line-height: 1.55rem;
+        margin-top: 0.9rem !important;
+        margin-bottom: 0.9rem;
+    }
+
+    ul, ol {
+        color: #726F6E;
+        padding-left: 2rem;
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+
+        li {
+            color: #726F6E;
+            font-size: 0.85rem;
+            letter-spacing: toRem(1.1);
+            line-height: 1.55rem;
+            margin-bottom: 0.4rem;
+        }
+    }
+
+    strong, b {
+        color: #1A1A1A;
+        font-weight: 600;
+    }
+
+    a {
+        color: #1A1A1A;
+        text-decoration: underline;
+        transition: opacity 0.2s ease;
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+
+    table {
+        width: 100%;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-collapse: collapse;
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            color: #726F6E;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #1A1A1A;
+            font-weight: 600;
+        }
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+        margin: 1.5rem 0;
+    }
+
+    hr {
+        border-color: #eaeaea;
+        margin: 2rem 0;
     }
 }

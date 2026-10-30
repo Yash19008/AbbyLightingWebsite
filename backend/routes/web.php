@@ -120,9 +120,7 @@ Route::get('product-internal', function () {
     return view('pages.product-internal');
 })->name('page.product-internal');
 
-Route::get('terms-and-conditions', function () {
-    return view('pages.terms-and-conditions');
-})->name('page.terms-and-conditions');
+Route::get('terms-and-conditions', [\App\Http\Controllers\PolicyPageController::class, 'termsAndConditions'])->name('page.terms-and-conditions');
 
 Route::get('abby-smart', function () {
     return view('pages.abby-smart');
@@ -133,9 +131,7 @@ Route::get('clients', function () {
     return view('pages.clients', compact('clients'));
 })->name('page.clients');
 
-Route::get('privacy-policy', function () {
-    return view('pages.privacy-policy');
-})->name('page.privacy-policy');
+Route::get('privacy-policy', [\App\Http\Controllers\PolicyPageController::class, 'privacyPolicy'])->name('page.privacy-policy');
 
 // catalogues moved to WebsiteHomeController block
 
@@ -536,6 +532,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('/store', 'store')->name('admin.catalogues.store');
             Route::get('/edit/{id}', 'edit')->name('admin.catalogues.edit');
             Route::put('/update/{id}', 'update')->name('admin.catalogues.update');
+            Route::post('/update-sequence', 'updateSequence')->name('admin.catalogues.update-sequence');
             Route::get('/duplicate/{id}', 'duplicate')->name('admin.catalogues.duplicate');
             Route::delete('/delete/{id}', 'destroy')->name('admin.catalogues.destroy');
         });
@@ -611,6 +608,14 @@ Route::group(['prefix' => 'admin'], function () {
         /********************MENU ITEMS********************/
         Route::post('menu-items/reorder', [MenuItemAdminController::class, 'reorder'])->name('admin.menu-items.reorder');
         Route::resource('menu-items', MenuItemAdminController::class)->names('admin.menu-items');
+
+        /********************LEGAL & POLICY SETTINGS********************/
+        Route::controller(\App\Http\Controllers\Admin\PolicySettingAdminController::class)->prefix('policies')->group(function () {
+            Route::get('/', 'index')->name('admin.policies.index');
+            Route::put('/update', 'update')->name('admin.policies.update');
+            Route::post('/upload-image', 'uploadImage')->name('admin.policies.upload_image');
+        });
+
 
     });
 });

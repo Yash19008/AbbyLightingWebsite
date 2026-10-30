@@ -8,6 +8,7 @@ use App\Models\CatalogueCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 
 use App\Helpers\Common_function;
 
@@ -19,7 +20,7 @@ class CatalogueController extends Controller
         $main_module = 'Catalogues';
         $tbl = Common_function::encrypt('catalogues');
 
-        $query = Catalogue::with('category')->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
+        $query = Catalogue::with('category')->orderBy('sort_order', 'asc')->orderBy('id', 'asc');
 
         if ($request->filled('category_id')) {
             $query->where('catalogue_category_id', $request->category_id);
@@ -95,6 +96,17 @@ class CatalogueController extends Controller
             $pdfFilePath = $pdfName;
         }
 
+        $newSequence = $request->filled('sort_order') && (int) $request->sort_order > 0
+            ? (int) $request->sort_order
+            : ((Catalogue::max('sort_order') ?? 0) + 1);
+
+        // If the specified sequence already exists, shift down existing items to make room
+        if ($request->filled('sort_order') && (int) $request->sort_order > 0) {
+            if (Catalogue::where('sort_order', $newSequence)->exists()) {
+                Catalogue::where('sort_order', '>=', $newSequence)->increment('sort_order');
+            }
+        }
+
         Catalogue::create([
             'catalogue_category_id' => $request->catalogue_category_id,
             'title' => $request->title,
@@ -104,7 +116,7 @@ class CatalogueController extends Controller
             'file_size' => $fileSize,
             'description' => $request->description,
             'is_featured' => $request->has('is_featured') ? 1 : 0,
-            'sort_order' => $request->sort_order ?? 0,
+            'sort_order' => $newSequence,
             'status' => $request->status ?? 'active',
         ]);
 
@@ -132,7 +144,7 @@ class CatalogueController extends Controller
             'pdf_file' => 'nullable|mimes:pdf|max:102400',
             'description' => 'nullable|string',
             'is_featured' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer',
+            'sort_order' => 'nullable|integer|min:1',
             'status' => 'nullable|in:active,inactive',
         ]);
 
@@ -184,20 +196,118 @@ class CatalogueController extends Controller
             $pdfFilePath = $pdfName;
         }
 
-        $catalogue->update([
-            'catalogue_category_id' => $request->catalogue_category_id,
-            'title' => $request->title,
-            'slug' => $slug,
-            'cover_image' => $coverImagePath,
-            'pdf_file' => $pdfFilePath,
-            'file_size' => $fileSize,
-            'description' => $request->description,
-            'is_featured' => $request->has('is_featured') ? 1 : 0,
-            'sort_order' => $request->sort_order ?? 0,
-            'status' => $request->status ?? 'active',
+        $oldSequence = (int) $catalogue->sort_order;
+        $newSequence = $request->filled('sort_order') ? (int) $request->sort_order : $oldSequence;
+
+        $swappedCatalogue = null;
+
+        DB::transaction(function () use ($catalogue, $oldSequence, $newSequence, &$swappedCatalogue, $request, $slug, $coverImagePath, $pdfFilePath, $fileSize) {
+            if ($newSequence > 0 && $newSequence !== $oldSequence) {
+                $conflicts = Catalogue::where('id', '!=', $catalogue->id)
+                    ->where('sort_order', $newSequence)
+                    ->get();
+
+                if ($conflicts->isNotEmpty()) {
+                    $first = true;
+                    foreach ($conflicts as $conflict) {
+                        if ($first) {
+                            $targetSwap = $oldSequence > 0 ? $oldSequence : ((Catalogue::max('sort_order') ?? 0) + 1);
+                            $conflict->update(['sort_order' => $targetSwap]);
+                            $swappedCatalogue = $conflict;
+                            $first = false;
+                        } else {
+                            $nextSeq = (Catalogue::max('sort_order') ?? 0) + 1;
+                            $conflict->update(['sort_order' => $nextSeq]);
+                        }
+                    }
+                }
+            }
+
+            $catalogue->update([
+                'catalogue_category_id' => $request->catalogue_category_id,
+                'title' => $request->title,
+                'slug' => $slug,
+                'cover_image' => $coverImagePath,
+                'pdf_file' => $pdfFilePath,
+                'file_size' => $fileSize,
+                'description' => $request->description,
+                'is_featured' => $request->has('is_featured') ? 1 : 0,
+                'sort_order' => $newSequence,
+                'status' => $request->status ?? 'active',
+            ]);
+        });
+
+        $successMsg = $swappedCatalogue
+            ? "Catalogue updated successfully. Sequence #{$newSequence} swapped with {$swappedCatalogue->title} (now #{$swappedCatalogue->sort_order})."
+            : "Catalogue updated successfully.";
+
+        return redirect()->route('admin.catalogues.index')->with('success', $successMsg);
+    }
+
+    /**
+     * AJAX endpoint to update sequence directly and swap with conflicting item
+     */
+    public function updateSequence(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:catalogues,id',
+            'sort_order' => 'required|integer|min:1',
         ]);
 
-        return redirect()->route('admin.catalogues.index')->with('success', 'Catalogue updated successfully.');
+        $catalogue = Catalogue::findOrFail($request->id);
+        $oldSequence = (int) $catalogue->sort_order;
+        $newSequence = (int) $request->sort_order;
+
+        if ($newSequence === $oldSequence) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Sequence unchanged.',
+                'current_id' => $catalogue->id,
+                'current_seq' => $newSequence,
+            ]);
+        }
+
+        $swappedItem = null;
+
+        DB::transaction(function () use ($catalogue, $oldSequence, $newSequence, &$swappedItem) {
+            $conflicts = Catalogue::where('id', '!=', $catalogue->id)
+                ->where('sort_order', $newSequence)
+                ->get();
+
+            if ($conflicts->isNotEmpty()) {
+                $first = true;
+                foreach ($conflicts as $conflict) {
+                    if ($first) {
+                        $targetSwap = $oldSequence > 0 ? $oldSequence : ((Catalogue::max('sort_order') ?? 0) + 1);
+                        $conflict->update(['sort_order' => $targetSwap]);
+                        $swappedItem = [
+                            'id' => $conflict->id,
+                            'title' => $conflict->title,
+                            'old_seq' => $newSequence,
+                            'new_seq' => $targetSwap,
+                        ];
+                        $first = false;
+                    } else {
+                        $nextSeq = (Catalogue::max('sort_order') ?? 0) + 1;
+                        $conflict->update(['sort_order' => $nextSeq]);
+                    }
+                }
+            }
+
+            $catalogue->update(['sort_order' => $newSequence]);
+        });
+
+        $message = $swappedItem
+            ? "Sequence updated! {$catalogue->title} (now #{$newSequence}) swapped with {$swappedItem['title']} (now #{$swappedItem['new_seq']})."
+            : "Sequence for {$catalogue->title} updated to #{$newSequence}.";
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'current_id' => $catalogue->id,
+            'current_seq' => $newSequence,
+            'swapped' => $swappedItem,
+        ]);
     }
 
     public function duplicate($id)
@@ -222,6 +332,7 @@ class CatalogueController extends Controller
         $newCatalogue->file_size = null;
 
         $newCatalogue->status = 'inactive';
+        $newCatalogue->sort_order = (Catalogue::max('sort_order') ?? 0) + 1;
         $newCatalogue->save();
 
         return redirect()->route('admin.catalogues.edit', $newCatalogue->id)->with('success', 'Catalogue duplicated successfully as Inactive.');

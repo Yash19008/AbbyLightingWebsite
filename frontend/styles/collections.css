@@ -14,3 +14,49 @@
 @import url('/assets/page-B19iijr3.css');
 @import url('/assets/page-Lbzks1ED.css');
 @import url('/assets/final-home-shell-CKTHUjwZ.css');
+
+/* Collection Products Load More Button (Matched to Products Listing Page) */
+.s-products .decorative-load-more,
+.collections-page .decorative-load-more {
+  text-align: center;
+  margin-top: 66px;
+  width: 100%;
+}
+
+.s-products .decorative-load-more button,
+.collections-page .decorative-load-more button {
+  border: 1px solid #1a1c1d;
+  min-height: 46px;
+  min-width: 190px;
+  color: #1a1c1d;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: #ffffff;
+  padding: 0 36px;
+  font: 500 13px/1 Poppins, sans-serif;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s ease, color .2s ease, transform .15s ease;
+  margin: 0 auto;
+}
+
+.s-products .decorative-load-more button:hover,
+.collections-page .decorative-load-more button:hover {
+  background: #1a1c1d;
+  color: #ffffff;
+}
+
+.s-products .decorative-load-more button:active,
+.collections-page .decorative-load-more button:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 700px) {
+  .s-products .decorative-load-more,
+  .collections-page .decorative-load-more {
+    margin-top: 44px;
+  }
+}

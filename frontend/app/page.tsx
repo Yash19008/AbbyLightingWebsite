@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { fetchHomePageData } from "@/lib/api/server-fetchers";
 import HeroSection from "@/components/home/HeroSection";
 import WorldsSection from "@/components/home/WorldsSection";
@@ -7,14 +8,12 @@ import ProjectsSection from "@/components/home/ProjectsSection";
 import ClientsSection from "@/components/home/ClientsSection";
 import CatalogueSection from "@/components/home/CatalogueSection";
 import NewsSection from "@/components/home/NewsSection";
+import { buildPageMetadata } from "@/lib/seo/meta-config";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export const metadata = {
-  title: 'Abby Lighting | Architectural & Decorative Lighting',
-  description: 'Precision architectural lighting and decorative fixtures for beautifully designed spaces. Designed, engineered, and manufactured in-house.',
-};
+export const metadata: Metadata = buildPageMetadata('home');
 
 export default async function Home() {
   // Fetch all home page data in parallel on the server

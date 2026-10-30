@@ -141,7 +141,7 @@ class CollectionApiController extends Controller
             ] : [
                 'heading' => null,
                 'subtitle' => null,
-                'view_more_text' => 'View all',
+                'view_more_text' => 'VIEW MORE',
                 'is_active' => true,
             ],
             

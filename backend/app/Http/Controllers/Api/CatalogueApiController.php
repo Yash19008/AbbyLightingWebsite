@@ -79,7 +79,7 @@ class CatalogueApiController extends Controller
             }
 
             // Order by sort parameter
-            $sort = $request->get('sort', 'popular');
+            $sort = $request->get('sort', 'default');
             if ($sort === 'az') {
                 $query->orderBy('title', 'asc');
             } elseif ($sort === 'za') {
@@ -87,7 +87,8 @@ class CatalogueApiController extends Controller
             } elseif ($sort === 'new') {
                 $query->orderBy('created_at', 'desc')->orderBy('id', 'desc');
             } else {
-                $query->orderBy('is_featured', 'desc')->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
+                // Default: Manual sequence (sort_order asc)
+                $query->orderBy('sort_order', 'asc')->orderBy('id', 'asc');
             }
 
             if ($request->filled('page') || $request->filled('per_page')) {

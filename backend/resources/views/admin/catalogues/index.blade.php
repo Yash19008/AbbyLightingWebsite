@@ -95,7 +95,18 @@
                                             <label class="custom-control-label" for="customSwitchStatus{{ $cat->id }}"></label>
                                         </div>
                                     </td>
-                                    <td class="text-center align-middle font-weight-bold">{{ $cat->sort_order ?? 0 }}</td>
+                                    <td class="text-center align-middle" data-order="{{ $cat->sort_order ?? 0 }}">
+                                        <div class="d-inline-flex align-items-center justify-content-center" style="gap: 4px;">
+                                            <input type="number" 
+                                                   class="form-control form-control-sm text-center catalogue-sequence-input" 
+                                                   data-id="{{ $cat->id }}" 
+                                                   data-original="{{ $cat->sort_order ?? 0 }}" 
+                                                   value="{{ $cat->sort_order ?? 0 }}" 
+                                                   min="1" 
+                                                   style="width: 65px; font-weight: bold; padding: 2px 4px; border: 1px solid #ced4da; border-radius: 4px;"
+                                                   title="Type new sequence and press Enter or unfocus to swap positions">
+                                        </div>
+                                    </td>
                                     <td class="text-center align-middle list-action actBtn-td" style="white-space: nowrap;">
                                         @if($cat->pdf_file)
                                         <a href="{{ asset('uploads/catalogues/pdfs/' . $cat->pdf_file) }}" target="_blank" class="mx-1 text-info" data-toggle="tooltip" title="View PDF"><i class="ft-eye font-medium-3"></i></a>
@@ -195,6 +206,90 @@ $(document).ready(function() {
         if (confirm('Are you sure you want to delete this catalogue?')) {
             $('#delete-form-' + id).submit();
         }
+    });
+
+    // AJAX sequence update with automatic swap
+    $(document).on('change', '.catalogue-sequence-input', function() {
+        var $input = $(this);
+        var id = $input.data('id');
+        var originalVal = parseInt($input.data('original'), 10);
+        var newVal = parseInt($input.val(), 10);
+
+        if (isNaN(newVal) || newVal < 1) {
+            if (typeof toastr !== 'undefined') {
+                toastr.error('Please enter a valid sequence number (minimum 1).');
+            } else {
+                alert('Please enter a valid sequence number (minimum 1).');
+            }
+            $input.val(originalVal);
+            return;
+        }
+
+        if (newVal === originalVal) {
+            return;
+        }
+
+        $input.prop('disabled', true);
+
+        $.ajax({
+            url: "{{ route('admin.catalogues.update-sequence') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: id,
+                sort_order: newVal
+            },
+            success: function(response) {
+                $input.prop('disabled', false);
+                if (response.success) {
+                    $input.data('original', newVal);
+                    $input.val(newVal);
+                    $input.closest('td').attr('data-order', newVal);
+
+                    // If another item was swapped, update its input
+                    if (response.swapped) {
+                        var swappedId = response.swapped.id;
+                        var swappedNewSeq = response.swapped.new_seq;
+                        var $swappedInput = $('.catalogue-sequence-input[data-id="' + swappedId + '"]');
+                        if ($swappedInput.length) {
+                            $swappedInput.data('original', swappedNewSeq);
+                            $swappedInput.val(swappedNewSeq);
+                            $swappedInput.closest('td').attr('data-order', swappedNewSeq);
+                            $swappedInput.css({'background-color': '#d4edda', 'border-color': '#28a745', 'transition': 'all 0.4s'});
+                            setTimeout(function() {
+                                $swappedInput.css({'background-color': '', 'border-color': '#ced4da'});
+                            }, 2500);
+                        }
+                    }
+
+                    $input.css({'background-color': '#d4edda', 'border-color': '#28a745', 'transition': 'all 0.4s'});
+                    setTimeout(function() {
+                        $input.css({'background-color': '', 'border-color': '#ced4da'});
+                    }, 2500);
+
+                    if (typeof toastr !== 'undefined') {
+                        toastr.success(response.message, 'Sequence Updated');
+                    }
+                } else {
+                    $input.val(originalVal);
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error(response.message || 'Failed to update sequence');
+                    } else {
+                        alert(response.message || 'Failed to update sequence');
+                    }
+                }
+            },
+            error: function(xhr) {
+                $input.prop('disabled', false);
+                $input.val(originalVal);
+                var err = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Error updating sequence';
+                if (typeof toastr !== 'undefined') {
+                    toastr.error(err);
+                } else {
+                    alert(err);
+                }
+            }
+        });
     });
 });
 </script>

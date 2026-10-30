@@ -245,9 +245,12 @@
                     {{-- ══════════════════════════════════════
                          SECTION: SETTINGS
                          ══════════════════════════════════════ --}}
-                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['Color Masters', 'Events', 'Jobs', 'Settings'])) ? 'open' : '' }}">
+                    <li class="nav-item has-sub {{ (in_array(@$main_module, ['Color Masters', 'Events', 'Jobs', 'Settings', 'Policy Pages']) || str_starts_with(Route::currentRouteName() ?? '', 'admin.policies')) ? 'open' : '' }}">
                         <a href="#"><i class="ft-settings"></i><span class="menu-title">Settings</span></a>
                         <ul class="menu-content">
+                            <li class="{{ (str_starts_with(Route::currentRouteName() ?? '', 'admin.policies') || @$sub_module == 'Policy Pages') ? 'active' : '' }}">
+                                <a class="menu-item" href="{{ route('admin.policies.index') }}"><i class="ft-shield" style="font-size:11px;margin-right:4px;"></i> Legal &amp; Policies</a>
+                            </li>
                             <li class="{{ (@$main_module == 'Color Masters' || str_starts_with(Route::currentRouteName() ?? '', 'color_master_admin')) ? 'active' : '' }}">
                                 <a class="menu-item" href="{{ route('color_master_admin') }}"><i class="ft-droplet" style="font-size:11px;margin-right:4px;"></i> Color Masters</a>
                             </li>

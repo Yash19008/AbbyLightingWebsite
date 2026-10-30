@@ -23,12 +23,13 @@ const DEFAULT_CATEGORIES = [
 ];
 
 const SORT_OPTIONS = [
-  { id: "new", label: "New Catalogue" },
+  { id: "default", label: "Default" },
+  { id: "new", label: "Newest First" },
   { id: "az", label: "Alphabetical A-Z" },
   { id: "za", label: "Alphabetical Z-A" },
 ];
 
-type SortMode = "new" | "az" | "za";
+type SortMode = "default" | "new" | "az" | "za";
 
 export default function DownloadsPageContent() {
   const [categories, setCategories] = useState<{ id: number; name: string; slug: string }[]>(DEFAULT_CATEGORIES);
@@ -39,7 +40,7 @@ export default function DownloadsPageContent() {
   const [hasMore, setHasMore] = useState(false);
 
   const [activeFilter, setActiveFilter] = useState<string>("All");
-  const [sortMode, setSortMode] = useState<SortMode>("new");
+  const [sortMode, setSortMode] = useState<SortMode>("default");
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);

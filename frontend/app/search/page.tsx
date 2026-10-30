@@ -1,4 +1,8 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+import { buildPageMetadata } from '@/lib/seo/meta-config';
+
+export const metadata: Metadata = buildPageMetadata('search');
 
 export default async function SearchPage({
   searchParams,

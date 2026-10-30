@@ -1,28 +1,28 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import DecorativeListingClient from '@/components/decorative/DecorativeListingClient';
 import { getDecorativeHero } from '@/lib/api/decorative-hero';
+import { buildPageMetadata } from '@/lib/seo/meta-config';
 import '@/styles/decorative-products.css';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   try {
     const heroRes = await getDecorativeHero();
     const hero = heroRes?.data;
     const title = hero?.heading
       ? `${hero.heading} ${hero.styled_heading || ''}`.trim() + ' | Abby Lighting'
-      : 'Decorative Lighting | Abby Lighting';
-    const description = hero?.description || 'Sculptural pendants, wall lights, floor and table lamps across our decorative collections.';
-    return {
+      : undefined;
+    const description = hero?.description || undefined;
+
+    return buildPageMetadata('decorativeLights', {
       title,
       description,
-    };
+    });
   } catch {
-    return {
-      title: 'Decorative Lighting | Abby Lighting',
-      description: 'Sculptural pendants, wall lights, floor and table lamps across our decorative collections.',
-    };
+    return buildPageMetadata('decorativeLights');
   }
 }
 

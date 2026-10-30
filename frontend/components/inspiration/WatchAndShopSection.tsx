@@ -8,9 +8,9 @@ function getEmbedUrl(reel: WatchAndShopItem, autoplay: boolean = true): string |
   if (!reel || !reel.video_url) return null;
 
   if (reel.video_type === "youtube") {
-    const match = reel.video_url.match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|embed\/|watch\?v=))([\w-]{11})/);
+    const match = reel.video_url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|shorts\/|live\/|v\/|watch\?(?:.*&)?v=))([\w-]{11})/);
     if (match && match[1]) {
-      return `https://www.youtube.com/embed/${match[1]}?${autoplay ? "autoplay=1&" : ""}rel=0&modestbranding=1&playsinline=1`;
+      return `https://www.youtube-nocookie.com/embed/${match[1]}?${autoplay ? "autoplay=1&" : ""}rel=0&modestbranding=1&playsinline=1&enablejsapi=1`;
     }
     return reel.video_url;
   }
@@ -213,6 +213,7 @@ export default function WatchAndShopSection() {
                     </>
                   ) : embed ? (
                     <iframe
+                      referrerPolicy="strict-origin-when-cross-origin"
                       src={embed}
                       title={reel.title || "Watch & Learn Reel"}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

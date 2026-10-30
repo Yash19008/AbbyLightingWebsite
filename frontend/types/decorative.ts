@@ -76,6 +76,9 @@ export interface DecProductDetail {
   installation_guide: string | null;
   care_instructions: string | null;
   show_family_section: boolean;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  meta_keywords?: string | null;
   collection: DecCollection | null;
   category: {
     name: string;

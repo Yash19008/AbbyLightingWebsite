@@ -1,13 +1,14 @@
 import React from "react";
+import type { Metadata } from "next";
 import ProductDetailClient from "@/components/product/ProductDetailClient";
 import "@/styles/product-detail.css";
 import { DecProductDetail } from "@/types/decorative";
 import { notFound } from "next/navigation";
+import { API_URL, storageUrl } from "@/lib/config";
+import { buildPageMetadata } from "@/lib/seo/meta-config";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-
-import { API_URL } from "@/lib/config";
 
 async function fetchProductBySlug(slug: string): Promise<DecProductDetail | null> {
   try {
@@ -44,18 +45,31 @@ export async function generateStaticParams() {
   }
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const product = await fetchProductBySlug(slug);
   
   if (!product) {
-    return { title: 'Product Not Found' };
+    return buildPageMetadata('decorativeDetailDefault', {
+      title: 'Product Not Found | Abby Lighting',
+      noindex: true,
+    });
   }
+
+  const title = product.meta_title || `${product.name} Decorative Light | Abby Lighting`;
+  const description =
+    product.meta_description ||
+    product.short_description ||
+    product.description ||
+    `Explore the ${product.name} decorative lighting fixture crafted by Abby Lighting.`;
+  const ogImage = product.featured_image ? storageUrl(product.featured_image) : undefined;
   
-  return {
-    title: `${product.name} | Abby Lighting`,
-    description: product.short_description || product.description || `Buy ${product.name} at Abby Lighting`,
-  };
+  return buildPageMetadata('decorativeDetailDefault', {
+    title,
+    description,
+    canonical: `/decorative-lights/${slug}`,
+    ogImage,
+  });
 }
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {

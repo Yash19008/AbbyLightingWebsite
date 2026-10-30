@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\CompositionApiController;
 use App\Http\Controllers\Api\CatalogueApiController;
 use App\Http\Controllers\Api\InspirationHeroSectionApiController;
 use App\Http\Controllers\Api\DecorativeHeroSectionApiController;
+use App\Http\Controllers\Api\SitemapApiController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -128,3 +129,6 @@ Route::controller(CatalogueApiController::class)->group(function () {
 
 // Unified Inquiries
 Route::post('/inquiries', [InquiryApiController::class, 'store'])->middleware('throttle:60,1');
+
+// Dynamic Sitemap URLs
+Route::get('/sitemap-urls', [SitemapApiController::class, 'index']);

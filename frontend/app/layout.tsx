@@ -5,13 +5,20 @@ import { fetchMenuItems } from '@/lib/api/menu';
 import HeaderClient from "../components/HeaderClient";
 import Footer from "../components/Footer";
 import SpotlightEffect from "../components/home/SpotlightEffect";
+import { siteIconsMetadata, SITE_URL } from "@/lib/seo/meta-config";
 
 export const metadata: Metadata = {
-  title: "Abby Lighting | Architectural & Decorative Lighting",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Abby Lighting | Architectural & Decorative Lighting Manufacturer",
+    template: "%s | Abby Lighting",
+  },
   description: "Architectural, decorative, outdoor and smart lighting, engineered and manufactured in India.",
-  icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+  icons: siteIconsMetadata,
+  manifest: "/favicon/manifest.json",
+  other: {
+    "msapplication-TileColor": "#ffffff",
+    "msapplication-TileImage": "/favicon/ms-icon-144x144.png",
   },
 };
 

@@ -6,6 +6,7 @@ import BlogTableOfContents from "@/components/blogs/BlogTableOfContents";
 import BlogArticleContent from "@/components/blogs/BlogArticleContent";
 import BlogRelatedSection from "@/components/blogs/BlogRelatedSection";
 import { processArticleContent } from "@/lib/toc";
+import { buildPageMetadata } from "@/lib/seo/meta-config";
 import "@/styles/blogs.css";
 
 export const dynamic = 'force-dynamic';
@@ -17,7 +18,6 @@ interface PageProps {
 
 async function fetchBlog(slug: string) {
   try {
-    
     const res = await fetch(`${API_URL}/blogs/${slug}`, {
       cache: 'no-store',
     });
@@ -37,16 +37,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { blog } = await fetchBlog(slug);
 
   if (blog) {
-    return {
-      title: `${blog.title} | Abby Lighting`,
-      description: blog.dek || blog.meta_description || "Abby Lighting Blog Article",
-    };
+    const title = blog.meta_title || `${blog.title} | Abby Lighting`;
+    const description = blog.meta_description || blog.dek || blog.title;
+    const ogImage = blog.featured_image ? blogImageUrl(blog.featured_image) : undefined;
+
+    return buildPageMetadata('blogDetailDefault', {
+      title,
+      description,
+      canonical: `/blogs/${slug}`,
+      ogImage,
+      ogType: 'article',
+    });
   }
 
-  return {
-    title: "Blog Article | Abby Lighting",
-    description: "Insights, guides and stories from Abby Lighting.",
-  };
+  return buildPageMetadata('blogDetailDefault', {
+    title: "Article Not Found | Abby Lighting",
+    description: "The requested article could not be found.",
+    noindex: true,
+  });
 }
 
 export default async function BlogDetailPage({ params }: PageProps) {

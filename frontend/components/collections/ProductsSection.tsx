@@ -34,7 +34,10 @@ export default function ProductsSection({ products = [], collectionName, section
 
   const displayTitle = sectionData?.heading || `${collectionName} Products`;
   const displaySubtitle = sectionData?.subtitle || `Explore our range of architectural silhouettes designed for the ${collectionName} collection.`;
-  const viewMoreText = sectionData?.view_more_text || 'View all';
+  const rawViewMore = sectionData?.view_more_text;
+  const viewMoreText = (!rawViewMore || rawViewMore.toLowerCase() === 'view all')
+    ? 'VIEW MORE'
+    : rawViewMore.toUpperCase();
 
   return (
     <section 
@@ -65,14 +68,14 @@ export default function ProductsSection({ products = [], collectionName, section
         </div>
       </div>
       {!expanded && itemsCount > visibleCount && (
-        <button 
-          className="s-view" 
-          type="button"
-          onClick={() => setExpanded(true)}
-        >
-          <span className="s-view-desktop">{viewMoreText}</span>
-          <span className="s-view-mobile">{viewMoreText}</span>
-        </button>
+        <div className="decorative-load-more">
+          <button 
+            type="button"
+            onClick={() => setExpanded(true)}
+          >
+            {viewMoreText ? viewMoreText.toUpperCase() : 'VIEW MORE'}
+          </button>
+        </div>
       )}
     </section>
   );

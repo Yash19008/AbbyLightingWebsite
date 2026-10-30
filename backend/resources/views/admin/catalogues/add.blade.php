@@ -60,8 +60,9 @@
                         </div>
 
                         <div class="col-md-3 form-group">
-                            <label for="sort_order" class="font-weight-bold">Sort Order</label>
-                            <input type="number" name="sort_order" id="sort_order" class="form-control" value="{{ old('sort_order', 0) }}" min="0">
+                            <label for="sort_order" class="font-weight-bold">Sequence (Sort Order)</label>
+                            <input type="number" name="sort_order" id="sort_order" class="form-control" value="{{ old('sort_order', (\App\Models\Catalogue::max('sort_order') ?? 0) + 1) }}" min="1">
+                            <small class="form-text text-muted">Lower numbers appear first on the website.</small>
                         </div>
 
                         <div class="col-md-3 form-group">
