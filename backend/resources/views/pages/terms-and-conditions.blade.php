@@ -86,6 +86,8 @@
             text-decoration: underline;
         }
     </style>
+    {{-- Dynamic Custom Header Scripts --}}
+    @include("partials.common.custom-header-scripts")
 </head>
 
 <body>
@@ -316,6 +318,8 @@
         gtag('config', 'G-48B9N75V8M');
     </script>
 
+    {{-- Dynamic Custom Footer Scripts --}}
+    @include("partials.common.custom-footer-scripts")
 </body>
 
 </html>

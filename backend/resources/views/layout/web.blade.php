@@ -74,6 +74,8 @@
             padding-top: 0 !important;
         }
     </style>
+    {{-- Dynamic Custom Header Scripts --}}
+    @include("partials.common.custom-header-scripts")
 </head>
 <body class="{{ Request::is('/') ? 'home-page' : '' }}">
     {{-- Next.js Style Header --}}
@@ -282,5 +284,7 @@
     </script>
 
     @stack('js')
+    {{-- Dynamic Custom Footer Scripts --}}
+    @include("partials.common.custom-footer-scripts")
 </body>
 </html>

@@ -2,9 +2,11 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Script from "next/script";
 import { fetchMenuItems } from '@/lib/api/menu';
+import { fetchCustomScripts } from '@/lib/api/custom-scripts';
 import HeaderClient from "../components/HeaderClient";
 import Footer from "../components/Footer";
 import SpotlightEffect from "../components/home/SpotlightEffect";
+import CustomScripts from "../components/CustomScripts";
 import { siteIconsMetadata, SITE_URL } from "@/lib/seo/meta-config";
 
 export const metadata: Metadata = {
@@ -27,6 +29,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [menuItems, customScripts] = await Promise.all([
+    fetchMenuItems(),
+    fetchCustomScripts(),
+  ]);
+
   return (
     <html lang="en">
       <head>
@@ -41,8 +48,15 @@ export default async function RootLayout({
           <SpotlightEffect />
           <HeaderClient />
           {children}
-          <Footer initialMenuItems={await fetchMenuItems()} />
+          <Footer initialMenuItems={menuItems} />
         </main>
+
+        {/* Dynamic Custom Header & Footer Scripts */}
+        <CustomScripts
+          headerHtml={customScripts.header_scripts}
+          footerHtml={customScripts.footer_scripts}
+          enabled={customScripts.enabled}
+        />
       </body>
     </html>
   );

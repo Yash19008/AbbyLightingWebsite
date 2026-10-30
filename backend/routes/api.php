@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\CatalogueApiController;
 use App\Http\Controllers\Api\InspirationHeroSectionApiController;
 use App\Http\Controllers\Api\DecorativeHeroSectionApiController;
 use App\Http\Controllers\Api\SitemapApiController;
+use App\Http\Controllers\Api\CustomScriptApiController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -132,3 +133,6 @@ Route::post('/inquiries', [InquiryApiController::class, 'store'])->middleware('t
 
 // Dynamic Sitemap URLs
 Route::get('/sitemap-urls', [SitemapApiController::class, 'index']);
+
+// Dynamic Custom Header & Footer Scripts
+Route::get('/custom-scripts', [CustomScriptApiController::class, 'index']);

@@ -609,6 +609,13 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('menu-items/reorder', [MenuItemAdminController::class, 'reorder'])->name('admin.menu-items.reorder');
         Route::resource('menu-items', MenuItemAdminController::class)->names('admin.menu-items');
 
+        /********************CUSTOM HEADER & FOOTER SCRIPTS********************/
+        Route::controller(\App\Http\Controllers\Admin\CustomScriptAdminController::class)->prefix('custom-scripts')->group(function () {
+            Route::get('/', 'index')->name('admin.custom_scripts.index');
+            Route::put('/update', 'update')->name('admin.custom_scripts.update');
+        });
+
+
         /********************LEGAL & POLICY SETTINGS********************/
         Route::controller(\App\Http\Controllers\Admin\PolicySettingAdminController::class)->prefix('policies')->group(function () {
             Route::get('/', 'index')->name('admin.policies.index');
